@@ -1,0 +1,152 @@
+---
+title: "Test1 overview"
+author: "Pierre Ekelmans"
+output:
+  html_document:
+    toc: no
+    toc_float: yes
+    theme: cerulean
+  pdf_document:
+    toc: no
+  word_document:
+    toc: no
+---
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+source("LoadData.R")
+```
+
+# General introduction
+
+Test1 is the quickest of the tests and is checking the fundamental basis of the neural network (integration of input, synaptic transmission, spiking,...) as well as multiple output options (raster plot, I and V profile, connectivity/Delay/Jpot matrices). It is divided in three parts: Rasterplot, Matrices and Profile.
+```{r,include=FALSE}
+project_name  = 'Test1';#project_name is an identifier of the folder containing the simulation data. It is the title of the simulation 
+                        #The date suffix does not need to be included
+base_path    = getwd();
+
+folders_ = list.files(path = base_path,pattern=paste("*",project_name,"_20*",sep=""));
+folder_name = paste(base_path,folders_[1],sep="/");
+setwd(folder_name);
+```
+
+
+```{r,include=FALSE}
+#Load main data file
+
+number_populations <- Get_Number_of_Populations(folder_name);
+# data            <- Load_data(folder_name,number_populations);
+data_potential  <- Load_Potential(folder_name,number_populations);
+data_rasterplot <- Load_Rasterplot(folder_name,number_populations);
+data_currents   <- Load_Currents(folder_name,number_populations);
+# data_synapses   <- Load_Synapses(folder_name,number_populations);
+data_ConnectivityMatrix_10 <- Load_Connectivity(folder_name,1,0);
+data_DelayMatrix_10 <- Load_Delay(folder_name,1,0);
+data_JpotMatrix_10 <- Load_Jpot(folder_name,1,0);
+```
+
+# Rasterplot
+The following plot illustrates the spike times of individual neurons from two populations.
+The population 0 (on top) is asynchronous for 1s, gets synchronized after 1s and slowly desynchronises again. 
+The second population (bottom) is following a predefined target firing rate: silent at 0s, linearly increasing for 1s until it reaches 40Hz, and then staying at 40Hz. 
+```{r,echo=FALSE, fig.width=12}
+
+measurednu<-filter(data_rasterplot,(data_rasterplot$Pop_id == 2) & (data_rasterplot$Spike_t)>1 )
+measurednu=nrow(measurednu)*0.1
+```
+Here, the measured firing rate between 1s and 2s is `r measurednu` Hz.
+
+```{r,echo=FALSE, fig.width=12}
+data_rasterplot %>%
+  filter(Pop_id != 1) %>%
+  ggplot(aes(x=Spike_t,y=Neuron_id,color=factor(Pop_id)))+
+  geom_point() +
+    facet_wrap(~ Pop_id, scales = "free", ncol = 1) +
+    theme_bw()+
+    scale_y_continuous(breaks=c(0:30))+
+    theme(legend.position = "none")
+
+```
+
+
+# Maps
+
+In this section we are looking in more detail at the connectivity between two populations.
+
+The first two figures are illustrating the existing connections between individual neurons of the two populations. The matrix shows the binary value (black: the neurons are connected; white: not connected) of neuron pairs. each row correspond to an individual neuron of the presynaptic population (population 0,with 30 neurons), and each column is a neuron of the postsynaptic population (population 1, with 10 neurons). There can also be connections in the other directions (1->0), but they are stored in a different matrix, not shown here. 
+The histogram illustrates the fraction of neuron pairs which are connected. The probability of connection is set at 2/3.
+
+The next figures show the synaptic delay in these connections. In the matrix, the red connections are the fastest while the slowest connections are green. The synaptic delays are set to be uniformly distributed between 5 and 20 ms.
+
+The last two figures show the strength of the synaptic connections. The synaptic weights are set to be equally split between weak connections shown in red (0.13 mV/spike) and strong connections shown in green (0.23mV/spike).
+```{r,echo=FALSE}
+X<-0:(ncol(data_ConnectivityMatrix_10)-1)
+Y<-0:(nrow(data_ConnectivityMatrix_10)-1)
+
+library(RColorBrewer)
+
+data_ConnectivityMatrix_10<-as.matrix(data_ConnectivityMatrix_10)
+
+
+
+data_DelayMatrix_10<-as.matrix(data_DelayMatrix_10)
+
+
+coul <- colorRampPalette(brewer.pal(8, "RdYlGn"))(25)
+data_JpotMatrix_10<-as.matrix(data_JpotMatrix_10)
+
+
+
+nf <- layout(matrix(c(1,2,3,4,5,6),3,2, byrow=T), widths=c(1,1,1), heights=c(1,1,1), respect=T)
+par(mar=c(3,1,1,1))
+
+coul <- colorRampPalette(brewer.pal(8, "Greys"))(25)
+image(data_ConnectivityMatrix_10, col=coul,axes=FALSE)
+hist(data_ConnectivityMatrix_10,xlab = "",main = "Connectivity", freq = TRUE)
+coul <- colorRampPalette(brewer.pal(8, "RdYlGn"))(25)
+image(data_DelayMatrix_10, axes=FALSE, col=coul)
+hist(data_DelayMatrix_10*1e-4,breaks = 15, xlab = "ms",main = "Synaptic Delay", freq = TRUE)
+coul <- colorRampPalette(brewer.pal(8, "RdYlGn"))(25)
+image(data_JpotMatrix_10, axes=FALSE, col=coul)
+hist(data_JpotMatrix_10,breaks = (0:12)/40,xlab = "",main = "Synaptic Weight", freq = TRUE)
+
+
+```
+
+
+## V and I profiles 
+
+In this section we are looking at the profile of a neuron. 
+
+The first plot shows the current that is fed into one neuron of population 1. In this case, all the input it receives is emitted spikes from population 0. There are small and large EPSCs, which correspond to the weak and strong connections from population.
+The second plot is generated using the delay and weights of the connections (see Maps section), in the regime where all neurons of population 0 are synchronised (See rasterplot section). It has to correspond exactly to the I figure above.
+The last plot is the membrane potential of this neuron. It has to match the I profile (increase of V when an EPSC is coming). Finally, when the neuron spikes (indicated by the red bars), the membrane potentials resets to 0.
+
+
+```{r,echo=FALSE}
+par(mfrow=c(3,1))
+par(mar=c(4,4,0,0))
+plot(data_currents$t-1.0418,data_currents$mu_1_0*1e-4,type = "l",xlim = c(0,0.025),ylim=c(0,0.4),xlab = "",ylab = "I/dt")
+
+##
+
+I<-0*c(1:250)
+for (i in (1:30)) {
+  if (data_ConnectivityMatrix_10[i,1])
+    I[data_DelayMatrix_10[i,1]]<-I[data_DelayMatrix_10[i,1]]+data_JpotMatrix_10[i,1]
+}
+plot(seq(0.0001,0.0250,0.0001),I,type = "l",xlim = c(0,0.025),ylim=c(0,0.4),xlab = "",ylab = "Expected I profile")
+
+##
+spike1=filter(data_rasterplot,(data_rasterplot$Pop_id == 1) & (data_rasterplot$Spike_t>1.0418) & (data_rasterplot$Spike_t<1.0418+0.025))
+plot(data_potential$t-1.0418,data_potential$V_1_0,type = "l",xlim = c(0,0.025),ylim=c(0,1),xlab = "time after presynaptic spike (s)",ylab = "V")
+for (spike in spike1$Spike_t){
+    lines(c(spike-1.0418,spike-1.0418),c(0,1),col="red")
+}
+```

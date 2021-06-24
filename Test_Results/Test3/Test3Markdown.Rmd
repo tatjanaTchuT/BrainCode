@@ -1,0 +1,67 @@
+---
+title: "Test3 overview"
+author: "Pierre Ekelmans"
+output:
+  html_document:
+    toc: no
+    toc_float: yes
+    theme: cerulean
+  pdf_document:
+    toc: no
+  word_document:
+    toc: no
+---
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+source("LoadData.R")
+```
+
+# Introduction
+
+Test 3 is another quick test which checks that the simulated network is in the expected state. This test also checks an input and a synapse classe (namely WhiteNoiseLinear, ExponentialSynapse).
+This test simply consists in obseving that the simulated network is in a bistable regime.
+```{r,include=FALSE}
+
+
+project_name  = 'Test3';#project_name is an identifier of the folder containing the simulation data. It is the title of the simulation 
+                        #The date suffix does not need to be included
+base_path    = getwd();
+
+folders_ = list.files(path = base_path,pattern=paste("*",project_name,"_20*",sep=""));
+folder_name = paste(base_path,folders_[1],sep="/");
+setwd(folder_name);
+```
+
+
+```{r,include=FALSE}
+#Load main data file
+
+number_populations <- Get_Number_of_Populations(folder_name);
+data            <- Load_data(folder_name,number_populations);
+```
+
+
+## Result 
+
+This plot shows the firing rate of the Excitatory population as a function of the external input. The system must be bistable, meaning that for the same input value (eg: 4mV/s), the system can be in two stable states: a high activity state and a low activity state.
+The fact that the simulation shows this behaviour illustrates that the simulated network state matches the theoretical prediction.   
+
+```{r,echo=FALSE}
+#par(mfrow=c(3,1))
+#par(mar=c(4,4,0,0))
+csr0<- c(0,cumsum(data$r_0))
+csr1<- c(0,cumsum(data$r_1))
+n <- 10
+mvr0<-(csr0[(n+1):length(csr0)] - csr0[1:(length(csr0)-n)])/n
+mvr1<-(csr1[(n+1):length(csr1)] - csr1[1:(length(csr1)-n)])/n
+plot(data$t*2/15-4/15*pmax(data$t-75, 0),data$r_0,type = "l",xlim = c(0,10),ylim=c(0,10),xlab = "External Input (mV/s)",ylab = "Firing Rate (Hz)")
+
+
+```
