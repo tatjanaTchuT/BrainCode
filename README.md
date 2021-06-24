@@ -24,7 +24,7 @@ Affiliations:
 
 
 ## HowTo
-Please check the [here](README_HowTo.md) or on our [Wiki manual page](https://gitlab.mpcdf.mpg.de/mpibrano/neuronal-network-simulations/-/wikis/home) for more information about the practical aspects of compiling and running the code is accessible in the Overview GitLab Wiki.
+Please check the [here](README_HowTo.md) for more information about the practical aspects of compiling and running the code is accessible in the Overview GitLab Wiki.
 
 This code is written in C++, and all its files are contained in the folder NeuralNetworkCode.
 
