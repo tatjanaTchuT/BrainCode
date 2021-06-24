@@ -76,4 +76,4 @@ To run the code, enter "./main" followed with the arguments (if any):
 The folder containing the output of the simulation is is named after the simulation title and the time of the code execution. All the output files are plain txt files. More information about the output files can be found [here](README_OutputFiles.md)
 
 
-To get familiar with the Spiking Network Simulation code, a few tests are provided in the Test folder (see [Tests](Tests) for details). Each of these tests is used to make sure the code runs properly and returns the right output. In every case, the parameter file needed to run the test is provided, as well as a markdownfile showing the expected result of the simulation.
+To get familiar with the Spiking Network Simulation code, tests are provided in the Test folder (see [Tests](README_Tests.md) for details). Each of these tests is used to make sure the code runs properly and returns the right output. In every case, the parameter file needed to run the test is provided, as well as a markdownfile showing the expected result of the simulation.
