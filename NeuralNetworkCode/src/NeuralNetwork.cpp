@@ -27,6 +27,7 @@ NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry>
     info.networkScaling_extern      = 0;
     info.N                          = 0;
     info.globalSeed                 = -1;
+    info.pathTo_inputFile 			= "";
 
     LoadParameters(baseDir,parEntries);
 
@@ -40,7 +41,9 @@ void NeuralNetwork::SaveParameters(){
     // if this test file does not appear in the target directory: stop the
     // simulation and check the directoryPath.
 
-    std::ofstream stream(recorder->GetParametersFilename());
+    //std::ofstream stream(recorder->GetParametersFilename()); // With this, the parameters file is empty. Could be difference in the version.
+    std::ofstream    stream;
+    stream.open(recorder->GetParametersFilename(), std::ofstream::out | std::ofstream::app); //ios::binary
     recorder->WriteHeader(&stream);
     //stream <<  "#*****************************************************************\n";
     //stream <<  "#Date and Time:             " << std::ctime(&end_time);
@@ -279,8 +282,12 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
         else if(name.find("stimulus_type") != std::string::npos){
             stim_type = values.at(0);
         }
+        else if (name.find("pathToInputFile") != std::string::npos) {
+            info.pathTo_inputFile = values.at(0);
+        }
     }
-
+    info.pathTo_inputFile = info.pathTo_inputFile + title + "_";
+    
     /*FilterStringEntries(parEntries,"neurons_",  &neur_strs);
     FilterStringEntries(parEntries,"synapses_", &syn_strs);
     FilterStringEntries(parEntries,"stimulus_", &stim_strs);

@@ -2,6 +2,12 @@
 #include "Recorder.hpp"
 
 void Recorder::SetFilenameDate(){
+	bool Windows = false;
+
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        Windows = true;
+    #endif
+	
     time_t      t = time(NULL);
     tm*         timePtr = localtime(&t);
 
@@ -11,9 +17,11 @@ void Recorder::SetFilenameDate(){
     std::to_string(timePtr->tm_hour) + "-" +
     std::to_string(timePtr->tm_min) + "-" +
     std::to_string(timePtr->tm_sec);
-
-
-    directoryPath += title + "_" + dateTime +  "/";
+	
+    if (Windows)
+        directoryPath += title + "_" + dateTime + "\\";
+    else
+        directoryPath += title + "_" + dateTime +  "/";
 
 #ifdef _WIN32
     _mkdir(directoryPath.c_str()); //0744

@@ -10,6 +10,7 @@
 #include "../Connectivity/RandomConnectivity.hpp"
 #include "../Connectivity/BinaryRandomConnectivity.hpp"
 #include "../Connectivity/DistanceConnectivity.hpp"
+#include "../Connectivity/IndividualRandomConnectivity.hpp"
 #ifndef SYNAPSE_HPP
 #define SYNAPSE_HPP
 

@@ -14,6 +14,7 @@
 struct GlobalSimInfo {
 
     std::default_random_engine globalGenerator;
+    std::string    pathTo_inputFile;
     int		globalSeed;
     long    time_step;
     int     waiting_index;
@@ -44,6 +45,7 @@ struct IterableParameterFileEntry : ParameterFileEntry {
     }
 };
 
+const std::string str_individualRandomConnectivity("IndividualRandomConnectivity");
 const std::string str_randomConnectivity("RandomConnectivity");
 const std::string str_binaryrandomConnectivity("BinaryRandomConnectivity");
 const std::string str_distanceConnectivity("DistanceConnectivity");
@@ -89,6 +91,9 @@ void FilterStringEntries(std::vector<ParameterFileEntry> *str_full,std::string t
 void FilterStringVector(std::vector<std::string> *str_full,std::string token,std::vector<std::string> *str_filtered);
 void SplitString(std::string *full_str,std::string *name,std::vector<std::string> *values);
 void SplitString(std::string *full_str, std::string *iterate_id, std::string *name, std::vector<std::string> *values);
+void SplitString(std::string* full_str, std::vector<std::string>* values);
+
+std::string getPathToInputFile(std::string* inputFile, bool Windows);
 
 void SaveDoubleFile(std::ofstream *file,double val,int precision);
 

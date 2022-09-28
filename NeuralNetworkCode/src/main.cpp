@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
     std::string base;
     std::string inputFile;
 	bool Windows=false;
+    std::string pathTo_inputFile = "";
 
 
 	#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -29,16 +30,27 @@ int main(int argc, char* argv[])
 
     if(argc >= 2){
         base = argv[1];
-        if(argc >= 3)
+        if(argc >= 3){
             inputFile = argv[2];
-        else if (Windows)
-			inputFile = base + "\\Parameters.txt";
-		else
-			inputFile = base + "/Parameters.txt";
+
+            pathTo_inputFile = getPathToInputFile(&inputFile, Windows);
+        }
+        else if (Windows) {
+            inputFile = base + "\\Parameters.txt";
+
+            pathTo_inputFile = base + "\\";
+        }
+        else {
+            inputFile = base + "/Parameters.txt";
+
+            pathTo_inputFile = base + "/";
+        }
     }
     else{
         base = "";
         inputFile = "Parameters.txt";
+
+        pathTo_inputFile = base;
     }
     std::cout<<"Base folder: "+base+"\n";
     std::cout<<"Input file : "+inputFile+"\n";
@@ -88,6 +100,9 @@ int main(int argc, char* argv[])
         }
     }
     stream.close();
+
+    //Get path to input parameters file and save it in the parameterEntries
+    parameterEntries.push_back(stringToParameterFileEntry("pathToInputFile  " + pathTo_inputFile));
 
     //Check for consistency Iterate 1: do all entries have the same lenght?
     if(iterate1_entries.empty()){

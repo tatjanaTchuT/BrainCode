@@ -79,7 +79,9 @@ void Connectivity::WriteConnectivity(std::string filename,unsigned long noNeuron
     if(noNeuronsConnectivity <= 0)
         return;
 
-    std::ofstream stream(filename + ".txt"); //ios::binary
+	std::ofstream    stream;
+    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
+
 
     if(noTargetNeurons > noNeuronsConnectivity)
         noTargetNeurons = noNeuronsConnectivity;

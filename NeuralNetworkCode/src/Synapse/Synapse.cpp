@@ -80,6 +80,11 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 					delete geometry;
 				geometry = new DistanceConnectivity(this, info);
 			}
+            else if (values.at(0) == str_individualRandomConnectivity) {
+                if (geometry != NULL)
+                    delete geometry;
+                geometry = new IndividualRandomConnectivity(this, info);
+            }
         }
     }
 

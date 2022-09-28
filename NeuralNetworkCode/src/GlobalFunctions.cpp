@@ -75,6 +75,49 @@ void FilterStringEntries(std::vector<ParameterFileEntry> *str_full,std::string t
 
 }
 
+void SplitString(std::string* full_str, std::vector<std::string>* values) {
+
+    std::replace(full_str->begin(), full_str->end(), '\t', ' '); //Replace tabs by spaces, then search for tabs
+    std::replace(full_str->begin(), full_str->end(), '\r', ' ');  //Replace additional end-of-line \r-symbol
+
+    std::istringstream iss(*full_str);
+    std::string        token;
+    values->clear();
+
+    while (std::getline(iss, token, ' ')) {
+        if (token.length() != 0) {
+            values->push_back(token);
+        }
+    }
+
+}
+
+std::string getPathToInputFile(std::string* inputFile, bool Windows) {
+
+    std::istringstream iss(*inputFile);
+    std::string        token;
+    std::string        pathTo_inpuFile = "";
+    char tokenizerChar = ' ';
+    if (Windows)
+        tokenizerChar = '\\';
+    else
+        tokenizerChar = '/';
+
+    while (std::getline(iss, token, tokenizerChar)) {
+        if (!iss.eof()) {
+            if (token.length() != 0) {
+                pathTo_inpuFile += token;
+                if (Windows)
+                    pathTo_inpuFile += "\\";
+                else
+                    pathTo_inpuFile += "/";
+            }
+        }
+    }
+
+    return pathTo_inpuFile;
+}
+
 void SplitString(std::string *full_str,std::string *name,std::vector<std::string> *values){
 
     std::replace(full_str->begin(),full_str->end(),'\t',' '); //Replace tabs by spaces, then search for tabs
