@@ -43,3 +43,8 @@
 # Reproduces contrast invariant selectivity and nonlinear sensitivity from Bernaez Timon et al. manuscript (Fig7); in preparation
 ./../NeuralNetworkCode/main ../Test_Results/Test9/ Test9A_Parameters.txt
 ./../NeuralNetworkCode/main ../Test_Results/Test9/ Test9B_Parameters.txt
+
+# Test 10:
+# Produces a simulation with pre-existing connectivity matrix
+./../NeuralNetworkCode/main ../Test_Results/Test10/ Test10_Parameters.txt
+./../NeuralNetworkCode/main ../Test_Results/Test10/ Test10_Parameters.txt
