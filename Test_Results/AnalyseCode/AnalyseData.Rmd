@@ -106,12 +106,17 @@ if(nrow(data_rasterplot) > 0){
 
 ```{r,echo=FALSE}
 if(nrow(data_synapses) > 0){
-  data_synapses %>%
-    filter(!is.na(x))  %>%
-    gather(-time, key = "Variable", value = "Value") %>% 
-    filter(Variable!="J")  %>%
-    ggplot(aes(x = time, y = Value,color=Variable))  +
-    geom_line()
+  data_synapses = data_synapses %>%
+      filter(!is.na(x))  %>%
+      filter(x != "-nan(ind)")  %>%
+      gather(-time, key = "Variable", value = "Value") %>% 
+      filter(Variable!="J")
+    
+  data_synapses$time <- as.numeric(as.character(data_synapses$time))
+  data_synapses$Value <- as.numeric(as.character(data_synapses$Value))
+  
+  ggplot(data_synapses, aes(x = time, y = Value, color=Variable, group=Variable)) +
+         geom_line()
 }
 ```
 
