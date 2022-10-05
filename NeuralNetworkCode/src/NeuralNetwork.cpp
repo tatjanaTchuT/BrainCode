@@ -283,7 +283,12 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
             stim_type = values.at(0);
         }
         else if (name.find("pathToInputFile") != std::string::npos) {
-            info.pathTo_inputFile = values.at(0);
+            if (values.size() == 0) {
+                info.pathTo_inputFile = "";
+            }
+            else {
+                info.pathTo_inputFile = values.at(0);
+            }
         }
     }
     info.pathTo_inputFile = info.pathTo_inputFile + title + "_";

@@ -85,12 +85,8 @@ synapses_1_0_D_max				0.0		seconds
 synapses_1_0_J					-0.06		dmV/Spike		
 synapses_1_0_J_pot				0.0		dmV/Spike		
 synapses_1_0_P_pot				0.0		
-synapses_1_0_connectivity_type			IndividualRandomConnectivity
-# IndividualRandomConnectivity is a connectivity class for constructing a network with already constructed connectivity matrix. 
-# The connectivity matrix is included in the same folder as the Parameters.txt file.
-# The naming of the connectivity matrix is as follows: Title + "_synapses_connection_" + post-population ID + pre-population ID + ".txt" 
-# For example: Test10_synapses_connection_10.txt 
-# Title is the simulation title as shown in the first line of the parameters	
+synapses_1_0_connectivity_type			RandomConnectivity
+synapses_1_0_connectivity_ConnectionProba	0.1551
 #******************************************************************
 synapses_0_1_type				CurrentSynapse		
 synapses_0_1_D_min				0.0		seconds		

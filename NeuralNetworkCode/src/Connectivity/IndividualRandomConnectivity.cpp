@@ -71,36 +71,76 @@ double IndividualRandomConnectivity::GetConnectionProbability() {
 
 void IndividualRandomConnectivity::GetConnectionWeightsFromFile(std::string filepath) {
 
-    char line[8192];
-    std::vector<std::string> full_strs, values;
+    std::vector<std::string> values;
     std::string str_line;
 
     std::ifstream stream(filepath);
     std::cout << filepath << std::endl;
 
-    std::string prefix;
     unsigned long source = 0;
     unsigned long    nPre = synapse->GetNoNeuronsPre();
     unsigned long    nPost = synapse->GetNoNeuronsPost();
 
     std::vector<std::vector<double>> tmp_matrix;
+    try
+    {
+        bool tooManyColumnException = false;
 
-    while (stream.getline(line, 8192)) {
-        if (line[0] == '#')
-            continue;
+        while (std::getline(stream, str_line))
+        {
+            std::vector<std::string> values;
+            SplitString(&str_line, &values);
 
-        full_strs.push_back(line);
-        str_line = line;
+            if (source >= nPre) {
+                throw 4;
+            }
+            if (values.size() < nPost) {
+                throw 1;
+            }
+            if (values.size() > nPost) {
+                tooManyColumnException = true;
+            }
 
-        std::vector<std::string> values;
-        SplitString(&str_line, &values);
+            for (std::vector<int>::size_type target = 0; target != nPost; target++) {
+                connectivity_matrix[target][source] = std::stoi(values.at(target));
+            }
 
-        for (unsigned long target = 0; target < nPost; target++) {
-            connectivity_matrix[target][source] = std::stoi(values.at(target));
+            source++;
         }
-
-        source++;
+        if (source < nPre) {
+            throw 2;
+        }
+        if (tooManyColumnException) {
+            throw 3;
+        }
     }
+    catch (int exception)
+    {
+        stream.close();
+        if (exception == 1) {
+            std::cout << "*************************\n";
+            std::cout << "Not enough columns of synaptic connection file!\n";
+            std::cout << "*************************\n";
+            exit(1);
+        }
+        else if (exception == 2) {
+            std::cout << "*************************\n";
+            std::cout << "Not enough rows of synaptic connection file!\n";
+            std::cout << "*************************\n";
+            exit(1);
+        }
+        else if (exception == 3) {
+            std::cout << "*************************\n";
+            std::cout << "Warning: Too many columns of synaptic connection file\n";
+            std::cout << "*************************\n";
+        }
+        else if (exception == 4) {
+            std::cout << "*************************\n";
+            std::cout << "Warning: Too many rows of synaptic connection file\n";
+            std::cout << "*************************\n";
+        }
+    }
+
     stream.close();
 }
 
@@ -133,6 +173,7 @@ void IndividualRandomConnectivity::SetDistributionJ() {
     }
     stream.close();
 }
+
 void IndividualRandomConnectivity::ConnectNeurons()
 {
 
@@ -144,7 +185,6 @@ void IndividualRandomConnectivity::ConnectNeurons()
     if (output_Interval == 0)
         output_Interval = 1;
 
-    std::uniform_real_distribution<double> distribution(0.0, 1.0);
     countedSourceNeurons = 0;
 
     //Iterate through all target neurons
@@ -153,7 +193,7 @@ void IndividualRandomConnectivity::ConnectNeurons()
 
             int connection = connectivity_matrix[target][source];
 
-            if (connection == 1) {
+            if (connection != 0) {
                 target_id[source].push_back(target);
                 countedSourceNeurons++;
             }
@@ -163,5 +203,5 @@ void IndividualRandomConnectivity::ConnectNeurons()
             std::cout << 100 * (target) / nPost << "%-";
     }
     std::cout << "100%\n";
-    SetNoSourceNeurons(int(countedSourceNeurons/nPost));
+    SetNoSourceNeurons(int(countedSourceNeurons / nPost));
 }
