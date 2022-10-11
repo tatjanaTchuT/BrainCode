@@ -2,12 +2,12 @@
 title: "Test10 overview"
 author: "ULzii-Utas Narantsatsralt"
 output:
-  pdf_document:
-    toc: no
   html_document:
     toc: no
     toc_float: yes
     theme: cerulean
+  pdf_document:
+    toc: no
   word_document:
     toc: no
 ---
@@ -25,7 +25,7 @@ source("LoadData.R")
 
 # General introduction
 
-Test10 is for testing the IndividualRandomConnectivity class which uses a pre-existing connectivity matrix to construct a neural network. In this test, we check the equality between the pre-existing connectivity matrix and constructed connectivity matrix. We show the two connectivity matrices and, the raster plot of two populations.The pre-existing connectivity file needs to be in the same folder as Test10Markdown.Rmd file. 
+Test10 is for testing the IndividualRandomConnectivity class which uses a pre-existing connectivity matrix to construct a neural network. In this test, we check the equality between the pre-existing connectivity matrix and constructed connectivity matrix. We show the two connectivity matrices and, the raster plot of two populations.The pre-existing connectivity file needs to be in the INPUT folder. 
 
 ```{r,include=FALSE}
 project_name  = 'Test10';#project_name is an identifier of the folder containing the simulation data. It is the title of the simulation 
@@ -34,6 +34,7 @@ base_path    = getwd();
 
 folders_ = list.files(path = base_path,pattern=paste("*",project_name,"_20*",sep=""));
 folder_name = paste(base_path,folders_[1],sep="/");
+input_files_folder_name <-paste(dirname(dirname(base_path)),"/Input/",sep="")
 setwd(folder_name);
 ```
 
@@ -46,8 +47,8 @@ data_potential  <- Load_Potential(folder_name,number_populations);
 data_rasterplot <- Load_Rasterplot(folder_name,number_populations);
 data_currents   <- Load_Currents(folder_name,number_populations);
 # data_synapses   <- Load_Synapses(folder_name,number_populations);
-data_ConnectivityMatrix_00 <- Load_Connectivity(folder_name,0,0);
-data_SynapsesConnection_00 <- Load_SynapsesConnection(base_path,project_name,0,0);
+data_ConnectivityMatrix_00 <- Load_Connectivity(folder_name,0,0, TRUE);
+data_SynapsesConnection_00 <- Load_Connectivity(input_files_folder_name,0,0, FALSE);
 ```
 
 # Connectivity Matrices
@@ -69,11 +70,12 @@ nf <- layout(matrix(c(1,2),1,2, byrow=T), widths=c(1,1,1), heights=c(1,1,1), res
 par(mar=c(3,3,3,3))
 
 coul <- colorRampPalette(brewer.pal(8, "Greys"))(25)
+image(data_SynapsesConnection_00, col=coul, axes=FALSE)
+title("Pre-existing connectivity matrix", line = 1)
+
 image(data_ConnectivityMatrix_00, col=coul, axes=FALSE)
 title("Constructed connectivity matrix", line = 1)
 
-image(data_SynapsesConnection_00, col=coul, axes=FALSE)
-title("Pre-existing connectivity matrix", line = 1)
 
 
 ```

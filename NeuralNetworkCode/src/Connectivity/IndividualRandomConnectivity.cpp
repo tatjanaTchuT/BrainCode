@@ -19,7 +19,7 @@ IndividualRandomConnectivity::IndividualRandomConnectivity(Synapse* syn, GlobalS
             connectivity_matrix[target][source] = 0;
         }
     }
-    connectionProbFile = info->pathTo_inputFile + "synapses_connection_"+idStr+".txt";
+    connectionProbFile = info->pathTo_inputFile + "Connectivity_Matrix_"+idStr+".txt";
 }
 
 void IndividualRandomConnectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
