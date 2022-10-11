@@ -8,7 +8,7 @@ IndividualRandomConnectivity::IndividualRandomConnectivity(Synapse* syn, GlobalS
     unsigned long    nPost = syn->GetNoNeuronsPost();
     unsigned long    nPre = syn->GetNoNeuronsPre();
 
-    std::string idStr = syn->GetIdStr();
+    std::string idStr = syn->GetIdStrWithULine();
 
     connectivity_matrix.resize(nPost);
     for (unsigned long i = 0; i < nPost; i++)

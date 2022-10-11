@@ -23,10 +23,17 @@ Synapse::Synapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * 
     //********************************
 }
 
-std::string Synapse::GetIdStr(){
-    int preId  = this->neuronsPre->GetId();
+std::string Synapse::GetIdStr() {
+    int preId = this->neuronsPre->GetId();
     int postId = this->neuronsPost->GetId();
-    std::string idStr = std::to_string(postId)+std::to_string(preId);
+    std::string idStr = std::to_string(postId) + std::to_string(preId);
+    return idStr;
+}
+
+std::string Synapse::GetIdStrWithULine() {
+    int preId = this->neuronsPre->GetId();
+    int postId = this->neuronsPost->GetId();
+    std::string idStr = std::to_string(postId) + "_" + std::to_string(preId);
     return idStr;
 }
 

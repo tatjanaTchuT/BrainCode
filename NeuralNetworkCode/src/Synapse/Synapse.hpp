@@ -124,6 +124,7 @@ public:
     void WriteDistributionJ(std::string filename,int noNeuronsJPot){this->geometry->WriteDistributionJ(filename,noNeuronsJPot);}
     void Test(){geometry->Test();}
     std::string GetIdStr();
+    std::string GetIdStrWithULine();
 };
 
 #endif // SYNAPSE_HPP
