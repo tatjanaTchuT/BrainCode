@@ -69,3 +69,11 @@ DerivedData/
 ### Simulation Results ###
 /InputTest*/
 InputParameterOptions.txt
+brain_sim_comp/.vs/brain_sim_comp/v17/.suo
+*.db
+brain_sim_comp/.vs/brain_sim_comp/v17/ipch/AutoPCH/7dc8dead83c479e1/ADVANCEDRECORDER.ipch
+brain_sim_comp/.vs/brain_sim_comp/v17/ipch/AutoPCH/f3f43a0ad7516104/SYNAPSESAMPLE.ipch
+brain_sim_comp/brain_sim_comp.sln
+brain_sim_comp/brain_sim_comp.vcxproj
+brain_sim_comp/brain_sim_comp.vcxproj.filters
+brain_sim_comp/brain_sim_comp.vcxproj.user
