@@ -5,14 +5,14 @@
 #************** Stimulus Parameters ***************
 #**************************************************
 stimulus_type                        WhiteNoiseStimulus
-stimulus_meanCurrent                 5.000000	 5.000000	 10.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sec , secs.]
-stimulus_sigmaCurrent                1.000000	 1.000000	 10.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sqrt(sec) , secs.]
+stimulus_meanCurrent                 5.000000	 5.000000	 5.000000	 2.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sec , secs.]
+stimulus_sigmaCurrent                1.000000	 1.000000	 1.000000	 2.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sqrt(sec) , secs.]
 #**************************************************
 #************** Stimulus Parameters ***************
 #**************************************************
 stimulus_type                        WhiteNoiseRescaled
-stimulus_meanCurrent                 5.000000	 5.000000	 10.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sec , secs.]
-stimulus_sigmaCurrent                1.000000	 1.000000	 10.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sqrt(sec) , secs.]
+stimulus_meanCurrent                 5.000000	 5.000000	 5.000000	 2.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sec , secs.]
+stimulus_sigmaCurrent                1.000000	 1.000000	 1.000000	 2.000000 	 [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sqrt(sec) , secs.]
 #		RI_{i,ext}/tau_m*dt = meanCurrent_i*dt + sqrt(dt)*sigmaCurrent_i*NormalDistribution(0,1)
 #		meanCurrent_i is rescaled with N^(-scalingSynapticStrength), if scaling_C_N = 1.
 #**************************************************
@@ -21,15 +21,15 @@ stimulus_sigmaCurrent                1.000000	 1.000000	 10.000000 	 [column 1: 
 stimulus_type                        UncorrelatedStimulus
 stimulus_noExternalNeurons           1
 stimulus_PoissonTableEntries         10
-stimulus_J_X                         0.100000	0.200000	 dmV/Spike
-stimulus_step                        10.000000	5.000000	 [t (secs.) -- Hz]
+stimulus_J_X                         0.100000	0.200000	0.300000	 dmV/Spike
+stimulus_step                        2.000000	5.000000	 [t (secs.) -- Hz]
 #		UncorrelatedStimulus: noExternalNeurons external neurons with (poisson) firing rate defined in stimulus_step are connected with population X with strength J_X.
 #**************************************************
 #************** Stimulus Parameters ***************
 #**************************************************
 stimulus_type                        WhiteNoiseLinear
-stimulus_meanCurrent                 0.000000	 0.000000	 5.000000	 5.000000	 0.000000 	10.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
-stimulus_sigmaCurrent                0.000000	 0.000000	 1.000000	 1.000000	 0.000000 	10.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
+stimulus_meanCurrent                 0.000000	 0.000000	 0.000000	 5.000000	 5.000000	 5.000000	 0.000000 	2.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
+stimulus_sigmaCurrent                0.000000	 0.000000	 0.000000	 1.000000	 1.000000	 1.000000	 0.000000 	2.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
 #		RI_{i,ext}/tau_m*dt = meanCurrent_i*dt + sqrt(dt)*sigmaCurrent_i*NormalDistribution(0,1)
 #**************************************************
 #************** Stimulus Parameters ***************
@@ -37,23 +37,23 @@ stimulus_sigmaCurrent                0.000000	 0.000000	 1.000000	 1.000000	 0.0
 stimulus_type                        SpatialGaussianStimulus
 stimulus_NumberOfGaussians           2
 stimulus_X_position                  0.250000	 0.750000	 Position of each Gaussian on the X axis (between 0 and 1)
-stimulus_maxCurrent_1                5.000000	 5.000000	 10.000000 	 [column i: input to neurons of population i, at the center of the gaussian, last column: time until which input is set. Dimensions: [mV/sec , secs.]
-stimulus_sigmaCurrent_t_1            0.010000	 0.010000	 10.000000 	 [column i: relative input noise to population i (relative to the mean current), last column: time until which input is set. Dimensions: [ -  , secs.]
-stimulus_sigmaCurrent_x_1            1.000000	 10.000000 	 [column 1: spatial spread (std of the Gaussian) of the input to all populations, last column: time until which input is set. Dimensions: [mm , secs.]
-stimulus_maxCurrent_2                5.000000	 5.000000	 10.000000 	 [column i: input to neurons of population i, at the center of the gaussian, last column: time until which input is set. Dimensions: [mV/sec , secs.]
-stimulus_sigmaCurrent_t_2            0.010000	 0.010000	 10.000000 	 [column i: relative input noise to population i (relative to the mean current), last column: time until which input is set. Dimensions: [ -  , secs.]
-stimulus_sigmaCurrent_x_2            1.000000	 10.000000 	 [column 1: spatial spread (std of the Gaussian) of the input to all populations, last column: time until which input is set. Dimensions: [mm , secs.]
-stimulus_Background_Noise            1.000000	 1.000000	 10.000000 	Noise applied in the whole domain [mV/sqrt(sec) , secs.]
+stimulus_maxCurrent_1                5.000000	 5.000000	 5.000000	 2.000000 	 [column i: input to neurons of population i, at the center of the gaussian, last column: time until which input is set. Dimensions: [mV/sec , secs.]
+stimulus_sigmaCurrent_t_1            0.010000	 0.010000	 0.010000	 2.000000 	 [column i: relative input noise to population i (relative to the mean current), last column: time until which input is set. Dimensions: [ -  , secs.]
+stimulus_sigmaCurrent_x_1            1.000000	 2.000000 	 [column 1: spatial spread (std of the Gaussian) of the input to all populations, last column: time until which input is set. Dimensions: [mm , secs.]
+stimulus_maxCurrent_2                5.000000	 5.000000	 5.000000	 2.000000 	 [column i: input to neurons of population i, at the center of the gaussian, last column: time until which input is set. Dimensions: [mV/sec , secs.]
+stimulus_sigmaCurrent_t_2            0.010000	 0.010000	 0.010000	 2.000000 	 [column i: relative input noise to population i (relative to the mean current), last column: time until which input is set. Dimensions: [ -  , secs.]
+stimulus_sigmaCurrent_x_2            1.000000	 2.000000 	 [column 1: spatial spread (std of the Gaussian) of the input to all populations, last column: time until which input is set. Dimensions: [mm , secs.]
+stimulus_Background_Noise            1.000000	 1.000000	 1.000000	 2.000000 	Noise applied in the whole domain [mV/sqrt(sec) , secs.]
 #		RI_{i,ext}/tau_m*dt = meanCurrent_i*dt*exp(-d{i}^2/(2sigmaCurrent_x)) + sqrt(dt)*sigmaCurrent_t_i*NormalDistribution(0,1)	 Where d{i} is the distance of neuron i to the center of the domain
 #**************************************************
 #************** Stimulus Parameters ***************
 #**************************************************
 stimulus_type                        SpatialPoissonStimulus
 stimulus_noExternalNeurons           1
-stimulus_ExtConnect_lengthscale      0.250000	0.250000	mm
-stimulus_ExtConnect_PeakProbability  0.800000	0.800000	
-stimulus_J_X                         0.100000	0.200000	dmV/Spike
-stimulus_step                        9.999990	5.000000	[t (secs.) -- Hz]
+stimulus_ExtConnect_lengthscale      0.250000	0.250000	0.250000	mm
+stimulus_ExtConnect_PeakProbability  0.800000	0.800000	0.800000	
+stimulus_J_X                         0.100000	0.200000	0.300000	dmV/Spike
+stimulus_step                        2.000000	5.000000	[t (secs.) -- Hz]
 stimulus_tau_syn                     0.000000				s
 stimulus_ExactConnections            0						(0/1)
 #		UncorrelatedStimulus: noExternalNeurons external neurons with (poisson) firing rate defined in stimulus_step are connected with population X with strength J_X using a distance-dependant connectivity.
@@ -105,14 +105,17 @@ neurons_0_type                        PoissonNeuron
 #*************  Connectivity options ************************************************************
 #************************************************************************************************
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #************************************************
 synapses_0_0_connectivity_type				BinaryRandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		BinaryRandomConnectivity: Erdoes Renyi network. Each neuronal pair is connected with probability connectionProbability. (as used by [Renart et al. (2010)]). 
 #************************************************
 synapses_0_0_connectivity_type				DistanceConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 synapses_0_0_connectivity_StdProbability	1.000000	mm
 synapses_0_0_connectivity_ExactConnections	0			(0/1)	If 1, each neuron will receive exactly C connections. 
@@ -126,6 +129,7 @@ synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #************************************************
@@ -136,6 +140,7 @@ synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 synapses_0_0_mongillo_tauF					0.000000 seconds
@@ -149,6 +154,7 @@ synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 synapses_0_0_mongillo_tauF					0.000000 seconds
@@ -162,6 +168,7 @@ synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 synapses_0_0_mongillo_tauF					0.000000 seconds
@@ -181,6 +188,7 @@ synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 synapses_0_0_powerlawsyn_n					1.000000
@@ -194,6 +202,7 @@ synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
 synapses_0_0_connectivity_type				RandomConnectivity
+synapses_0_0_connectivity_seed                  0
 synapses_0_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 synapses_0_0_exponential_tau				0.000000 seconds
