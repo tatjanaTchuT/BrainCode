@@ -23,7 +23,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
     std::string              name,token,type,filterStr;
     std::vector<std::string> values,neurons_strs;
-    bool                     newFormat = false;
+    bool                     newFormat = false; //This tells you if the string has a new pop
     std::vector<std::string> Ni;
 
     //for (std::vector<std::string>::const_iterator i = (*input).begin(); i != (*input).end(); ++i)

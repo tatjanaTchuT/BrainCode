@@ -24,7 +24,7 @@ double AbsoluteDistance2(const std::vector<double>& vector1, const std::vector<d
 
 
 double CalculateGradient(double distance) {
-	return 1 - (1 / (exp(-std::pow(distance, 2)) / 100000 + 1));
+	return 2*(1 - (1 / (exp(-std::pow(distance, 2) / 2500) + 1))); //Double so 1 max for Poisson stim
 }
 
 double CalculateAccuracy(double angle) {

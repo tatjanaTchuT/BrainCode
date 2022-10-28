@@ -7,7 +7,9 @@ constexpr double AxisMax {10000.0};
 constexpr double GlobalSpeedMax {2.0};
 constexpr double GlobalAccelerationMax { 0.5 };
 
-constexpr int ReceptorNumber {24}
+constexpr int GlobalReceptorNumber{ 24 };
+
+constexpr double GlobalActorRadius{ 1.0 };
 
 
 
