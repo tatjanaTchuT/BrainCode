@@ -8,8 +8,12 @@
 #include <fstream>
 #include <valarray>
 #include <algorithm>
+#include <iomanip>
+
 #include "Recorder.hpp"
 #include "GlobalFunctions.hpp"
+#include "Synapse/HeteroSynapse.hpp"
+
 #define min_(a,b) (((a)<(b)) ? (a):(b))
 
 struct bin_data {
@@ -38,6 +42,7 @@ class AdvancedRecorder : public Recorder
 protected:
 
     bool trackSynapses; //, writeHistogram;
+    bool trackHeteroSynapses; unsigned long trackHeteroSkipSteps; unsigned long trackHeteroCounter;
 	int Heatmap;
 	int current_t_0 = 0;
 	int raster_t_0 = 0;
@@ -61,6 +66,7 @@ protected:
 //    void Record_Histogram(std::vector<std::vector<double>> * synaptic_dV);
     void Record_Correlations(std::vector<std::vector<double>> * synaptic_dV);
 	void Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV);
+	void Record_HeteroSynapticStates();
 
     void WriteDataHeader_Currents();
     void WriteDataHeader_Rasterplot();
@@ -70,6 +76,7 @@ protected:
     void WriteDataHeader_Correlations();
 	void WriteDataHeader_Heatmap();
 	void WriteDataHeader_CurrentsContribution();
+    void WriteDataHeader_HeteroSynapses();
 
     void SetNoRasterplotNeurons(std::vector<std::string> *values);
     void SetNoTrackNeuronPotentials(std::vector<std::string> *values);
@@ -94,6 +101,8 @@ public:
     std::string GetMeanCorrelationsFilename() {return this->directoryPath + title + "_Correlations.dat";}
     std::string GetPairCorrelationsFilename() {return this->directoryPath + title + "_BinCorrelations" + std::to_string(info->time_step) + ".dat";}
 	std::string GetCurrentCrontributionFilename() { return this->directoryPath + title + "_CurrentContribution.dat"; }
+    std::string GetHeteroSynapseStateBaseFilename() { return this->directoryPath + title + "_HeteroSynapses_"; }
+
     std::string GetType()   {return str_advancedRecorder;}
 
     std::vector<std::vector<std::vector<double>>> savecurrents;

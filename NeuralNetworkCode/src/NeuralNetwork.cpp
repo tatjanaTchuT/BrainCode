@@ -41,9 +41,7 @@ void NeuralNetwork::SaveParameters(){
     // if this test file does not appear in the target directory: stop the
     // simulation and check the directoryPath.
 
-    //std::ofstream stream(recorder->GetParametersFilename()); // With this, the parameters file is empty. Could be difference in the version.
-    std::ofstream    stream;
-    stream.open(recorder->GetParametersFilename(), std::ofstream::out | std::ofstream::app); //ios::binary
+    std::ofstream stream(recorder->GetParametersFilename());
     recorder->WriteHeader(&stream);
     //stream <<  "#*****************************************************************\n";
     //stream <<  "#Date and Time:             " << std::ctime(&end_time);

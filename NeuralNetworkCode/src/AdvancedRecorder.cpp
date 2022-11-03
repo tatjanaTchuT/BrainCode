@@ -1,6 +1,4 @@
-
 #include "AdvancedRecorder.hpp"
-
 
 AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stimulus *sti, std::string baseDir, std::vector<std::string> *input, std::string str_t, GlobalSimInfo * info) :Recorder(ns, syn, sti, baseDir, input, str_t, info)
 {
@@ -100,6 +98,8 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
     *stream <<  "recorder_trackSynapses             " << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
     // *stream <<  "recorder_Histogram                 " << std::to_string(writeHistogram) << "\t\t\t\t\t#Set = 0 to ignore. Option under construction.\n";
 	*stream <<  "recorder_Heatmap                   " << std::to_string(Heatmap) << "\t\t\t\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
+
+    *stream <<  "recorder_trackHeteroSynapses\t" << int(this->trackHeteroSynapses) << "\t" << this->trackHeteroSkipSteps << "\n";
 }
 
 void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
@@ -128,6 +128,15 @@ void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
 			Heatmap = std::stoi(values.at(0));
 		else if (name.find("recorder_CurrentContributions") != std::string::npos)
 			SetNoCurrentContribution(&values);
+        else if (name.find("recorder_trackHeteroSynapses") != std::string::npos) {
+            trackHeteroSynapses = std::stoi(values.at(0));
+            trackHeteroSkipSteps = 1;
+            trackHeteroCounter = -1;
+            try {
+                trackHeteroSkipSteps = std::stoul(values.at(1));
+            } catch (...) {
+            }
+        }
     }
 
     Recorder::LoadParameters(input);
@@ -435,6 +444,28 @@ void AdvancedRecorder::WriteDataHeader_Correlations(){
 
 }
 
+void AdvancedRecorder::WriteDataHeader_HeteroSynapses() {
+    if (!trackHeteroSynapses) {
+        return;
+    }
+
+    unsigned long totalPops = neurons->GetTotalPopulations();
+
+    for (unsigned long p = 0; p < totalPops; ++p) {
+        for (unsigned long q = 0; q < totalPops; ++q) {
+            auto* hSyn = dynamic_cast<HeteroSynapse*>(synapses->synapses[p][q]);
+
+            if (hSyn != nullptr) {
+                std::ofstream stream;
+                stream.open(GetHeteroSynapseStateBaseFilename() + hSyn->GetIdStr() + ".dat", std::ofstream::out | std::ofstream::app);
+                WriteHeader(&stream);
+                stream << hSyn->getHeteroSynapticDataHeader() << "\n";
+                stream.close();
+            }
+        }
+    }
+}
+
 //void AdvancedRecorder::InitializeRecorder(std::string filename){
 void AdvancedRecorder::WriteDataHeader(){
     Record_SynapseStates(1);
@@ -446,6 +477,7 @@ void AdvancedRecorder::WriteDataHeader(){
     WriteDataHeader_Correlations();
 	WriteDataHeader_Heatmap();
 	WriteDataHeader_CurrentsContribution();
+	WriteDataHeader_HeteroSynapses();
     reset_statistics();
 }
 
@@ -797,6 +829,7 @@ void AdvancedRecorder::Record_SynapseStates(int header){
     }
 }
 
+
 void AdvancedRecorder::Record_Averages(){
 
     std::ofstream file;
@@ -914,6 +947,37 @@ void AdvancedRecorder::Record_Heatmap() {
 		}
 	}
 }
+
+void AdvancedRecorder::Record_HeteroSynapticStates() {
+    if (!trackHeteroSynapses) {
+        return;
+    }
+
+    trackHeteroCounter = (trackHeteroCounter + 1) % trackHeteroSkipSteps;
+    if (trackHeteroCounter != 0){
+        return;
+    }
+
+    unsigned long totalPops = neurons->GetTotalPopulations();
+    for (unsigned long p = 0; p < totalPops; ++p) {
+        for (unsigned long q = 0; q < totalPops; ++q) {
+            auto* hSyn = dynamic_cast<HeteroSynapse*>(synapses->synapses[p][q]);
+
+            if (hSyn != nullptr) {
+                std::ofstream stream;
+                stream.open(GetHeteroSynapseStateBaseFilename() + hSyn->GetIdStr() + ".dat", std::ofstream::out | std::ofstream::app);
+                stream << std::fixed << std::setprecision(4) << double(info->time_step)*info->dt << "\t";
+                for (int i = 0; i < hSyn->GetNoNeuronsPost(); ++i) {
+                    stream << hSyn->getHeterosynapticState(i) << "\t";
+                }
+                stream << "\n";
+            }
+        }
+    }
+}
+
+
+
 //
 void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 {
@@ -979,7 +1043,7 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	Record_Averages();
 	Record_Potential();
 	Record_CurrentContributions(synaptic_dV);
-
+	Record_HeteroSynapticStates();
 }
 
 void AdvancedRecorder::writeFinalDataFile(double comp_time)
