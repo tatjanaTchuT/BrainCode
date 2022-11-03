@@ -79,9 +79,7 @@ void Connectivity::WriteConnectivity(std::string filename,unsigned long noNeuron
     if(noNeuronsConnectivity <= 0)
         return;
 
-	std::ofstream    stream;
-    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
-
+    std::ofstream stream(filename + ".txt"); //ios::binary
 
     if(noTargetNeurons > noNeuronsConnectivity)
         noTargetNeurons = noNeuronsConnectivity;
@@ -201,8 +199,7 @@ void Connectivity::WriteDistributionD(std::string filename,unsigned long noNeuro
     if(noNeuronsDelay <= 0)
         return;
 
-    std::ofstream    stream;
-    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
+    std::ofstream stream(filename + ".txt"); //ios::binary
 
     if(noTargetNeurons > noNeuronsDelay)
         noTargetNeurons = noNeuronsDelay;
@@ -263,8 +260,7 @@ void Connectivity::WriteDistributionJ(std::string filename,unsigned long noNeuro
     if(noNeuronsJPot <= 0)
         return;
 
-    std::ofstream    stream;
-    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
+    std::ofstream stream(filename + ".txt"); //ios::binary
 
     if(noTargetNeurons > noNeuronsJPot)
         noTargetNeurons = noNeuronsJPot;
