@@ -69,3 +69,12 @@ DerivedData/
 ### Simulation Results ###
 /InputTest*/
 InputParameterOptions.txt
+.vs/neuronal-network-simulations-June-2021/FileContentIndex/9408fb42-960c-4af3-a183-d49c454aa2b4.vsidx
+*.vsidx
+*.lock
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.json
+*.sqlite
