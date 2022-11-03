@@ -78,3 +78,4 @@ InputParameterOptions.txt
 *.opendb
 *.json
 *.sqlite
+.vs/slnx.sqlite-journal
