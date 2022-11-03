@@ -23,8 +23,8 @@ Synapse::Synapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * 
     //********************************
 }
 
-std::string Synapse::GetIdStr() {
-    int preId = this->neuronsPre->GetId();
+std::string Synapse::GetIdStr(){
+    int preId  = this->neuronsPre->GetId();
     int postId = this->neuronsPost->GetId();
     std::string idStr = std::to_string(postId) + std::to_string(preId);
     return idStr;
@@ -86,12 +86,11 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 				if (geometry != NULL)
 					delete geometry;
 				geometry = new DistanceConnectivity(this, info);
-			}
-            else if (values.at(0) == str_individualRandomConnectivity) {
-                if (geometry != NULL)
+			} else if (values.at(0) == str_uniformHeteroConnectivity) {
+                if (geometry != nullptr)
                     delete geometry;
-                geometry = new IndividualRandomConnectivity(this, info);
-            }
+                geometry = new UniformHeteroConnectivity(this, info);
+			}
         }
     }
 
@@ -139,6 +138,9 @@ unsigned long Synapse::GetNumberOfPostsynapticTargets(int pre_neuron) {
 double Synapse::GetrecurrentInput(int post_neuron){
 	int index = (this->info->time_step) % (D_max + 1);
 	return waiting_matrix[post_neuron][index];
+}
+
+void Synapse::preAdvect() {
 }
 
 void Synapse::advect(std::vector<double> * synaptic_dV)
@@ -229,4 +231,12 @@ void Synapse::SetDistributionD(){
 
 void Synapse::SetDistributionJ(){
     geometry->SetDistributionJ();
+}
+
+NeuronPop* Synapse::GetNeuronsPre() {
+    return neuronsPre;
+}
+
+NeuronPop* Synapse::GetNeuronsPost() {
+    return neuronsPost;
 }

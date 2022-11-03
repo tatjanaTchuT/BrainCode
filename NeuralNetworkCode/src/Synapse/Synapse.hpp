@@ -1,3 +1,9 @@
+#ifndef SYNAPSE_HPP
+#define SYNAPSE_HPP
+
+//class RandomConnectivity;
+//class Connectivity;
+
 #include <iostream>
 #include <vector>
 #include <random>
@@ -10,12 +16,8 @@
 #include "../Connectivity/RandomConnectivity.hpp"
 #include "../Connectivity/BinaryRandomConnectivity.hpp"
 #include "../Connectivity/DistanceConnectivity.hpp"
-#include "../Connectivity/IndividualRandomConnectivity.hpp"
-#ifndef SYNAPSE_HPP
-#define SYNAPSE_HPP
-
-//class RandomConnectivity;
-//class Connectivity;
+#include "../Connectivity/HeteroConnectivity.hpp"
+#include "../Connectivity/UniformHeteroConnectivity.hpp"
 
 /*
  * class Synapse is a virtual base class for the population of synapses
@@ -91,6 +93,8 @@ public:
 	int								*GetDpointer() { return &D_max; }
     virtual std::string				GetTypeStr() = 0;
 
+    NeuronPop*                      GetNeuronsPre();
+    NeuronPop*                      GetNeuronsPost();
 
    //*****************************
     //******* Set Functions *******
@@ -98,6 +102,7 @@ public:
     //virtual void advect(std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix);
 
 	virtual void ResetWaitingMatrixEntry();
+    virtual void preAdvect();
     virtual void advect(std::vector<double> *  synaptic_dV);
     virtual void LoadParameters(std::vector<std::string> *input);
     virtual void SaveParameters(std::ofstream * stream,std::string id_str);
