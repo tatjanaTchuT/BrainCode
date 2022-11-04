@@ -83,9 +83,12 @@ synapses_0_0_D_max							0.000000 seconds
 synapses_0_0_J								0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
-synapses_0_0_connectivity_type				RandomConnectivity
-synapses_0_0_connectivity_ConnectionProba	0.000000
-#		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
+synapses_0_0_connectivity_type			IndividualRandomConnectivity	
+# IndividualRandomConnectivity is a connectivity class for constructing a network with already constructed connectivity matrix. 
+# The connectivity matrix is included in the same folder as the Parameters.txt file.
+# The naming of the connectivity matrix is as follows: Title + "_Connectivity_Matrix_" + post-population ID + pre-population ID + ".txt" 
+# For example: Test10_synapses_connection_00.txt 
+# Title is the simulation title as shown in the first line of the parameters
 #*************************************************
 synapses_0_1_type							CurrentSynapse
 synapses_0_1_D_min							0.000000 seconds

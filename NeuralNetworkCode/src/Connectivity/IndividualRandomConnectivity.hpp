@@ -31,7 +31,6 @@ public:
     unsigned long       GetNumberAverageSourceNeurons() { return noSourceNeurons; }
     std::string         GetTypeStr() { return str_individualRandomConnectivity; }
     double              GetConnectionProbability();
-    double              GetConnectionProbabilityFromWeight(double weight);
     void                GetConnectionWeightsFromFile(std::string filepath);
 
     void SaveParameters(std::ofstream* stream, std::string id_str);

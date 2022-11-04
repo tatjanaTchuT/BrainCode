@@ -33,6 +33,7 @@ base_path    = getwd();
 
 folders_ = list.files(path = base_path,pattern=paste("*",project_name,"_20*",sep=""));
 folder_name = paste(base_path,folders_[1],sep="/");
+input_files_folder_name <-paste(dirname(dirname(base_path)),"/Input/",sep="")
 setwd(folder_name);
 ```
 
@@ -46,9 +47,14 @@ data_potential  <- Load_Potential(folder_name,number_populations);
 data_rasterplot <- Load_Rasterplot(folder_name,number_populations);
 data_currents   <- Load_Currents(folder_name,number_populations);
 # data_synapses   <- Load_Synapses(folder_name,number_populations);
-data_ConnectivityMatrix_10 <- Load_Connectivity(folder_name,1,0);
+data_ConnectivityMatrix_10 <- Load_Connectivity(folder_name,1,0, TRUE);
 data_DelayMatrix_10 <- Load_Delay(folder_name,1,0);
 data_JpotMatrix_10 <- Load_Jpot(folder_name,1,0);
+
+
+data_ConnectivityMatrix_00 <- Load_Connectivity(folder_name,0,0, TRUE);
+data_SynapsesConnection_00 <- Load_Connectivity(input_files_folder_name,0,0, FALSE);
+
 ```
 
 # Rasterplot
@@ -118,7 +124,44 @@ hist(data_JpotMatrix_10,breaks = (0:12)/40,xlab = "",main = "Synaptic Weight", f
 
 
 ```
+We show two plots below for invidual random connectivity. The newly constructed matrix used for the simulations and the pre-existing connectivity matrix used as input. The plots are binary connectivity matrix where black dots indicate connection while white dots indicate non-connection. The rows of the connectivity matrix is pre-synaptic neuron and columns are post-synaptic neuron. In this test, we only used pre-existing connectivity matrix from 0 -> 0 population connection and other connections are all randomly connected.
 
+
+```{r,echo=FALSE, fig.width=12}
+
+X<-0:(ncol(data_ConnectivityMatrix_00)-1)
+Y<-0:(nrow(data_ConnectivityMatrix_00)-1)
+
+library(RColorBrewer)
+
+data_ConnectivityMatrix_00<-as.matrix(data_ConnectivityMatrix_00)
+data_SynapsesConnection_00<-as.matrix(data_SynapsesConnection_00)
+
+nf <- layout(matrix(c(1,2),1,2, byrow=T), widths=c(1,1,1), heights=c(1,1,1), respect=T)
+par(mar=c(3,3,3,3))
+
+coul <- colorRampPalette(brewer.pal(8, "Greys"))(25)
+image(data_SynapsesConnection_00, col=coul, axes=FALSE)
+title("Pre-existing connectivity matrix", line = 1)
+
+image(data_ConnectivityMatrix_00, col=coul, axes=FALSE)
+title("Constructed connectivity matrix", line = 1)
+
+```
+The below code prints a TRUE value if the two matrices are equal and prints FALSE if they are not equal.
+
+is_equal <- all.equal(data_SynapsesConnection_00,data_ConnectivityMatrix_00);
+str_to_print <- "The two matrices are equal:";
+
+print(paste(str_to_print, is_equal));
+
+```{r,echo=FALSE}
+
+is_equal <- all.equal(data_SynapsesConnection_00,data_ConnectivityMatrix_00);
+str_to_print <- "The two matrices are equal:";
+
+print(paste(str_to_print, is_equal));
+```
 
 ## V and I profiles 
 
