@@ -79,34 +79,32 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){
-            if(neuronPops[p] == NULL)
+            if(neuronPops[p] == NULL)//This is quite literally doing absolutely nothing. delete does not do anything if the pointer is NULL
                 delete neuronPops[p];
             neuronPops[p] = new LIFNeuronPop(info,p);
-        }
-		else if (type == str_EIFNeuron) {
+        }else if (type == str_EIFNeuron) {
 			if (neuronPops[p] == NULL)
 				delete neuronPops[p];
 			neuronPops[p] = new EIFNeuronPop(info, p);
-		}
-        else if(type == str_PoissonNeuron){
+		}else if(type == str_PoissonNeuron){
             if(neuronPops[p] == NULL)
                 delete neuronPops[p];
             neuronPops[p] = new PoissonNeuronPop(info,p);
-        } else if (type == str_HeteroLIFNeuron) {
+        }else if (type == str_HeteroLIFNeuron) {
             if(neuronPops[p] == NULL)
                 delete neuronPops[p];
             neuronPops[p] = new HeteroLIFNeuronPop(info,p);
-        } else if (type == str_HeteroPoissonNeuron) {
-            if(neuronPops[p] == NULL)
+        }else if (type == str_HeteroPoissonNeuron) {
+            if (neuronPops[p] == NULL)
                 delete neuronPops[p];
-            neuronPops[p] = new HeteroPoissonNeuronPop(info,p);
+            neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
         }
 
         //load parameters
         if(newFormat)
             neuronPops[p]->LoadParameters(&neurons_strs);
         else
-            neuronPops[p]->LoadParameters(&neurons_strs,std::stod(Ni.at(p)));
+            neuronPops[p]->LoadParameters(&neurons_strs,std::stod(Ni.at(p))); //ignore
     }
 
     //Set seeds

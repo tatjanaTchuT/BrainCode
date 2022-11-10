@@ -53,6 +53,7 @@ void HeteroSynapse::advect(std::vector<double> * synaptic_dV) {
 }
 
 void HeteroSynapse::advect_finalize(std::vector<std::vector<double>> * waiting_matrix) {
+    //Placeholder for vitual function, not necessary.
 }
 
 void HeteroSynapse::ConnectNeurons() {

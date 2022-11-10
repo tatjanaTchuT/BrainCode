@@ -69,3 +69,24 @@ DerivedData/
 ### Simulation Results ###
 /InputTest*/
 InputParameterOptions.txt
+*.vsidx
+*.lock
+Saifcompile/.vs/Saifcompile/v17/.suo
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.vcxproj
+*.filters
+*.user
+*.obj
+*.log
+*.tlog
+*.idb
+*.pdb
+*.recipe
+*.iobj
+*.ipdb
+*.txt
+*.dat

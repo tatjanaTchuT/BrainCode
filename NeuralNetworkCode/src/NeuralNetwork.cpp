@@ -83,7 +83,7 @@ void NeuralNetwork::SaveParameterOptions(){
     std::ofstream stream(recorder->GetParameterOptionsFilename());
 
 
-	GlobalSimInfo mockInfo = info;
+	GlobalSimInfo mockInfo = info; //move this to the heap
 	mockInfo.globalSeed = 1;//because many of the classes do not allow a negative seed, the ParameterOptions file is generated with an adapted globalInfo
 
 
