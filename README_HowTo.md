@@ -26,7 +26,7 @@ From the location of the code, type "make" in a command line.
 ```
 ## Step 3: Set parameters
 
-All the parameters of a simulation are contained in a parameter file. The parameter file is a txt file with a specific format that will be read by the simulation code. For a sample parameter file and details, see [here](README_ParameterFile.md).
+All the parameters of a simulation are contained in a parameter file. The parameter file is a txt file with a specific format that will be read by the simulation code. For a sample parameter file and details, see the [Parameter file wiki](Documents/Parameter file).
 
 ## Step 4: Run simulation
 Once the code has been compiled and the parameter file is ready, the code is ready to be run. 
@@ -73,7 +73,7 @@ To run the code, enter "./main" followed with the arguments (if any):
 
 ## Step 5: Run & Analyse Tests 
 
-The folder containing the output of the simulation is is named after the simulation title and the time of the code execution. All the output files are plain txt files. More information about the output files can be found [here](README_OutputFiles.md)
+The folder containing the output of the simulation is is named after the simulation title and the time of the code execution. All the output files are plain txt files. More information about the output files can be found in the [Output Wiki](Documents/Output-Files)
 
 
-To get familiar with the Spiking Network Simulation code, tests are provided in the Test folder (see [Tests](README_Tests.md) for details). Each of these tests is used to make sure the code runs properly and returns the right output. In every case, the parameter file needed to run the test is provided, as well as a markdownfile showing the expected result of the simulation.
+To get familiar with the Spiking Network Simulation code, a few tests are provided in the Test folder (see [Tests](Tests) for details). Each of these tests is used to make sure the code runs properly and returns the right output. In every case, the parameter file needed to run the test is provided, as well as a markdownfile showing the expected result of the simulation.
