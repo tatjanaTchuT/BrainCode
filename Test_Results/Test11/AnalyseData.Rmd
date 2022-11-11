@@ -1,0 +1,149 @@
+---
+title: "Analyse Network Simulation Data"
+author: "Andreas"
+date: "10/5/2020"
+params:
+  Test: BiExpo_Toy
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    theme: cerulean
+---
+
+<!--******************************************************************-->
+<!--******************************************************************-->
+<!-- Before running this script: -->
+<!-- Set params: Test number in the metadata at the top of this file  -->
+<!--******************************************************************-->
+<!--******************************************************************-->
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+source("LoadData.R")
+```
+
+
+# Load & Prepare data 
+
+Analysing the following files for Test number `r params$Test`
+```{r,echo = FALSE}
+all_files <- GetFiles(params$Test)
+all_files
+```
+Files need to follow the format "Test", followed by the number of the test and further descriptors, eg. "Test5_PRGNetwork_Data.dat". If no files are shown here, please check whether the test number in the metadata at the top of the .Rmd file is correctly set. 
+
+
+```{r,include=FALSE}
+number_populations <- Get_Number_of_Populations(all_files);
+data            <- Load_data(all_files,number_populations);
+data_potential  <- Load_Potential(all_files,number_populations);
+data_rasterplot <- Load_Rasterplot(all_files,number_populations);
+data_currents   <- Load_Currents(all_files,number_populations);
+data_synapses   <- Load_Synapses(all_files,number_populations);
+```
+
+
+```{r,include=FALSE}
+data <- PostProcess_data(data,number_populations);
+
+if((params$Test == 2)){
+  x_min <- 0.5
+  x_max <- 0.6;  
+}else{
+  x_min <- 0
+  x_max <- max(data["time"]);
+}
+  
+neuron_rasterplot_max <- 50
+
+data$population <- as.character(data$population);
+data$population[data$population == 0] <- "Excitatory";
+data$population[data$population == 1] <- "Inhibitory";
+```
+
+# Plot data 
+
+## Population averaged data
+```{r,echo=FALSE,fig.height=15, fig.width=12}
+data %>%
+  gather(-time,-population, key = "var", value = "value") %>% 
+  ggplot(aes(x = time, y = value,color=population)) +
+    geom_line() +
+    facet_wrap(~ var, scales = "free", ncol = 1) +
+    theme_bw() +
+    xlim(x_min,x_max)
+```
+
+
+<!-- ## Firing rates -->
+<!-- ```{r, echo=FALSE} -->
+<!-- ggplot(data=all_data,aes(x=time,y=firing_rate,color=population))+geom_line() + theme_bw() -->
+<!-- ggplot(data=all_data,aes(x=time,y=potential,color=population))+geom_line() + theme_bw() -->
+<!-- ggplot(data=all_data,aes(x=time,y=mu_ext,color=population))+geom_line() + theme_bw() -->
+<!-- ggplot(data=all_data,aes(x=time,y=mu,color=population))+geom_line() + theme_bw() -->
+<!-- ggplot(data=all_data,aes(x=time,y=quenched,color=population))+geom_line() + theme_bw() -->
+<!-- ggplot(data=all_data,aes(x=time,y=temporal,color=population))+geom_line() + theme_bw() -->
+<!-- ``` -->
+
+## Rasterplots
+```{r,echo=FALSE, fig.width=12}
+if(nrow(data_rasterplot) > 0){
+  data_rasterplot %>%
+    ggplot(aes(x=time,y=neuron_id,color=factor(population_id)))+
+    geom_point() +
+      facet_wrap(~ population_id, scales = "free", ncol = 1) +
+      theme_bw()+
+      xlim(x_min,x_max)
+}
+```
+
+## Synapses
+
+```{r,echo=FALSE}
+if(nrow(data_synapses) > 0){
+  data_synapses = data_synapses %>%
+      filter(!is.na(x))  %>%
+      filter(x != "-nan(ind)")  %>%
+      gather(-time, key = "Variable", value = "Value") %>% 
+      filter(Variable!="J")
+    
+  data_synapses$time <- as.numeric(as.character(data_synapses$time))
+  data_synapses$Value <- as.numeric(as.character(data_synapses$Value))
+  
+  ggplot(data_synapses, aes(x = time, y = Value, color=Variable, group=Variable)) +
+         geom_line()
+}
+```
+
+## Single-neuron values
+
+```{r,echo=FALSE}
+if(nrow(data_potential) > 0){
+  data_potential %>%
+    gather(-time, key = "var", value = "value") %>% 
+    ggplot(aes(x = time, y = value)) +
+    geom_line() +
+    facet_wrap(~ var, scales = "free") +
+    theme_bw()+
+    theme(aspect.ratio=1)+
+    xlim(x_min,x_max)
+}
+
+if(nrow(data_currents)>0){
+  data_currents %>%
+      gather(-time, key = "var", value = "value") %>% 
+      ggplot(aes(x = time, y = value)) +
+        geom_line() +
+        facet_wrap(~ var, scales = "free") +
+        theme_bw()+
+        theme(aspect.ratio=1)+
+    xlim(x_min,x_max)
+}
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
