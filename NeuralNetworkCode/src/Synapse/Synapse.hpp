@@ -34,6 +34,7 @@ protected:
 
     //Connection strength of neurons
     double        J;
+    double        SigmaJ;
     double        J_pot;
     double        P_pot;
 	//Synaptic delay
@@ -85,6 +86,7 @@ public:
     int								GetMaxD() {return D_max;}
     int								GetMinD() {return D_min;}
     double							GetJBase() {return J;}
+    double							GetSigmaJ() { return SigmaJ; }
     double							GetJPot() {return J_pot;}
     double							GetPPot() {return P_pot;}
 	double							*GetJpointer() { return &J; }

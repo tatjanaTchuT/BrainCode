@@ -14,6 +14,7 @@ Synapse::Synapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * 
     //***** Set Default values *******
     //********************************
     J                  = 0;
+    SigmaJ             = 0;
     J_pot              = 0;
     P_pot              = 0;
 
@@ -59,6 +60,10 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
         else if(name.find("J") != std::string::npos){
             this->J = std::stod(values.at(0));
             //std::cout << "assigning J = " << std::to_string(this->J) << "\n";
+        }
+        else if (name.find("Sigma_j") != std::string::npos) {
+            this->SigmaJ = std::stod(values.at(0));
+            //std::cout << "assigning SigmaJ = " << std::to_string(this->SigmaJ) << "\n";
         }
         else if(name.find("P_pot") != std::string::npos){
             this->P_pot = std::stod(values.at(0));
@@ -125,6 +130,7 @@ void Synapse::SaveParameters(std::ofstream * stream,std::string id_str){
     *stream << id_str << "D_min\t\t\t\t\t\t\t" << std::to_string(this->D_min*info->dt) << " seconds\n";
     *stream << id_str << "D_max\t\t\t\t\t\t\t" << std::to_string(this->D_max*info->dt) << " seconds\n";
     *stream << id_str << "J\t\t\t\t\t\t\t\t" << std::to_string(this->J) << " dmV/Spike\n";
+    *stream << id_str << "Sigma_j\t\t\t\t\t\t" << std::to_string(this->SigmaJ) << " dmV/Spike\n";
     *stream << id_str << "J_pot\t\t\t\t\t\t\t" << std::to_string(this->J_pot) << " dmV/Spike\n";
     *stream << id_str << "P_pot\t\t\t\t\t\t\t" << std::to_string(this->P_pot) << "\n";
 
