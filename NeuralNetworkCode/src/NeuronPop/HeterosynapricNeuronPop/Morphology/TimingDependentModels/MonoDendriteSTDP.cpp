@@ -153,7 +153,7 @@ std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse() {
         newSynapse->lastSpike = -200.0; // large negative value indicates no spikes of synapse during simulation
         newSynapse->theta = 0;
         if (distributeWeights) {
-            std::random_device rd;
+            std::random_device rd; //Probably wise to have a general random engine that is not initialized per call
             std::default_random_engine generator(rd()); // rd() provides a random seed
             newSynapse->weight = distribution(generator);
         } else {

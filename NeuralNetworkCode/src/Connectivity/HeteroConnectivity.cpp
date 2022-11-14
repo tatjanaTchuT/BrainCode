@@ -63,8 +63,6 @@ void HeteroConnectivity::connectNeuronsWithHeteroSynapses(std::vector<std::vecto
 }
 
 void HeteroConnectivity::ConnectNeurons() {
-    throw std::string("HeterosynapticConnectivity does not allow non-synaptic neuron connections.");
-    //This should be virtual
 }
 
 void HeteroConnectivity::SaveParameters(std::ofstream *stream, std::string id_str) {

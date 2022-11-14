@@ -9,7 +9,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
     unsigned long numPostNeurons = synapse->GetNoNeuronsPost();
 
     unsigned long output_Interval = numPostNeurons / 10;
-    output_Interval = output_Interval == 0 ? 1 : output_Interval;
+    output_Interval = output_Interval == 0 ? 1 : output_Interval; //Comparing a long to ints is not going to work out. Must be changed.
 
     std::uniform_int_distribution<int> distribution(0,(int)synapse->GetNoNeuronsPre()-1);
 
