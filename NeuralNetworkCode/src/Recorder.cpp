@@ -101,3 +101,9 @@ void Recorder::WriteHeader(std::ofstream * stream){
     *stream <<  "# Time and Title: " << dateTime << " -- " << title << "\n";
     *stream <<  "#*****************************************************************\n";
 }
+
+void Recorder::makeInputCopy(const std::string& inputFile) {
+    std::ifstream  src(inputFile, std::ios::binary);
+    std::ofstream  dst(this->directoryPath + "input_copy_parameters.txt",   std::ios::binary);
+    dst << src.rdbuf();
+}

@@ -1,13 +1,5 @@
-#include <sys/stat.h>
-//#include <unistd.h>
-#include <string>
 #include "NeuralNetwork.hpp"
-#include "Stimulus/UncorrelatedPoissonLikeStimulus.hpp"
-#include "Stimulus/WhiteNoiseStimulus.hpp"
-#include "Stimulus/WhiteNoiseRescaled.hpp"
-#include "Stimulus/WhiteNoiseLinear.hpp"
-#include "Stimulus/SpatialGaussianStimulus.hpp"
-#include "Stimulus/SpatialPoissonStimulus.hpp"
+
 
 NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry> *parEntries)
 {
@@ -83,7 +75,7 @@ void NeuralNetwork::SaveParameterOptions(){
     std::ofstream stream(recorder->GetParameterOptionsFilename());
 
 
-	GlobalSimInfo mockInfo = info; //move this to the heap
+	GlobalSimInfo mockInfo = info;
 	mockInfo.globalSeed = 1;//because many of the classes do not allow a negative seed, the ParameterOptions file is generated with an adapted globalInfo
 
 
@@ -408,6 +400,34 @@ int NeuralNetwork::Simulate()
     this->recorder->WriteDistributionJ();
 
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
+	auto start = std::chrono::high_resolution_clock::now();
+
+    unsigned long potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
+
+    for (unsigned long popId = 0; popId < 1; popId++) {
+        auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId));
+        for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
+            unsigned long synCount = pop->getSynapseCount(nId);
+            for (unsigned long sId = 0; sId < synCount; ++sId) {
+                double w = pop->getWeight(nId, sId);
+                if (w > 1.8) {
+                    potentiationCount++;
+                } else if (w < 0.2) {
+                    depressionCount++;
+                } else if (w > 0.8 && w < 1.2) {
+                    stable++;
+                } else {
+                    inBetweeners++;
+                }
+            }
+        }
+    }
+
+    std::cout << "Potentiation Count: " << potentiationCount << std::endl;
+    std::cout << "Depression Count: " << depressionCount << std::endl;
+    std::cout << "Stable Count: " << stable << std::endl;
+    std::cout << "InBetweener Count: " << inBetweeners << std::endl;
+
     while(info.time_step <= simSteps)
     {
 		for (unsigned int p = 0; p < P; p++) {
@@ -434,9 +454,43 @@ int NeuralNetwork::Simulate()
     this->recorder->Record(&synaptic_dV);
     this->recorder->writeFinalDataFile(t_comp);
 	std::cout << "\nPandas end simulation : " <<this->recorder->GetTitle() << "\n";
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    std::cout << "\nTotal simulation time(s): " << duration.count() << "\n";
+
+    potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
+    for (unsigned long popId = 0; popId < 1; popId++) {
+        auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId));
+        for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
+            unsigned long synCount = pop->getSynapseCount(nId);
+            for (unsigned long sId = 0; sId < synCount; ++sId) {
+                double w = pop->getWeight(nId, sId);
+                if (w > 1.8) {
+                    potentiationCount++;
+                } else if (w < 0.2) {
+                    depressionCount++;
+                } else if (w > 0.8 && w < 1.2) {
+                    stable++;
+                } else {
+                    inBetweeners++;
+                }
+            }
+        }
+    }
+
+    std::cout << "Potentiation Count: " << potentiationCount << std::endl;
+    std::cout << "Depression Count: " << depressionCount << std::endl;
+    std::cout << "Stable Count: " << stable << std::endl;
+    std::cout << "InBetweener Count: " << inBetweeners << std::endl;
+
+
     //*****************************************************
     // --------------- END OF THE SIMULATION ------------
     //*****************************************************
 
     return 1;
+}
+
+void NeuralNetwork::makeInputCopy(const std::string& inputFile) {
+    this->recorder->makeInputCopy(inputFile);
 }

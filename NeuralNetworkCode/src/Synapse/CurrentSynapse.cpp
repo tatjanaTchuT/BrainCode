@@ -2,17 +2,17 @@
 
 CurrentSynapse::CurrentSynapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * info):Synapse(postNeurons,preNeurons,info) {}
 
-void CurrentSynapse::advect_spikers (std::vector<double> * currents, long spiker)
+void CurrentSynapse::advect_spikers (std::vector<double>& currents, long spiker)
 {
     std::vector<unsigned long> *tL = geometry->GetTargetList(spiker);
 
     for(unsigned int target = 0; target < tL->size(); target++){
         double c = GetCouplingStrength(spiker, target);
-        (*currents)[target] += c;
+        currents[target] += c;
         this->cumulatedDV   += c;
     }
-}
 
+}
 
 std::string CurrentSynapse::GetDataHeader(int data_column)
 {

@@ -8,12 +8,8 @@
 #include <fstream>
 #include <valarray>
 #include <algorithm>
-#include <iomanip>
-
 #include "Recorder.hpp"
 #include "GlobalFunctions.hpp"
-#include "Synapse/HeteroSynapse.hpp"
-
 #define min_(a,b) (((a)<(b)) ? (a):(b))
 
 struct bin_data {
@@ -42,18 +38,20 @@ class AdvancedRecorder : public Recorder
 protected:
 
     bool trackSynapses; //, writeHistogram;
-    bool trackHeteroSynapses; unsigned long trackHeteroSkipSteps; unsigned long trackHeteroCounter;
 	int Heatmap;
 	int current_t_0 = 0;
 	int raster_t_0 = 0;
     std::valarray<unsigned long>			notrackNeuronPotentials;
-    std::valarray<unsigned long>						noRasterPlotNeurons;
+    std::valarray<unsigned long>		    noRasterPlotNeurons;
 	std::valarray<long>						noCorrNeurons;
 	std::valarray<long>						CurrentContributions;
 	std::valarray<std::valarray<double>>	Densimap;      // Number of neurons [of population i][in each pixel]
 	std::valarray<double>					CurrentContrBin;
     // statistics per time step
     bin_data currentBin;
+    std::valarray<unsigned long> noTrackHeteroSynapsePerTrackedNeuron;
+
+    bool neuronTrackingInitialized;
 
     void reset_statistics(); //Resets all containers.
 
@@ -66,7 +64,8 @@ protected:
 //    void Record_Histogram(std::vector<std::vector<double>> * synaptic_dV);
     void Record_Correlations(std::vector<std::vector<double>> * synaptic_dV);
 	void Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV);
-	void Record_HeteroSynapticStates();
+	void Record_HeteroSynapses();
+    void Record_HeteroSynapsesOverall();
 
     void WriteDataHeader_Currents();
     void WriteDataHeader_Rasterplot();
@@ -76,12 +75,15 @@ protected:
     void WriteDataHeader_Correlations();
 	void WriteDataHeader_Heatmap();
 	void WriteDataHeader_CurrentsContribution();
-    void WriteDataHeader_HeteroSynapses();
+	void WriteDataHeader_HeteroSynapses();
+    void WriteDataHeader_HeteroSynapsesOverall();
 
-    void SetNoRasterplotNeurons(std::vector<std::string> *values);
+
+        void SetNoRasterplotNeurons(std::vector<std::string> *values);
     void SetNoTrackNeuronPotentials(std::vector<std::string> *values);
     void SetNoCorrNeurons(std::vector<std::string> *values);
 	void SetNoCurrentContribution(std::vector<std::string> *values);
+    void SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values);
 
 
 public:
@@ -101,8 +103,8 @@ public:
     std::string GetMeanCorrelationsFilename() {return this->directoryPath + title + "_Correlations.dat";}
     std::string GetPairCorrelationsFilename() {return this->directoryPath + title + "_BinCorrelations" + std::to_string(info->time_step) + ".dat";}
 	std::string GetCurrentCrontributionFilename() { return this->directoryPath + title + "_CurrentContribution.dat"; }
-    std::string GetHeteroSynapseStateBaseFilename() { return this->directoryPath + title + "_HeteroSynapses_"; }
-
+    std::string GetHeteroSynapseStateFilename() { return this->directoryPath + title + "_HeteroSynapses.dat"; }
+    std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHeteroSynapses.dat"; }
     std::string GetType()   {return str_advancedRecorder;}
 
     std::vector<std::vector<std::vector<double>>> savecurrents;

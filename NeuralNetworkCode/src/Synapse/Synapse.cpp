@@ -1,7 +1,7 @@
 
 #include "Synapse.hpp"
 
-Synapse::Synapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * info){
+Synapse::Synapse(NeuronPop * postNeurons, NeuronPop * preNeurons,GlobalSimInfo * info){
     this->info         = info;
     this->neuronsPre   = preNeurons;
     this->neuronsPost  = postNeurons;
@@ -56,7 +56,7 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
             found_J_pot = true;
             //std::cout << "assigning J_pot = " << std::to_string(this->J_pot) << "\n";
         }
-        else if(name.find("J") != std::string::npos){
+        else if(name.find('J') != std::string::npos){
             this->J = std::stod(values.at(0));
             //std::cout << "assigning J = " << std::to_string(this->J) << "\n";
         }
@@ -86,11 +86,10 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 				if (geometry != NULL)
 					delete geometry;
 				geometry = new DistanceConnectivity(this, info);
-			} else if (values.at(0) == str_uniformHeteroConnectivity) {
-                if (geometry != nullptr)
-                    delete geometry;
-                geometry = new UniformHeteroConnectivity(this, info);
-			}
+			} else if(values.at(0) == str_heteroRandomConnectivity) {
+			    delete geometry;
+                this->geometry = new HeteroRandomConnectivity(this, info);
+            }
         }
     }
 
@@ -140,9 +139,6 @@ double Synapse::GetrecurrentInput(int post_neuron){
 	return waiting_matrix[post_neuron][index];
 }
 
-void Synapse::preAdvect() {
-}
-
 void Synapse::advect(std::vector<double> * synaptic_dV)
 {
     resetcumulatedDV();//Does this do something ?
@@ -154,28 +150,28 @@ void Synapse::advect(std::vector<double> * synaptic_dV)
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
     for(auto const& spiker: *spikersUsed){
-        std::vector<unsigned long> *tL = geometry->GetTargetList(spiker);
-        currents.resize((*tL).size(),0);
+        std::vector<unsigned long> tL = *geometry->GetTargetList(spiker);
+        currents.resize(tL.size(),0);
         std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
 
-        advect_spikers(&currents, spiker);
+        advect_spikers(currents, spiker);
 
 
-        FillWaitingMatrix(spiker, &currents, &waiting_matrix);
+        FillWaitingMatrix(spiker, currents);
     }
 
-	ReadWaitingMatrixEntry(&waiting_matrix,synaptic_dV);
+	ReadWaitingMatrixEntry(*synaptic_dV);
 	advect_finalize(&waiting_matrix);// Is it OK for Conductance, Exponential and Graupner Synapse ? Fill Waiting Matrix has already been called
 }
 
-void Synapse::FillWaitingMatrix(long spiker, std::vector<double> * currents, std::vector<std::vector<double>> * waiting_matrix){
-    std::vector<unsigned long> *tL = geometry->GetTargetList(spiker);
+void Synapse::FillWaitingMatrix(long spiker, std::vector<double>& currents){
+    std::vector<unsigned long> tL = *geometry->GetTargetList(spiker);
     //std::vector<int> *tD = geometry->GetDistributionD(spiker);
 
-    for(unsigned int target = 0; target < tL->size(); target++){
+    for(unsigned int target = 0; target < tL.size(); target++){
         int delay = *geometry->GetDistributionD(spiker,target);                              // get individual synaptic delay between spiker and target
         int matrix_index = (this->info->time_step + delay)%(D_max+1);
-        (*waiting_matrix)[(*tL)[target]][matrix_index] += (*currents)[target]; // add spiker to waiting matrix
+        waiting_matrix[tL[target]][matrix_index] += currents[target]; // add spiker to waiting matrix
     }
 }
 
@@ -189,10 +185,10 @@ void Synapse::ResetWaitingMatrixEntry() {
 		(waiting_matrix)[i][index]=0;
 }
 
-void Synapse::ReadWaitingMatrixEntry(std::vector<std::vector<double>> * waiting_matrix, std::vector<double> * synaptic_dV) {
+void Synapse::ReadWaitingMatrixEntry(std::vector<double>& synaptic_dV) {
 	int index = (this->info->time_step) % (D_max + 1);
 	for (unsigned long i = 0;i < GetNoNeuronsPost();i++)
-		(*synaptic_dV)[i] = (*synaptic_dV)[i]+(*waiting_matrix)[i][index];
+		synaptic_dV[i] = synaptic_dV[i]+ waiting_matrix[i][index];
 }
 
 void Synapse::SetSeed(std::default_random_engine *generator){
@@ -215,7 +211,7 @@ void Synapse::ConnectNeurons(){
         throw "error in Synapse::GetCouplingStrength";
 }*/
 
-double Synapse::GetCouplingStrength(long preNeuronId, long postNeuronId){ // For distribution of Js
+double Synapse::GetCouplingStrength(unsigned long preNeuronId, unsigned long postNeuronId){ // For distribution of Js
     J = *geometry->GetDistributionJ(preNeuronId,postNeuronId);
     if(info->networkScaling_extern == 0){
         return (J*pow(geometry->GetNumberAverageSourceNeurons(),info->networkScaling_synStrength));}
@@ -235,6 +231,14 @@ void Synapse::SetDistributionJ(){
 
 NeuronPop* Synapse::GetNeuronsPre() {
     return neuronsPre;
+std::vector<std::vector<double>> getWaitingMatrix(const Synapse& synapse) {
+    std::vector<std::vector<double>> copy(synapse.waiting_matrix.size());
+    for (int i = 0; i < synapse.waiting_matrix.size(); ++i) {
+        for (auto& item: synapse.waiting_matrix[i]) {
+            copy[i].push_back(item);
+        }
+    }
+    return copy;
 }
 
 NeuronPop* Synapse::GetNeuronsPost() {

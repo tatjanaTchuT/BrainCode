@@ -22,15 +22,15 @@ protected:
 public:
 
     BinaryRandomConnectivity(Synapse *syn,GlobalSimInfo  * info);
-    ~BinaryRandomConnectivity(){}
+    ~BinaryRandomConnectivity() override = default;
 
-    void                ConnectNeurons();
-    std::string         GetTypeStr(){return str_binaryrandomConnectivity;}
+    void ConnectNeurons() override;
+    std::string GetTypeStr() override { return str_binaryrandomConnectivity; }
 
-    unsigned long       GetNumberAverageSourceNeurons();
+    unsigned long GetNumberAverageSourceNeurons() override;
 
-    void SaveParameters(std::ofstream * stream,std::string id_str);
-    void LoadParameters(std::vector<std::string> *input);
+    void SaveParameters(std::ofstream * stream, const std::string&) override;
+    void LoadParameters(std::vector<std::string> *input) override;
 };
 
 #endif /* BinaryRandomConnectivity_hpp */

@@ -7,6 +7,7 @@
 //
 
 #include "NeuronPopSample.hpp"
+#include "NeuronPop/HeterosynapricNeuronPop/HeteroLIFNeuronPop.hpp"
 
 
 NeuronPopSample::NeuronPopSample(std::vector<std::string> *input,GlobalSimInfo * info){
@@ -79,22 +80,26 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){
-            if(neuronPops[p] == NULL)//This is quite literally doing absolutely nothing. delete does not do anything if the pointer is NULL
+            if(neuronPops[p] == NULL)
                 delete neuronPops[p];
             neuronPops[p] = new LIFNeuronPop(info,p);
-        }else if (type == str_EIFNeuron) {
+        }
+		else if (type == str_EIFNeuron) {
 			if (neuronPops[p] == NULL)
 				delete neuronPops[p];
 			neuronPops[p] = new EIFNeuronPop(info, p);
-		}else if(type == str_PoissonNeuron){
+		}
+        else if(type == str_PoissonNeuron){
             if(neuronPops[p] == NULL)
                 delete neuronPops[p];
             neuronPops[p] = new PoissonNeuronPop(info,p);
-        }else if (type == str_HeteroLIFNeuron) {
-            if(neuronPops[p] == NULL)
+        } else if (type == str_HeteroLIFNeuron) {
+            // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
+            if (neuronPops[p] == NULL)
                 delete neuronPops[p];
-            neuronPops[p] = new HeteroLIFNeuronPop(info,p);
-        }else if (type == str_HeteroPoissonNeuron) {
+            neuronPops[p] = new HeteroLIFNeuronPop(info, p);
+        } else if (type == str_HeteroPoissonNeuron) {
+            // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
             if (neuronPops[p] == NULL)
                 delete neuronPops[p];
             neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
@@ -104,7 +109,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
         if(newFormat)
             neuronPops[p]->LoadParameters(&neurons_strs);
         else
-            neuronPops[p]->LoadParameters(&neurons_strs,std::stod(Ni.at(p))); //ignore
+            neuronPops[p]->LoadParameters(&neurons_strs,std::stod(Ni.at(p)));
     }
 
     //Set seeds

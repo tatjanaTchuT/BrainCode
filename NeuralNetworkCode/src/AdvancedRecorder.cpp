@@ -1,4 +1,6 @@
+
 #include "AdvancedRecorder.hpp"
+
 
 AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stimulus *sti, std::string baseDir, std::vector<std::string> *input, std::string str_t, GlobalSimInfo * info) :Recorder(ns, syn, sti, baseDir, input, str_t, info)
 {
@@ -13,6 +15,7 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 	notrackNeuronPotentials.resize(P);
 	noCorrNeurons.resize(P);
 	CurrentContributions.resize(P);
+    noTrackHeteroSynapsePerTrackedNeuron.resize(P);
 
 	currentBin.potential.resize(P);
 	currentBin.spiker_ratio.resize(P);
@@ -32,6 +35,7 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 		currentBin.synapticState[i].resize(P);
 		currentBin.synapticCurrents[i].resize(P);
 		currentBin.totalCurrent_mean_N.at(i).resize(neurons->GetNeuronsPop(i), 0);
+		noTrackHeteroSynapsePerTrackedNeuron[i] = 0;
 	}
 
 	LoadParameters(input);
@@ -98,8 +102,6 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
     *stream <<  "recorder_trackSynapses             " << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
     // *stream <<  "recorder_Histogram                 " << std::to_string(writeHistogram) << "\t\t\t\t\t#Set = 0 to ignore. Option under construction.\n";
 	*stream <<  "recorder_Heatmap                   " << std::to_string(Heatmap) << "\t\t\t\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
-
-    *stream <<  "recorder_trackHeteroSynapses\t" << int(this->trackHeteroSynapses) << "\t" << this->trackHeteroSkipSteps << "\n";
 }
 
 void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
@@ -110,33 +112,27 @@ void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
 
         SplitString(&(*it),&name,&values);
 
-		if (name.find("recorder_binSize") != std::string::npos)
-			SetAveraging_steps(std::stod(values.at(0)));
-		else if (name.find("recorder_noRasterPlotNeurons") != std::string::npos)
-			SetNoRasterplotNeurons(&values);
-		else if (name.find("recorder_trackSynapses") != std::string::npos)
-			trackSynapses = std::stoi(values.at(0));
-		else if ((name.find("recorder_notrackNeuronPotentials") != std::string::npos) ||
+		if (name.find("recorder_binSize") != std::string::npos) {
+            SetAveraging_steps(std::stod(values.at(0)));
+        } else if (name.find("recorder_noRasterPlotNeurons") != std::string::npos) {
+            SetNoRasterplotNeurons(&values);
+		} else if (name.find("recorder_trackSynapses") != std::string::npos) {
+            trackSynapses = std::stoi(values.at(0));
+		} else if ((name.find("recorder_notrackNeuronPotentials") != std::string::npos) ||
 			(name.find("recorder_notrackNeuronProfiles") != std::string::npos)) {
 			SetNoTrackNeuronPotentials(&values);
+		} else if (name.find("recorder_noCorrNeurons") != std::string::npos) {
+            SetNoCorrNeurons(&values);
+		} //else if (name.find("recorder_Histogram") != std::string::npos) {
+            //	writeHistogram = std::stoi(values.at(0));
+		// }
+		else if (name.find("recorder_Heatmap") != std::string::npos) {
+            Heatmap = std::stoi(values.at(0));
+		} else if (name.find("recorder_CurrentContributions") != std::string::npos) {
+            SetNoCurrentContribution(&values);
+        } else if (name.find("recorder_notrackHeteroSynapseProfiles") != std::string::npos) {
+            SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(&values);
 		}
-		else if (name.find("recorder_noCorrNeurons") != std::string::npos)
-			SetNoCorrNeurons(&values);
-		//else if (name.find("recorder_Histogram") != std::string::npos)
-		//	writeHistogram = std::stoi(values.at(0));
-		else if (name.find("recorder_Heatmap") != std::string::npos)
-			Heatmap = std::stoi(values.at(0));
-		else if (name.find("recorder_CurrentContributions") != std::string::npos)
-			SetNoCurrentContribution(&values);
-        else if (name.find("recorder_trackHeteroSynapses") != std::string::npos) {
-            trackHeteroSynapses = std::stoi(values.at(0));
-            trackHeteroSkipSteps = 1;
-            trackHeteroCounter = -1;
-            try {
-                trackHeteroSkipSteps = std::stoul(values.at(1));
-            } catch (...) {
-            }
-        }
     }
 
     Recorder::LoadParameters(input);
@@ -196,6 +192,14 @@ void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
         }
     }
 }
+
+void AdvancedRecorder::SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values) {
+    int P = (int)neurons->GetTotalPopulations();
+    for(int i = 0; i < min_(P,(int)values->size());i++){
+        noTrackHeteroSynapsePerTrackedNeuron[i] = std::stoi(values->at(i));
+    }
+}
+
 
 void AdvancedRecorder::WriteDataHeader_Heatmap() {
 	if (Heatmap == 0)
@@ -444,26 +448,79 @@ void AdvancedRecorder::WriteDataHeader_Correlations(){
 
 }
 
-void AdvancedRecorder::WriteDataHeader_HeteroSynapses() {
-    if (!trackHeteroSynapses) {
+void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
+
+    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0)
         return;
-    }
 
-    unsigned long totalPops = neurons->GetTotalPopulations();
+    unsigned long P = neurons->GetTotalPopulations();
+    std::ofstream stream;
+    stream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 
-    for (unsigned long p = 0; p < totalPops; ++p) {
-        for (unsigned long q = 0; q < totalPops; ++q) {
-            auto* hSyn = dynamic_cast<HeteroSynapse*>(synapses->synapses[p][q]);
+    WriteHeader(&stream);
+    stream << "Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n";
+    stream << "\n#************************************\n";
 
-            if (hSyn != nullptr) {
-                std::ofstream stream;
-                stream.open(GetHeteroSynapseStateBaseFilename() + hSyn->GetIdStr() + ".dat", std::ofstream::out | std::ofstream::app);
-                WriteHeader(&stream);
-                stream << hSyn->getHeteroSynapticDataHeader() << "\n";
-                stream.close();
+    stream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id_synapse_id \n";
+
+    stream << "t\t";
+
+    HeteroLIFNeuronPop* heteroNeuronPop;
+    unsigned long synCount, synTrackCount, skipStride;
+    for(unsigned long p = 0;p<P;p++){
+        heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if (heteroNeuronPop == nullptr || synTrackCount == 0) {
+            continue;
+        }
+        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
+            synCount = heteroNeuronPop->getSynapseCount(i);
+            skipStride = synCount / synTrackCount;
+            skipStride = skipStride == 0 ? 1 : skipStride;
+            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[i]; ++k) {
+                stream << "Profile_" << p << "_" << i << "_" << (k * skipStride) <<  "\t";
             }
         }
     }
+    stream << "\n#************************************\n";
+
+    stream.close();
+}
+
+void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
+
+    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0)
+        return;
+
+    unsigned long P = neurons->GetTotalPopulations();
+    std::ofstream stream;
+    stream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
+
+    WriteHeader(&stream);
+    stream << "Overall Profile -> {<average weight>, <total post spikes>, <totoal pre spikes>} \n";
+    stream << "\n#************************************\n";
+
+    stream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id \n";
+
+    stream << "t\t";
+
+    unsigned long synCount, synTrackCount, skipStride;
+    for(unsigned long p = 0;p<P;p++){
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if (synTrackCount == 0) {
+            continue;
+        }
+        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
+            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[i]; ++k) {
+                stream << "OverallProfile_" << p << "_" << i <<  "\t";
+            }
+        }
+
+    }
+    stream << "\n#************************************\n";
+
+    stream.close();
+
 }
 
 //void AdvancedRecorder::InitializeRecorder(std::string filename){
@@ -478,6 +535,7 @@ void AdvancedRecorder::WriteDataHeader(){
 	WriteDataHeader_Heatmap();
 	WriteDataHeader_CurrentsContribution();
 	WriteDataHeader_HeteroSynapses();
+	WriteDataHeader_HeteroSynapsesOverall();
     reset_statistics();
 }
 
@@ -829,7 +887,6 @@ void AdvancedRecorder::Record_SynapseStates(int header){
     }
 }
 
-
 void AdvancedRecorder::Record_Averages(){
 
     std::ofstream file;
@@ -948,37 +1005,73 @@ void AdvancedRecorder::Record_Heatmap() {
 	}
 }
 
-void AdvancedRecorder::Record_HeteroSynapticStates() {
-    if (!trackHeteroSynapses) {
+void AdvancedRecorder::Record_HeteroSynapses() {
+
+    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0) {
         return;
     }
 
-    trackHeteroCounter = (trackHeteroCounter + 1) % trackHeteroSkipSteps;
-    if (trackHeteroCounter != 0){
-        return;
-    }
+    double           dt = info->dt;
+    double           t = double(info->time_step)*dt;
+    long             P = neurons->GetTotalPopulations();
+    std::ofstream    file;
+    file.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 
-    unsigned long totalPops = neurons->GetTotalPopulations();
-    for (unsigned long p = 0; p < totalPops; ++p) {
-        for (unsigned long q = 0; q < totalPops; ++q) {
-            auto* hSyn = dynamic_cast<HeteroSynapse*>(synapses->synapses[p][q]);
+    SaveDoubleFile(&file,t,5);
 
-            if (hSyn != nullptr) {
-                std::ofstream stream;
-                stream.open(GetHeteroSynapseStateBaseFilename() + hSyn->GetIdStr() + ".dat", std::ofstream::out | std::ofstream::app);
-                stream << std::fixed << std::setprecision(4) << double(info->time_step)*info->dt << "\t";
-                for (int i = 0; i < hSyn->GetNoNeuronsPost(); ++i) {
-                    stream << hSyn->getHeterosynapticState(i) << "\t";
-                }
-                stream << "\n";
+    HeteroLIFNeuronPop* heteroNeuronPop;
+    unsigned long synCount, synTrackCount, skipStride;
+    for(unsigned long p = 0;p < P; p++){
+        heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if (heteroNeuronPop == nullptr || synTrackCount == 0) {
+            continue;
+        }
+        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
+            synCount = heteroNeuronPop->getSynapseCount(i);
+            skipStride = synCount / synTrackCount;
+            skipStride = skipStride == 0 ? 1 : skipStride;
+            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[i]; ++k) {
+                SaveDoubleFile(&file, heteroNeuronPop->getIndividualSynapticProfile(i, k*skipStride)[2], 5);
+//                SaveTupleOfDoublesFile(&file, heteroNeuronPop->getIndividualSynapticProfile(i, k*skipStride), 5);
             }
         }
     }
+    file << "\n";
+    file.close();
+}
+
+void AdvancedRecorder::Record_HeteroSynapsesOverall() {
+    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0) {
+        return;
+    }
+
+    double           dt = info->dt;
+    double           t = double(info->time_step)*dt;
+    long             P = neurons->GetTotalPopulations();
+    std::ofstream    file;
+    file.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
+
+    SaveDoubleFile(&file,t,5);
+
+    HeteroLIFNeuronPop* heteroNeuronPop;
+    unsigned long synCount, synTrackCount, skipStride;
+    for(unsigned long p = 0;p < P; p++){
+        heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
+        if (heteroNeuronPop == nullptr) {
+            continue;
+        }
+        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
+            SaveDoubleFile(&file, heteroNeuronPop->getOverallSynapticProfile(i)[0], 5);
+//            SaveTupleOfDoublesFile(&file, heteroNeuronPop->getOverallSynapticProfile(i), 5);
+        }
+    }
+    file << "\n";
+    file.close();
+
 }
 
 
-
-//
 void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 {
 	std::vector<long> *spikers;
@@ -1043,7 +1136,8 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	Record_Averages();
 	Record_Potential();
 	Record_CurrentContributions(synaptic_dV);
-	Record_HeteroSynapticStates();
+	Record_HeteroSynapses();
+	Record_HeteroSynapsesOverall();
 }
 
 void AdvancedRecorder::writeFinalDataFile(double comp_time)

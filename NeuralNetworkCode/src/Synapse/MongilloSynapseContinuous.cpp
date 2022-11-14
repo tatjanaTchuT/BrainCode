@@ -15,7 +15,7 @@ MongilloSynapseContinuous::MongilloSynapseContinuous(NeuronPop * postNeurons,Neu
 }
 
 
-void MongilloSynapseContinuous::advect_spikers (std::vector<double> * currents, long spiker)
+void MongilloSynapseContinuous::advect_spikers (std::vector<double>& currents, long spiker)
 {
     double dt_lastSpike    = neuronsPre->GetTimeSinceLastSpike(spiker); //double(info->time_step - neuronsPre->get_previous_spike_step(spiker))*dt;
     double exptf           = exp(-dt_lastSpike/tau_f);
@@ -46,12 +46,12 @@ void MongilloSynapseContinuous::advect_spikers (std::vector<double> * currents, 
 }
 
 
-void MongilloSynapseContinuous::TransmitSpike(std::vector<double> * currents, long targetId,long spikerId){
+void MongilloSynapseContinuous::TransmitSpike(std::vector<double>& currents, long targetId,long spikerId){
 
     double J_ij                         = GetCouplingStrength(spikerId, targetId);
 
     this->cumulatedDV                  += J_ij*x[spikerId][targetId]*y[spikerId][targetId];
-    (*currents)[targetId]              += J_ij*x[spikerId][targetId]*y[spikerId][targetId];
+    currents[targetId]              += J_ij*x[spikerId][targetId]*y[spikerId][targetId];
 
     spike_submitted[spikerId][targetId] = J_ij*x[spikerId][targetId]*y[spikerId][targetId];
     x[spikerId][targetId]               = x[spikerId][targetId]*(1-y[spikerId][targetId]);  // neurotransmitter release.
@@ -195,10 +195,6 @@ std::valarray<double> MongilloSynapseContinuous::GetSynapticState(int pre_neuron
 //	val[4] = double(XY);
     return val;
 }
-
-
-MongilloSynapseContinuous::~MongilloSynapseContinuous(){}
-
 
 void MongilloSynapseContinuous::SetSeed(int s){
     seed      = s;

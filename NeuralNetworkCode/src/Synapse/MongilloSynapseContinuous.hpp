@@ -25,32 +25,32 @@ protected:
     std::default_random_engine generator;
     std::uniform_real_distribution<double> uni_distribution;
 
-    virtual void advect_spikers(std::vector<double> * currents, long spiker);
+    void advect_spikers(std::vector<double>& currents, long spiker) override;
     //void advect_finalize (std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix){}
-    void advect_finalize(std::vector<std::vector<double>> * waiting_matrix){}
+    void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {}
 
-    virtual void   TransmitSpike(std::vector<double> * currents, long targetId,long spikerId);
+    virtual void TransmitSpike(std::vector<double>& currents, long targetId,long spikerId);
 
     void SetSeed(int s);
 
 public:
     MongilloSynapseContinuous(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * info);
-    ~MongilloSynapseContinuous();
+    ~MongilloSynapseContinuous() override = default;
 
-    void ConnectNeurons();
+    void ConnectNeurons() override;
 
-    void SetSeed(std::default_random_engine *generator);
+    void SetSeed(std::default_random_engine *generator) override;
     //*****************************
     //******* Get Functions *******
     //*****************************
-    int                     GetNumberOfDataColumns(){return 4;} // J, <y>, <x>, <submitted_spikes>
-    std::string             GetDataHeader(int data_column);
-	std::string           GetUnhashedDataHeader();
-    std::valarray<double>   GetSynapticState(int pre_neuron);
-    std::string             GetTypeStr(){return str_mongilloSynapseContinuous;}
+    int GetNumberOfDataColumns() override { return 4; } // J, <y>, <x>, <submitted_spikes>
+    std::string GetDataHeader(int data_column) override;
+	std::string GetUnhashedDataHeader() override;
+    std::valarray<double> GetSynapticState(int pre_neuron) override;
+    std::string GetTypeStr() override { return str_mongilloSynapseContinuous; }
 
-    void SaveParameters(std::ofstream * stream,std::string id_str);
-    void LoadParameters(std::vector<std::string> *input);
+    void SaveParameters(std::ofstream * stream,std::string id_str) override;
+    void LoadParameters(std::vector<std::string> *input) override;
 
 };
 
