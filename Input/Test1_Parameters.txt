@@ -3,7 +3,7 @@ Title                       Test1
 #*****************************************************************
 simulationTime              2.000000 		seconds
 dt                          0.000100 		seconds
-globalSeed                  5102020 				#overrides all other seeds if unequal -1
+globalSeed                  14112022		#overrides all other seeds if unequal -1
 #*****************************************************************
 #****************        Spatial parameters        ***************
 #*****************************************************************
@@ -53,12 +53,12 @@ neurons_2_type                        PoissonNeuron
 #************** Stimulus Parameters ***************
 #**************************************************
 stimulus_type                        WhiteNoiseLinear
-stimulus_meanCurrent                 108.900000	 0.000000	 0.000000	 108.900000	 0.000000	 40.000000	 0.000000 	1.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
-stimulus_meanCurrent                 20000.000000	 0.000000	 40.000000	 108.900000	 0.000000	 40.000000	 1.000000 	1.001000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
-stimulus_meanCurrent                 108.900000	 0.000000	 40.000000	 108.900000	 0.000000	 40.000000	 1.001000 	2.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
-stimulus_sigmaCurrent                3.000000	 3.000000	 0.000000	 3.000000	 3.000000	 0.000000	 0.000000 	1.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
-stimulus_sigmaCurrent                0.000000	 0.000000	 0.000000	 0.000000	 0.000000	 0.000000	 1.000000 	1.500000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
-stimulus_sigmaCurrent                0.000000	 0.000000	 0.000000	 3.000000	 0.000000	 0.000000	 1.500000 	2.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
+stimulus_meanCurrent                 108.000	0.000000	 0.000000	 108.9000	 0.000000	 40.00000	 0.000000 	1.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
+stimulus_meanCurrent                 20000.0	0.000000	 40.00000	 108.9000	 0.000000	 40.00000	 1.000000 	1.001000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
+stimulus_meanCurrent                 108.000	0.000000	 40.00000	 108.9000	 0.000000	 40.00000	 1.001000 	2.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]
+stimulus_sigmaCurrent                3.00000	3.000000	 0.000000	 3.000000	 3.000000	 0.000000	 0.000000 	1.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
+stimulus_sigmaCurrent                0.00000	0.000000	 0.000000	 0.000000	 0.000000	 0.000000	 1.000000 	1.500000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
+stimulus_sigmaCurrent                0.00000	0.000000	 0.000000	 3.000000	 0.000000	 0.000000	 1.500000 	2.000000 	 [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]
 #		RI_{i,ext}/tau_m*dt = meanCurrent_i*dt + sqrt(dt)*sigmaCurrent_i*NormalDistribution(0,1)
 #*************************************************
 #************** Recorder Parameters **************
@@ -68,9 +68,10 @@ recorder_noNeuronsConnectivity     100					#saves connectivity matrices for the 
 recorder_noNeuronsDelay            100					#saves delay connectivity matrices for the first x neurons of each populations
 recorder_noNeuronsJPot             100					#saves Jpot connectivity matrices for the first x neurons of each populations
 recorder_binSize                   0.010000 seconds 	#Bin size over which data saved in main recording data file is average over
-recorder_noRasterPlotNeurons       30 	1 	10 	0.000000	#Record spike times of x neurons for (i-th column is x for the i-th population). The i+1-th column sets the initial recording time
-recorder_notrackNeuronProfiles     0 	1 	0 				#Record currents and potentials at all time steps of the first x_p neurons, p = population index. [column 1: track #neurons in pop1, column 2: track #neurons in pop2, .. ]
-recorder_CurrentContributions      0	0	0	0.000000	#Record the sources of input current to x neurons. (i-th column is x for the i-th population). The i+1-th column sets the initial recording time
+recorder_noRasterPlotNeurons       30 	1 	10 	0.0		#Record spike times of x neurons for (i-th column is x for the i-th population). The i+1-th column sets the initial recording time
+recorder_notrackNeuronProfiles     0 	1 	0 			#Record currents and potentials at all time steps of the first x_p neurons, p = population index. [column 1: track #neurons in pop1, column 2: track #neurons in pop2, .. ]
+recorder_noCorrNeurons             0 	0 	0 			#Record correlations between first x_p neurons for each bin size. p = population index. [column 1: #neurons in pop1, column 2: track #neurons in pop2, .. ]
+recorder_CurrentContributions      0	0	0	0.0		#Record the sources of input current to x neurons. (i-th column is x for the i-th population). The i+1-th column sets the initial recording time
 recorder_trackSynapses             0					#Set = 1 to track averaged data from synapes, Set = 0 to ignore.
 recorder_Heatmap                   0					#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap
 #*************************************************
@@ -81,22 +82,22 @@ synapses_0_0_type							CurrentSynapse
 synapses_0_0_D_min							0.000000 seconds
 synapses_0_0_D_max							0.000000 seconds
 synapses_0_0_J								0.000000 dmV/Spike
+synapses_0_0_Sigma_j						0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
-synapses_0_0_connectivity_type			IndividualRandomConnectivity	
-# IndividualRandomConnectivity is a connectivity class for constructing a network with already constructed connectivity matrix. 
-# The connectivity matrix is included in the same folder as the Parameters.txt file.
-# The naming of the connectivity matrix is as follows: Title + "_Connectivity_Matrix_" + post-population ID + pre-population ID + ".txt" 
-# For example: Test10_synapses_connection_00.txt 
-# Title is the simulation title as shown in the first line of the parameters
+synapses_0_0_connectivity_type				IndividualRandomConnectivity
+synapses_0_0_connectivity_seed				174061735
+#		IndividualRandomConnectivity: Each pre and post neurons have individual connection probability.
 #*************************************************
 synapses_0_1_type							CurrentSynapse
 synapses_0_1_D_min							0.000000 seconds
 synapses_0_1_D_max							0.000000 seconds
 synapses_0_1_J								0.000000 dmV/Spike
+synapses_0_1_Sigma_j						0.000000 dmV/Spike
 synapses_0_1_J_pot							0.000000 dmV/Spike
 synapses_0_1_P_pot							0.000000
 synapses_0_1_connectivity_type				RandomConnectivity
+synapses_0_1_connectivity_seed				1618772598
 synapses_0_1_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -104,9 +105,11 @@ synapses_0_2_type							CurrentSynapse
 synapses_0_2_D_min							0.000000 seconds
 synapses_0_2_D_max							0.000000 seconds
 synapses_0_2_J								0.000000 dmV/Spike
+synapses_0_2_Sigma_j						0.000000 dmV/Spike
 synapses_0_2_J_pot							0.000000 dmV/Spike
 synapses_0_2_P_pot							0.000000
 synapses_0_2_connectivity_type				RandomConnectivity
+synapses_0_2_connectivity_seed				384881901
 synapses_0_2_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -114,9 +117,11 @@ synapses_1_0_type							CurrentSynapse
 synapses_1_0_D_min							0.005000 seconds
 synapses_1_0_D_max							0.020000 seconds
 synapses_1_0_J								0.130000 dmV/Spike
+synapses_1_0_Sigma_j						0.025000 dmV/Spike
 synapses_1_0_J_pot							0.230000 dmV/Spike
 synapses_1_0_P_pot							0.500000
 synapses_1_0_connectivity_type				RandomConnectivity
+synapses_1_0_connectivity_seed				183427039
 synapses_1_0_connectivity_ConnectionProba	0.666667
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -124,9 +129,11 @@ synapses_1_1_type							CurrentSynapse
 synapses_1_1_D_min							0.000000 seconds
 synapses_1_1_D_max							0.000000 seconds
 synapses_1_1_J								0.000000 dmV/Spike
+synapses_1_1_Sigma_j						0.000000 dmV/Spike
 synapses_1_1_J_pot							0.000000 dmV/Spike
 synapses_1_1_P_pot							0.000000
 synapses_1_1_connectivity_type				RandomConnectivity
+synapses_1_1_connectivity_seed				921206234
 synapses_1_1_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -134,9 +141,11 @@ synapses_1_2_type							CurrentSynapse
 synapses_1_2_D_min							0.000000 seconds
 synapses_1_2_D_max							0.000000 seconds
 synapses_1_2_J								0.000000 dmV/Spike
+synapses_1_2_Sigma_j						0.000000 dmV/Spike
 synapses_1_2_J_pot							0.000000 dmV/Spike
 synapses_1_2_P_pot							0.000000
 synapses_1_2_connectivity_type				RandomConnectivity
+synapses_1_2_connectivity_seed				454094062
 synapses_1_2_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -144,9 +153,11 @@ synapses_2_0_type							CurrentSynapse
 synapses_2_0_D_min							0.000000 seconds
 synapses_2_0_D_max							0.000000 seconds
 synapses_2_0_J								0.000000 dmV/Spike
+synapses_2_0_Sigma_j						0.000000 dmV/Spike
 synapses_2_0_J_pot							0.000000 dmV/Spike
 synapses_2_0_P_pot							0.000000
 synapses_2_0_connectivity_type				RandomConnectivity
+synapses_2_0_connectivity_seed				1183041433
 synapses_2_0_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -154,9 +165,11 @@ synapses_2_1_type							CurrentSynapse
 synapses_2_1_D_min							0.000000 seconds
 synapses_2_1_D_max							0.000000 seconds
 synapses_2_1_J								0.000000 dmV/Spike
+synapses_2_1_Sigma_j						0.000000 dmV/Spike
 synapses_2_1_J_pot							0.000000 dmV/Spike
 synapses_2_1_P_pot							0.000000
 synapses_2_1_connectivity_type				RandomConnectivity
+synapses_2_1_connectivity_seed				291843115
 synapses_2_1_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
 #*************************************************
@@ -164,12 +177,13 @@ synapses_2_2_type							CurrentSynapse
 synapses_2_2_D_min							0.000000 seconds
 synapses_2_2_D_max							0.000000 seconds
 synapses_2_2_J								0.000000 dmV/Spike
+synapses_2_2_Sigma_j						0.000000 dmV/Spike
 synapses_2_2_J_pot							0.000000 dmV/Spike
 synapses_2_2_P_pot							0.000000
 synapses_2_2_connectivity_type				RandomConnectivity
+synapses_2_2_connectivity_seed				2068992024
 synapses_2_2_connectivity_ConnectionProba	0.000000
 #		RandomConnectivity: Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).
-
 #*****************************************************************
-#Comp. finalized: Fri Nov 13 12:49:57 2020
-#Comp. time: 6.273 secs.
+#Comp. finalized: Mon Nov 14 15:48:34 2022
+#Comp. time: 3.49033 secs.

@@ -1,13 +1,13 @@
 ---
 title: "Test1 overview"
-author: "Pierre Ekelmans"
+author: "Pierre Ekelmans & Ulzii Utas"
 output:
+  pdf_document:
+    toc: no
   html_document:
     toc: no
     toc_float: yes
     theme: cerulean
-  pdf_document:
-    toc: no
   word_document:
     toc: no
 ---
@@ -90,7 +90,8 @@ The histogram illustrates the fraction of neuron pairs which are connected. The 
 
 The next figures show the synaptic delay in these connections. In the matrix, the red connections are the fastest while the slowest connections are green. The synaptic delays are set to be uniformly distributed between 5 and 20 ms.
 
-The last two figures show the strength of the synaptic connections. The synaptic weights are set to be equally split between weak connections shown in red (0.13 mV/spike) and strong connections shown in green (0.23mV/spike).
+The last two figures show the strength of the synaptic connections. The synaptic weights are set to be equally split between weak connections (0.13 mV/spike) and strong connections (0.23mV/spike). On top of this split into two separate baselines, the synaptic connections are initiated with a variance of (0.025mV)^2, leading to a bimodal distribution mostly contained in the 0.05-0.3 mV range. In the map, the stronger connections are colored in red and the weaker connections in green. 
+
 ```{r,echo=FALSE}
 X<-0:(ncol(data_ConnectivityMatrix_10)-1)
 Y<-0:(nrow(data_ConnectivityMatrix_10)-1)
@@ -120,10 +121,11 @@ image(data_DelayMatrix_10, axes=FALSE, col=coul)
 hist(data_DelayMatrix_10*1e-4,breaks = 15, xlab = "ms",main = "Synaptic Delay", freq = TRUE)
 coul <- colorRampPalette(brewer.pal(8, "RdYlGn"))(25)
 image(data_JpotMatrix_10, axes=FALSE, col=coul)
-hist(data_JpotMatrix_10,breaks = (0:12)/40,xlab = "",main = "Synaptic Weight", freq = TRUE)
+hist(data_JpotMatrix_10,breaks = seq(from=0, to=0.3, by=0.025),xlab = "",main = "Synaptic Weight", freq = TRUE)
 
 
 ```
+
 We show two plots below for invidual random connectivity. The newly constructed matrix used for the simulations and the pre-existing connectivity matrix used as input. The plots are binary connectivity matrix where black dots indicate connection while white dots indicate non-connection. The rows of the connectivity matrix is pre-synaptic neuron and columns are post-synaptic neuron. In this test, we only used pre-existing connectivity matrix from 0 -> 0 population connection and other connections are all randomly connected.
 
 
@@ -141,10 +143,11 @@ nf <- layout(matrix(c(1,2),1,2, byrow=T), widths=c(1,1,1), heights=c(1,1,1), res
 par(mar=c(3,3,3,3))
 
 coul <- colorRampPalette(brewer.pal(8, "Greys"))(25)
-image(data_SynapsesConnection_00, col=coul, axes=FALSE)
+image(t(data_SynapsesConnection_00)[,nrow(t(data_SynapsesConnection_00)):1], col=coul, axes=FALSE)
 title("Pre-existing connectivity matrix", line = 1)
 
-image(data_ConnectivityMatrix_00, col=coul, axes=FALSE)
+image(t(data_ConnectivityMatrix_00)[,nrow(t(data_ConnectivityMatrix_00)):1], col=coul, axes=FALSE)
+#image(data_ConnectivityMatrix_00, col=coul, axes=FALSE)
 title("Constructed connectivity matrix", line = 1)
 
 ```
