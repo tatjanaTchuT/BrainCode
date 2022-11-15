@@ -54,7 +54,7 @@ public:
     std::vector<long>   * GetSpikers(){return &spiker;}
 
     //long                get_previous_spike_step(long i) {return previous_spike_step[i];}
-    double              GetTimeSinceLastSpike(long i){ return double(info->time_step - previous_spike_step[i])*info->dt;}
+    double              GetTimeSinceLastSpike(long i) { return (static_cast<double>(info->time_step) - static_cast<double>(previous_spike_step[i])) * info->dt; }
 
     double              GetPotential(long i) {return potential[i]; }
 

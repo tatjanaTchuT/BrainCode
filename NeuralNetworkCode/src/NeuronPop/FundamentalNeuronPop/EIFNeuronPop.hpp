@@ -14,10 +14,10 @@
 class EIFNeuronPop : public NeuronPop
 {
 protected:    
-    double v_critical;
-    double sharpness;
-	double V_lowerbound;
-	double Vleak;
+    double v_critical{};
+    double sharpness{};
+    double V_lowerbound{};
+    double Vleak{};
 public:
     //EIFNeuronPop(double tm, double vr, double vc, double s, double vt, double t);
     EIFNeuronPop(GlobalSimInfo * info,int id) : NeuronPop(info,id) {}

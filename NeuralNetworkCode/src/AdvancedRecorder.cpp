@@ -51,15 +51,16 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 		Densimap.resize(P);
 		currentBin.Heatmap.resize(P);
 		for (unsigned int pop = 0;pop < P;pop++) {
-			currentBin.Heatmap[pop].resize(pow(Heatmap, info->Dimensions));
-			Densimap[pop].resize(pow(Heatmap, info->Dimensions));
+            size_t heatmapDimensions{static_cast<size_t>(pow(Heatmap, info->Dimensions))};
+            currentBin.Heatmap[pop].resize(heatmapDimensions);
+			Densimap[pop].resize(heatmapDimensions);
 			if (info->Dimensions == 2) {
 				for (unsigned long cell = 0;cell < neurons->GetNeuronsPop(pop);cell++)
-					Densimap[pop][Heatmap*(floor(neurons->GetY_Pos(pop, cell) * Heatmap / info->Ly)) + floor(neurons->GetX_Pos(pop, cell) * Heatmap / info->Lx)] += 1;
+					Densimap[pop][static_cast<size_t>(Heatmap*(floor(neurons->GetY_Pos(pop, cell) * Heatmap / info->Ly)) + floor(neurons->GetX_Pos(pop, cell) * Heatmap / info->Lx))] += 1;
 			}
 			else if (info->Dimensions == 1) {
 				for (unsigned long cell = 0;cell < neurons->GetNeuronsPop(pop);cell++)
-					Densimap[pop][floor(neurons->GetX_Pos(pop, cell) * Heatmap / info->Lx)] += 1;
+					Densimap[pop][static_cast<size_t>(floor(neurons->GetX_Pos(pop, cell) * Heatmap / info->Lx))] += 1;
 			}
 		}
 	}
@@ -161,7 +162,7 @@ void AdvancedRecorder::SetNoCurrentContribution(std::vector<std::string> *values
 	}
 	if (values->size() > P) {
 		if (values->at(P)[0] != '#')// The comments in the code are not meant to be read upon execution
-			current_t_0 = std::round(std::stod(values->at(P)) / info->dt);
+			current_t_0 = static_cast<int>(std::round(std::stod(values->at(P)) / info->dt));
 	}
 }
 
@@ -177,7 +178,7 @@ void AdvancedRecorder::SetNoRasterplotNeurons(std::vector<std::string> *values){
     }
 	if (values->size() > P) {
 		if (values->at(P)[0] != '#')
-			raster_t_0 = std::round(std::stod(values->at(P)) / info->dt);
+			raster_t_0 = static_cast<int>(std::round(std::stod(values->at(P)) / info->dt));
 	}
 }
 
@@ -185,7 +186,7 @@ void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
     int P = (int)neurons->GetTotalPopulations();
     for(int i = 0; i < min_(P,(int)values->size());i++){
         noCorrNeurons[i] = std::stoi(values->at(i));
-        if((noCorrNeurons[i]  > neurons->GetNeuronsPop(i)) ||
+        if ((static_cast<unsigned long>(noCorrNeurons[i]) > neurons->GetNeuronsPop(i)) ||
            (noCorrNeurons[i] < 0)){
             std::cout << "Correlations: Tracking all neurons of population "<< i << "\n";
             noCorrNeurons[i]  = neurons->GetNeuronsPop(i);
@@ -405,12 +406,14 @@ void AdvancedRecorder::WriteDataHeader_CurrentsContribution() {
 	for (unsigned long p_target = 0;p_target < P;p_target++) {
 		for (unsigned long p_source = 0;p_source < P;p_source++) {
 			for (long i = 0;i < CurrentContributions[p_target];i++) {
-				index = floor(i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target]);
+                //This is an integer type division, it does not need floor()
+				index = i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target];
 				stream << "IRec" << p_target << "_" << p_source << "_" << index << "\t";
 			}
 		}
 		for (long i = 0;i < CurrentContributions[p_target];i++) {
-			index = floor(i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target]);
+            //This is an integer type division, it does not need floor()
+			index = i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target];
 			stream << "Iffd" << p_target << "_" << index << "\t";
 		}
 	}
@@ -504,7 +507,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 
     stream << "t\t";
 
-    unsigned long synCount, synTrackCount, skipStride;
+    unsigned long synTrackCount;
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (synTrackCount == 0) {
@@ -554,7 +557,7 @@ void AdvancedRecorder::reset_statistics()
         for(int j = 0; j < P; j++)
         {
             currentBin.synapticCurrents[i][j]    = 0.0;
-            currentBin.no_recordedSynapses[i][j] = 0.0;
+            currentBin.no_recordedSynapses[i][j] = 0;
             currentBin.synapticState[i][j]       = 0.0;
         }
 		if (Heatmap != 0) {
@@ -798,13 +801,13 @@ void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<doubl
 	for (unsigned int p_target = 0;p_target < P;p_target++) {
 		for (unsigned int p_source = 0;p_source < P;p_source++) {
 			for (long i = 0;i < CurrentContributions[p_target];i++) {
-				index = floor(i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target]);
+				index = i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target];
 				CurrentContrBin[i + IndexMemory] += synapses->GetRecurrentInput(p_target, p_source, index);
 			}
 			IndexMemory += CurrentContributions[p_target];
 		}
 		for (long i = 0;i < CurrentContributions[p_target];i++) {
-			index = floor(i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target]);
+			index = i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target];
 			CurrentContrBin[i + IndexMemory] += stimulus->GetSignalArray(p_target, index);
 		}
 		IndexMemory += CurrentContributions[p_target];
@@ -1021,7 +1024,7 @@ void AdvancedRecorder::Record_HeteroSynapses() {
 
     HeteroLIFNeuronPop* heteroNeuronPop;
     unsigned long synCount, synTrackCount, skipStride;
-    for(unsigned long p = 0;p < P; p++){
+    for(long p = 0;p < P; p++){
         heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
@@ -1055,8 +1058,7 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
     SaveDoubleFile(&file,t,5);
 
     HeteroLIFNeuronPop* heteroNeuronPop;
-    unsigned long synCount, synTrackCount, skipStride;
-    for(unsigned long p = 0;p < P; p++){
+    for(long p = 0;p < P; p++){
         heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
         if (heteroNeuronPop == nullptr) {
             continue;
@@ -1096,14 +1098,14 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 		if (Heatmap != 0) {
 			if (info->Dimensions == 2) {
 				for (unsigned int spike = 0;spike < spikers->size();spike++) {
-					Xbin = floor(neurons->GetX_Pos(prePop, spikers->at(spike)) * Heatmap / info->Lx);
-					Ybin = floor(neurons->GetY_Pos(prePop, spikers->at(spike)) * Heatmap / info->Ly);
+					Xbin = static_cast<int>(neurons->GetX_Pos(prePop, spikers->at(spike)) * Heatmap / info->Lx);
+					Ybin = static_cast<int>(neurons->GetY_Pos(prePop, spikers->at(spike)) * Heatmap / info->Ly);
 					currentBin.Heatmap[prePop][Heatmap*Ybin + Xbin] += 1/ (double)Densimap[prePop][Heatmap*Ybin + Xbin];
 				}
 			}
 			else {
 				for (unsigned int spike = 0;spike < spikers->size();spike++) {
-					Xbin = floor(neurons->GetX_Pos(prePop, spikers->at(spike)) * Heatmap / info->Lx);
+					Xbin = static_cast<int>(neurons->GetX_Pos(prePop, spikers->at(spike)) * Heatmap / info->Lx);
 					currentBin.Heatmap[prePop][Xbin] += 1 / (double) Densimap[prePop][Xbin];
 				}
 			}

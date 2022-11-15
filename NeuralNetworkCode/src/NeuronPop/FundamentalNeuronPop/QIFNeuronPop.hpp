@@ -14,8 +14,8 @@
 class QIFNeuronPop : public NeuronPop
 {
 protected:
-    double v_critical;
-    double sharpness;
+    double v_critical{};
+    double sharpness{};
 public:
     //QIFNeuronPop(double tm, double vr, double vc, double s, double vt, double t);
     QIFNeuronPop(GlobalSimInfo * info,int id) : NeuronPop(info,id) {}

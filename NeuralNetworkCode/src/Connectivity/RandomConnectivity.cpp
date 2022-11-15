@@ -29,7 +29,7 @@ void RandomConnectivity::LoadParameters(std::vector<std::string> *input){
             //std::cout << "number of neurons pre: " << std::to_string(synapse->GetNoNeuronsPre()) << ", ";
             //std::cout << "connection probability value: " << std::to_string(std::stod(values.at(0))) << ", ";
             //std::cout << "their product: " << std::to_string(synapse->GetNoNeuronsPre()*std::stod(values.at(0))) << "\n";
-            SetNoSourceNeurons(synapse->GetNoNeuronsPre()*std::stod(values.at(0)));
+            SetNoSourceNeurons(static_cast<unsigned long>(synapse->GetNoNeuronsPre() * std::stod(values.at(0))));
         }
         else if(name.find("noSourceNeurons") != std::string::npos){
             SetNoSourceNeurons(std::stoi(values.at(0)));

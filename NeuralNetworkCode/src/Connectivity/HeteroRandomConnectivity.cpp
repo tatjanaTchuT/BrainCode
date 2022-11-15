@@ -37,6 +37,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
                 target_id[source].push_back(target);
                 countedSourceNeurons++;
             } catch (const noAllocatableSynapseException& e) {
+                e.what();
                 break;
             }
         }

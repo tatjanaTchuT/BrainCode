@@ -141,7 +141,7 @@ void Connectivity::SetDistributionD(){
     //std::cout << "printing D_distribution: \n";
     for(unsigned long source_neuron = 0; source_neuron < this->synapse->GetNoNeuronsPre(); source_neuron++){
         if(target_id[source_neuron].size()!=0){
-			noTarget = (target_id[source_neuron]).size();
+            noTarget = static_cast<unsigned long>((target_id[source_neuron]).size());
 			D_distribution[source_neuron].resize(noTarget);
 			for (unsigned long target_neuron = 0; target_neuron < noTarget; target_neuron++) {
                 int d = uni_distribution(generator);
@@ -173,7 +173,7 @@ void Connectivity::SetDistributionJ(){
 	}
     //std::cout << "printing J_distribution: \n";
     for(unsigned long source_neuron = 0; source_neuron < this->synapse->GetNoNeuronsPre(); source_neuron++){
-		noTarget = (target_id[source_neuron]).size();
+        noTarget = static_cast<unsigned long>((target_id[source_neuron]).size());
 		J_distribution[source_neuron].resize(noTarget);
 		//std::cout <<  "\n";
         for(unsigned long target_neuron = 0; target_neuron < noTarget; target_neuron++){

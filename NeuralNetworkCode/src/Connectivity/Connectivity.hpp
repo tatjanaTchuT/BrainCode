@@ -32,7 +32,7 @@ public:
     Connectivity(Synapse *syn,GlobalSimInfo  * info);
     virtual ~Connectivity();
 
-    // TODO/Suggestion: Replace pointer return with a return by constant reference.
+    // TODO/Suggestion: Replace pointer return with a return by constant reference. YES PLEASE
     // https://github.com/saiftyfirst/BP_Demos/blob/master/C%2B%2B/constRef_vs_pointer.cpp
     std::vector<unsigned long>* GetTargetList(long preNeuronId){return &target_id[preNeuronId];}
     virtual unsigned long GetNumberAverageSourceNeurons() =0;

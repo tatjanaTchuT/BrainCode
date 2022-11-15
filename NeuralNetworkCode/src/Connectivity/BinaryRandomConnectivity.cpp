@@ -67,5 +67,5 @@ void BinaryRandomConnectivity::ConnectNeurons()
 
 
 unsigned long BinaryRandomConnectivity::GetNumberAverageSourceNeurons(){
-    return connectionProbability*this->synapse->GetNoNeuronsPre();
+    return static_cast<unsigned long>(connectionProbability) * this->synapse->GetNoNeuronsPre();
 }

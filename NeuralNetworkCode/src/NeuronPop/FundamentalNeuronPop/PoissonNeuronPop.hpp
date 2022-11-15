@@ -14,9 +14,9 @@
 class PoissonNeuronPop : public NeuronPop
 {
 protected:
-    double r_target; // target firing rate
+    double r_target{}; // target firing rate
 
-    int seed;
+    int seed{};
     std::default_random_engine generator;
     std::uniform_real_distribution<double> uni_distribution;
 

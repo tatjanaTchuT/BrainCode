@@ -24,8 +24,8 @@ struct GlobalSimInfo {
     int     waiting_index;
     double  dt;
 	int     density;
-	double  Lx;
-	double  Ly;
+	double  Lx; //Always a positive quantity (number of neurons/dimensions)
+	double  Ly; //Always a positive quantity (number of neurons/dimensions)
 	int     Dimensions;
 	double  simulationTime;
     double  networkScaling_synStrength;

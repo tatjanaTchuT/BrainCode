@@ -12,7 +12,7 @@ void EIFNeuronPop::advect(std::vector<double> * synaptic_dV)
 
     for(unsigned long i = 0 ; i < noNeurons; i++){
 		//(a) wait for refractory period
-		if (info->time_step - previous_spike_step[i] <= refractorySteps)
+		if (info->time_step - previous_spike_step[i] <= static_cast<long>(refractorySteps))
 			continue;
 		//(b)advect
 		potential[i] += dt / tau_m * (-(potential[i] - Vleak) + dt / tau_m * sharpness * exp((potential[i] - v_critical) / sharpness)) + synaptic_dV->at(i);
