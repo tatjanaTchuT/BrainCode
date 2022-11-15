@@ -1,8 +1,11 @@
 #ifndef HeterosynapticConnectivity_hpp
 #define HeterosynapticConnectivity_hpp
 
+#include <vector>
+#include <string>
+#include <utility>
+#include "../Connectivity/RandomConnectivity.hpp"
 #include "../Synapse/Synapse.hpp"
-#include "../Synapse/HeteroCurrentSynapse.hpp"
 
 class HeteroRandomConnectivity: public RandomConnectivity {
 

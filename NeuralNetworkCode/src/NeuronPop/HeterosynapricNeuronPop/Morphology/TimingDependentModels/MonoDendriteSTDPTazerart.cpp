@@ -1,7 +1,7 @@
 //
 // Created by Saif Ahmed on 15.07.21.
 //
-
+#include <string>
 #include "MonoDendriteSTDPTazerart.hpp"
 
 MonoDendriteSTDPTazerart::MonoDendriteSTDPTazerart(GlobalSimInfo *info) : MonoDendriteSTDP(info) {

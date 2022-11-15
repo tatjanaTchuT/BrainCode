@@ -1,7 +1,7 @@
 //
 // Created by Saif Ahmed on 15.07.21.
 //
-
+#include <string>
 #include "MonoDendriteSTDPBiWindow.hpp"
 
 MonoDendriteSTDPBiWindow::MonoDendriteSTDPBiWindow(GlobalSimInfo *info) : MonoDendriteSTDP(info) {

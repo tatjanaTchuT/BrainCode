@@ -401,11 +401,11 @@ int NeuralNetwork::Simulate()
 
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
 	auto start = std::chrono::high_resolution_clock::now();
-
+//Remember remember
     unsigned long potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
 
     for (unsigned long popId = 0; popId < 1; popId++) {
-        auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId));
+        auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId)); //Why dynamic cast to HeteroLIF? Test without LIF as all functions are of HeteroNeuronPop
         for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
             unsigned long synCount = pop->getSynapseCount(nId);
             for (unsigned long sId = 0; sId < synCount; ++sId) {
@@ -427,7 +427,7 @@ int NeuralNetwork::Simulate()
     std::cout << "Depression Count: " << depressionCount << std::endl;
     std::cout << "Stable Count: " << stable << std::endl;
     std::cout << "InBetweener Count: " << inBetweeners << std::endl;
-
+//The 5th of November
     while(info.time_step <= simSteps)
     {
 		for (unsigned int p = 0; p < P; p++) {
@@ -457,7 +457,7 @@ int NeuralNetwork::Simulate()
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
     std::cout << "\nTotal simulation time(s): " << duration.count() << "\n";
-
+//Wrap into a function, it is repeated twice and subject to changes. FROM HERE
     potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
     for (unsigned long popId = 0; popId < 1; popId++) {
         auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId));
@@ -482,7 +482,7 @@ int NeuralNetwork::Simulate()
     std::cout << "Depression Count: " << depressionCount << std::endl;
     std::cout << "Stable Count: " << stable << std::endl;
     std::cout << "InBetweener Count: " << inBetweeners << std::endl;
-
+//TO HERE
 
     //*****************************************************
     // --------------- END OF THE SIMULATION ------------

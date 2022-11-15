@@ -98,7 +98,7 @@ public:
     //virtual void advect(std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix);
 
 	virtual void ResetWaitingMatrixEntry();
-    virtual void preAdvect();
+    //virtual void preAdvect();
     virtual void advect(std::vector<double> *  synaptic_dV);
     virtual void LoadParameters(std::vector<std::string> *input);
     virtual void SaveParameters(std::ofstream * stream,std::string id_str);

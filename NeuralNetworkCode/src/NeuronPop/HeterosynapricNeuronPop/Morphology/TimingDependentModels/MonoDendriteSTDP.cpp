@@ -3,6 +3,7 @@
 //
 
 #include "MonoDendriteSTDP.hpp"
+#include <string>
 
 MonoDendriteSTDP::MonoDendriteSTDP(GlobalSimInfo* info): Morphology(info), integratePostSpike(false) {
 }
@@ -165,7 +166,7 @@ std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse() {
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
 
         this->synapseData.push_back(newSynapse);
-        this->nextPos += this->synapticGap;
+        this->nextPos += this->synapticGap; //Not random, set
 
         this->spikedSynapses.push_back(false);
         this->integratePostSpike.push_back(false);

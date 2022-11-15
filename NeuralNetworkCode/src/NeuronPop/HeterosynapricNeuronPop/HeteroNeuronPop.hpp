@@ -37,8 +37,8 @@ public:
     std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
     std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
 
-    // Testing
-    friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long);
+    // Testing, check the purpose of this
+    friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long neuronId);
     unsigned long getSynapseCount(unsigned long neuronId);
     double getWeight(unsigned long neuronId, unsigned long synapseId);
 

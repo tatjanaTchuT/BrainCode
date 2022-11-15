@@ -1,7 +1,7 @@
 //
 // Created by Saif Ahmed on 15.07.21.
 //
-
+#include <string>
 #include "MonoDendriteSTDPTazerartRelative.hpp"
 
 MonoDendriteSTDPTazerartRelative::MonoDendriteSTDPTazerartRelative(GlobalSimInfo *info) : MonoDendriteSTDP(info) {

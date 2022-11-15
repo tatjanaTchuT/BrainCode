@@ -1,3 +1,4 @@
+#include "../Synapse/HeteroCurrentSynapse.hpp"
 #include "HeteroRandomConnectivity.hpp"
 
 HeteroRandomConnectivity::HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* info):

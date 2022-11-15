@@ -231,6 +231,7 @@ void Synapse::SetDistributionJ(){
 
 NeuronPop* Synapse::GetNeuronsPre() {
     return neuronsPre;
+}
 std::vector<std::vector<double>> getWaitingMatrix(const Synapse& synapse) {
     std::vector<std::vector<double>> copy(synapse.waiting_matrix.size());
     for (int i = 0; i < synapse.waiting_matrix.size(); ++i) {

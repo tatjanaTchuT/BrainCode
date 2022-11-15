@@ -82,9 +82,9 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
 
-    auto* heteroNeuronsPost = dynamic_cast<HeteroLIFNeuronPop*>(this->neuronsPost);
+    auto* heteroNeuronsPost = dynamic_cast<HeteroLIFNeuronPop*>(this->neuronsPost); //Why HeteroLIF? What is wrong?
 
-    std::shared_ptr<SynapseExt> synapseExtPtr = heteroNeuronsPost->allocateNewSynapse(postId);
+    std::shared_ptr<SynapseExt> synapseExtPtr = heteroNeuronsPost->allocateNewSynapse(postId); //the function is in HeteroPop
 
     if (synapseExtPtr != nullptr) {
         synapseExtPtr->preNeuronId = preId;

@@ -18,6 +18,7 @@
 struct GlobalSimInfo {
 
     std::default_random_engine globalGenerator;
+    std::string pathTo_inputFile;
     int		globalSeed;
     long    time_step;
     int     waiting_index;
