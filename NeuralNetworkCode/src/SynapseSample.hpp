@@ -1,7 +1,3 @@
-#ifndef SYNAPSESAMPLE_HPP
-#define SYNAPSESAMPLE_HPP
-
-//class NeuralNetwork;
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -17,13 +13,15 @@
 #include "Synapse/PRGSynapseContinuous.hpp"
 #include "Synapse/ExponentialCurrentSynapse.hpp"
 #include "Synapse/PowerLawSynapse.hpp"
-#include "Synapse/STDPHeteroCurrentSynapse.hpp"
+#include "Synapse/HeteroCurrentSynapse.hpp"
+
+#ifndef SYNAPSESAMPLE_HPP
+#define SYNAPSESAMPLE_HPP
+
+//class NeuralNetwork;
 
 class SynapseSample
 {
-private:
-    friend class AdvancedRecorder;
-
 protected:
 
     int                                  generalSynapseSeed;
@@ -35,7 +33,6 @@ protected:
 
     void LoadParameters(std::vector<std::string> *input);
     void SaveSynapseType(std::string name,std::string type,std::vector<std::string> *input);
-
 public:
     SynapseSample(NeuronPopSample * neurons,std::vector<std::string> *input,GlobalSimInfo *info);
     ~SynapseSample();

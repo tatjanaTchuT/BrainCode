@@ -68,6 +68,8 @@ public:
     void WriteDistributionD();
     void WriteDistributionJ();
 
+    void makeInputCopy(const std::string&);
+
 };
 
 #endif /* Recorder_HPP */

@@ -140,20 +140,23 @@ void NeuronPop::LoadParameters(std::vector<std::string> *input){
         else if(name.find("seedInitialPrevSpike") != std::string::npos){
             this->seed_InitialPrevSpike = (std::stoi(values.at(0)));
         }
-    }
-
-    for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
-
-        SplitString(&(*it),&name,&values);
-
-        if(name.find("noNeurons") != std::string::npos){
-            SetNeurons((long)(std::stod(values.at(0))));
-            //spiker              = new std::vector<int>[totalPopulations];
-            //neuronsInPopulation = new int[totalPopulations];
-            //for(int i = 0;i<totalPopulations;i++)
-            //    neuronsInPopulation[i] = std::stoi(values.at(i));
+        else if(name.find("noNeurons") != std::string::npos){
+                    SetNeurons((long)(std::stod(values.at(0))));
         }
     }
+
+    // for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
+    //
+    //     SplitString(&(*it),&name,&values);
+    //
+    //     if(name.find("noNeurons") != std::string::npos){
+    //         SetNeurons((long)(std::stod(values.at(0))));
+    //         //spiker              = new std::vector<int>[totalPopulations];
+    //         //neuronsInPopulation = new int[totalPopulations];
+    //         //for(int i = 0;i<totalPopulations;i++)
+    //         //    neuronsInPopulation[i] = std::stoi(values.at(i));
+    //     }
+    // }
 
 }
 

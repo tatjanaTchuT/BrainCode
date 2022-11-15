@@ -17,8 +17,8 @@ void PRGSynapseContinuous::LoadParameters(std::vector<std::string> *input){
     std::string              name;
     std::vector<std::string> values;
 
-    for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
-        SplitString(&(*it),&name,&values);
+    for(auto & it : *input) {
+        SplitString(&it,&name,&values);
 
         if(name.find("prg_M") != std::string::npos){
 			M = std::stod(values.at(0));
@@ -115,7 +115,7 @@ std::valarray<double> PRGSynapseContinuous::GetSynapticState(int pre_neuron)
 }
 
 
-void PRGSynapseContinuous::advect_spikers(std::vector<double> * currents, long spiker)
+void PRGSynapseContinuous::advect_spikers(std::vector<double>& currents, long spiker)
 {
 	double dt_lastSpike = neuronsPre->GetTimeSinceLastSpike(spiker); //double(info->time_step - neuronsPre->get_previous_spike_step(spiker))*dt;
 
@@ -151,7 +151,7 @@ void PRGSynapseContinuous::advect_spikers(std::vector<double> * currents, long s
 }
 
 
-void PRGSynapseContinuous::TransmitSpike(std::vector<double> * currents,long targetId,long spikerId){
+void PRGSynapseContinuous::TransmitSpike(std::vector<double>& currents,long targetId,long spikerId){
 
     // Spike is transmitted and neurotransmitter is released
     MongilloSynapseContinuous::TransmitSpike(currents, targetId, spikerId);
@@ -174,9 +174,4 @@ void PRGSynapseContinuous::ConnectNeurons()
             		l[source][i_n] = 0;
         	}
 	}
-}
-
-
-PRGSynapseContinuous::~PRGSynapseContinuous()
-{
 }

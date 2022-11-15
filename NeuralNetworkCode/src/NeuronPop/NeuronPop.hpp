@@ -47,7 +47,10 @@ public:
     //long GetGlobalNeuronId(long i){return global_id[i];}
 	double get_Xpos(long i) { return x_pos[i]; }
 	double get_Ypos(long i) { return y_pos[i]; }
+
     // those functions return values and addresses ( pay attention here!!!)
+    // TODO/Suggestion: Replace pointer return with a return by constant reference.
+    // https://github.com/saiftyfirst/BP_Demos/blob/master/C%2B%2B/constRef_vs_pointer.cpp
     std::vector<long>   * GetSpikers(){return &spiker;}
 
     //long                get_previous_spike_step(long i) {return previous_spike_step[i];}

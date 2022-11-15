@@ -1,31 +1,31 @@
-# Spiking network Simulation code "BrainCode"
+# Welcome to our Spiking network Simulation code "BrainCode"
 
-## Theory of Neural Dynamics Group (Tatjana Tchumatchenko)
+## Theory of Neural Dynamics Group
+### Tatjana Tchumatchenko
 
 Contributors:
 
 - Ahmed, Saif 
-- Becker, Sophia 
-- Dutine, Alexander 
-- Ekelmans, Pierre 
+- Becker, Sophia
+- Dutine, Alexander
+- Ekelmans, Pierre
 - Konrad, Sara
 - Kovalevskaya, Elizaveta (Group of Algorithm Engineering)
 - Nold, Andreas 
 - Penschuck, Manuel (Group of Algorithm Engineering)
-
-Affiliations:
 
 - Theory of neural dynamics, Max-Planck-Institut for Brain Research, Frankfurt
 - Theory of neural dynamics, Institute of experimental epileptology and cognition research, University Hospital Bonn
 - Theory of neural dynamics, Institute of Physiology, Johannes Gutenberg University Mainz
 - Group of Algorithm Engineering, Institut für Informatik, Goethe University Frankfurt
 
-(initiated August, 13th 2015 by Sara Konrad)
+February 19th, 2021
 
 
-## HowTo
-Please check the [here](README_HowTo.md) or on our [Wiki manual page](https://gitlab.mpcdf.mpg.de/mpibrano/neuronal-network-simulations/-/wikis/home) for more information about the practical aspects of compiling and running the code is accessible in the Overview GitLab Wiki.
+## Wiki Manual
+Please check the Wiki manual page on https://gitlab.mpcdf.mpg.de/mpibrano/neuronal-network-simulations/-/wikis/home for more information about the practical aspects of compiling and running the code is accessible in the Overview GitLab Wiki.
 
+## General Information
 This code is written in C++, and all its files are contained in the folder NeuralNetworkCode.
 
 All the parameters of a simulation are contained in a parameter file. The parameter file is a txt file with a specific format that will be read by the simulation code. The code can get up to two arguments:

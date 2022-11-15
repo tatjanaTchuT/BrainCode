@@ -132,11 +132,10 @@ void SynapseSample::SaveSynapseType(std::string name,std::string type,std::vecto
 		delete synapses[i][j];
 		synapses[i][j] = new PowerLawSynapse(neurons->GetPop(i), neurons->GetPop(j), info);
 	}
-	else if (type == str_STDPHeteroCurrentSynapse) {
+    else if (type == str_heteroSynapse) {
         delete synapses[i][j];
-        synapses[i][j] = new STDPHeteroCurrentSynapse(neurons->GetPop(i), neurons->GetPop(j), info);
+        synapses[i][j]  = new HeteroCurrentSynapse(neurons->GetPop(i), neurons->GetPop(j), info);
     }
-
 
     FilterStringVector(input, "synapses_" + synNo, &synapses_strs);
     synapses[i][j]->LoadParameters(&synapses_strs);
@@ -191,41 +190,13 @@ void SynapseSample::Test()
 //void SynapseSample::advect(std::vector<std::vector<double>> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix)
 
 void SynapseSample::advect(std::vector<std::vector<double>> * synaptic_dV){
-	/**
-	 * Heterosynapse objects that refer to the same HeteroNeuronPop populations, share state information that is stored in HeteroNeuronPop.
-	 * This shared state is required to remain consistent during the preAdvect phase of all the associated HeteroNeuronPop populations.
-	 * Therefore, the following must be performed sequentially:
-	 *  1. Each Synapse object is preAdvected (no operation in case of non-hetero Synapses). Synaptic cooperation, plasticity etc. is updated in this method.
-	 *  2. The shared states in the HeteroNeuronPop is cleared
-	 *  3. Each Synapse object is advected. Shared states for the next preAdvect iteration are populated.
-	 *
-	 *  Shared information includes: latest post spike times of neurons in the population, spiker synapses for each neuron in the population
-	 */
-    // TODO: Task - Implement SharedSynapticState mechanism for all Heterosynapse using name post population
+	int P = this->neurons->GetTotalPopulations();
 
-    int P = this->neurons->GetTotalPopulations();
-
-    for (int source_pop = 0; source_pop < P; source_pop++) {
+	for (int source_pop = 0; source_pop < P; source_pop++) {
 		for (int target_pop = 0; target_pop < P; target_pop++) {
-            synapses[target_pop][source_pop]->preAdvect();
+			synapses[target_pop][source_pop]->advect(&synaptic_dV->at(target_pop));
 		}
-    }
 
-    for (int source_pop = 0; source_pop < P; source_pop++) {
-        for (int target_pop = 0; target_pop < P; target_pop++) {
-            auto* heteroSynapse = dynamic_cast<HeteroSynapse*>(synapses[target_pop][source_pop]);
-            if (heteroSynapse != nullptr) {
-                auto* heteroPostPop = dynamic_cast<HeteroNeuronPop*>(synapses[target_pop][source_pop]->GetNeuronsPost());
-                heteroPostPop->clearSpikerSynapses();
-            }
-        }
-    }
-
-	// execute advect on each Synapse
-    for (int source_pop = 0; source_pop < P; source_pop++) {
-        for (int target_pop = 0; target_pop < P; target_pop++) {
-            synapses[target_pop][source_pop]->advect(&synaptic_dV->at(target_pop));
-        }
     }
 }
 
