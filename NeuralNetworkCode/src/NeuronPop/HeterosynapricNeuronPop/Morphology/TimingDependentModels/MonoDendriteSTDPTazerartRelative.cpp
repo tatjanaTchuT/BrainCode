@@ -48,11 +48,11 @@ void MonoDendriteSTDPTazerartRelative::LoadParameters(std::vector<std::string> *
         }
     }
 
-    assertm(muLTPInitialized == true, "Using heterosynaptic synapses without specifying dendtric_length is not allowed.");
+    assertm(muLTPInitialized == true, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(sigmaLTPInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(alphaInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 
-    assertm(muLTDInitialized == true, "Using heterosynaptic synapses without specifying dendtric_length is not allowed.");
+    assertm(muLTDInitialized == true, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(sigmaLTDInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(betaInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 }

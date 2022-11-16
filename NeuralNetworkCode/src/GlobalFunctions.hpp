@@ -140,6 +140,7 @@ struct noAllocatableSynapseException : std::exception {
     }
 };
 
+void DebuggerStopReport();
 //int INTMAX = 2;
 //double PI = 3.14159265359;
 

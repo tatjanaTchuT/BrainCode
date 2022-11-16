@@ -89,6 +89,10 @@ void Morphology::LoadParameters(std::vector<std::string> *input) {
                 weightNormalization = SoftMaxNormalization;
                 normalizationFound = true;
             }
+            else if (values.at(0) == str_NOPNormalization) {
+                weightNormalization = NOPNormalization;
+                normalizationFound = true;
+            }
         }
     }
     assertm(normalizationFound == true, "Please specify weight normalization mechanism for the synapses of the neurons to be used.");

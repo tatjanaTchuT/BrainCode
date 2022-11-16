@@ -239,7 +239,8 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
             else
                 title = values.at(0);
         }
-        else if(name.find("dt") != std::string::npos){
+        else if(name.find("dt_timestep") != std::string::npos){
+            std::cout << name;
             info.dt = std::stod(values.at(0));
         }
         else if(name.find("simulationTime") != std::string::npos){
@@ -405,7 +406,7 @@ int NeuralNetwork::Simulate()
     unsigned long potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
 
     for (unsigned long popId = 0; popId < 1; popId++) {
-        auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId)); //Why dynamic cast to HeteroLIF? Test without LIF as all functions are of HeteroNeuronPop
+        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId)); //Why dynamic cast to HeteroLIF? Test without LIF as all functions are of HeteroNeuronPop
         for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
             unsigned long synCount = pop->getSynapseCount(nId);
             for (unsigned long sId = 0; sId < synCount; ++sId) {
@@ -460,7 +461,7 @@ int NeuralNetwork::Simulate()
 //Wrap into a function, it is repeated twice and subject to changes. FROM HERE
     potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
     for (unsigned long popId = 0; popId < 1; popId++) {
-        auto* pop = dynamic_cast<HeteroLIFNeuronPop*>(neurons->GetPop(popId));
+        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
         for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
             unsigned long synCount = pop->getSynapseCount(nId);
             for (unsigned long sId = 0; sId < synCount; ++sId) {

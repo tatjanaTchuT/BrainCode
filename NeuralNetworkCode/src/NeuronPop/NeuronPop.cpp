@@ -38,7 +38,7 @@ void NeuronPop::SetNeurons(unsigned long noNeur) {
     std::uniform_real_distribution<double> uni_distribution (v_reset,v_thresh);
 
     for(unsigned long i = 0; i < noNeurons; i++){
-        previous_spike_step[i] = - rand() % int(3.0/info->dt);
+        previous_spike_step[i] = - rand() % static_cast<int>(3.0/info->dt);
         potential[i]           = uni_distribution(generator);
     }
 }

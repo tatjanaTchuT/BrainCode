@@ -209,3 +209,11 @@ void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFi
         throw std::invalid_argument("No values given for iterate entry");
     }
 }
+
+void DebuggerStopReport() {
+    std::string a{};
+    cout << "You royally messed up. What can you say in your defense?";
+    cin >> a;
+    cout << "Your excuse is worthless";
+    return;
+}

@@ -7,7 +7,7 @@ bool equal(const double a, const double b, const double epsilon=0.01) {
 
 TEST_CASE("Synapses are allocated from opposite ends of the dendrite in alternating manner", "[MonoDendriteSTDP]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  4 μm",
+            "neurons_0_dendritic_length  4 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -38,7 +38,7 @@ TEST_CASE("Synapses are allocated from opposite ends of the dendrite in alternat
 
 TEST_CASE("Last spike times initialized to large negative value", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  4 μm",
+            "neurons_0_dendritic_length  4 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -63,7 +63,7 @@ TEST_CASE("Last spike times initialized to large negative value", "[MonoDendrite
 
 TEST_CASE("Last spike times correctly updated", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  4 μm",
+            "neurons_0_dendritic_length  4 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -98,7 +98,7 @@ TEST_CASE("Last spike times correctly updated", "[MonoDendriteSTDPTazerart]") {
 
 TEST_CASE("Cooperativity is distributed two synapses", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  4 μm",
+            "neurons_0_dendritic_length  4 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -135,7 +135,7 @@ TEST_CASE("Cooperativity is distributed two synapses", "[MonoDendriteSTDPTazerar
 
 TEST_CASE("Advect decays heffects", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  4 μm",
+            "neurons_0_dendritic_length  4 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -174,7 +174,7 @@ TEST_CASE("Advect decays heffects", "[MonoDendriteSTDPTazerart]") {
 
 TEST_CASE("Cooperativity is distributed across multiple synapses", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -234,7 +234,7 @@ TEST_CASE("Cooperativity is distributed across multiple synapses", "[MonoDendrit
 
 TEST_CASE("Pre-Post stimulation induces timing-dependent LTP in single synapse (delta at peak of window)", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -277,7 +277,7 @@ TEST_CASE("Pre-Post stimulation induces timing-dependent LTP in single synapse (
 
 TEST_CASE("Pre-Post stimulation induces timing-dependent LTP in synapse (delta at lower than peak of window)", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -320,7 +320,7 @@ TEST_CASE("Pre-Post stimulation induces timing-dependent LTP in synapse (delta a
 
 TEST_CASE("Pre-Post stimulation induces timing-dependent LTP in synapse (delta at higher than peak of window)", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -363,7 +363,7 @@ TEST_CASE("Pre-Post stimulation induces timing-dependent LTP in synapse (delta a
 
 TEST_CASE("Post-Pre stimulation induces timing-dependent LTD in synapse (delta at peak of window)", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -406,7 +406,7 @@ TEST_CASE("Post-Pre stimulation induces timing-dependent LTD in synapse (delta a
 
 TEST_CASE("Post-Pre stimulation induces timing-dependent LTD in synapse (delta at lower than peak of window)", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -449,7 +449,7 @@ TEST_CASE("Post-Pre stimulation induces timing-dependent LTD in synapse (delta a
 
 TEST_CASE("Post-Pre stimulation induces timing-dependent LTD in synapse (delta at higher than peak of window)", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -492,7 +492,7 @@ TEST_CASE("Post-Pre stimulation induces timing-dependent LTD in synapse (delta a
 
 TEST_CASE("Heterosynaptic effects enhance LTP", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",
@@ -535,7 +535,7 @@ TEST_CASE("Heterosynaptic effects enhance LTP", "[MonoDendriteSTDPTazerart]") {
 
 TEST_CASE("Heterosynaptic effects suppress LTD", "[MonoDendriteSTDPTazerart]") {
     std::vector<std::string> inputs = {
-            "neurons_0_dendtric_length  6 μm",
+            "neurons_0_dendritic_length  6 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",

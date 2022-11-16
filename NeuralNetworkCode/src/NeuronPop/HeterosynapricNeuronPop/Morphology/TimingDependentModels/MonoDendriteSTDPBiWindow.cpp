@@ -37,10 +37,10 @@ void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {
         }
     }
 
-    assertm(tauLTPInitialized == true, "Using heterosynaptic synapses without specifying dendtric_length is not allowed.");
+    assertm(tauLTPInitialized == true, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(alphaInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 
-    assertm(tauLTDInitialized == true, "Using heterosynaptic synapses without specifying dendtric_length is not allowed.");
+    assertm(tauLTDInitialized == true, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(betaInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 }
 

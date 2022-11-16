@@ -9,6 +9,7 @@
  * (c) Max-Planck Institute for Brain Research, Frankfurt am Main
  *
  */
+#include <sys/stat.h>
 #include <iostream>
 //#include <filesystem>
 #include "NeuralNetwork.hpp"
@@ -75,7 +76,7 @@ int main(int argc, char* argv[])
         std::cout << "*************************\n";
         std::cout <<inputFile<<" Input file does not exist\n";
         std::cout << "*************************\n";
-        return 0;
+        return 1;
     }
 
     std::ifstream stream(inputFile);

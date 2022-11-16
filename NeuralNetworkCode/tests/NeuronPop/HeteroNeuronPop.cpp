@@ -21,7 +21,7 @@ protected:
     GlobalSimInfo info;
     std::vector<std::string> inputs = {
             "neurons_0_noNeurons 20",
-            "neurons_0_dendtric_length  4 μm",
+            "neurons_0_dendritic_length  4 μm",
             "neurons_0_synaptic_gap  1 μm",
             "neurons_0_heterosynaptic_theta_decay  25.0",
             "neurons_0_intersynapse_distance_decay  50.0",

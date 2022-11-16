@@ -33,8 +33,8 @@ void WhiteNoiseLinear::LoadParameters(std::vector<std::string> *input) {
 		else if ((name.find("meanCurrent") != std::string::npos)) {
 			s.values.clear();
 			for (unsigned int i = 0;i < P;i++) {
-				s.values.push_back(std::stod(values.at(2 * i)));
-				s.values.push_back(std::stod(values.at(2 * i + 1)));
+				s.values.push_back(std::stod(values.at(2 * static_cast<long long>(i))));
+				s.values.push_back(std::stod(values.at(2 * static_cast<long long>(i) + 1)));
 			}
 			s.start_time = static_cast<int>(std::round(std::stod(values.at(2 * P)) / info->dt));
 			s.end_time = static_cast<int>(std::round(std::stod(values.at(2 * P + 1)) / info->dt));

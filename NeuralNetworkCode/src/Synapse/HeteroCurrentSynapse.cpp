@@ -8,7 +8,7 @@ HeteroCurrentSynapse::HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* pr
     this->geometry = new HeteroRandomConnectivity(this, this->info);
 
     // assert that HeteroSynapses are allowed only when the post NeuronPop supports heterosynaptic behavior
-    assertm(dynamic_cast<HeteroLIFNeuronPop*>(postNeurons) != nullptr,
+    assertm(dynamic_cast<HeteroNeuronPop*>(postNeurons) != nullptr,
             "Attempting to create a Heterosynapse but the PostNeurons and/or PreNeurons are not Heterosynaptic.");
 
 }
@@ -43,7 +43,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
     auto* connectivity = dynamic_cast<HeteroRandomConnectivity*>(this->geometry);
     std::vector<std::pair<unsigned long, unsigned long>> targetList = connectivity->getSynapticTargets(spiker);
 
-    auto* heteroNeuronsPost = dynamic_cast<HeteroLIFNeuronPop*>(this->neuronsPost);
+    auto* heteroNeuronsPost = dynamic_cast<HeteroNeuronPop*>(this->neuronsPost);
 
     double couplingStrength;
     double current;
@@ -82,7 +82,7 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
 
-    auto* heteroNeuronsPost = dynamic_cast<HeteroLIFNeuronPop*>(this->neuronsPost); //Why HeteroLIF? What is wrong?
+    auto* heteroNeuronsPost = dynamic_cast<HeteroNeuronPop*>(this->neuronsPost); //Why HeteroLIF? What is wrong?
 
     std::shared_ptr<SynapseExt> synapseExtPtr = heteroNeuronsPost->allocateNewSynapse(postId); //the function is in HeteroPop
 

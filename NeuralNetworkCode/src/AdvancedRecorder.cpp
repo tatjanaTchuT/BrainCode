@@ -468,10 +468,10 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     stream << "t\t";
 
-    HeteroLIFNeuronPop* heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synCount, synTrackCount, skipStride;
     for(unsigned long p = 0;p<P;p++){
-        heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
             continue;
@@ -1022,10 +1022,10 @@ void AdvancedRecorder::Record_HeteroSynapses() {
 
     SaveDoubleFile(&file,t,5);
 
-    HeteroLIFNeuronPop* heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synCount, synTrackCount, skipStride;
     for(long p = 0;p < P; p++){
-        heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
             continue;
@@ -1057,9 +1057,9 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
 
     SaveDoubleFile(&file,t,5);
 
-    HeteroLIFNeuronPop* heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
     for(long p = 0;p < P; p++){
-        heteroNeuronPop = dynamic_cast<HeteroLIFNeuronPop*>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         if (heteroNeuronPop == nullptr) {
             continue;
         }

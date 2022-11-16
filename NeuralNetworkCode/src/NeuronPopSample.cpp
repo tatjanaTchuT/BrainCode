@@ -100,9 +100,10 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
             neuronPops[p] = new HeteroLIFNeuronPop(info, p);
         } else if (type == str_HeteroPoissonNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
-            if (neuronPops[p] == NULL)
-                delete neuronPops[p];
             neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
+        }
+        else {
+            DebuggerStopReport();
         }
 
         //load parameters

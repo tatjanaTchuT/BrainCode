@@ -18,7 +18,7 @@ protected:
     double lambdaDist{}; // decay constant of heterosynaptic effects over distance between synapses
     double tauDelay{}; // decay constant of heterosynaptic effects over inter-synapse spike timing difference
 
-    double dendtricLength{}; // this would change in case of more complex dendritic geometry (atm it is a single 1D dendrite)
+    double dendriticLength{}; // this would change in case of more complex dendritic geometry (atm it is a single 1D dendrite)
     double synapticGap{}; //  minimum gap between syanpses along dendrite
 
     double preFactorLTP{};

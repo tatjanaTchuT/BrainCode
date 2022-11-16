@@ -89,8 +89,8 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     for (auto & it : *input) {
         SplitString(&it,&name,&values);
 
-        if(name.find("dendtric_length") != std::string::npos){
-            this->dendtricLength = std::stod(values.at(0));
+        if(name.find("dendritic_length") != std::string::npos){
+            this->dendriticLength = std::stod(values.at(0));
             dendriteInitialized = true;
         } else if (name.find("synaptic_gap") != std::string::npos) {
             this->synapticGap = std::stod(values.at(0));
@@ -115,17 +115,17 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
         }
     }
 
-    assertm(dendriteInitialized == true, "Using heterosynaptic synapses without specifying dendtric_length is not allowed.");
+    assertm(dendriteInitialized == true, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(synapticGapInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 
     // TODO: Update assert messages to appropriate
-    assertm(tauThetaInitialized == true, "Using heterosynaptic synapses without specifying dendtric_length is not allowed.");
+    assertm(tauThetaInitialized == true, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(lambdaDistInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(tauDelayInitialized == true, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 
 
 //    this->posLo = this->synapticGap;
-//    this->posHi = this->dendtricLength - this->synapticGap;
+//    this->posHi = this->dendriticLength - this->synapticGap;
 //    this->allocateDistal = false;
     this->nextPos =  this->synapticGap;
     this->synapseIdGenerator = 0;
@@ -137,7 +137,7 @@ std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse() {
 
     std::shared_ptr<SynapseExt> newSynapse;
 
-    if (this->nextPos < this->dendtricLength) {
+    if (this->nextPos < this->dendriticLength) {
         newSynapse = std::make_shared<SynapseExt>();
 
 //        if (this->allocateDistal) {
