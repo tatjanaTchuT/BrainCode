@@ -42,7 +42,7 @@ void MongilloSynapse::advect_spikers (std::vector<double>& currents, long spiker
 
         //Spike transmission
         if(x[spiker][target_counter] && y[spiker][target_counter])
-            TransmitSpike(currents, target_counter,spiker);
+            TransmitSpike(currents, static_cast<long>(target_counter), spiker);
         else
             spike_submitted[spiker][target_counter] = false;
     }
@@ -66,8 +66,8 @@ void MongilloSynapse::TransmitSpike(std::vector<double>& currents, long targetId
 void MongilloSynapse::ConnectNeurons()
 {
     Synapse::ConnectNeurons();
-    for(unsigned long source = 0;source < GetNoNeuronsPre();source ++){
-        long n = geometry->GetTargetList(source)->size();
+    for (unsigned long source = 0; source < GetNoNeuronsPre(); source++) {
+        long n { static_cast<long>(geometry->GetTargetList(source)->size())};
         x[source].resize(n);
         y[source].resize(n);
         spike_submitted[source].resize(n);
@@ -95,7 +95,7 @@ void MongilloSynapse::LoadParameters(std::vector<std::string> *input){
             u  = std::stod(values.at(0));
         }
         else if(name.find("mongillo_seed") != std::string::npos){
-            SetSeed(std::stod(values.at(0)));
+            SetSeed(static_cast<int>(std::stod(values.at(0))));
         }
 
     }
@@ -136,7 +136,7 @@ std::valarray<double> MongilloSynapse::GetSynapticState(int pre_neuron)
     int Y=0;
     // int XY=0;
     int SpikeSubmitted=0;
-	int N_post = x[pre_neuron].size();
+    int N_post{ static_cast<int>(x[pre_neuron].size()) };
 
     for(int i = 0;i<N_post;i++){
         X	+= x[pre_neuron][i];

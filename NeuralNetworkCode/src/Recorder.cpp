@@ -93,7 +93,7 @@ void Recorder::SetAveraging_steps(double rec_dt) {
     if(rec_dt < dt)
         averaging_steps = 1;
     else
-        averaging_steps = std::round(rec_dt/dt);
+        averaging_steps = static_cast<int>(std::round(rec_dt / dt));// Why use variable int here?
 }
 
 void Recorder::WriteHeader(std::ofstream * stream){

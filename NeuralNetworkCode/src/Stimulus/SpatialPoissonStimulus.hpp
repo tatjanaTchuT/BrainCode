@@ -70,9 +70,9 @@ public:
     //*******************
     // Get-Functions
     //*******************
-    long    GetStimulusStep_Time(int i) {return next_stimulus_time_step.at(i);}
+    long    GetStimulusStep_Time(int i) {return static_cast<long>(next_stimulus_time_step.at(i)); }
     double  GetStimulusStep(int i)      {return next_stimulus_step.at(i);};
-    long    GetStimulusNoSteps()        {return next_stimulus_step.size();}
+    long    GetStimulusNoSteps()        {return static_cast<long> (next_stimulus_step.size());}
     std::string GetType()               {return str_spatialpoissonStimulus;}
     int     GetTable_entries()          {return table_entries;}
 

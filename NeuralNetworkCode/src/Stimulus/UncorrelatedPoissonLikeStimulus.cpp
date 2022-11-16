@@ -12,7 +12,7 @@ UncorrelatedPoissonLikeStimulus::UncorrelatedPoissonLikeStimulus(NeuronPopSample
                                                                  GlobalSimInfo  * info):Stimulus(neur,info){
 
     int P             = neurons->GetTotalPopulations();
-    noExternalNeurons = 1.0;
+    noExternalNeurons = 1;
     table_entries     = 10;
     J_X               = new double[P];
     seed              = -1;
@@ -104,7 +104,7 @@ inline void UncorrelatedPoissonLikeStimulus::fill_poisson_value_table(double mu)
 }
 
 void UncorrelatedPoissonLikeStimulus::AddStimulusStep(int ts,double sS){
-	long	Time_step = std::round(ts / info->dt);
+    long	Time_step{ static_cast<long>(std::round(ts / info->dt)) };
     if(next_stimulus_step.empty())
     {
       next_stimulus_time_step.push_back(Time_step);
@@ -184,14 +184,14 @@ void UncorrelatedPoissonLikeStimulus::LoadParameters(std::vector<std::string> *i
             this->noExternalNeurons = std::stoi(values.at(0));
         }
         else if(name.find("seed") != std::string::npos){
-            SetSeed(std::stod(values.at(0)));
+            SetSeed(static_cast<int>(std::stod(values.at(0))));
         }
         else if(name.find("stimulus_step") != std::string::npos){
-            AddStimulusStep(std::stod(values.at(0)),std::stod(values.at(1)));
+            AddStimulusStep(static_cast<int>(std::stod(values.at(0))), std::stod(values.at(1)));
         }
         else if((name.find("Poisson_table_entries") != std::string::npos) ||
                 (name.find("PoissonTableEntries") != std::string::npos)){
-            this->table_entries = std::stod(values.at(0));
+            this->table_entries = static_cast<int>(std::stod(values.at(0)));
         }
         else if(name.find("J_X") != std::string::npos){
             for(int i = 0;i < min_(P,(int)values.size());i++)

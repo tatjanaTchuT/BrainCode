@@ -247,14 +247,14 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
         }
 
         else if(name.find("globalSeed") != std::string::npos){
-            info.globalSeed       = std::stod(values.at(0));
+            info.globalSeed = static_cast<int> (std::stod(values.at(0)));
             info.globalGenerator  = std::default_random_engine(info.globalSeed);
         }
 		else if (name.find("density") != std::string::npos) {
-			info.density = std::stod(values.at(0));
+            info.density = static_cast<int>(std::stod(values.at(0)));
 		}
 		else if (name.find("Dimensions") != std::string::npos) {
-			info.Dimensions = std::stod(values.at(0));
+            info.Dimensions = static_cast<int>(std::stod(values.at(0)));
 		}
         else if((name.find("synapticScaling") != std::string::npos) ||
                 (name.find("scalingSynapticStrength") != std::string::npos)){

@@ -109,7 +109,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
         if(newFormat)
             neuronPops[p]->LoadParameters(&neurons_strs);
         else
-            neuronPops[p]->LoadParameters(&neurons_strs,std::stod(Ni.at(p)));
+            neuronPops[p]->LoadParameters(&neurons_strs, static_cast<unsigned long>(std::stod(Ni.at(p))));
     }
 
     //Set seeds

@@ -72,7 +72,7 @@ void MongilloSynapseContinuous::ConnectNeurons()
     std::vector<double> y_local_min;
 
     for(unsigned long source = 0;source < GetNoNeuronsPre();source ++){
-        unsigned long n = geometry->GetTargetList(source)->size();
+        unsigned long n{ static_cast<unsigned long>(geometry->GetTargetList(source)->size()) };
         x[source].resize(n);
         y[source].resize(n);
         spike_submitted[source].resize(n);
@@ -120,7 +120,7 @@ void MongilloSynapseContinuous::LoadParameters(std::vector<std::string> *input){
             u  = std::stod(values.at(0));
         }
         else if(name.find("mongillo_seed") != std::string::npos){
-            SetSeed(std::stod(values.at(0)));
+            SetSeed(static_cast<int>(std::stod(values.at(0))));
         }
 
     }
@@ -158,13 +158,13 @@ std::valarray<double> MongilloSynapseContinuous::GetSynapticState(int pre_neuron
     std::valarray<double> val;
     val.resize(GetNumberOfDataColumns());
 
-    double X=0;
-    double Y=0;
+    double X{ 0 };
+    double Y{ 0 };
     // double XY=0;
-    double SpikeSubmitted=0;
+    double SpikeSubmitted{ 0 };
 
-    double x_minus=0, y_minus=0;
-	int N_post = x[pre_neuron].size();
+    double x_minus{ 0 }, y_minus{0};
+    int N_post{ static_cast<int>(x[pre_neuron].size()) };
     for(int i = 0;i<N_post;i++){
         y_minus = (y[pre_neuron][i] - u)/(1-u);
         Y += y_minus;
@@ -182,7 +182,7 @@ std::valarray<double> MongilloSynapseContinuous::GetSynapticState(int pre_neuron
     }
 
     // get average coupling strength
-    double Jsum = 0;
+    double Jsum{ 0 };
     for(unsigned int target=0; target < this->GetNumberOfPostsynapticTargets(pre_neuron); target++){
         Jsum += *(geometry->GetDistributionJ(pre_neuron,target));
     }

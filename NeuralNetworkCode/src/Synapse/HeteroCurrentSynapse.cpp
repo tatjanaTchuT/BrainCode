@@ -89,7 +89,7 @@ unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigne
     if (synapseExtPtr != nullptr) {
         synapseExtPtr->preNeuronId = preId;
         synapseExtPtr->postNeuronId = postId;
-        synapseExtPtr->localId = this->synapseData.size();
+        synapseExtPtr->localId = static_cast<unsigned long>(this->synapseData.size());
 
         this->synapseData.push_back(synapseExtPtr);
 

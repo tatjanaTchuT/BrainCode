@@ -76,11 +76,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 				s.values[input] = std::stod(values.at(input));
 			}
             if(is_double(values.at(P)))
-                s.end_time = std::round(std::stod(values.at(P))/info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
             else
                 s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
             maxCurrent[Gaussian_i-1].push_back(s);
         }
 
@@ -92,11 +92,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 			s.values.resize(1);
 			s.values[0] = std::stod(values.at(0));
 			if (is_double(values.at(1)))
-				s.end_time = std::round(std::stod(values.at(1)) / info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(1)) / info->dt));
 			else
 				s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 			sigmaCurrent_x[Gaussian_i-1].push_back(s);
 		}
 
@@ -110,11 +110,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 				s.values[input] = std::stod(values.at(input));
 			}
 			if (is_double(values.at(P)))
-				s.end_time = std::round(std::stod(values.at(P)) / info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
 			else
 				s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 			sigmaCurrent_t[Gaussian_i-1].push_back(s);
         }
 		else if ((name.find("Background_Noise") != std::string::npos)) {
@@ -122,11 +122,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 			for (int input = 0;input < P;input++)
 				s.values[input] = std::stod(values.at(input));
 			if (is_double(values.at(P)))
-				s.end_time = std::round(std::stod(values.at(P)) / info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
 			else
 				s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 			backgroundNoise.push_back(s);
 		}
     }

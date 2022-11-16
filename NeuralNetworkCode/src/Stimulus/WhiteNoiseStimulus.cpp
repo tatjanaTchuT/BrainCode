@@ -35,18 +35,18 @@ void WhiteNoiseStimulus::LoadParameters(std::vector<std::string> *input){
         SplitString(&(*it),&name,&values);
 
         if((name.find("seed") != std::string::npos)){
-            seed = std::stod(values.at(0));
+            seed = static_cast<unsigned int>(std::stod(values.at(0)));
         }
         else if((name.find("meanCurrent") != std::string::npos)){
             s.values.clear();
             for(int i = 0;i< P;i++)
                 s.values.push_back(std::stod(values.at(i)));
             if(is_double(values.at(P)))
-                s.end_time = std::round(std::stod(values.at(P))/info->dt);
+                s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
             else
                 s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >(int)(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+                s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 
             meanCurrent.push_back(s);
         }
@@ -56,12 +56,12 @@ void WhiteNoiseStimulus::LoadParameters(std::vector<std::string> *input){
                 s.values.push_back(std::stod(values.at(i)));
 
             if(is_double(values.at(P)))
-                s.end_time = std::round(std::stod(values.at(P))/info->dt);
+                s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
             else
                 s.end_time = INT_MAX;
 
             if((s.end_time < 0) || (s.end_time > std::round(info->simulationTime/info->dt)))
-                s.end_time = std::round(info->simulationTime/info->dt);
+                s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 
             sigmaCurrent.push_back(s);
         }

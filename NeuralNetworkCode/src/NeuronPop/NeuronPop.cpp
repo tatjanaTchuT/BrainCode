@@ -64,8 +64,8 @@ void NeuronPop::SetPosition(long noNeur)
 	//}
 
 	if (info->Dimensions == 2) {
-		rows = ceil(sqrt(noNeurons));
-		columns = floor(noNeurons / rows);
+        rows = static_cast<int>(ceil(sqrt(noNeurons)));
+		columns = noNeurons / rows;
 		mod = noNeurons -rows*columns;//the difference is added by including one extra column in each of the first mod rows
 
 		for (int i = 0; i < mod*(columns+1); i++) {

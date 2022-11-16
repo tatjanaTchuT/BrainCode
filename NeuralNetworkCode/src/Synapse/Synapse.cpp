@@ -66,14 +66,14 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
             //std::cout << "assigning P_pot = " << std::to_string(this->P_pot) << "\n";
         }
         else if(name.find("D_min") != std::string::npos){
-            this->D_min = std::round(std::stod(values.at(0))/dt);
+            this->D_min = static_cast<int>(std::round(std::stod(values.at(0)) / dt));
         }
         else if(name.find("D_max") != std::string::npos){
-            this->D_max = std::round(std::stod(values.at(0))/dt);
+            this->D_max = static_cast<int>(std::round(std::stod(values.at(0)) / dt));
         }
         else if(name.find("connectivity_type") != std::string::npos){
             if(values.at(0) == str_randomConnectivity){
-                if(geometry != NULL)
+                if(geometry != NULL) //Doing NOTHING, delete already checks
                     delete geometry;
                 geometry           = new RandomConnectivity(this,info);
             }
@@ -131,7 +131,7 @@ void Synapse::SaveParameters(std::ofstream * stream,std::string id_str){
 
 
 unsigned long Synapse::GetNumberOfPostsynapticTargets(int pre_neuron) {
-    return geometry->GetTargetList(pre_neuron)->size();
+    return static_cast<unsigned long>(geometry->GetTargetList(pre_neuron)->size());
 }
 
 double Synapse::GetrecurrentInput(int post_neuron){

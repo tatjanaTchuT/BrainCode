@@ -20,7 +20,7 @@ std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& mor
 }
 
 unsigned long Morphology::getSynapseCount() const {
-    return this->synapseData.size();
+    return static_cast<unsigned long>(this->synapseData.size());
 }
 
 double Morphology::getWeight(unsigned long synapseId) const {

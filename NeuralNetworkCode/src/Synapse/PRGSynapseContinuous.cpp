@@ -70,11 +70,11 @@ std::valarray<double> PRGSynapseContinuous::GetSynapticState(int pre_neuron)
 	std::valarray<double> val;
 	val.resize(GetNumberOfDataColumns());
 
-    double X=0, Y=0, L=0, SpikeSubmitted=0; // XY=0,
-    double x_minus=0, y_minus=0, l_minus=0;
-	int N_post = x[pre_neuron].size();
+    double X{ 0 }, Y{ 0 }, L{ 0 }, SpikeSubmitted{ 0 }; // XY{0},
+    double x_minus{ 0 }, y_minus{ 0 }, l_minus{ 0 };
+    int N_post{ static_cast<int>(x[pre_neuron].size()) };
 
-    for(int i = 0;i<N_post;i++){
+    for (int i{ 0 }; i < N_post; i++) {
         // compute l before spike
         l_minus = (l[pre_neuron][i]-M*y[pre_neuron][i]*x[pre_neuron][i])/(1-M*y[pre_neuron][i]*x[pre_neuron][i]);
         L += l_minus;
@@ -167,10 +167,10 @@ void PRGSynapseContinuous::ConnectNeurons()
 
 	//Assemble a list of source neurons that project onto each postsynaptic neurons
 	// this is done by going one by one through the list of postsynaptic neurons for each source neurons
-	for (unsigned long source = 0;source < GetNoNeuronsPre();source++) {
-		long n = geometry->GetTargetList(source)->size();
+    for (unsigned long source{ 0 }; source < GetNoNeuronsPre(); source++) {
+        long n{ static_cast<long>(geometry->GetTargetList(source)->size()) };
 		l[source].resize(n);
-		for(int i_n=0; i_n<n; i_n++){
+        for (int i_n{ 0 }; i_n < n; i_n++) {
             		l[source][i_n] = 0;
         	}
 	}
