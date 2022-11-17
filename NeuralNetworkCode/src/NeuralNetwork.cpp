@@ -240,7 +240,6 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
                 title = values.at(0);
         }
         else if(name.find("dt_timestep") != std::string::npos){
-            std::cout << name;
             info.dt = std::stod(values.at(0));
         }
         else if(name.find("simulationTime") != std::string::npos){

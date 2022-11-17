@@ -25,7 +25,6 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
         SplitString(&it,&name,&values);
 
         if(name.find("morphology") != std::string::npos) {
-            std::cout << name;
             if (values.at(0) == str_MonoDendriteSTDPTazerart) {
                 for (unsigned long i = 0; i < this->noNeurons; i++) {
                     this->morphology.push_back(std::make_unique<MonoDendriteSTDPTazerart>(this->info));
