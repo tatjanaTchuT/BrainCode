@@ -25,7 +25,7 @@ public:
     std::string GetDataHeader(int data_column) override;
 	std::string GetUnhashedDataHeader() override;
     std::valarray<double> GetSynapticState(int pre_neuron) override;
-    int GetNumberOfDataColumns() override;
+    int GetNumberOfDataColumns() override {return 1;};
 
     void SaveParameters(std::ofstream * stream,std::string id_str) override;
     void LoadParameters(std::vector<std::string> *input) override;

@@ -1081,9 +1081,9 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	double n;
 	int Xbin, Ybin;
 
-	for (unsigned int p = 0; p < P; p++) {
-		for (unsigned long i = 0; i < neurons->GetNeuronsPop(p); i++) {
-			n = ((double)this->neurons->GetNeuronsPop(p));
+	for (unsigned int p {0}; p < P; p++) {
+		for (unsigned long i {0}; i < neurons->GetNeuronsPop(p); i++) {
+			n = static_cast<double>(this->neurons->GetNeuronsPop(p));
 			currentBin.potential[p] += this->neurons->GetPotential(p, i) / n;
 			currentBin.externalCurrent[p] += this->stimulus->GetSignalArray(p, i) / n / info->dt;
 			currentBin.totalCurrentSquared_mean[p] += pow(synaptic_dV->at(p).at(i) / info->dt, 2.0) / n;
@@ -1146,9 +1146,9 @@ void AdvancedRecorder::writeFinalDataFile(double comp_time)
 {
     std::chrono::time_point<std::chrono::system_clock> t;
     t                    = std::chrono::system_clock::now();
-    std::time_t end_time = std::chrono::system_clock::to_time_t(t);
+    std::time_t end_time {std::chrono::system_clock::to_time_t(t)};
 
-    std::ofstream stream(GetParametersFilename(),std::ofstream::out | std::ofstream::app    );
+    std::ofstream stream(GetParametersFilename(),std::ofstream::out | std::ofstream::app);
     stream <<  "#*****************************************************************\n";
     stream <<  "#Comp. finalized: " << std::ctime(&end_time);
     stream <<  "#Comp. time: " << comp_time << " secs.\n";

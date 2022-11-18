@@ -356,7 +356,7 @@ int NeuralNetwork::WellDefined(){
 int NeuralNetwork::Simulate()
 {
     if(!WellDefined())
-        return 0;
+        return 1;
 
     //******************************
     // Declarations & Initialization
@@ -402,36 +402,12 @@ int NeuralNetwork::Simulate()
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
 	auto start = std::chrono::high_resolution_clock::now();
 //Remember remember
-    unsigned long potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
-
-    for (unsigned long popId = 0; popId < 1; popId++) {
-        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId)); //Why dynamic cast to HeteroLIF? Test without LIF as all functions are of HeteroNeuronPop
-        for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
-            unsigned long synCount = pop->getSynapseCount(nId);
-            for (unsigned long sId = 0; sId < synCount; ++sId) {
-                double w = pop->getWeight(nId, sId);
-                if (w > 1.8) {
-                    potentiationCount++;
-                } else if (w < 0.2) {
-                    depressionCount++;
-                } else if (w > 0.8 && w < 1.2) {
-                    stable++;
-                } else {
-                    inBetweeners++;
-                }
-            }
-        }
-    }
-
-    std::cout << "Potentiation Count: " << potentiationCount << std::endl;
-    std::cout << "Depression Count: " << depressionCount << std::endl;
-    std::cout << "Stable Count: " << stable << std::endl;
-    std::cout << "InBetweener Count: " << inBetweeners << std::endl;
+    NeuralNetwork::outputHeteroEvents();
 //The 5th of November
     while(info.time_step <= simSteps)
     {
-		for (unsigned int p = 0; p < P; p++) {
-			for (unsigned long i = 0;i < neurons->GetNeuronsPop(p);i++)
+        for (unsigned int p{0}; p < P; p++) {
+            for (unsigned long i{ 0 }; i < neurons->GetNeuronsPop(p); i++)
 				synaptic_dV[p][i] = 0.0;
 		}
         this->synapses->advect(&synaptic_dV);
@@ -441,11 +417,11 @@ int NeuralNetwork::Simulate()
 		this->synapses->reset();
 
 
-        if(info.time_step%((int)(simSteps*0.01)) == 1){
+        if(info.time_step%(static_cast<int>(simSteps*0.01)) == 1){
             intermediate_time = clock();
-            r       = ((double)info.time_step/(double)simSteps);
-            t_comp  = double(intermediate_time-begin)/CLOCKS_PER_SEC;
-            std::cout << (int)(r*100) << "%  -- Comp. time: " << (int)(t_comp) << "/" << (int)(t_comp/r) << " sec. -- " << " \n";
+            r = (static_cast<double>(info.time_step) / static_cast<double>(simSteps));
+            t_comp = static_cast<double>(intermediate_time - begin) / CLOCKS_PER_SEC;
+            std::cout << static_cast<int>(r*100) << "%  -- Comp. time: " << static_cast<int>(t_comp) << "/" << static_cast<int>(t_comp/r) << " sec. -- " << " \n";
         }
 
         info.time_step++;
@@ -458,39 +434,47 @@ int NeuralNetwork::Simulate()
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
     std::cout << "\nTotal simulation time(s): " << duration.count() << "\n";
 //Wrap into a function, it is repeated twice and subject to changes. FROM HERE
-    potentiationCount = 0, depressionCount = 0, inBetweeners = 0, stable = 0;
-    for (unsigned long popId = 0; popId < 1; popId++) {
-        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
-        for (unsigned long nId = 0; nId < pop->GetNoNeurons(); nId++) {
-            unsigned long synCount = pop->getSynapseCount(nId);
-            for (unsigned long sId = 0; sId < synCount; ++sId) {
-                double w = pop->getWeight(nId, sId);
-                if (w > 1.8) {
-                    potentiationCount++;
-                } else if (w < 0.2) {
-                    depressionCount++;
-                } else if (w > 0.8 && w < 1.2) {
-                    stable++;
-                } else {
-                    inBetweeners++;
-                }
-            }
-        }
-    }
-
-    std::cout << "Potentiation Count: " << potentiationCount << std::endl;
-    std::cout << "Depression Count: " << depressionCount << std::endl;
-    std::cout << "Stable Count: " << stable << std::endl;
-    std::cout << "InBetweener Count: " << inBetweeners << std::endl;
-//TO HERE
+    NeuralNetwork::outputHeteroEvents();
+//TO HERE. We should also make sure this content is stored in an output file .txt
 
     //*****************************************************
     // --------------- END OF THE SIMULATION ------------
     //*****************************************************
 
-    return 1;
+    return 0;
 }
 
 void NeuralNetwork::makeInputCopy(const std::string& inputFile) {
     this->recorder->makeInputCopy(inputFile);
+}
+
+void NeuralNetwork::outputHeteroEvents(){
+        unsigned long potentiationCount {0}, depressionCount {0}, inBetweeners {0}, stable {0};
+
+    for (unsigned long popId{ 0 }; popId < 1; popId++) {
+        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
+        if (pop!=nullptr){
+            for (unsigned long nId{ 0 }; nId < pop->GetNoNeurons(); nId++) {
+                unsigned long synCount = pop->getSynapseCount(nId);
+                for (unsigned long sId{ 0 }; sId < synCount; ++sId) {
+                    double w{ pop->getWeight(nId, sId) };
+                    if (w > 1.8) {
+                        potentiationCount++;
+                    }else if (w < 0.2) {
+                        depressionCount++;
+                    }else if (w > 0.8 && w < 1.2) {
+                        stable++;
+                    }else {
+                        inBetweeners++;
+                    }
+                }
+            }
+        }
+    }
+
+    std::ofstream stream();
+    std::cout << "Potentiation Count: " << potentiationCount << std::endl;
+    std::cout << "Depression Count: " << depressionCount << std::endl;
+    std::cout << "Stable Count: " << stable << std::endl;
+    std::cout << "InBetweener Count: " << inBetweeners << std::endl;
 }

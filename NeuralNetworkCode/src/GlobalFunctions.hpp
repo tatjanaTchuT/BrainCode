@@ -17,20 +17,20 @@
 
 struct GlobalSimInfo {
 
-    std::default_random_engine globalGenerator;
-    std::string pathTo_inputFile;
-    int		globalSeed;
-    long    time_step;
-    int     waiting_index;
-    double  dt;
-	int     density;
-	double  Lx; //Always a positive quantity (number of neurons/dimensions)
-	double  Ly; //Always a positive quantity (number of neurons/dimensions)
-	int     Dimensions;
-	double  simulationTime;
-    double  networkScaling_synStrength;
-    int     networkScaling_extern; // 0: default (=1)
-    long    N;
+    std::default_random_engine globalGenerator{};
+    std::string pathTo_inputFile{};
+    int		globalSeed{};
+    long    time_step{};
+    int     waiting_index{};
+    double  dt{};
+    int     density{};
+    double  Lx{}; //Always a positive quantity (number of neurons/dimensions)
+    double  Ly{}; //Always a positive quantity (number of neurons/dimensions)
+    int     Dimensions{};
+    double  simulationTime{};
+    double  networkScaling_synStrength{};
+    int     networkScaling_extern{}; // 0: default (=1)
+    long    N{};
 
 } ;
 

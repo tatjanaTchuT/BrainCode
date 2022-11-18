@@ -33,7 +33,6 @@ int main(int argc, char* argv[])
         base = argv[1];
         if(argc >= 3){
             inputFile = argv[2];
-
             pathTo_inputFile = getPathToInputFile(&inputFile, Windows);
         }
         else if (Windows) {
@@ -72,7 +71,8 @@ int main(int argc, char* argv[])
     // Read Parameter file
     //************************************************
     struct stat buffer;
-    if(stat(inputFile.c_str(),&buffer) != 0){
+    if(stat(inputFile.c_str(),&buffer) != 0 && inputFile.find("Parameters.txt") != std::string::npos) 
+    {
         std::cout << "*************************\n";
         std::cout <<inputFile<<" Input file does not exist\n";
         std::cout << "*************************\n";

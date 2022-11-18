@@ -48,6 +48,7 @@ public:
     int  Simulate();
 
     void makeInputCopy(const std::string&);
+    void outputHeteroEvents();
 };
 
 #endif // NeuralNetwork_HPP

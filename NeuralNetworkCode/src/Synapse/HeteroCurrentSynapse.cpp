@@ -99,20 +99,23 @@ unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigne
     throw noAllocatableSynapseException();
 }
 
-int HeteroCurrentSynapse::GetNumberOfDataColumns() {
-    return 0;
-}
-
 std::string HeteroCurrentSynapse::GetDataHeader(int data_column) {
-    return "nothing";
+    return "#" + std::to_string(data_column) + " J_"+ GetIdStr() + " (mV)\n";
 }
 
 std::string HeteroCurrentSynapse::GetUnhashedDataHeader() {
-    return "nothing";
+    return "J_" + GetIdStr() + "\t";;
 }
 
 std::valarray<double> HeteroCurrentSynapse::GetSynapticState(int pre_neuron) {
-    std::valarray<double> val;
+    std::valarray<double> val(1);
+    double Jsum = 0;
+    // get average coupling strength
+    for(unsigned int target=0; target < this->GetNumberOfPostsynapticTargets(pre_neuron); target++){
+        Jsum += *(geometry->GetDistributionJ(pre_neuron,target));
+    }
+    val[0] = Jsum/double(this->GetNumberOfPostsynapticTargets(pre_neuron));
+    //val[0] = GetCouplingStrength()*double(this->GetNumberOfPostsynapticTargets(pre_neuron));
     return val;
 }
 
