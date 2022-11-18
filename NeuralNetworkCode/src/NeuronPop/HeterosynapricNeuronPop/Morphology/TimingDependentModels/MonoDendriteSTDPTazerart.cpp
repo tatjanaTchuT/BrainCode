@@ -73,8 +73,8 @@ void MonoDendriteSTDPTazerart::updateLTD(unsigned long synId) {
     this->weightsSum += this->synapseData[synId]->weight;
 }
 
-double MonoDendriteSTDPTazerart::gLTP(double deltaT) const {
-    if (deltaT < 0.0) {
+double MonoDendriteSTDPTazerart::gLTP(double deltaT) const {//deltaT means this is a temporal rule?
+    if (deltaT < 0.0) {//Are you sure this is how it has to behave when the input is negative?
         return 0.0;
     }
     double denominator = 2 * this->sigmaLTP * this->sigmaLTP;

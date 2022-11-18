@@ -472,7 +472,7 @@ void NeuralNetwork::outputHeteroEvents(){
         }
     }
 
-    std::ofstream stream();
+    //std::ofstream stream(this->recorder->GetDirectoryPath(),  );
     std::cout << "Potentiation Count: " << potentiationCount << std::endl;
     std::cout << "Depression Count: " << depressionCount << std::endl;
     std::cout << "Stable Count: " << stable << std::endl;

@@ -51,6 +51,7 @@ public:
     //**** Get-Functions *****
     int     GetAveragingSteps()   {return averaging_steps;}
     virtual std::string GetType() = 0;
+    std::string GetDirectoryPath() {return this->directoryPath + title;}
     std::string GetDataFilename()        {return this->directoryPath + title + "_Data.dat";}
     std::string GetParametersFilename()  {return this->directoryPath + title + "_Parameters.txt";}
     std::string GetParameterOptionsFilename()  {return this->directoryPath + "ParameterOptions.txt";}
