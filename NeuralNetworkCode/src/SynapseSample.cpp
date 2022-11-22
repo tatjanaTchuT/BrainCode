@@ -3,7 +3,7 @@
 SynapseSample::SynapseSample(NeuronPopSample * neurons,std::vector<std::string> *input,GlobalSimInfo *info)
 {
     this->generalSynapseSeed = -1;
-    this->info    = info;
+    this->info    = info;//These are pointers.
     this->neurons = neurons;
 
     //this->global_D_max = 0;

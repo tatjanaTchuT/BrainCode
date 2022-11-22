@@ -181,7 +181,7 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
     SynapseExt* neighbor = this->synapseData.at(neighborId).get();
 
     double hEffects = getDistanceEffects(spiker, neighbor);
-    hEffects *= getTimingEffects(spiker, neighbor);
+    hEffects *= getTimingEffects(spiker, neighbor);//Makes no sense
     spiker->theta += hEffects;
     neighbor->theta += hEffects;
 }

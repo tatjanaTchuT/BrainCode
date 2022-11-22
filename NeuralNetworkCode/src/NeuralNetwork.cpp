@@ -366,14 +366,14 @@ int NeuralNetwork::Simulate()
     unsigned int      P = neurons->GetTotalPopulations();
     std::uniform_real_distribution<double> uni_distribution (0.0,1.0);
     int      simSteps      = int(info.simulationTime/info.dt);  // number of simulation time steps
-    // int      global_D_max = this->synapses->GetMaxD();          // get maximum delay across all synapses: size of waiting matrix
+    // int      global_D_max = this->synapses->GetMaxD();          // get maximum delay across all synapses: size of waiting matrix DEPRECATED
 
     std::vector<std::vector<double>> synaptic_dV;
     synaptic_dV.resize(P);
     for(unsigned int p = 0; p < P; p++)
 		synaptic_dV[p].resize(neurons->GetNeuronsPop(p),0);
 
-    // Initialize waiting matrix for synaptic delays
+    // Initialize waiting matrix for synaptic delays (safe to delete?) DEPRECATED
 	/*
     std::vector<std::vector<std::vector<double>>> waiting_matrix (global_D_max+1, std::vector<std::vector<double>>(P, std::vector<double>(0)));
     for(int d_index = 0; d_index < waiting_matrix.size(); d_index++){
@@ -382,6 +382,7 @@ int NeuralNetwork::Simulate()
         }
     }*/
 
+    //OPTIMIZATION: Here we should open the six streams and keep them open until the end of the simulation, for performance's sake
     this->recorder->SetFilenameDate();
     SaveParameters();
     this->recorder->WriteDataHeader();
@@ -397,7 +398,7 @@ int NeuralNetwork::Simulate()
     this->synapses->ConnectNeurons();
     this->recorder->WriteConnectivity();
     this->recorder->WriteDistributionD();
-    this->recorder->WriteDistributionJ();
+    this->recorder->WriteDistributionJ(); //Heteroclasses do not use Js at all!!!!
 
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
 	auto start = std::chrono::high_resolution_clock::now();

@@ -3,33 +3,37 @@
 HeteroCurrentSynapse::HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* preNeurons, GlobalSimInfo* info):
     Synapse(postNeurons, preNeurons, info) {
 
-    // remove default legacy geometry initialization. It is done in HeteroCurrentSynapse::LoadParameters with appropriate assertions
+    // remove default legacy geometry initialization. It is done in HeteroCurrentSynapse::LoadParameters with appropriate assertions.
+    //Ok, but this is secondary for now
     delete this->geometry;
     this->geometry = new HeteroRandomConnectivity(this, this->info);
 
     // assert that HeteroSynapses are allowed only when the post NeuronPop supports heterosynaptic behavior
     assertm(dynamic_cast<HeteroNeuronPop*>(postNeurons) != nullptr,
             "Attempting to create a Heterosynapse but the PostNeurons and/or PreNeurons are not Heterosynaptic.");
-
+    //GOOD
 }
 
 void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 
     resetcumulatedDV();
 
-    std::vector<double> currents;
+    std::vector<double> currents{};
 
     //Get list of spikers
-    std::vector<long> spikers = *neuronsPre->GetSpikers();
+    std::vector<long> spikers {*neuronsPre->GetSpikers()};
 
-    auto* connectivity = dynamic_cast<HeteroRandomConnectivity*>(this->geometry);
+    auto* connectivity { dynamic_cast<HeteroRandomConnectivity*>(this->geometry)};
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
     for(auto const& spiker: spikers){
-        std::vector<std::pair<unsigned long, unsigned long>> targetList = connectivity->getSynapticTargets(spiker);
-        currents.resize(targetList.size(),0);
+        //Constref is probably enough
+        std::vector<std::pair<unsigned long, unsigned long>> targetList { connectivity->getSynapticTargets(spiker)};
+        
         std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
-
+        currents.resize(targetList.size(), 0.0);//OPTIMIZATION? All of this is implicitly innecessary. Change to reserve()?
+        //The two previous lines can be replaced by:, or store the current vectors and only refill.
+        //std::vector<double> currents(targetList.size(), 0.0);
         advect_spikers(currents, spiker);
 
         FillWaitingMatrix(spiker, currents);
