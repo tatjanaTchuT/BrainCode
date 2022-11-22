@@ -61,55 +61,55 @@ struct SynapseExt {
     unsigned long localId; // id for synapse within its a synapse collection
 };
 
-const std::string str_individualRandomConnectivity("IndividualRandomConnectivity");
-const std::string str_randomConnectivity("RandomConnectivity");
-const std::string str_binaryrandomConnectivity("BinaryRandomConnectivity");
-const std::string str_distanceConnectivity("DistanceConnectivity");
-const std::string str_heteroRandomConnectivity("HeteroRandomConnectivity");
+const std::string str_individualRandomConnectivity {"IndividualRandomConnectivity"};
+const std::string str_randomConnectivity{"RandomConnectivity"};
+const std::string str_binaryrandomConnectivity{"BinaryRandomConnectivity"};
+const std::string str_distanceConnectivity{"DistanceConnectivity"};
+const std::string str_heteroRandomConnectivity{"HeteroRandomConnectivity"};
 //const std::string str_localConnectivity("LocalConnectivity");
 
 
-const std::string str_currentSynapse("CurrentSynapse");
-const std::string str_conductanceSynapse("ConductanceSynapse");
-const std::string str_mongilloSynapse("MongilloSynapse");
-const std::string str_mongilloSynapseContinuous("MongilloSynapseContinuous");
-const std::string str_probabilisticCurrentSynapse("ProbabilisticCurrentSynapse");
-const std::string str_prgSynapseContinuous("PRGSynapseContinuous");
+const std::string str_currentSynapse{"CurrentSynapse"};
+const std::string str_conductanceSynapse{"ConductanceSynapse"};
+const std::string str_mongilloSynapse{"MongilloSynapse"};
+const std::string str_mongilloSynapseContinuous{"MongilloSynapseContinuous"};
+const std::string str_probabilisticCurrentSynapse{"ProbabilisticCurrentSynapse"};
+const std::string str_prgSynapseContinuous{"PRGSynapseContinuous"};
 
-const std::string str_exponentialCurrentSynapse("ExponentialCurrentSynapse");
-const std::string str_powerlawsynapse("PowerLawSynapse");
-const std::string str_exponentialConductanceSynapse("ExponentialConductanceSynapse");
-const std::string str_exponentialMongilloSynapse("ExponentialMongilloSynapse");
-const std::string str_heteroSynapse("HeteroCurrentSynapse");
+const std::string str_exponentialCurrentSynapse{"ExponentialCurrentSynapse"};
+const std::string str_powerlawsynapse{"PowerLawSynapse"};
+const std::string str_exponentialConductanceSynapse{"ExponentialConductanceSynapse"};
+const std::string str_exponentialMongilloSynapse{"ExponentialMongilloSynapse"};
+const std::string str_heteroSynapse{"HeteroCurrentSynapse"};
 
-const std::string str_exponentialSynapseAddon("ExponentialSynapseAddon");
+const std::string str_exponentialSynapseAddon{"ExponentialSynapseAddon"};
 
-const std::string str_LIFNeuron("LIFNeuron");
-const std::string str_QIFNeuron("QIFNeuron");
-const std::string str_EIFNeuron("EIFNeuron");
-const std::string str_PoissonNeuron("PoissonNeuron");
-const std::string str_HeteroLIFNeuron("HeteroLIFNeuron");
-const std::string str_HeteroPoissonNeuron("HeteroPoissonNeuron");
+const std::string str_LIFNeuron{"LIFNeuron"};
+const std::string str_QIFNeuron{"QIFNeuron"};
+const std::string str_EIFNeuron{"EIFNeuron"};
+const std::string str_PoissonNeuron{"PoissonNeuron"};
+const std::string str_HeteroLIFNeuron{"HeteroLIFNeuron"};
+const std::string str_HeteroPoissonNeuron{"HeteroPoissonNeuron"};
 
-const std::string str_NOPNormalization("NOPNormalization");
-const std::string str_HardNormalization("HardNormalization");
-const std::string str_SoftMaxNormalization("SoftMaxNormalization");
+const std::string str_NOPNormalization{"NOPNormalization"};
+const std::string str_HardNormalization{"HardNormalization"};
+const std::string str_SoftMaxNormalization{"SoftMaxNormalization"};
 
-const std::string str_leanRecorder("LeanRecorder");
-const std::string str_advancedRecorder("AdvancedRecorder");
+const std::string str_leanRecorder{"LeanRecorder"};
+const std::string str_advancedRecorder{"AdvancedRecorder"};
 
-const std::string str_uncorrelatedStimulus("UncorrelatedStimulus");
-const std::string str_whitenoiseStimulus("WhiteNoiseStimulus");
-const std::string str_whitenoiseRescaled("WhiteNoiseRescaled");
-const std::string str_Tims_sin_Stimulus("TimsSinStimulus");
-const std::string str_whitenoiseLinear("WhiteNoiseLinear");
-const std::string str_spatialgaussianStimulus("SpatialGaussianStimulus");
-const std::string str_spatialpoissonStimulus("SpatialPoissonStimulus");
+const std::string str_uncorrelatedStimulus{"UncorrelatedStimulus"};
+const std::string str_whitenoiseStimulus{"WhiteNoiseStimulus"};
+const std::string str_whitenoiseRescaled{"WhiteNoiseRescaled"};
+const std::string str_Tims_sin_Stimulus{"TimsSinStimulus"};
+const std::string str_whitenoiseLinear{"WhiteNoiseLinear"};
+const std::string str_spatialgaussianStimulus{"SpatialGaussianStimulus"};
+const std::string str_spatialpoissonStimulus{"SpatialPoissonStimulus"};
 
-const std::string str_MonoDendriteSTDPTazerart("MonoDendriteSTDPTazerart");
-const std::string str_MonoDendriteSTDPTazerartRelative("MonoDendriteSTDPTazerartRelative");
-const std::string str_MonoDendriteSTDPBiWindow("MonoDendriteSTDPBiWindow");
-const std::string str_MonoDendriteSTDPBiExponential("MonoDendriteSTDPBiExponential");
+const std::string str_MonoDendriteSTDPTazerart{"MonoDendriteSTDPTazerart"};
+const std::string str_MonoDendriteSTDPTazerartRelative{"MonoDendriteSTDPTazerartRelative"};
+const std::string str_MonoDendriteSTDPBiWindow{"MonoDendriteSTDPBiWindow"};
+const std::string str_MonoDendriteSTDPBiExponential{"MonoDendriteSTDPBiExponential"};
 
 void multiply_vector (std::vector<unsigned long> &vector, unsigned long value);
 void multiply_vector (std::vector<double> &vector, double value);

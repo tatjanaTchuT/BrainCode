@@ -13,13 +13,14 @@ void MonoDendriteSTDP::advect() {
 
     // update cooperativity between spiker and spiker pairs -> avoids double counting when combined with loop that follows
     for (unsigned long i = 0; i < this->spikedSynapsesId.size(); ++i) {
-        for (unsigned long j = i+1; j < this->spikedSynapsesId.size(); ++j) {
+        for (unsigned long j = i+1; j < this->spikedSynapsesId.size(); ++j) {//Smart way of doing the loop
             this->updateCooperativity(this->spikedSynapsesId.at(i), this->spikedSynapsesId.at(j));
+            //This loop updates cooperativity between every single spiker.
         }
     }
 
     // update cooperativity between spiker and non-spiker pairs
-    for (const auto& synSpikerId : this->spikedSynapsesId) {
+    for (const auto& synSpikerId : this->spikedSynapsesId) {//OPTIMIZATION, a lot of comparisons. Is non-spiker cooperativity needed?
         for (unsigned long j = 0; j < this->synapseData.size(); ++j) {
             if (!this->spikedSynapses[j] && synSpikerId != j) {
                 this->updateCooperativity(synSpikerId, j);

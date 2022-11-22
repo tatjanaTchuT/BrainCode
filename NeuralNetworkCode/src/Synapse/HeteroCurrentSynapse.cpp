@@ -29,14 +29,14 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
     for(auto const& spiker: spikers){
         //Constref is probably enough
         std::vector<std::pair<unsigned long, unsigned long>> targetList { connectivity->getSynapticTargets(spiker)};
-        
-        std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
+        //std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
         currents.resize(targetList.size(), 0.0);//OPTIMIZATION? All of this is implicitly innecessary. Change to reserve()?
         //The two previous lines can be replaced by:, or store the current vectors and only refill.
         //std::vector<double> currents(targetList.size(), 0.0);
         advect_spikers(currents, spiker);
 
         FillWaitingMatrix(spiker, currents);
+        currents.clear();//Remove this line if the std::fill() is uncommented
     }
 
     ReadWaitingMatrixEntry(*synaptic_dV);
@@ -44,10 +44,11 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 }
 
 void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
-    auto* connectivity = dynamic_cast<HeteroRandomConnectivity*>(this->geometry);
-    std::vector<std::pair<unsigned long, unsigned long>> targetList = connectivity->getSynapticTargets(spiker);
+    auto* connectivity { dynamic_cast<HeteroRandomConnectivity*>(this->geometry)};
+    std::vector<std::pair<unsigned long, unsigned long>> targetList{ connectivity->getSynapticTargets(spiker)}; 
+    //OPTIMIZATION, targetList could be passed as a const reference to the previous copy
 
-    auto* heteroNeuronsPost = dynamic_cast<HeteroNeuronPop*>(this->neuronsPost);
+    auto* heteroNeuronsPost { dynamic_cast<HeteroNeuronPop*>(this->neuronsPost)}; 
 
     double couplingStrength;
     double current;
@@ -61,12 +62,12 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         postNeuronId = neuronSynapsePair.first;
         localSynapseId = neuronSynapsePair.second;
         globalSynapseId = this->synapseData[localSynapseId]->globalId;
-
+//I WAS HERE 22/11/2022
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
 //        std::cout << couplingStrength << std::endl;
         current = couplingStrength * this->synapseData[localSynapseId]->weight;
 //        std::cout << current << std::endl;
-        currents[i] += current;
+        currents[i] += current;//Possible OPTIMIZATION? Maybe by putting the expression here and referencing currents[i]
         this->cumulatedDV += current;
         heteroNeuronsPost->recordSynapticSpike(postNeuronId, globalSynapseId);
     }
@@ -86,9 +87,9 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
 
-    auto* heteroNeuronsPost = dynamic_cast<HeteroNeuronPop*>(this->neuronsPost); //Why HeteroLIF? What is wrong?
+    auto* heteroNeuronsPost = dynamic_cast<HeteroNeuronPop*>(this->neuronsPost);
 
-    std::shared_ptr<SynapseExt> synapseExtPtr = heteroNeuronsPost->allocateNewSynapse(postId); //the function is in HeteroPop
+    std::shared_ptr<SynapseExt> synapseExtPtr = heteroNeuronsPost->allocateNewSynapse(postId);
 
     if (synapseExtPtr != nullptr) {
         synapseExtPtr->preNeuronId = preId;

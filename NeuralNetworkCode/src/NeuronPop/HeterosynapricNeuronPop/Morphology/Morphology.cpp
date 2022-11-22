@@ -5,14 +5,14 @@ Morphology::Morphology(GlobalSimInfo *info): info(info), lastPostSpikeTime(-200)
 
 void Morphology::recordPostSpike() {
     this->lastPostSpikeTime = this->info->dt * (double) this->info->time_step;
-    this->totalPostSpikes++;
+    ++(this->totalPostSpikes);
 }
 
 void Morphology::recordPreSpike(unsigned long synSpikerId) {
     this->synapseData.at(synSpikerId)->lastSpike = static_cast<double> (this->info->time_step) * this->info->dt;
     this->spikedSynapsesId.push_back(synSpikerId);
     this->spikedSynapses.at(synSpikerId) = true;
-    this->totalPreSpikes++;
+    ++(this->totalPreSpikes);
 }
 
 std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& morph) {
@@ -45,7 +45,7 @@ void Morphology::normalizeWeights() {
 
 void Morphology::hardNormalize() {
     for (auto& syn: this->synapseData) {
-        syn->weight = std::max(0.0, std::min(2.0, syn->weight));
+        syn->weight = std::max(0.0, std::min(2.0, syn->weight));//Is this even compatible with negative weights? OPTIMIZATION
     }
 }
 

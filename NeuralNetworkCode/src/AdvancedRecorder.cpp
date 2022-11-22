@@ -1015,7 +1015,7 @@ void AdvancedRecorder::Record_HeteroSynapses() {
     }
 
     double           dt = info->dt;
-    double           t = double(info->time_step)*dt;
+    double           t = static_cast<double>(info->time_step)*dt;
     long             P = neurons->GetTotalPopulations();
     std::ofstream    file;
     file.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);

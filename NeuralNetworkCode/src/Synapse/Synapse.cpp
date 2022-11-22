@@ -154,10 +154,10 @@ void Synapse::advect(std::vector<double> * synaptic_dV)
         currents.resize(tL.size(),0);
         std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
 
-        advect_spikers(currents, spiker);
+        advect_spikers(currents, spiker);//Here target list is used again OPTIMIZATION
 
 
-        FillWaitingMatrix(spiker, currents);
+        FillWaitingMatrix(spiker, currents);//Here target list is used again OPTIMIZATION
     }
 
 	ReadWaitingMatrixEntry(*synaptic_dV);
@@ -168,7 +168,7 @@ void Synapse::FillWaitingMatrix(long spiker, std::vector<double>& currents){
     std::vector<unsigned long> tL {*geometry->GetTargetList(spiker)};
     //std::vector<int> *tD = geometry->GetDistributionD(spiker);
 
-    for(unsigned int target{0}; target < tL.size(); target++){
+    for(unsigned int target{0}; target < tL.size(); ++target){
         int delay { *geometry->GetDistributionD(spiker,target)};                              // get individual synaptic delay between spiker and target
         int matrix_index { (this->info->time_step + delay)%(D_max+1)};
         waiting_matrix[tL[target]][matrix_index] += currents[target]; // add spiker to waiting matrix
