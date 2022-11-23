@@ -91,3 +91,5 @@ Saifcompile/.vs/Saifcompile/v17/.suo
 *.ipdb
 *.txt
 *.dat
+*.sarif
+*.xml

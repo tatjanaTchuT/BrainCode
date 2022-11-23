@@ -112,7 +112,7 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 
 	waiting_matrix.resize(GetNoNeuronsPost());
 	for (unsigned long i = 0;i < GetNoNeuronsPost();i++)
-		waiting_matrix[i].resize(D_max + 1);
+		waiting_matrix[i].resize(static_cast<size_t>(D_max) + 1);
 
     FilterStringVector(input,"connectivity", &connectivity_strs); //to use once all input Parameter files are updated
     geometry->LoadParameters(&connectivity_strs);

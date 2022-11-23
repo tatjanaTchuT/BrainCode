@@ -452,11 +452,11 @@ void NeuralNetwork::makeInputCopy(const std::string& inputFile) {
 void NeuralNetwork::outputHeteroEvents(){
         unsigned long potentiationCount {0}, depressionCount {0}, inBetweeners {0}, stable {0};
 
-    for (unsigned long popId{ 0 }; popId < 1; popId++) {
+    for (unsigned long popId{ 0 }; popId < this->neurons->GetTotalPopulations(); popId++) {
         auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
         if (pop!=nullptr){
             for (unsigned long nId{ 0 }; nId < pop->GetNoNeurons(); nId++) {
-                unsigned long synCount = pop->getSynapseCount(nId);
+                unsigned long synCount{ pop->getSynapseCount(nId) };
                 for (unsigned long sId{ 0 }; sId < synCount; ++sId) {
                     double w{ pop->getWeight(nId, sId) };
                     if (w > 1.8) {
