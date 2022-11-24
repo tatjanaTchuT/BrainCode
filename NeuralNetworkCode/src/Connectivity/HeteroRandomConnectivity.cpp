@@ -34,7 +34,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
             try {
                 synapseId = heteroSynapse->allocateSynapse(source, target);
                 synapticTargets[source].push_back(std::make_pair(target, synapseId));
-                target_id[source].push_back(target);
+                target_id[source].push_back(target);//Are both truly necessary?
                 countedSourceNeurons++;
             } catch (const noAllocatableSynapseException& e) {
                 e.what();

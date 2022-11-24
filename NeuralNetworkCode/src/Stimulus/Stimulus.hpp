@@ -25,7 +25,7 @@ protected:
 
     GlobalSimInfo   * info;
     NeuronPopSample * neurons;
-    double          ** signal_array;
+    double          ** signal_array; //Is this what I think it is??? WTF, OPTIMIZE
 
 public:
 

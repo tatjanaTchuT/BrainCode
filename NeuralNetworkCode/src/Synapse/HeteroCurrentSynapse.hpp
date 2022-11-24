@@ -40,5 +40,4 @@ public:
 std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(HeteroCurrentSynapse&, unsigned long);
 std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse&);
 
-
 #endif

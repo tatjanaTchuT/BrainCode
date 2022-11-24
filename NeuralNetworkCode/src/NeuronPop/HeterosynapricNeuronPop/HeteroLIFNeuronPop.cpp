@@ -36,6 +36,9 @@ void HeteroLIFNeuronPop::advect(std::vector<double> * synaptic_dV)
 
         }
     }
+    for(unsigned long i{0}; i<static_cast<unsigned long>(this->morphology.size()); i++){
+        this->morphology[i]->advect();
+    }
 
 }
 
