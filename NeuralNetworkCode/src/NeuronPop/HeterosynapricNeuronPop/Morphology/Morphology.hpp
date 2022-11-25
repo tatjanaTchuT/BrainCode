@@ -15,9 +15,19 @@ enum WeightNormalization {
 
 class Morphology {
 
-private:
+protected:
     void hardNormalize();
     void softMaxNormalize();
+
+    // STDP Analysis
+    std::vector<std::pair<unsigned long, double>> preSpikes;
+    std::vector<double> postSpikes;
+
+    std::vector<std::pair<unsigned long, double>> theta_changes;
+//    std::vector<double> theta_changes;
+//    std::vector<double> theta_changes;
+
+    std::vector<std::pair<unsigned long, double>> weight_changes;
 
 protected:
 
@@ -34,8 +44,13 @@ protected:
 
     WeightNormalization weightNormalization;
 
+    bool decayWeights{};
+    double weightDecayConstant{};
+
     void reset();
     void normalizeWeights();
+
+    void timeDecay();
 
 public:
     explicit Morphology(GlobalSimInfo * info);
@@ -48,9 +63,9 @@ public:
 
     virtual std::string getType() = 0;
 
-    virtual void advect() = 0;
+    virtual void advect();
     virtual void recordPostSpike();
-    virtual void recordPreSpike(unsigned long synSpikerId);
+    virtual void recordExcitatoryPreSpike(unsigned long synSpikerId);
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0;
     virtual std::valarray<double> getOverallSynapticProfile() const = 0;
 
@@ -58,6 +73,12 @@ public:
     unsigned long getSynapseCount() const;
 
     double getWeight(unsigned long synapseId) const;
+
+    // STDP Analysis
+    //void triggerStatOut(std::string dirPath);
+
+    void printThetasAndWeights();
+
 };
 
 std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&);

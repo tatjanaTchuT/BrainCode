@@ -59,18 +59,18 @@ void MonoDendriteSTDPTazerartRelative::LoadParameters(std::vector<std::string> *
 
 void MonoDendriteSTDPTazerartRelative::updateLTP(unsigned long synId) {
     SynapseExt* syn = this->synapseData[synId].get();
-    this->weightsSum -= this->synapseData[synId]->weight;
+//    this->weightsSum -= this->synapseData[synId]->weight;
     this->synapseData[synId]->weight +=  this->synapseData[synId]->weight * this->preFactorLTP * this->aLTP(syn->theta) * this->gLTP(this->lastPostSpikeTime - syn->lastSpike);
 //    this->synapseData[synId]->weight = std::min(2.0, this->synapseData[synId]->weight);
-    this->weightsSum += this->synapseData[synId]->weight;
+//    this->weightsSum += this->synapseData[synId]->weight;
 }
 
 void MonoDendriteSTDPTazerartRelative::updateLTD(unsigned long synId) {
     SynapseExt* syn = this->synapseData[synId].get();
-    this->weightsSum -= this->synapseData[synId]->weight;
+//    this->weightsSum -= this->synapseData[synId]->weight;
     this->synapseData[synId]->weight += this->synapseData[synId]->weight * this->preFactorLTD * this->aLTD(syn->theta) * this->gLTD(syn->lastSpike - this->lastPostSpikeTime);
 //    this->synapseData[synId]->weight = std::max(0.0, this->synapseData[synId]->weight);
-    this->weightsSum += this->synapseData[synId]->weight;
+//    this->weightsSum += this->synapseData[synId]->weight;
 }
 
 double MonoDendriteSTDPTazerartRelative::gLTP(double deltaT) const {

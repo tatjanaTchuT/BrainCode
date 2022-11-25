@@ -29,6 +29,15 @@ void HeteroPoissonNeuronPop::advect(std::vector<double> * synaptic_dV)
             spiker.push_back(i);
     }
 
+    for (auto neuron: this->spiker) {
+        this->morphology[neuron]->recordPostSpike();
+    }
+
+    for (unsigned long morphId =  0; morphId < morphology.size(); ++morphId) {
+        this->morphology[morphId]->advect();
+    }
+
+
 }
 
 void HeteroPoissonNeuronPop::LoadParameters(std::vector<std::string> *input){

@@ -141,6 +141,7 @@ struct noAllocatableSynapseException : std::exception {
 };
 
 void DebuggerStopReport();
+void RemoveHashInString(std::vector<std::string>* string);
 //int INTMAX = 2;
 //double PI = 3.14159265359;
 

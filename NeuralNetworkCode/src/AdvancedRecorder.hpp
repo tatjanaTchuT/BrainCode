@@ -8,6 +8,8 @@
 #include <fstream>
 #include <valarray>
 #include <algorithm>
+#include <memory>
+
 #include "Recorder.hpp"
 #include "GlobalFunctions.hpp"
 #define min_(a,b) (((a)<(b)) ? (a):(b))
@@ -50,6 +52,9 @@ protected:
     // statistics per time step
     bin_data currentBin;
     std::valarray<unsigned long> noTrackHeteroSynapsePerTrackedNeuron;
+
+    unsigned long stepCount;
+    unsigned long heteroRecordingPerSteps;
 
     bool neuronTrackingInitialized;
 

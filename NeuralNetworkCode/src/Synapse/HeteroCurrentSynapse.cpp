@@ -64,12 +64,15 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         globalSynapseId = this->synapseData[localSynapseId]->globalId;
 //I WAS HERE 22/11/2022
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
-//        std::cout << couplingStrength << std::endl;
-        current = couplingStrength * this->synapseData[localSynapseId]->weight;
-//        std::cout << current << std::endl;
+        if (couplingStrength < 0.0) {
+            current =  couplingStrength;
+        } else {
+            current = couplingStrength * this->synapseData[localSynapseId]->weight;
+            heteroNeuronsPost->recordExcitatorySynapticSpike(postNeuronId, globalSynapseId);
+        }
         currents[i] += current;//Possible OPTIMIZATION? Maybe by putting the expression here and referencing currents[i]
         this->cumulatedDV += current;
-        heteroNeuronsPost->recordSynapticSpike(postNeuronId, globalSynapseId);
+        //heteroNeuronsPost->recordSynapticSpike(postNeuronId, globalSynapseId);
     }
 }
 

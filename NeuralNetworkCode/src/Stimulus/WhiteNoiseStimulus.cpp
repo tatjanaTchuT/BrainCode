@@ -45,7 +45,7 @@ void WhiteNoiseStimulus::LoadParameters(std::vector<std::string> *input){
                 s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
             else
                 s.end_time = INT_MAX;
-			if ((s.end_time < 0) || (s.end_time >(int)(info->simulationTime / info->dt)))
+			if ((s.end_time < 0) || (s.end_time >static_cast<int>(info->simulationTime / info->dt)))
                 s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 
             meanCurrent.push_back(s);

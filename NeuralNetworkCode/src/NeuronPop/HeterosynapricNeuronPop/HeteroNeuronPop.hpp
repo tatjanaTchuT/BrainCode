@@ -33,14 +33,20 @@ public:
 
     // heterosynaptic functionality
     std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId);
-    void recordSynapticSpike(unsigned long neuronId, unsigned long synapseId);
+    void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
     std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
     std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
 
     // Testing, check the purpose of this
-    friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long neuronId);
+    friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long);
     unsigned long getSynapseCount(unsigned long neuronId);
     double getWeight(unsigned long neuronId, unsigned long synapseId);
+
+    // STDP Analysis
+    void triggerStatOut(std::string dirPath);
+    void printThetasAndWeights();
+
+
 
 };
 

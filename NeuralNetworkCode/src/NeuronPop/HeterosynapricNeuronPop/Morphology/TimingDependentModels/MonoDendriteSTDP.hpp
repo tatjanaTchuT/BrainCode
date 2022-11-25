@@ -27,13 +27,26 @@ protected:
     long synapseIdGenerator{}; // variable used to allocate new synapses
     double nextPos{};
     bool distributeWeights{};
+    bool stepWeights{};
+    std::vector<unsigned long> weightStepBoundary{};
+    std::vector<double> weightStepValue{};
+    unsigned long currWightStepId{};
 
     std::vector<bool> integratePostSpike{};
     std::vector<bool> integratePreSpike{};
     bool postSpiked{};
 
+    double initialWeights{};
+
+    double base_ltp{};
+    double base_ltd{};
+
+    double incr_ltp{};
+    double decr_ltd{};
+
     void timeDecay();
     void updateCooperativity(unsigned long synId, unsigned long neighborId);
+    void pseudoCoop(unsigned long synId, unsigned long neighborId);
 
     virtual void updateLTP(unsigned long synId) = 0;
     virtual void updateLTD(unsigned long synId) = 0;
@@ -54,7 +67,7 @@ public:
 
     void advect() override;
     void recordPostSpike() override;
-    void recordPreSpike(unsigned long synSpikerId) override;
+    void recordExcitatoryPreSpike(unsigned long synSpikerId) override;
 
     void SaveParameters(std::ofstream * stream) override;
     void LoadParameters(std::vector<std::string> *input) override;

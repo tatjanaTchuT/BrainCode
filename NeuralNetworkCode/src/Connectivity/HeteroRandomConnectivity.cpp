@@ -27,7 +27,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
                 continue;
             }
 
-            if(!target_id[source].empty() && target_id[source].back() == target) {
+            if(!target_id[source].empty() && target_id[source].back() == target) {//Is it already plugged?
                 continue;
             }
 
