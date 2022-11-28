@@ -62,7 +62,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         postNeuronId = neuronSynapsePair.first;
         localSynapseId = neuronSynapsePair.second;
         globalSynapseId = this->synapseData[localSynapseId]->globalId;
-//I WAS HERE 22/11/2022
+
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
         if (couplingStrength < 0.0) {
             current =  couplingStrength;

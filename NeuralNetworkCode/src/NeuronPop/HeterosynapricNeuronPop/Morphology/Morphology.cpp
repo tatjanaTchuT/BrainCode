@@ -57,7 +57,7 @@ void Morphology::recordPostSpike() {
 
 
 void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
-    this->synapseData.at(synSpikerId)->lastSpike = (double) this->info->time_step * this->info->dt;
+    this->synapseData.at(synSpikerId)->lastSpike = static_cast<double> (this->info->time_step) * this->info->dt;
     this->spikedSynapsesId.push_back(synSpikerId);
     this->spikedSynapses.at(synSpikerId) = true;
     this->totalPreSpikes++;
