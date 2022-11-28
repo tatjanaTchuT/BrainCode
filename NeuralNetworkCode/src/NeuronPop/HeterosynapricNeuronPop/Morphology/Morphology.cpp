@@ -124,8 +124,8 @@ void Morphology::timeDecay() {
         }
     }
 }
-
-/*void Morphology::triggerStatOut(std::string dirPath) {
+/*
+void Morphology::triggerStatOut(std::string dirPath) {
     std::ofstream preFile;
     std::ofstream postFile;
 
