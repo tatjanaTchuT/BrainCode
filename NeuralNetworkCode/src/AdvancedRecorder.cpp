@@ -1054,7 +1054,7 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
     }
 
     double           dt = info->dt;
-    double           t = double(info->time_step)*dt;
+    double           t = static_cast<double>(info->time_step)*dt;
     unsigned long             P = neurons->GetTotalPopulations();
     std::ofstream    file;
     file.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
@@ -1071,6 +1071,7 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
             SaveDoubleFile(&file, heteroNeuronPop->getOverallSynapticProfile(i)[0], 5);
+            //Here is selecting only the average weight per neuron, with precision 5 digits.
         }
     }
     file << "\n";
@@ -1089,9 +1090,10 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 
 	for (unsigned int p = 0; p < P; p++) {
 		for (unsigned long i = 0; i < neurons->GetNeuronsPop(p); i++) {
-			n = ((double)this->neurons->GetNeuronsPop(p));
+			n = static_cast<double>(this->neurons->GetNeuronsPop(p));
 			currentBin.potential[p] += this->neurons->GetPotential(p, i) / n;
 			currentBin.externalCurrent[p] += this->stimulus->GetSignalArray(p, i) / n / info->dt;
+            //How is this arithmetic happening? Sequential division, first divide by n, then by dt.
 			currentBin.totalCurrentSquared_mean[p] += pow(synaptic_dV->at(p).at(i) / info->dt, 2.0) / n;
 			//record per neuron
 			currentBin.totalCurrent_mean_N.at(p).at(i) += synaptic_dV->at(p).at(i) / info->dt;
@@ -1100,7 +1102,7 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 
 	for (unsigned int prePop = 0;prePop < P; prePop++) {
 		spikers = this->neurons->GetSpikers(prePop);
-		currentBin.spiker_ratio[prePop] += ((double)spikers->size()) / ((double)this->neurons->GetNeuronsPop(prePop));
+		currentBin.spiker_ratio[prePop] += static_cast<double>(spikers->size()) / static_cast<double>(this->neurons->GetNeuronsPop(prePop));
 		if (Heatmap != 0) {
 			if (info->Dimensions == 2) {
 				for (unsigned int spike = 0;spike < spikers->size();spike++) {
@@ -1117,7 +1119,7 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 			}
 		}
 		for (unsigned int postPop = 0; postPop < P; postPop++)
-			currentBin.synapticCurrents[postPop][prePop] += this->synapses->GetCumulatedDV(postPop, prePop) / ((double)this->neurons->GetNeuronsPop(postPop)) / info->dt;
+			currentBin.synapticCurrents[postPop][prePop] += this->synapses->GetCumulatedDV(postPop, prePop) / static_cast<double>(this->neurons->GetNeuronsPop(postPop)) / info->dt;
 
 		if (!trackSynapses)
 			continue;

@@ -56,7 +56,7 @@ inline void UncorrelatedPoissonLikeStimulus::UpdatePoissonTable()
         {
             next_stimulus_step.pop_back();
             next_stimulus_time_step.pop_back();
-            signal = dt*(double)noExternalNeurons*next_stimulus_step.back();
+            signal = dt*static_cast<double>(noExternalNeurons)*next_stimulus_step.back();
             fill_poisson_value_table(signal);
 
             if(next_stimulus_time_step.empty())
@@ -91,15 +91,15 @@ inline void UncorrelatedPoissonLikeStimulus::fill_poisson_value_table(double mu)
 	double probability           = exp(-mu);
 	double cumulated_probability = exp(-mu);
 
-	for(int i = 0; i < table_entries; i++)
+	for(int i = 0; i < table_entries; ++i)
 	{
-		if(cumulated_probability < double(i)/double(table_entries))
+		if(cumulated_probability < static_cast<double>(i)/static_cast<double>(table_entries))
 		{
-			value++;
-			probability            = probability*mu/double(value);
+			++value;
+			probability            = probability*mu/static_cast<double>(value);
 			cumulated_probability += probability;
 		}
-		poisson_value_table[i] = double(value);
+		poisson_value_table[i] = static_cast<double>(value);
 	}
 }
 
