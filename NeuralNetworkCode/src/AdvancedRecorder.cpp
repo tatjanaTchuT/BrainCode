@@ -767,7 +767,7 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
     file_meanCorr.close();
 
 
-    //save pair crosscorrelations
+    //save pair crosscorrelations.OPTIMIZATION, this file has no WriteHeader function either.
     file_pairCorr.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
 
     WriteHeader(&file_pairCorr);
@@ -844,7 +844,7 @@ void AdvancedRecorder::Record_SynapseStates(int header){
     if(!trackSynapses)
         return;
 
-    if(header == 1){
+    if(header == 1){// OPTIMIZATION. For good coding practices and understandability, this should be moved to a different function.
         file.open (this->GetSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
         WriteHeader(&file);
         file << "#************************************\n";

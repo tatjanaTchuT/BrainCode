@@ -37,20 +37,6 @@ void multiply_vector (std::vector<double> &vector, double value)
     }
 }
 
-void RemoveHashInString(std::vector<std::string> *string){
-    std::vector<std::string> new_string{};
-    std::string element;
-    for (int i{ 0 }; i < string->size(); i++) {
-        element = string->at(i);
-        if (element.find("#") != std::string::npos) {
-            break;
-        }
-        new_string.push_back(element);
-    }
-    *string = new_string;
-    return;
-}
-
 
 void TestWritingFile(std::string filename)
 {
@@ -223,10 +209,16 @@ void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFi
     }
 }
 
-void DebuggerStopReport() {
-    std::string a{};
-    cout << "You royally messed up. What can you say in your defense?";
-    cin >> a;
-    cout << "Your excuse is worthless";
+void RemoveHashInString(std::vector<std::string> *string){
+    std::vector<std::string> new_string{};
+    std::string element;
+    for (int i{ 0 }; i < string->size(); i++) {
+        element = string->at(i);
+        if (element.find("#") != std::string::npos) {
+            break;
+        }
+        new_string.push_back(element);
+    }
+    *string = new_string;
     return;
 }

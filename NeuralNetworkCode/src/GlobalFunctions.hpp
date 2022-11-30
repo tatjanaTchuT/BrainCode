@@ -61,6 +61,21 @@ struct SynapseExt {
     unsigned long localId; // id for synapse within its a synapse collection
 };
 
+struct RecorderOpenStreams {
+    std::ofstream heatmapFileStream;
+    std::ofstream averagesFileStream;
+    std::ofstream rasterplotFileStream;
+    std::ofstream potentialFileStream;
+    std::ofstream currentsFileStream;
+    std::ofstream cCurrentsFileStream;
+    std::ofstream histogramFileStream;
+    std::ofstream meanCorrFileStream;
+    std::ofstream pairCorrFileStream;
+    std::ofstream heteroSynapsesFileStream;
+    std::ofstream hSOverallFileStream;
+    std::ofstream synStatesFileStream;
+};
+
 const std::string str_individualRandomConnectivity {"IndividualRandomConnectivity"};
 const std::string str_randomConnectivity{"RandomConnectivity"};
 const std::string str_binaryrandomConnectivity{"BinaryRandomConnectivity"};
@@ -140,7 +155,6 @@ struct noAllocatableSynapseException : std::exception {
     }
 };
 
-void DebuggerStopReport();
 void RemoveHashInString(std::vector<std::string>* string);
 //int INTMAX = 2;
 //double PI = 3.14159265359;

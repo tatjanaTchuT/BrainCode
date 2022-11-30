@@ -53,6 +53,8 @@ protected:
     bin_data currentBin;
     std::valarray<unsigned long> noTrackHeteroSynapsePerTrackedNeuron;
 
+    RecorderOpenStreams FileStreams;
+
     unsigned long stepCount;
     unsigned long heteroRecordingPerSteps;
 
