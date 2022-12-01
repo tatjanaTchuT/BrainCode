@@ -34,7 +34,7 @@ protected:
     GlobalSimInfo * info;
 
     unsigned int noPopulations;
-    NeuronPop **neuronPops;
+    NeuronPop **neuronPops;//OPTIMIZATION. This should be arranged in a vector, properly with unique_ptrs
 
 public:
     NeuronPopSample(std::vector<std::string> *input,GlobalSimInfo * info);

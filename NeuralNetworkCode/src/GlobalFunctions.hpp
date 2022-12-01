@@ -10,6 +10,7 @@
 #define GlobalFunctions_h
 
 #include <random>
+#include <fstream>
 #include <assert.h>
 #include <valarray>
 
@@ -59,6 +60,10 @@ struct SynapseExt {
     double weight;
     unsigned long globalId; // id for synapse within its population
     unsigned long localId; // id for synapse within its a synapse collection
+};
+
+struct SynapseExtBranched : SynapseExt {
+
 };
 
 struct RecorderOpenStreams {

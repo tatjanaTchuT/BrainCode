@@ -80,29 +80,26 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){
-            if(neuronPops[p] == NULL)
-                delete neuronPops[p];
+            delete neuronPops[p];//delete statements should be removed anyway.
             neuronPops[p] = new LIFNeuronPop(info,p);
-        }
-		else if (type == str_EIFNeuron) {
-			if (neuronPops[p] == NULL)
-				delete neuronPops[p];
+        } else if (type == str_EIFNeuron) {
+			delete neuronPops[p];
 			neuronPops[p] = new EIFNeuronPop(info, p);
-		}else if(type == str_PoissonNeuron){
-            if(neuronPops[p] == NULL)
-                delete neuronPops[p];
-            neuronPops[p] = new PoissonNeuronPop(info,p);
+        } else if (type == str_PoissonNeuron) {
+            delete neuronPops[p];
+            neuronPops[p] = new PoissonNeuronPop(info, p);
+        } else if (type==str_QIFNeuron){
+            delete neuronPops[p];
+            neuronPops[p] = new QIFNeuronPop(info, p);
         } else if (type == str_HeteroLIFNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
-            if (neuronPops[p] == NULL)
-                delete neuronPops[p];
+            delete neuronPops[p];
             neuronPops[p] = new HeteroLIFNeuronPop(info, p);
         } else if (type == str_HeteroPoissonNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
             neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
-        }
-        else {
-            DebuggerStopReport();
+        }else {
+            throw std::runtime_error(">>>Undefined type of NeuronPop.\n>>>Check Parameters.txt.");
         }
 
         //load parameters
