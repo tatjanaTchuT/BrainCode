@@ -264,62 +264,59 @@ void AdvancedRecorder::WriteDataHeader_Heatmap() {
 
 void AdvancedRecorder::WriteDataHeader_Averages(){
 
-    std::ofstream file;
     int P = this->neurons->GetTotalPopulations();
     int col = 1;
 
-    file.open (this->GetDataFilename(), std::ofstream::out | std::ofstream::trunc);
-    WriteHeader(&file);
-    file << "#************************************\n";
-    file << "#Columns: \n";
-    file << "#" +std::to_string(col)+ " t (secs.) \n"; col++;
+    this->FileStreams.averagesFileStream.open (this->GetDataFilename(), std::ofstream::out | std::ofstream::trunc);
+    WriteHeader(&this->FileStreams.averagesFileStream);
+    this->FileStreams.averagesFileStream << "#************************************\n";
+    this->FileStreams.averagesFileStream << "#Columns: \n";
+    this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " t (secs.) \n"; col++;
     for(int i = 0; i < P; i++){
-        file << "#" +std::to_string(col)+ " V_" << i << " (mV)\n";col++;}
+        this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " V_" << i << " (mV)\n";col++;}
 
     for(int i = 0; i < P; i++){
-        file << "#" +std::to_string(col)+ " r_" << i << " (Hz)\n"; col++;}
+        this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " r_" << i << " (Hz)\n"; col++;}
 
     for(int i = 0; i < P; i++){
-        file << "#" +std::to_string(col)+ " mu_Ext_" << i << "/tau_m (dmV/sec) \n"; col++;}
+        this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " mu_Ext_" << i << "/tau_m (dmV/sec) \n"; col++;}
 
     for(int i = 0; i < P; i++)
     {
         for(int j = 0; j < P; j++){
-            file << "#" +std::to_string(col)+ " mu_" << i << "_" << j << "/tau_m (dmV/sec) \n"; col++;}
+            this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " mu_" << i << "_" << j << "/tau_m (dmV/sec) \n"; col++;}
     }
     for(int i = 0; i < P; i++){
-        file << "#" +std::to_string(col)+ " mu_" << i << "/tau_m (dmV/sec) \n"; col++;}
+        this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " mu_" << i << "/tau_m (dmV/sec) \n"; col++;}
 
     for(int i = 0; i < P; i++){
-        file << "#" +std::to_string(col)+ " Quenched fluctuations of mu_" << i << "/tau_m (dmV/sec) = sqrt(PopAver(TempAver(mu_i)^2) - PopAver(TempAver(mu_i))^2) \n"; col++;}
+        this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " Quenched fluctuations of mu_" << i << "/tau_m (dmV/sec) = sqrt(PopAver(TempAver(mu_i)^2) - PopAver(TempAver(mu_i))^2) \n"; col++;}
 
     for(int i = 0; i < P; i++){
-        file << "#" +std::to_string(col)+ " Temporal fluctuations of mu_" << i << "/tau_m*sqrt(dt) (dmV/sqrt(sec)) = sqrt(dt)*sqrt(PopAver(TempAver(mu_i^2) - TempAver(mu_i)^2))\n"; col++;}
+        this->FileStreams.averagesFileStream << "#" +std::to_string(col)+ " Temporal fluctuations of mu_" << i << "/tau_m*sqrt(dt) (dmV/sqrt(sec)) = sqrt(dt)*sqrt(PopAver(TempAver(mu_i^2) - TempAver(mu_i)^2))\n"; col++;}
 
-	file << "t\t";
+	this->FileStreams.averagesFileStream << "t\t";
 	for (int i = 0; i < P; i++)
-		file << "V_" << i<<"\t";
+		this->FileStreams.averagesFileStream << "V_" << i<<"\t";
 	for (int i = 0; i < P; i++)
-		file << "r_" << i << "\t";
+		this->FileStreams.averagesFileStream << "r_" << i << "\t";
 	for (int i = 0; i < P; i++)
-		file << "mu_ext_" << i << "\t";
+		this->FileStreams.averagesFileStream << "mu_ext_" << i << "\t";
 	for (int i = 0; i < P; i++) {
 		for (int j=0;j<P;j++)
-			file << "mu_" << i << "_"<< j << "\t";
+			this->FileStreams.averagesFileStream << "mu_" << i << "_"<< j << "\t";
 	}
 	for (int i = 0; i < P; i++)
-		file << "mu_tot_" << i << "\t";
+		this->FileStreams.averagesFileStream << "mu_tot_" << i << "\t";
 	for (int i = 0; i < P; i++)
-		file << "sigma_quenched_" << i << "\t";
+		this->FileStreams.averagesFileStream << "sigma_quenched_" << i << "\t";
 	for (int i = 0; i < P; i++)
-		file << "sigma_t_" << i << "\t";
-	file << "\n#************************************\n";
+		this->FileStreams.averagesFileStream << "sigma_t_" << i << "\t";
+	this->FileStreams.averagesFileStream << "\n#************************************\n";
 
     for(int k = 1;k<col;k++)
-        file << "#"+std::to_string(k) << "\t\t";
-    file << "\n";
-    file.close();
-
+        this->FileStreams.averagesFileStream << "#"+std::to_string(k) << "\t\t";
+    this->FileStreams.averagesFileStream << "\n";
 }
 
 void AdvancedRecorder::WriteDataHeader_Rasterplot(){
@@ -721,7 +718,6 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
 
 
     //save mean crosscorrelations
-    this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
     SaveDoubleFile(&this->FileStreams.meanCorrFileStream,t,5);
     this->FileStreams.meanCorrFileStream << "\t";
     for(int m = 0;m<P;m++){
@@ -784,8 +780,6 @@ void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<doubl
 		}
 		IndexMemory += CurrentContributions[p_target];
 	}
-
-	this->FileStreams.cCurrentsFileStream.open(GetCurrentCrontributionFilename(), std::ofstream::out | std::ofstream::app);
 
 	if ((info->time_step) % this->averaging_steps == 0) {
 		SaveDoubleFile(&this->FileStreams.cCurrentsFileStream, t, 5);
@@ -858,7 +852,6 @@ void AdvancedRecorder::Record_SynapseStates(int header){
 
 void AdvancedRecorder::Record_Averages(){
 
-    std::ofstream file;
     double value;
     unsigned int    pops       = neurons->GetTotalPopulations();
     double dt         = info->dt;
@@ -882,26 +875,25 @@ void AdvancedRecorder::Record_Averages(){
 
     if((info->time_step)%this->averaging_steps == 0)
     {
-        file.open(GetDataFilename(), std::ofstream::out | std::ofstream::app);
-        SaveDoubleFile(&file,double(info->time_step)*dt,4);
+        SaveDoubleFile(&this->FileStreams.averagesFileStream,double(info->time_step)*dt,4);
 
         //Record average potential
         for(unsigned int i = 0; i < pops; i++)
         {
             value      = currentBin.potential[i]/n_aver;
-            SaveDoubleFile(&file,value,3);
+            SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         }
         //Record firing rate
         for(unsigned int i = 0; i < pops; i++)
         {
             value = currentBin.spiker_ratio[i]/deltaT_rec;
-            SaveDoubleFile(&file,value,3);
+            SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         }
         //Record external input 'current' (in mV/sec)
         for(unsigned int i = 0; i < pops; i++)
         {
             value   = currentBin.externalCurrent[i]/n_aver;
-            SaveDoubleFile(&file,value,3);
+            SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         }
         //Record population averaged synaptic input currents mu_ij (in mV/sec)
         for(unsigned int i = 0; i < pops; i++)
@@ -909,40 +901,38 @@ void AdvancedRecorder::Record_Averages(){
             for(unsigned int j = 0; j < pops; j++)
             {
                 value   = currentBin.synapticCurrents[i][j]/n_aver;
-                SaveDoubleFile(&file, value,3);
+                SaveDoubleFile(&this->FileStreams.averagesFileStream, value,3);
             }
         }
         //Record population averaged total synaptic input currents mu_i (in mV/sec)
         //for(int i = 0; i < pops; i++)
         //{
         //    value   = currentBin.totalCurrent_mean[i]/n_aver;
-        //    SaveDoubleFile(&file,value,3);
+        //    SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         //}
 
         //Record check of mean total input currents
         for(unsigned int i = 0; i < pops; i++)
         {
             value = means[i];
-            SaveDoubleFile(&file,value,3);
+            SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         }
 
         //Quenched fluctuations (due to varying input over population)
         for(unsigned int i = 0; i < pops; i++)
         {
             value = sqrt(popAver_SquaredMeanTime[i]-pow(means[i],2));
-            SaveDoubleFile(&file,value,3);
+            SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         }
 
         //Temporal fluctuations
         for(unsigned int i = 0; i < pops; i++)
         {
             value = sqrt(currentBin.totalCurrentSquared_mean[i]/n_aver - popAver_SquaredMeanTime[i])*sqrt(info->dt);
-            SaveDoubleFile(&file,value,3);
+            SaveDoubleFile(&this->FileStreams.averagesFileStream,value,3);
         }
 
-        file << "\n";
-        file.close();
-
+        this->FileStreams.averagesFileStream << "\n";
         reset_statistics();
     }
 }
