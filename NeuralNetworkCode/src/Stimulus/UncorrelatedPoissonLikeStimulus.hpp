@@ -52,9 +52,9 @@ private:
     double GetExternalCouplingStrength(int pop){
         double h;
         if (info->networkScaling_extern == 0)
-            h = (double)noExternalNeurons;
+            h = static_cast<double>(noExternalNeurons);
         else if (info->networkScaling_extern == 1)
-            h = (double)neurons->GetTotalNeurons();
+            h = static_cast<double>(neurons->GetTotalNeurons());
         else{
             throw "ERROR: GetExternalCouplingStrength";
             h = 0;}

@@ -87,7 +87,7 @@ void WhiteNoiseStimulus::SaveParameters(std::ofstream * stream){
         *stream <<  "stimulus_meanCurrent                 ";
         for(int i = 0;i<P;i++)
             *stream << std::to_string(s.values.at(i)) << "\t ";
-        *stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+        *stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
         *stream << " [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sec , secs.]\n";
         //*stream << " [mV/sec -- sec]\n";
     }
@@ -96,7 +96,7 @@ void WhiteNoiseStimulus::SaveParameters(std::ofstream * stream){
         *stream <<  "stimulus_sigmaCurrent                ";
         for(int i = 0;i<P;i++)
             *stream << std::to_string(s.values.at(i)) << "\t ";
-        *stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+        *stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
         *stream << " [column 1: input for population 1, column 2: input for pop. 2, ... , last column: time until which input is set. Dimensions: [mV/sqrt(sec) , secs.]\n";
     }
 

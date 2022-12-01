@@ -80,20 +80,16 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){
-            delete neuronPops[p];//delete statements should be removed anyway.
+            //delete statements have been removed
             neuronPops[p] = new LIFNeuronPop(info,p);
         } else if (type == str_EIFNeuron) {
-			delete neuronPops[p];
 			neuronPops[p] = new EIFNeuronPop(info, p);
         } else if (type == str_PoissonNeuron) {
-            delete neuronPops[p];
             neuronPops[p] = new PoissonNeuronPop(info, p);
         } else if (type==str_QIFNeuron){
-            delete neuronPops[p];
             neuronPops[p] = new QIFNeuronPop(info, p);
         } else if (type == str_HeteroLIFNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
-            delete neuronPops[p];
             neuronPops[p] = new HeteroLIFNeuronPop(info, p);
         } else if (type == str_HeteroPoissonNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
@@ -126,11 +122,11 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
     }
 
 	if (info->Dimensions == 1) {
-		info->Lx = info->N / (double)info->density;
+		info->Lx = info->N / static_cast<double>(info->density);
 		info->Ly = 0;
 	}
 	else if (info->Dimensions == 2) {
-		info->Lx = sqrt(info->N / (double)info->density );
+		info->Lx = sqrt(info->N / static_cast<double>(info->density) );
 		info->Ly = info->Lx;
 	}
 

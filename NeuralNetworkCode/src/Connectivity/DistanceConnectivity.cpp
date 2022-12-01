@@ -211,9 +211,9 @@ unsigned long  DistanceConnectivity::GetNumberAverageSourceNeurons() {
 		return static_cast<unsigned long>(synapse->GetNoNeuronsPre() * PeakProbability);
 	else {
 		if (info->Dimensions == 2)
-			return static_cast<unsigned long>((synapse->GetNoNeuronsPre() / (double)info->N) * 2 * (4 * atan(1)) * info->density * PeakProbability * pow(StdProbability, 2) / a);//integral of density*probability(x,y)dxdy over the infinite 2D space
+			return static_cast<unsigned long>((synapse->GetNoNeuronsPre() / static_cast<double>(info->N)) * 2 * (4 * atan(1)) * info->density * PeakProbability * pow(StdProbability, 2) / a);//integral of density*probability(x,y)dxdy over the infinite 2D space
 		else if (info->Dimensions == 1)
-			return static_cast<unsigned long>((synapse->GetNoNeuronsPre() / (double)info->N) * sqrt(2 * (4 * atan(1))) * info->density * PeakProbability * StdProbability);//integral of density*probability(x,y)dxdy over the infinite 1D space
+			return static_cast<unsigned long>((synapse->GetNoNeuronsPre() / static_cast<double>(info->)N) * sqrt(2 * (4 * atan(1))) * info->density * PeakProbability * StdProbability);//integral of density*probability(x,y)dxdy over the infinite 1D space
         else{
             throw "ERROR DistanceConnectivity::GetNumberAverageSourceNeurons";
         }

@@ -86,7 +86,7 @@ protected:
     void WriteDataHeader_HeteroSynapsesOverall();
 
 
-        void SetNoRasterplotNeurons(std::vector<std::string> *values);
+    void SetNoRasterplotNeurons(std::vector<std::string> *values);
     void SetNoTrackNeuronPotentials(std::vector<std::string> *values);
     void SetNoCorrNeurons(std::vector<std::string> *values);
 	void SetNoCurrentContribution(std::vector<std::string> *values);

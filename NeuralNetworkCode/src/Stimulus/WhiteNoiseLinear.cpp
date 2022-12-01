@@ -75,8 +75,8 @@ void WhiteNoiseLinear::SaveParameters(std::ofstream * stream) {
 			*stream << std::to_string(s.values.at(2 * i)) << "\t ";
 			*stream << std::to_string(s.values.at(2 * i + 1)) << "\t ";
 		}
-		*stream << std::to_string(((double)s.start_time)*info->dt) << " \t";
-		*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+		*stream << std::to_string(static_cast<double>(s.start_time)*info->dt) << " \t";
+		*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 		*stream << " [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sec , secs.]\n";
 	}
 
@@ -86,8 +86,8 @@ void WhiteNoiseLinear::SaveParameters(std::ofstream * stream) {
 			*stream << std::to_string(s.values.at(2 * i)) << "\t ";
 			*stream << std::to_string(s.values.at(2 * i + 1)) << "\t ";
 		}
-		*stream << std::to_string(((double)s.start_time)*info->dt) << " \t";
-		*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+		*stream << std::to_string(static_cast<double>(s.start_time)*info->dt) << " \t";
+		*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 		*stream << " [col 1: input to pop0 at t_0, col 2: pop1 at t_0, ... colP+1: pop1 t_f, ... col2P: popN t_f, t0, tf. Dimensions: [mV/sqrt(sec) , secs.]\n";
 	}
 

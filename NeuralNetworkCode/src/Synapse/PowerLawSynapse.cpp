@@ -24,7 +24,7 @@ void PowerLawSynapse::advect_spikers(std::vector<double>& currents, long spiker)
 	ISI = ISI_table[spiker].sum()/N;//Average ISI over the last Naveraging spikes
 	nu_H = 1 / ISI;
 	if (N > 1)
-		nu_H = (double)(N - 1) / N * nu_H;//the expected value of 1/ISI is nu*N/(N-1) for a Poisson process
+		nu_H = static_cast<double>(N - 1) / N * nu_H;//the expected value of 1/ISI is nu*N/(N-1) for a Poisson process
 	std::vector<unsigned long> *tL = geometry->GetTargetList(spiker);
 
 	for (unsigned int target = 0; target < tL->size(); target++) {

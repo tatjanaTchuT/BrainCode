@@ -41,7 +41,7 @@ void UncorrelatedPoissonLikeStimulus::SetTableEntries(){
     if(next_stimulus_step.size() == 0)
         signal = 0;
     else
-        signal = dt*(double)noExternalNeurons*next_stimulus_step.back();
+        signal = dt*static_cast<double>(noExternalNeurons)*next_stimulus_step.back();
 
     fill_poisson_value_table(signal);
 }

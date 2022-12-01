@@ -81,7 +81,7 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
     for(unsigned i = 0; i < noRasterPlotNeurons.size();i++) {
 		*stream << std::to_string(noRasterPlotNeurons[i]) << " \t";
 	}
-	*stream << std::to_string(((double)raster_t_0)*info->dt) << "\t";
+	*stream << std::to_string((static_cast<double>(raster_t_0))*info->dt) << "\t";
     *stream << "#Record spike times of x neurons for (i-th column is x for the i-th population). The i+1-th column sets the initial recording time\n";
 
     *stream << "recorder_notrackNeuronProfiles     ";
@@ -97,7 +97,7 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
 	*stream << "recorder_CurrentContributions      ";
 	for (unsigned i = 0; i < CurrentContributions.size();i++)
 		*stream << std::to_string(CurrentContributions[i])<<"\t";
-	*stream << std::to_string(((double)current_t_0)*info->dt) << "\t";
+	*stream << std::to_string((static_cast<double>(current_t_0))*info->dt) << "\t";
 	*stream << "#Record the sources of input current to x neurons. (i-th column is x for the i-th population). The i+1-th column sets the initial recording time\n";
 
     *stream <<  "recorder_trackSynapses             " << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
@@ -327,14 +327,12 @@ void AdvancedRecorder::WriteDataHeader_Rasterplot(){
     if(noRasterPlotNeurons.sum() == 0)
         return;
 
-    std::ofstream write_raster_plot;
-    write_raster_plot.open (GetRasterplotFilename(), std::ofstream::out | std::ofstream::trunc);
-    WriteHeader(&write_raster_plot);
-    write_raster_plot << "#1 t (secs.) \t #2 neuron_id \t #3 neuron_pop_id \t\n";
-	write_raster_plot << "# Note that the recorded neurons are equidistant within the population. Therefore, neuron_id are not necessarily successive numbers\n";
-	write_raster_plot << "Spike_t\tNeuron_id\tPop_id\n";
-	write_raster_plot << "#************************************\n";
-    write_raster_plot.close();
+    this->FileStreams.rasterplotFileStream.open (GetRasterplotFilename(), std::ofstream::out | std::ofstream::trunc);
+    WriteHeader(&this->FileStreams.rasterplotFileStream);
+    this->FileStreams.rasterplotFileStream << "#1 t (secs.) \t #2 neuron_id \t #3 neuron_pop_id \t\n";
+	this->FileStreams.rasterplotFileStream << "# Note that the recorded neurons are equidistant within the population. Therefore, neuron_id are not necessarily successive numbers\n";
+	this->FileStreams.rasterplotFileStream << "Spike_t\tNeuron_id\tPop_id\n";
+	this->FileStreams.rasterplotFileStream << "#************************************\n";
 }
 
 void AdvancedRecorder::WriteDataHeader_Potential(){
@@ -343,20 +341,17 @@ void AdvancedRecorder::WriteDataHeader_Potential(){
         return;
 
     unsigned long             P = neurons->GetTotalPopulations();
-    std::ofstream    stream;
-    stream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.potentialFileStream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::app);
 
-    WriteHeader(&stream);
-    stream << "#1 t (secs.)\t 2-"<<1+notrackNeuronPotentials.sum()<<" V_pop_id (mV) \n";
+    WriteHeader(&this->FileStreams.potentialFileStream);
+    this->FileStreams.potentialFileStream << "#1 t (secs.)\t 2-"<<1+notrackNeuronPotentials.sum()<<" V_pop_id (mV) \n";
 
-	stream << "t\t";
+	this->FileStreams.potentialFileStream << "t\t";
     for(unsigned long p = 0;p<P;p++){
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++)
-            stream << "V_" << p << "_" << i <<  "\t";
+            this->FileStreams.potentialFileStream << "V_" << p << "_" << i <<  "\t";
     }
-	stream << "\n#************************************\n";
-
-    stream.close();
+	this->FileStreams.potentialFileStream << "\n#************************************\n";
 
 }
 
@@ -366,20 +361,17 @@ void AdvancedRecorder::WriteDataHeader_Currents(){
         return;
 
     unsigned long             P = neurons->GetTotalPopulations();
-    std::ofstream    stream;
-    stream.open(GetCurrentsFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.currentsFileStream.open(GetCurrentsFilename(), std::ofstream::out | std::ofstream::app);
 
-    WriteHeader(&stream);
-    stream << "#1 t (sec)\t 2-"<<1+ notrackNeuronPotentials.sum()<<" mu_pop_id / tau_m(dmV / sec)\n";
+    WriteHeader(&this->FileStreams.currentsFileStream);
+    this->FileStreams.currentsFileStream << "#1 t (sec)\t 2-"<<1+ notrackNeuronPotentials.sum()<<" mu_pop_id / tau_m(dmV / sec)\n";
 
-	stream << "t\t";
+	this->FileStreams.currentsFileStream << "t\t";
 	for(unsigned long p = 0;p<P;p++){
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++)
-            stream << "mu_" << p << "_" << i << "\t";
+            this->FileStreams.currentsFileStream << "mu_" << p << "_" << i << "\t";
     }
-	stream << "\n#************************************\n";
-
-    stream.close();
+	this->FileStreams.currentsFileStream << "\n#************************************\n";
 
 }
 
@@ -448,13 +440,10 @@ void AdvancedRecorder::WriteDataHeader_Correlations(){
     if(noCorrNeurons.sum() == 0)
         return;
 
-    std::ofstream     stream;
-    stream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
 
-    WriteHeader(&stream);
-    stream << "#1 t (sec) \t #2 CC_EE \t #3 CC_EI \t #4 CC_IE \t #5 CC_II\t\n";
-
-    stream.close();
+    WriteHeader(&this->FileStreams.meanCorrFileStream);
+    this->FileStreams.meanCorrFileStream << "#1 t (sec) \t #2 CC_EE \t #3 CC_EI \t #4 CC_IE \t #5 CC_II\t\n";
 
 }
 
@@ -504,7 +493,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     stream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 
     WriteHeader(&stream);
-    stream << "Overall Profile -> {<average weight>, <total post spikes>, <totoal pre spikes>} \n";
+    stream << "Overall Profile -> {<average weight>, <total post spikes>, <total pre spikes>} \n";
     stream << "\n#************************************\n";
 
     stream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id \n";
@@ -580,12 +569,10 @@ void AdvancedRecorder::Record_Rasterplot(){
 	if (noRasterPlotNeurons.sum() == 0 || info->time_step < raster_t_0)
         return;
     double           dt = info->dt;
-    std::ofstream    write_raster_plot;
     std::vector<long> *spiker;
     // int				first_id;
 	long			Nrec;//number of neurons to record
 	long			Ntot;//number of neurons in population
-    write_raster_plot.open (GetRasterplotFilename(), std::ofstream::out | std::ofstream::app);
 
     for(unsigned int pop = 0;pop<neurons->GetTotalPopulations();pop++){
 		Nrec = noRasterPlotNeurons[pop];
@@ -595,11 +582,10 @@ void AdvancedRecorder::Record_Rasterplot(){
 		Ntot = neurons->GetNeuronsPop(pop);
 
         for(auto const &spiker_id : (*spiker) ){
-            if(spiker_id == std::round(double(Ntot / Nrec * std::round(double(Nrec*spiker_id / Ntot)))))
-                write_raster_plot << double(info->time_step)*dt <<"\t" << spiker_id << "\t" << pop << "\n";
+            if (spiker_id == std::round(static_cast<double>(Ntot) / Nrec * std::round(static_cast<double>(Nrec * spiker_id / Ntot))))
+                this->FileStreams.rasterplotFileStream << double(info->time_step)*dt <<"\t" << spiker_id << "\t" << pop << "\n";
         }
     }
-    write_raster_plot.close();
 }
 
 void AdvancedRecorder::Record_Currents(std::vector<std::vector<double>> * synaptic_dV){
@@ -609,18 +595,14 @@ void AdvancedRecorder::Record_Currents(std::vector<std::vector<double>> * synapt
     double           dt = info->dt;
     double           t = double(info->time_step)*dt;
     int              P = neurons->GetTotalPopulations();
-    std::ofstream    file;
 
-    file.open (GetCurrentsFilename(), std::ofstream::out | std::ofstream::app);
-
-    SaveDoubleFile(&file,t,5);
+    SaveDoubleFile(&this->FileStreams.currentsFileStream,t,5);
     for(int p = 0;p<P;p++){
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++){
-            SaveDoubleFile(&file,synaptic_dV->at(p).at(i)/info->dt,5);
+            SaveDoubleFile(&this->FileStreams.currentsFileStream,synaptic_dV->at(p).at(i)/info->dt,5);
         }
     }
-    file << "\n";
-    file.close();
+    this->FileStreams.currentsFileStream << "\n";
 }
 
 void AdvancedRecorder::Record_Potential(){
@@ -631,18 +613,15 @@ void AdvancedRecorder::Record_Potential(){
     double           dt = info->dt;
     double           t = double(info->time_step)*dt;
     long             P = neurons->GetTotalPopulations();
-    std::ofstream    file;
-    file.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::app);
 
-    SaveDoubleFile(&file,t,5);
+    this->FileStreams.potentialFileStream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::app);
+
+    SaveDoubleFile(&this->FileStreams.potentialFileStream,t,5);
     for(int p = 0;p<P;p++){
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++)
-            SaveDoubleFile(&file,neurons->GetPotential(p,i),5);
+            SaveDoubleFile(&this->FileStreams.potentialFileStream,neurons->GetPotential(p,i),5);
     }
-    file << "\n";
-
-    file.close();
-
+    this->FileStreams.potentialFileStream << "\n";
 }
 
 /*void AdvancedRecorder::Record_Histogram(std::vector<std::vector<double>> * synaptic_dV){
@@ -661,7 +640,7 @@ void AdvancedRecorder::Record_Potential(){
     for(int pop = 0; pop < pops; pop++){
             spiker = neurons->GetSpikers(pop);
             for(auto const &spiker_id : (*spiker) ){
-                SaveDoubleFile(&file,(double)(info->time_step)*(info->dt),5);
+                SaveDoubleFile(&file,static_cast<double>(info->time_step)*(info->dt),5);
                 SaveDoubleFile(&file,spiker_id,0);
                 //SaveDoubleFile(&file,pop,0);
                 file << "\n";
@@ -691,8 +670,8 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
     if(noCorrNeurons.sum() == 0)
         return;
 
-    double           dt = double(info->dt);
-    double           t = double(info->time_step)*dt;
+    double           dt = static_cast<double>(info->dt);
+    double           t = static_cast<double>(info->time_step)*dt;
     double           fac;
     long             n_aver = averaging_steps;
     long             ts = info->time_step;
@@ -704,12 +683,11 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
     std::vector<std::vector<double>> sigma(noCorrNeurons[0], std::vector<double>(P));
     std::vector<std::vector<std::vector<std::vector<double>>>> crosscorr(noCorrNeurons[0], std::vector<std::vector<std::vector<double>>> (noCorrNeurons[0], std::vector<std::vector<double>> (P, std::vector<double>(P))));
     std::vector<std::vector<double>> crosscorr_final(P, std::vector<double> (P));
-    std::ofstream    file_meanCorr,file_pairCorr;
 
     //Fill current memory
     for(int m = 0;m<P;m++){
         for(long i = 0;i<noCorrNeurons[m];i++){
-            savecurrents[i][ts%n_aver][m] = synaptic_dV->at(m).at(i)/double(info->dt);
+            savecurrents[i][ts%n_aver][m] = synaptic_dV->at(m).at(i)/static_cast<double>(info->dt);
         }
     }
 
@@ -739,11 +717,11 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
 
                 if(n == m){ //same populations m,n
                     itj = i+1;
-                    fac = 2/((double)noCorrNeurons[n]*((double)noCorrNeurons[n]-1));
+                    fac = 2/static_cast<double>(noCorrNeurons[n]*static_cast<double>(noCorrNeurons[n]-1));
                 }
                 else{       //different populations m,n
                     itj = 0;
-                    fac = 1/((double)noCorrNeurons[n]*(double)noCorrNeurons[m]);
+                    fac = 1/(static_cast<double>(noCorrNeurons[n])*static_cast<double>(noCorrNeurons[m]));
                 }
                 for(long j=itj;j<noCorrNeurons[n];j++){
                     crosscorr_final[m][n] += fac*crosscorr[i][j][m][n];
@@ -754,42 +732,41 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
 
 
     //save mean crosscorrelations
-    file_meanCorr.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
-    SaveDoubleFile(&file_meanCorr,t,5);
-    file_meanCorr << "\t";
+    this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
+    SaveDoubleFile(&this->FileStreams.meanCorrFileStream,t,5);
+    this->FileStreams.meanCorrFileStream << "\t";
     for(int m = 0;m<P;m++){
         for(int n=0;n<P;n++){
-            SaveDoubleFile(&file_meanCorr,crosscorr_final[m][n],5);
-            file_meanCorr << "\t";
+            SaveDoubleFile(&this->FileStreams.meanCorrFileStream,crosscorr_final[m][n],5);
+            this->FileStreams.meanCorrFileStream << "\t";
         }
     }
-    file_meanCorr << "\n";
-    file_meanCorr.close();
+    this->FileStreams.meanCorrFileStream << "\n";
 
 
     //save pair crosscorrelations.OPTIMIZATION, this file has no WriteHeader function either.
-    file_pairCorr.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.pairCorrFileStream.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
 
-    WriteHeader(&file_pairCorr);
-    file_pairCorr << "#Pairwise correlations averages over t = ["<< t- averaging_steps*dt <<", " << t << "] seconds \n";
-    file_pairCorr << "#Tracking correlations between first \n";
+    WriteHeader(&this->FileStreams.pairCorrFileStream);
+    this->FileStreams.pairCorrFileStream << "#Pairwise correlations averages over t = ["<< t- averaging_steps*dt <<", " << t << "] seconds \n";
+    this->FileStreams.pairCorrFileStream << "#Tracking correlations between first \n";
     for(int i = 0;i<P;i++)
-        file_pairCorr << "# " << noCorrNeurons[i] << " neurons of population " << i << " ,\n";
-    file_pairCorr << "# respectively. \n";
+        this->FileStreams.pairCorrFileStream << "# " << noCorrNeurons[i] << " neurons of population " << i << " ,\n";
+    this->FileStreams.pairCorrFileStream << "# respectively. \n";
     //file_pairCorr << " neurons of each population\n";
 
     for (int m = 0; m<P; m++){
         for (int i = 0; i < crosscorr.size(); i++){
             for (int n = 0; n<P; n++){
                 for (int j = 0; j < crosscorr[i].size(); j++){
-                    SaveDoubleFile(&file_pairCorr,crosscorr[i][j][m][n],5);
-                    file_pairCorr << "\t";
+                    SaveDoubleFile(&this->FileStreams.pairCorrFileStream,crosscorr[i][j][m][n],5);
+                    this->FileStreams.pairCorrFileStream << "\t";
                 }
             }
-            file_pairCorr << "\n";
+            this->FileStreams.pairCorrFileStream << "\n";
         }
     }
-    file_pairCorr.close();
+    this->FileStreams.pairCorrFileStream.close();
 
 }
 
@@ -810,13 +787,13 @@ void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<doubl
 		for (unsigned int p_source = 0;p_source < P;p_source++) {
 			for (long i = 0;i < CurrentContributions[p_target];i++) {
 				index = i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target];
-				CurrentContrBin[i + IndexMemory] += synapses->GetRecurrentInput(p_target, p_source, index);
+                CurrentContrBin[static_cast<size_t>(i) + static_cast<size_t>(IndexMemory)] += synapses->GetRecurrentInput(p_target, p_source, index);
 			}
 			IndexMemory += CurrentContributions[p_target];
 		}
 		for (long i = 0;i < CurrentContributions[p_target];i++) {
 			index = i*neurons->GetNeuronsPop(p_target) / CurrentContributions[p_target];
-			CurrentContrBin[i + IndexMemory] += stimulus->GetSignalArray(p_target, index);
+			CurrentContrBin[static_cast<size_t>(i) + static_cast<size_t>(IndexMemory)] += stimulus->GetSignalArray(p_target, index);
 		}
 		IndexMemory += CurrentContributions[p_target];
 	}
@@ -836,7 +813,6 @@ void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<doubl
 
 void AdvancedRecorder::Record_SynapseStates(int header){
 
-    std::ofstream file;
     double dt = info->dt;
     double value;
     unsigned    P = neurons->GetTotalPopulations();
@@ -845,24 +821,21 @@ void AdvancedRecorder::Record_SynapseStates(int header){
         return;
 
     if(header == 1){// OPTIMIZATION. For good coding practices and understandability, this should be moved to a different function.
-        file.open (this->GetSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
-        WriteHeader(&file);
-        file << "#************************************\n";
-        file << "#Columns: \n";
-        file << "#1 t (secs.) \n";
-		file << synapses->GetDataHeader(2);
-		file << "t\t"<<synapses->GetUnhashedDataHeader() << "\n";
-        file << "# Attention, Synaptic state data is spike-induced : at each time step, only synapses from which the presynaptic neuron has spiked are measured. Data only tested for CurrentSynapse and MongilloSynapse\n";
-        file << "#************************************\n";
-        file.close();
+        this->FileStreams.synStatesFileStream.open (this->GetSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
+        WriteHeader(&this->FileStreams.synStatesFileStream);
+        this->FileStreams.synStatesFileStream << "#************************************\n";
+        this->FileStreams.synStatesFileStream << "#Columns: \n";
+        this->FileStreams.synStatesFileStream << "#1 t (secs.) \n";
+		this->FileStreams.synStatesFileStream << synapses->GetDataHeader(2);
+		this->FileStreams.synStatesFileStream << "t\t"<<synapses->GetUnhashedDataHeader() << "\n";
+        this->FileStreams.synStatesFileStream << "# Attention, Synaptic state data is spike-induced : at each time step, only synapses from which the presynaptic neuron has spiked are measured. Data only tested for CurrentSynapse and MongilloSynapse\n";
+        this->FileStreams.synStatesFileStream << "#************************************\n";
         return;
     }
 
     if((info->time_step+1)%this->averaging_steps == 0)
     {
-
-        file.open(GetSynapseStateFilename(),std::ofstream::out | std::ofstream::app);
-        SaveDoubleFile(&file,double(info->time_step)*dt,4);
+        SaveDoubleFile(&this->FileStreams.synStatesFileStream,double(info->time_step)*dt,4);
 
         //Record synaptic strengths
         for(unsigned post_population = 0; post_population < P; post_population++)
@@ -879,7 +852,7 @@ void AdvancedRecorder::Record_SynapseStates(int header){
                         value = currentBin.synapticState[post_population][pre_population][data_length] /
                         double(currentBin.no_recordedSynapses[post_population][pre_population]);
                         //std::cout << std::to_string(value) << "\n";
-                        SaveDoubleFile(&file,value,6);
+                        SaveDoubleFile(&this->FileStreams.synStatesFileStream,value,6);
                     }
                 }
                 else
@@ -887,14 +860,13 @@ void AdvancedRecorder::Record_SynapseStates(int header){
                     for(unsigned data_length = 0; data_length < currentBin.synapticState[post_population][pre_population].size(); data_length++)
                     {
                         value = NAN;
-                        SaveDoubleFile(&file,value,6);
+                        SaveDoubleFile(&this->FileStreams.synStatesFileStream,value,6);
                         //file << "\t";
                     }
                 }
             }
         }
-        file << "\n";
-        file.close();
+        this->FileStreams.synStatesFileStream << "\n";
     }
 }
 
@@ -1108,13 +1080,13 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 				for (unsigned int spike = 0;spike < spikers->size();spike++) {
 					Xbin = static_cast<int>(neurons->GetX_Pos(prePop, spikers->at(spike)) * Heatmap / info->Lx);
 					Ybin = static_cast<int>(neurons->GetY_Pos(prePop, spikers->at(spike)) * Heatmap / info->Ly);
-					currentBin.Heatmap[prePop][Heatmap*Ybin + Xbin] += 1/ (double)Densimap[prePop][Heatmap*Ybin + Xbin];
+                    currentBin.Heatmap[prePop][static_cast<size_t>(Heatmap) * Ybin + Xbin] += 1 / static_cast<double>(Densimap[prePop][static_cast<size_t>(Heatmap) * Ybin + Xbin]);
 				}
 			}
 			else {
 				for (unsigned int spike = 0;spike < spikers->size();spike++) {
 					Xbin = static_cast<int>(neurons->GetX_Pos(prePop, spikers->at(spike)) * Heatmap / info->Lx);
-					currentBin.Heatmap[prePop][Xbin] += 1 / (double) Densimap[prePop][Xbin];
+					currentBin.Heatmap[prePop][Xbin] += 1 / static_cast<double> (Densimap[prePop][Xbin]);
 				}
 			}
 		}

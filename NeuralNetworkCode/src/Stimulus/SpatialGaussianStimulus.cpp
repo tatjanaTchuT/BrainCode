@@ -168,7 +168,7 @@ void SpatialGaussianStimulus::SaveParameters(std::ofstream * stream){
 			*stream << "stimulus_maxCurrent_" << std::to_string(Gauss_index + 1) << "                ";
 			for (int i = 0;i < P;i++)
 				*stream << std::to_string(s.values[i]) << "\t ";
-			*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+			*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 			*stream << " [column i: input to neurons of population i, at the center of the gaussian, last column: time until which input is set. Dimensions: [mV/sec , secs.]\n";
 		}
 
@@ -176,14 +176,14 @@ void SpatialGaussianStimulus::SaveParameters(std::ofstream * stream){
 			*stream << "stimulus_sigmaCurrent_t_" << std::to_string(Gauss_index + 1) << "            ";
 			for (int i = 0;i < P;i++)
 				*stream << std::to_string(s.values[i]) << "\t ";
-			*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+			*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 			*stream << " [column i: relative input noise to population i (relative to the mean current), last column: time until which input is set. Dimensions: [ -  , secs.]\n";
 		}
 
 		for (auto const &s : sigmaCurrent_x[Gauss_index]) {
 			*stream << "stimulus_sigmaCurrent_x_" << std::to_string(Gauss_index + 1) << "            ";
 			*stream << std::to_string(s.values[0]) << "\t ";//the width of the input is the same for all popluations
-			*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+			*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 			*stream << " [column 1: spatial spread (std of the Gaussian) of the input to all populations, last column: time until which input is set. Dimensions: [mm , secs.]\n";
 		}
 	}
@@ -192,7 +192,7 @@ void SpatialGaussianStimulus::SaveParameters(std::ofstream * stream){
 		*stream << "stimulus_Background_Noise            ";
 		for (int i = 0;i<P;i++)
 		*stream << std::to_string(s.values[i]) << "\t ";
-	*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+	*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 	*stream << "Noise applied in the whole domain [mV/sqrt(sec) , secs.]\n";
 	}
 

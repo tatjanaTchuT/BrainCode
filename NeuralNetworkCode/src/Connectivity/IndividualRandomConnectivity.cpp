@@ -66,7 +66,7 @@ double IndividualRandomConnectivity::GetConnectionProbability() {
     if (synapse->GetNoNeuronsPre() == 0)
         return 0;
     else
-        return ((double)noSourceNeurons) / ((double)synapse->GetNoNeuronsPre());
+        return static_cast<double>(noSourceNeurons) / static_cast<double>(synapse->GetNoNeuronsPre());
 }
 
 void IndividualRandomConnectivity::GetConnectionWeightsFromFile(std::string filepath) {
