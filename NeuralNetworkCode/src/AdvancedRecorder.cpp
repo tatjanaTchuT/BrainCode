@@ -605,8 +605,6 @@ void AdvancedRecorder::Record_Potential(){
     double           t = double(info->time_step)*dt;
     long             P = neurons->GetTotalPopulations();
 
-    this->FileStreams.potentialFileStream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::app);
-
     SaveDoubleFile(&this->FileStreams.potentialFileStream,t,5);
     for(int p = 0;p<P;p++){
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++)
@@ -985,7 +983,6 @@ void AdvancedRecorder::Record_HeteroSynapses() {
     double           dt = info->dt;
     double           t = double(info->time_step)*dt;
     unsigned long             P = neurons->GetTotalPopulations();
-    this->FileStreams.heteroSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 
     SaveDoubleFile(&this->FileStreams.heteroSynapsesFileStream,t,5);
 
@@ -1014,7 +1011,6 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
     double           dt = info->dt;
     double           t = static_cast<double>(info->time_step)*dt;
     unsigned long             P = neurons->GetTotalPopulations();
-    this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 
     SaveDoubleFile(&this->FileStreams.hSOverallFileStream,t,5);
 
