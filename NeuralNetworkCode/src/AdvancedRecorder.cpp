@@ -183,7 +183,7 @@ void AdvancedRecorder::SetNoRasterplotNeurons(std::vector<std::string> *values){
 }
 
 void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
-    int P = (int)neurons->GetTotalPopulations();
+    int P = static_cast<int>(neurons->GetTotalPopulations());
     for(int i = 0; i < min_(P,(int)values->size());i++){
         noCorrNeurons[i] = std::stoi(values->at(i));
         if ((static_cast<unsigned long>(noCorrNeurons[i]) > neurons->GetNeuronsPop(i)) ||
@@ -195,12 +195,12 @@ void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
 }
 
 void AdvancedRecorder::SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values) {
-    int P = (int)neurons->GetTotalPopulations();
-    for(int i = 0; i < min_(P,(int)values->size());i++){
+    int P = static_cast<int>(neurons->GetTotalPopulations());
+    RemoveHashInString(values);
+    for(int i = 0; i < min_(P,static_cast<int>(values->size()));i++){//min() only makes sense if you remove the hash
         noTrackHeteroSynapsePerTrackedNeuron[i] = std::stoi(values->at(i));
     }
-    RemoveHashInString(values);
-    if (values->size() > P) {//WHAT?
+    if (values->size() > P) {//This requires an extra number to record??
         try {
             this->heteroRecordingPerSteps = std::stoul(values->at(P));
         } catch (...) {
@@ -729,7 +729,7 @@ void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * sy
     this->FileStreams.meanCorrFileStream << "\n";
 
 
-    //save pair crosscorrelations.OPTIMIZATION, this file has no WriteHeader function either.
+    //save pair crosscorrelations.OPTIMIZATION
     this->FileStreams.pairCorrFileStream.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
 
     WriteHeader(&this->FileStreams.pairCorrFileStream);
@@ -1088,7 +1088,9 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	Record_Potential();
 	Record_CurrentContributions(synaptic_dV);
 	Record_HeteroSynapsesOverall();
-    if (this->heteroRecordingPerSteps !=0 && this->stepCount % this->heteroRecordingPerSteps == 0) {
+    if (this->heteroRecordingPerSteps !=0 && (this->stepCount % this->heteroRecordingPerSteps) == 0) {
+        //This condition will trigger if there is a "extra" number in the Parameters.txt and the step count is divisible by that number
+        //1 for every step recording, 2 for every two steps, etc...
         Record_HeteroSynapses();
     }
 }
