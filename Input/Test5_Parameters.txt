@@ -2,7 +2,7 @@
 Title                       Test5_PRGNetwork_dU-01_M-06_CheckBaseline-1545
 #*****************************************************************
 simulationTime              30.000000 		seconds
-dt                          0.000100 		seconds
+dt_timestep                          0.000100 		seconds
 globalSeed                  1 				#overrides all other seeds if unequal -1
 #*****************************************************************
 #****************        Spatial parameters        ***************
