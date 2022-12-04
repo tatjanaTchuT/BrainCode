@@ -1087,11 +1087,11 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	Record_Averages();
 	Record_Potential();
 	Record_CurrentContributions(synaptic_dV);
-	Record_HeteroSynapsesOverall();
     if (this->heteroRecordingPerSteps !=0 && (this->stepCount % this->heteroRecordingPerSteps) == 0) {
         //This condition will trigger if there is a "extra" number in the Parameters.txt and the step count is divisible by that number
         //1 for every step recording, 2 for every two steps, etc...
         Record_HeteroSynapses();
+    	Record_HeteroSynapsesOverall();
     }
 }
 

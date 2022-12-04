@@ -171,6 +171,8 @@ int main(int argc, char* argv[])
             NeuralNetwork neuralNetwork(base,&parEntries);
             neuralNetwork.Simulate();
             neuralNetwork.makeInputCopy(inputFile);
+            //This function is outputting a copy of the Parameters.txt in case there is a class in use that does not have a functional SaveParameters().
+            //This is the case of all hetero-things for now.
         }
     }
 

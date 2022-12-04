@@ -434,9 +434,9 @@ int NeuralNetwork::Simulate()
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
     std::cout << "\nTotal simulation time(s): " << duration.count() << "\n";
-//Wrap into a function, it is repeated twice and subject to changes. FROM HERE
+
     NeuralNetwork::outputHeteroEvents();
-//TO HERE. We should also make sure this content is stored in an output file .txt
+//We should also make sure this content is stored in an output file .txt. This function is a console output for debugging.
 
     //*****************************************************
     // --------------- END OF THE SIMULATION ------------
