@@ -61,7 +61,7 @@ csr1<- c(0,cumsum(data$r_1))
 n <- 10
 mvr0<-(csr0[(n+1):length(csr0)] - csr0[1:(length(csr0)-n)])/n
 mvr1<-(csr1[(n+1):length(csr1)] - csr1[1:(length(csr1)-n)])/n
-plot(data$t*2/15-4/15*pmax(data$t-75, 0),data$r_0,type = "l",xlim = c(0,10),ylim=c(0,10),xlab = "External Input (mV/s)",ylab = "Firing Rate (Hz)")
+plot(data$time*2/15-4/15*pmax(data$time-75, 0),data$r_0,type = "l",xlim = c(0,10),ylim=c(0,10),xlab = "External Input (mV/s)",ylab = "Firing Rate (Hz)")
 
 
 ```
