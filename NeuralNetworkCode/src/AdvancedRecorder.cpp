@@ -501,9 +501,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
                 this->FileStreams.hSOverallFileStream << "OverallProfile_" << p << "_" << i <<  "\t";
-            }
         }
     }
 
@@ -1013,7 +1011,7 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-            SaveDoubleFile(&this->FileStreams.hSOverallFileStream, heteroNeuronPop->getOverallSynapticProfile(i)[0], 5);
+                SaveDoubleFile(&this->FileStreams.hSOverallFileStream, heteroNeuronPop->getOverallSynapticProfile(i)[0], 5);
             //Here is selecting only the average weight per neuron, with precision 5 digits.
         }
     }

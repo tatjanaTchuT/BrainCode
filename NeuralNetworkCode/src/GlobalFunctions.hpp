@@ -51,15 +51,15 @@ struct IterableParameterFileEntry : ParameterFileEntry {
 };
 
 struct SynapseExt {
-    unsigned long preNeuronId;
-    unsigned long postNeuronId;
-    double distToSoma; //Use this to build a generalizable distance matrix.
+    unsigned long preNeuronId{};
+    unsigned long postNeuronId{};
+    double distToSoma{}; //Use this to build a generalizable distance matrix.
     //Add branching here
-    double lastSpike;
-    double theta; // heterosynaptic cooperatively???
-    double weight;
-    unsigned long globalId; // id for synapse within its population
-    unsigned long localId; // id for synapse within its a synapse collection
+    double lastSpike{};
+    double theta{}; // heterosynaptic cooperativity
+    double weight{};
+    unsigned long globalId{}; // id for synapse within its population
+    unsigned long localId{}; // id for synapse within its a synapse collection
 };
 
 struct SynapseExtBranched : SynapseExt {
