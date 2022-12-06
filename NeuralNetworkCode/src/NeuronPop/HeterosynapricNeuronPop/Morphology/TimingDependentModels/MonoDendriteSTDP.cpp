@@ -71,8 +71,41 @@ void MonoDendriteSTDP::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     this->integratePreSpike.at(synSpikerId) = true;
 }
 
-void MonoDendriteSTDP::SaveParameters(std::ofstream *stream) {
-    Morphology::SaveParameters(stream);
+void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    Morphology::SaveParameters(stream, neuronPreId);
+
+    *stream << neuronPreId<<"_dendritic_length\t\t\t"<<std::to_string(this->dendriticLength)<<" μm";
+    *stream << "\t"<<"#Length of the dendritic arm.\n";
+
+    *stream << neuronPreId<<"_synaptic_gap\t\t\t\t"<<std::to_string(this->synapticGap)<<" μm";
+    *stream << "\t"<<"#Forced distance between synapses.\n";
+
+    *stream << neuronPreId<<"_heterosynaptic_theta_decay\t"<<std::to_string(this->tauTheta);
+    *stream << "\t"<<"#Or tauTheta, decay constant of heterosynaptic effects in spines.\n";
+
+    *stream << neuronPreId<<"_intersynapse_distance_decay\t"<<std::to_string(this->lambdaDist);
+    *stream << "\t"<<"#Or lambdaDist, spatial decay constant of heterosynaptic boost between synapses.\n";
+
+    *stream << neuronPreId<<"_intersynapse_spike_timing_decay\t"<<std::to_string(this->tauDelay);
+    *stream << "\t"<<"#Or tauDelay, decay constant of heterosynaptic effects over inter-synapse spike timing difference.\n";
+
+    *stream << neuronPreId<<"_pre_factor_LTP\t\t\t"<<std::to_string(this->preFactorLTP);
+    *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTP. If set to zero, LTP will be zero.\n";
+
+    *stream << neuronPreId<<"_pre_factor_LTD\t\t\t"<<std::to_string(this->preFactorLTD);
+    *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTD. If set to zero, LTD will be zero.\n";
+
+    *stream << neuronPreId<<"_incr_ltp\t\t\t\t"<<std::to_string(this->incr_ltp);
+    *stream << "\t"<<"#Missing info\n";
+
+    *stream << neuronPreId<<"_decr_ltd\t\t\t\t"<<std::to_string(this->decr_ltd);
+    *stream << "\t"<<"#Missing info\n";
+
+    *stream << neuronPreId<<"_base_ltp\t\t\t\t"<<std::to_string(this->base_ltp);
+    *stream << "\t"<<"#Default increase in weight per LTP check.\n";
+
+    *stream << neuronPreId<<"_base_ltd\t\t\t\t"<<std::to_string(this->base_ltd);
+    *stream << "\t"<<"#Default decrease of weight per LTD check.\n";
 }
 
 void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
@@ -114,6 +147,8 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
             this->tauDelay = std::stod(values.at(0));
             tauDelayInitialized = true;
         } else if (name.find("distribute_weights") != std::string::npos) {
+            //This whole part is experimental, it seems it was not completely tested
+            //As such, this is deprecated from publication
             if (values.at(0) == "true") {
                 distributeWeights = true;
             } else if (values.at(0) == "step") {

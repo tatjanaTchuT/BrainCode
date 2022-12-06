@@ -35,7 +35,7 @@ public:
     ~MonoDendriteSTDPTazerart() override = default;
     std::string getType() override;
 
-    void SaveParameters(std::ofstream * stream) override;
+    void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
 };

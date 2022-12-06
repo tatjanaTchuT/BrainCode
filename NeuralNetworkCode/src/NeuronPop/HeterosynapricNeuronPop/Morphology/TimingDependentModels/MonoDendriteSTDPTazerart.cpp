@@ -7,8 +7,26 @@
 MonoDendriteSTDPTazerart::MonoDendriteSTDPTazerart(GlobalSimInfo *info) : MonoDendriteSTDP(info) {
 }
 
-void MonoDendriteSTDPTazerart::SaveParameters(std::ofstream *stream) {
-    MonoDendriteSTDP::SaveParameters(stream);
+void MonoDendriteSTDPTazerart::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
+    *stream <<"#Tazerart's exclusive here.\n";
+    *stream << neuronPreId<<"_mu_LTP\t\t\t\t\t"<<std::to_string(this->muLTP);
+    *stream << "\t"<<"#Time interval at which the LTP effect is maximized.\n";
+
+    *stream << neuronPreId<<"_sigma_LTP\t\t\t\t"<<std::to_string(this->sigmaLTP);
+    *stream << "\t"<<"#used in gLTP, spread of the effect distribution.\n";
+
+    *stream << neuronPreId<<"_alpha_LTP\t\t\t\t"<<std::to_string(this->alpha);
+    *stream << "\t"<<"#used in aLTP.\n";
+
+    *stream << neuronPreId<<"_mu_LTD\t\t\t\t\t"<<std::to_string(this->muLTD);
+    *stream << "\t"<<"#(negative) interval of time at which the ltd effect is maximized.\n";
+
+    *stream << neuronPreId<<"_sigma_LTD\t\t\t\t"<<std::to_string(this->sigmaLTD);
+    *stream << "\t"<<"#used in gLTD, spread of the effect distribution.\n";
+
+    *stream << neuronPreId<<"_beta_LTD\t\t\t\t"<<std::to_string(this->beta);
+    *stream << "\t"<<"#used in aLTD.\n";
 }
 
 void MonoDendriteSTDPTazerart::LoadParameters(std::vector<std::string> *input) {

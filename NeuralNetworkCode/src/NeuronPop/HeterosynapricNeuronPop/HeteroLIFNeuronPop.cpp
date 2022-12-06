@@ -72,6 +72,7 @@ void HeteroLIFNeuronPop::SaveParameters(std::ofstream * stream){
     *stream <<  "#\t\tHeteroLIF neuron: dV/dt = -V/tau_m + RI/tau_m \n";
     *stream <<  "#\t\tresetType 0: v = v_reset\n";
     *stream <<  "#\t\tresetType 1: v = v_reset + (v - v_thresh) \n";
+    morphology.at(0)->SaveParameters(stream, "neurons_" + std::to_string(GetId()));
 
 }
 

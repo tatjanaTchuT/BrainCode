@@ -7,8 +7,8 @@
 MonoDendriteSTDPTazerartRelative::MonoDendriteSTDPTazerartRelative(GlobalSimInfo *info) : MonoDendriteSTDP(info) {
 }
 
-void MonoDendriteSTDPTazerartRelative::SaveParameters(std::ofstream *stream) {
-    MonoDendriteSTDP::SaveParameters(stream);
+void MonoDendriteSTDPTazerartRelative::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
 }
 
 void MonoDendriteSTDPTazerartRelative::LoadParameters(std::vector<std::string> *input) {

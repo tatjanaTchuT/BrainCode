@@ -29,8 +29,6 @@ protected:
 
     std::vector<std::pair<unsigned long, double>> weight_changes;
 
-protected:
-
     GlobalSimInfo * info;
 
     std::vector<std::shared_ptr<SynapseExt>> synapseData;
@@ -56,7 +54,7 @@ public:
     explicit Morphology(GlobalSimInfo * info);
     virtual ~Morphology() = default;
 
-    virtual void SaveParameters(std::ofstream * stream);
+    virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
     virtual std::shared_ptr<SynapseExt> allocateNewSynapse() = 0;

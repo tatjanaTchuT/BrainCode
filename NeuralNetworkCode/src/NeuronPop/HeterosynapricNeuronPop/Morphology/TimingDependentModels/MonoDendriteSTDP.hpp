@@ -69,7 +69,7 @@ public:
     void recordPostSpike() override;
     void recordExcitatoryPreSpike(unsigned long synSpikerId) override;
 
-    void SaveParameters(std::ofstream * stream) override;
+    void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
     std::shared_ptr<SynapseExt> allocateNewSynapse()override;

@@ -39,7 +39,19 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
 
     }
 }
-void Morphology::SaveParameters(std::ofstream *stream) {
+void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    *stream<< "#From here on is all Heterostuff\n";
+    *stream << neuronPreId<<"morphology\t\t\t\t"<<this->getType()<<"\n";
+    *stream << neuronPreId<<"morphology_weight_normalization\t";
+    if (this->weightNormalization == HardNormalization){
+        *stream<<"HardNormalization\n";
+    }
+    else if (this->weightNormalization == SoftMaxNormalization){
+        *stream<<"SoftMaxNormalization\n";
+    }
+    else if (this->weightNormalization == NOPNormalization){
+        *stream<<"NOPNormalization\n";
+    }
 }
 
 

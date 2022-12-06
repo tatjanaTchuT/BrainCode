@@ -7,8 +7,8 @@
 MonoDendriteSTDPBiWindow::MonoDendriteSTDPBiWindow(GlobalSimInfo *info) : MonoDendriteSTDP(info) {
 }
 
-void MonoDendriteSTDPBiWindow::SaveParameters(std::ofstream *stream) {
-    MonoDendriteSTDP::SaveParameters(stream);
+void MonoDendriteSTDPBiWindow::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
 }
 
 void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {

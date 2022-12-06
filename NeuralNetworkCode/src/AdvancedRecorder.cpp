@@ -103,6 +103,11 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
     *stream <<  "recorder_trackSynapses             " << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
     // *stream <<  "recorder_Histogram                 " << std::to_string(writeHistogram) << "\t\t\t\t\t#Set = 0 to ignore. Option under construction.\n";
 	*stream <<  "recorder_Heatmap                   " << std::to_string(Heatmap) << "\t\t\t\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
+    
+    *stream <<  "recorder_notrackHeteroSynapseProfiles  ";
+    for (unsigned i = 0; i < noTrackHeteroSynapsePerTrackedNeuron.size();i++)
+        *stream << std::to_string(noTrackHeteroSynapsePerTrackedNeuron[i])<< "\t";
+    *stream <<std::to_string(heteroRecordingPerSteps)<< "\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
 }
 
 void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
