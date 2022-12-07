@@ -1,6 +1,7 @@
 #ifndef Recorder_HPP
 #define Recorder_HPP
 
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <cstring>
 #include <fstream>

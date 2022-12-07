@@ -7,6 +7,7 @@ Contributors:
 
 - Ahmed, Saif 
 - Becker, Sophia
+- Bertolin, Antoni
 - Dutine, Alexander
 - Ekelmans, Pierre
 - Konrad, Sara
@@ -62,3 +63,4 @@ In the minimum case, there is one output file, named *Title*_Data, which stores 
 To get familiar with the Spiking Network Simulation code, a few tests are provided (Test folder). Each of these tests is used to make sure the code runs properly and returns the right output. In every case, the parameter file needed to run the test is provided, as well as a markdownfile showing the expected result of the simulation.
 
 See [here](README_OutputFiles.md) for more detailed information.
+

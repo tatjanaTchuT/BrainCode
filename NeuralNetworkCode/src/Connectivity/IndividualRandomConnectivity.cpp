@@ -177,7 +177,7 @@ void IndividualRandomConnectivity::SetDistributionJ() {
 void IndividualRandomConnectivity::ConnectNeurons()
 {
 
-    unsigned long    source, countedSourceNeurons;
+    unsigned long    countedSourceNeurons;
     unsigned long    nPost = synapse->GetNoNeuronsPost();
     unsigned long    nPre = synapse->GetNoNeuronsPre();
 

@@ -1,6 +1,7 @@
 
 #ifndef AdvancedRecorder_h
 #define AdvancedRecorder_h
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <string>
 #include <iostream>
