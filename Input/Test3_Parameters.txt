@@ -2,7 +2,7 @@
 Title                       Test3
 #*****************************************************************
 simulationTime              150.000000 		seconds
-dt                          0.000100 		seconds
+dt_timestep                          0.000100 		seconds
 globalSeed                  5052020 				#overrides all other seeds if unequal -1
 #*****************************************************************
 #****************        Spatial parameters        ***************

@@ -2,7 +2,7 @@
 Title                       Test9A
 #*****************************************************************
 simulationTime              35.000000 		seconds
-dt                          0.000100 		seconds
+dt_timestep                          0.000100 		seconds
 globalSeed                  20072020 				#overrides all other seeds if unequal -1
 #*****************************************************************
 #****************        Spatial parameters        ***************

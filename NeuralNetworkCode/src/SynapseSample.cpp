@@ -3,7 +3,7 @@
 SynapseSample::SynapseSample(NeuronPopSample * neurons,std::vector<std::string> *input,GlobalSimInfo *info)
 {
     this->generalSynapseSeed = -1;
-    this->info    = info;
+    this->info    = info;//These are pointers.
     this->neurons = neurons;
 
     //this->global_D_max = 0;
@@ -128,10 +128,14 @@ void SynapseSample::SaveSynapseType(std::string name,std::string type,std::vecto
         delete synapses[i][j];
         synapses[i][j] = new ExponentialCurrentSynapse(neurons->GetPop(i),neurons->GetPop(j),info);;
     }
-	if (type == str_powerlawsynapse) {
+	else if (type == str_powerlawsynapse) {
 		delete synapses[i][j];
 		synapses[i][j] = new PowerLawSynapse(neurons->GetPop(i), neurons->GetPop(j), info);
 	}
+    else if (type == str_heteroSynapse) {
+        delete synapses[i][j];
+        synapses[i][j]  = new HeteroCurrentSynapse(neurons->GetPop(i), neurons->GetPop(j), info);
+    }
 
     FilterStringVector(input, "synapses_" + synNo, &synapses_strs);
     synapses[i][j]->LoadParameters(&synapses_strs);

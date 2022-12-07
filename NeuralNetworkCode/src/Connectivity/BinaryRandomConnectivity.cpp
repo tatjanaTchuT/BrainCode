@@ -6,7 +6,7 @@ BinaryRandomConnectivity::BinaryRandomConnectivity(Synapse * syn,GlobalSimInfo  
     SetSeed(0);
 }
 
-void BinaryRandomConnectivity::SaveParameters(std::ofstream * stream,std::string id_str){
+void BinaryRandomConnectivity::SaveParameters(std::ofstream * stream, const std::string& id_str){
     Connectivity::SaveParameters(stream,id_str);
     *stream << id_str << "connectivity_ConnectionProba\t" << std::to_string(this->connectionProbability) << "\n";
     if(info->globalSeed == -1){
@@ -22,8 +22,8 @@ void BinaryRandomConnectivity::LoadParameters(std::vector<std::string> *input){
     std::string              name;
     std::vector<std::string> values;
 
-    for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
-        SplitString(&(*it),&name,&values);
+    for(auto & it : *input) {
+        SplitString(&it,&name,&values);
         if(name.find("seed") != std::string::npos){
             SetSeed(std::stoi(values.at(0)));
         }
@@ -67,5 +67,5 @@ void BinaryRandomConnectivity::ConnectNeurons()
 
 
 unsigned long BinaryRandomConnectivity::GetNumberAverageSourceNeurons(){
-    return connectionProbability*this->synapse->GetNoNeuronsPre();
+    return static_cast<unsigned long>(connectionProbability) * this->synapse->GetNoNeuronsPre();
 }

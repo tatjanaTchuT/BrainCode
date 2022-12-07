@@ -9,7 +9,7 @@ RandomConnectivity::RandomConnectivity(Synapse * syn,GlobalSimInfo  * info):Conn
 void RandomConnectivity::SaveParameters(std::ofstream * stream,std::string id_str){
     Connectivity::SaveParameters(stream,id_str);
     //*stream << id_str << "connectivity_noSourceNeurons " << std::to_string(this->noSourceNeurons) << "\n";
-    *stream << id_str << "connectivity_ConnectionProba\t" << std::to_string(this->GetConnectionProbability()) << "\n";
+    *stream << id_str << "connectivity_ConnectionProba\t\t\t\t" << std::to_string(this->GetConnectionProbability()) << "\n";
     //*stream << "#" << id_str << "connectivity_noSourceNeurons " << std::to_string(this->noSourceNeurons) << "\n";
     *stream << "#\t\t"<< str_randomConnectivity << ": Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).\n";
 }
@@ -29,7 +29,7 @@ void RandomConnectivity::LoadParameters(std::vector<std::string> *input){
             //std::cout << "number of neurons pre: " << std::to_string(synapse->GetNoNeuronsPre()) << ", ";
             //std::cout << "connection probability value: " << std::to_string(std::stod(values.at(0))) << ", ";
             //std::cout << "their product: " << std::to_string(synapse->GetNoNeuronsPre()*std::stod(values.at(0))) << "\n";
-            SetNoSourceNeurons(synapse->GetNoNeuronsPre()*std::stod(values.at(0)));
+            SetNoSourceNeurons(static_cast<unsigned long>(synapse->GetNoNeuronsPre() * std::stod(values.at(0))));
         }
         else if(name.find("noSourceNeurons") != std::string::npos){
             SetNoSourceNeurons(std::stoi(values.at(0)));
@@ -54,8 +54,11 @@ void RandomConnectivity::SetNoSourceNeurons(unsigned long noSN){
 double RandomConnectivity::GetConnectionProbability(){
     if(synapse ->GetNoNeuronsPre() == 0)
         return 0;
+    if(synapse->IsRecurrent()){
+        return (static_cast<double>(noSourceNeurons+1))/(static_cast<double>(synapse ->GetNoNeuronsPre()));
+    }
     else
-        return ((double)noSourceNeurons)/((double)synapse ->GetNoNeuronsPre());
+        return (static_cast<double>(noSourceNeurons))/(static_cast<double>(synapse ->GetNoNeuronsPre()));
 }
 
 

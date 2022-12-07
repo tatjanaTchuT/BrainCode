@@ -23,22 +23,22 @@ protected:
     double Delta_U;     // Effect of LPA on U
 	double Delta_tau_f; // Effect of LPA on tau_f
 
-    void   TransmitSpike(std::vector<double> * currents,long targetId,long spikerId);
-	void   advect_spikers(std::vector<double> * currents, long spiker);
-	void   ConnectNeurons();
+    void advect_spikers(std::vector<double>& currents, long spiker) override;
+    void TransmitSpike(std::vector<double>& currents,long targetId,long spikerId) override;
+	void ConnectNeurons() override;
 
 public:
     PRGSynapseContinuous(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * info);
-    ~PRGSynapseContinuous();
+    ~PRGSynapseContinuous() override = default;
 
-    int                     GetNumberOfDataColumns() {return 5;} // J, <y>, <x>, <l>, <submitted_spikes>
-	std::string             GetDataHeader(int data_column);
-	std::string				GetUnhashedDataHeader();
-	std::valarray<double>   GetSynapticState(int pre_neuron);
-    std::string             GetTypeStr(){return str_prgSynapseContinuous;}
+    int GetNumberOfDataColumns() override {return 5;} // J, <y>, <x>, <l>, <submitted_spikes>
+	std::string GetDataHeader(int data_column) override;
+	std::string GetUnhashedDataHeader() override;
+	std::valarray<double> GetSynapticState(int pre_neuron) override;
+    std::string GetTypeStr() override { return str_prgSynapseContinuous; }
 
-    void                    SaveParameters(std::ofstream * stream,std::string id_str);
-    void                    LoadParameters(std::vector<std::string> *input);
+    void SaveParameters(std::ofstream * stream,std::string id_str) override;
+    void LoadParameters(std::vector<std::string> *input) override;
 
 };
 

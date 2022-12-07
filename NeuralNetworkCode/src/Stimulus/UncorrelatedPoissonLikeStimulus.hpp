@@ -52,9 +52,9 @@ private:
     double GetExternalCouplingStrength(int pop){
         double h;
         if (info->networkScaling_extern == 0)
-            h = (double)noExternalNeurons;
+            h = static_cast<double>(noExternalNeurons);
         else if (info->networkScaling_extern == 1)
-            h = (double)neurons->GetTotalNeurons();
+            h = static_cast<double>(neurons->GetTotalNeurons());
         else{
             throw "ERROR: GetExternalCouplingStrength";
             h = 0;}
@@ -70,9 +70,9 @@ public:
     //*******************
     // Get-Functions
     //*******************
-    long    GetStimulusStep_Time(int i) {return next_stimulus_time_step.at(i);}
+    long    GetStimulusStep_Time(int i) {return static_cast<long> (next_stimulus_time_step.at(i)); }
     double  GetStimulusStep(int i)      {return next_stimulus_step.at(i);};
-    long    GetStimulusNoSteps()        {return next_stimulus_step.size();}
+    long    GetStimulusNoSteps() { return static_cast<long>(next_stimulus_step.size()); }
     std::string GetType()               {return str_uncorrelatedStimulus;}
     int     GetTable_entries()          {return table_entries;}
 

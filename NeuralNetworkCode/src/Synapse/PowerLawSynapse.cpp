@@ -11,7 +11,7 @@ PowerLawSynapse::PowerLawSynapse(NeuronPop * postNeurons, NeuronPop * preNeurons
 }
 
 
-void PowerLawSynapse::advect_spikers(std::vector<double> * currents, long spiker)
+void PowerLawSynapse::advect_spikers(std::vector<double>& currents, long spiker)
 {
 	double ISI;
 	double nu_H; //estimated firing rate based on ISI
@@ -24,12 +24,12 @@ void PowerLawSynapse::advect_spikers(std::vector<double> * currents, long spiker
 	ISI = ISI_table[spiker].sum()/N;//Average ISI over the last Naveraging spikes
 	nu_H = 1 / ISI;
 	if (N > 1)
-		nu_H = (double)(N - 1) / N * nu_H;//the expected value of 1/ISI is nu*N/(N-1) for a Poisson process
+		nu_H = static_cast<double>(N - 1) / N * nu_H;//the expected value of 1/ISI is nu*N/(N-1) for a Poisson process
 	std::vector<unsigned long> *tL = geometry->GetTargetList(spiker);
 
 	for (unsigned int target = 0; target < tL->size(); target++) {
 		double c = GetCouplingStrength(spiker, target);
-		(*currents)[target] += c* pow(nu_H, n);
+		currents[target] += c* pow(nu_H, n);
 		this->cumulatedDV += c * pow(nu_H, n);
 	}
 }
@@ -42,8 +42,8 @@ void PowerLawSynapse::LoadParameters(std::vector<std::string> *input) {
 	std::string              name;
 	std::vector<std::string> values;
 
-	for (std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
-		SplitString(&(*it), &name, &values);
+	for (auto & it : *input) {
+		SplitString(&it, &name, &values);
 
 		if (name.find("powerlawsyn_n") != std::string::npos) {
 			n = std::stod(values.at(0));
@@ -87,6 +87,3 @@ std::valarray<double> PowerLawSynapse::GetSynapticState(int pre_neuron){
 	//val[0] = GetCouplingStrength()*double(this->GetNumberOfPostsynapticTargets(pre_neuron));
 	return val;
 }
-
-
-PowerLawSynapse::~PowerLawSynapse() {}

@@ -54,7 +54,7 @@ void SpatialPoissonStimulus::SetTableEntries(){
     if(next_stimulus_step.size() == 0)
         signal = 0;
     else
-        signal = dt*(double)noExternalNeurons*next_stimulus_step.back();
+        signal = dt*static_cast<double>(noExternalNeurons)*next_stimulus_step.back();
 
     fill_poisson_value_table(signal);
 }
@@ -69,7 +69,7 @@ inline void SpatialPoissonStimulus::UpdatePoissonTable()
         {
             next_stimulus_step.pop_back();
             next_stimulus_time_step.pop_back();
-            signal = dt*(double)noExternalNeurons*next_stimulus_step.back();
+            signal = dt*static_cast<double>(noExternalNeurons)*next_stimulus_step.back();
             fill_poisson_value_table(signal);
 
             if(next_stimulus_time_step.empty())
@@ -94,14 +94,14 @@ void SpatialPoissonStimulus::Update(std::vector<std::vector<double>> * synaptic_
 		}
 	}
 
-	NoFire = poisson_value_table[TablePick(generator)];
+	NoFire = static_cast<int>(poisson_value_table[TablePick(generator)]);
 	FireSourcePick = std::uniform_int_distribution<int>(0, noExternalNeurons - 1);
 	for (int Source_id = 0;Source_id < NoFire;Source_id++) {
 		FireSource = FireSourcePick(generator);
 		for (unsigned long pop = 0;pop < P;pop++) {
 			c = GetExternalCouplingStrength(pop)*info->dt/tau_syn;
 			for (std::size_t target_id = 0;target_id < Ext_Connectivity[FireSource][pop].size();target_id++) {
-				target = Ext_Connectivity[FireSource][pop][target_id];
+				target = static_cast<int>(Ext_Connectivity[FireSource][pop][target_id]);
 				signal_array[pop][target] += c;
 			}
 		}
@@ -174,9 +174,9 @@ void SpatialPoissonStimulus::Generate_Connectivity_Exact() {
 		Ye = Ext_Ypos[ExtNeuron];
 		for (int pop = 0;pop < P;pop++) {
 			Ni = neurons->GetNeuronsPop(pop);
-			Nconnect = PeakConnectProba[pop] * Ni;
+			Nconnect = static_cast<long>(PeakConnectProba[pop] * Ni);
 			length = lengthscale[pop];
-			Nix = round(sqrt(Ni));
+			Nix = static_cast<long>(round(sqrt(Ni)));
 			for (int connection = 0;connection < Nconnect;connection++) {
 				rand_R = RandomConnect(generator);
 				rand_theta = RandomConnect(generator);
@@ -186,8 +186,8 @@ void SpatialPoissonStimulus::Generate_Connectivity_Exact() {
 					Xi = Xi + info->Lx;
 				while (Yi < 0)
 					Yi = Yi + info->Lx;
-				Xtarget = round(Xi / (info->Lx / Nix));
-				Ytarget = round(Yi / (info->Lx / Nix));
+				Xtarget = static_cast<long>(round(Xi / (info->Lx / Nix)));
+				Ytarget = static_cast<long>(round(Yi / (info->Lx / Nix)));
 				while (Xtarget > (Nix - 1))
 					Xtarget = Xtarget - Nix;
 				while (Ytarget > (Nix - 1))
@@ -208,8 +208,8 @@ void SpatialPoissonStimulus::SetPositions() {
 	Ext_Xpos.resize(noExternalNeurons);
 	Ext_Ypos.resize(noExternalNeurons);
 	if (info->Dimensions == 2) {
-		rows = ceil(sqrt(noExternalNeurons));
-		columns = floor(noExternalNeurons / rows);
+		rows = static_cast<int>(ceil(sqrt(noExternalNeurons)));
+		columns = static_cast<int>(floor(noExternalNeurons / rows));//Again, unsigned long necessary??
 		mod = noExternalNeurons - rows * columns;//see NeuronPop::SetPosition()
 		for (int i = 0; i < mod*(columns + 1); i++) {
 			Ext_Xpos[i] = (info->Lx / (columns + 1))*(i % (columns + 1));
@@ -314,7 +314,9 @@ void SpatialPoissonStimulus::SaveParameters(std::ofstream * stream){
     *stream << "dmV/Spike\n";
 
     for(int i = 0; i < GetStimulusNoSteps(); i++) {
-        *stream <<  "stimulus_step                        " << std::to_string(GetStimulusStep_Time(i)*info->dt)  << "\t"
+        *stream <<  "stimulus_step                        " << std::to_string(GetStimulusStep_Time(i)*info->dt)  << "\t" 
+		//Why does the function data type call for a long from a double vector and then brings it to a double by multiplication?
+		//Precision issues with doubles will still affect the output, it will just be masked to the user
         << std::to_string(GetStimulusStep(i))  << "\t[t (secs.) -- Hz]\n";
     }
 
@@ -340,7 +342,7 @@ void SpatialPoissonStimulus::LoadParameters(std::vector<std::string> *input){
 			this->noExternalNeurons = std::stoi(values.at(0));
 		}
 		else if (name.find("seed") != std::string::npos) {
-			SetSeed(std::stod(values.at(0)));
+			SetSeed(static_cast<int>(std::stod(values.at(0))));
 		}
 		else if (name.find("stimulus_step") != std::string::npos) {
 			AddStimulusStep(std::stod(values.at(0)), std::stod(values.at(1)));

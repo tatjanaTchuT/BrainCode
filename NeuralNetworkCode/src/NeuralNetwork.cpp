@@ -1,13 +1,5 @@
-#include <sys/stat.h>
-//#include <unistd.h>
-#include <string>
 #include "NeuralNetwork.hpp"
-#include "Stimulus/UncorrelatedPoissonLikeStimulus.hpp"
-#include "Stimulus/WhiteNoiseStimulus.hpp"
-#include "Stimulus/WhiteNoiseRescaled.hpp"
-#include "Stimulus/WhiteNoiseLinear.hpp"
-#include "Stimulus/SpatialGaussianStimulus.hpp"
-#include "Stimulus/SpatialPoissonStimulus.hpp"
+
 
 NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry> *parEntries)
 {
@@ -41,9 +33,7 @@ void NeuralNetwork::SaveParameters(){
     // if this test file does not appear in the target directory: stop the
     // simulation and check the directoryPath.
 
-    //std::ofstream stream(recorder->GetParametersFilename()); // With this, the parameters file is empty. Could be difference in the version.
-    std::ofstream    stream;
-    stream.open(recorder->GetParametersFilename(), std::ofstream::out | std::ofstream::app); //ios::binary
+    std::ofstream stream(recorder->GetParametersFilename());
     recorder->WriteHeader(&stream);
     //stream <<  "#*****************************************************************\n";
     //stream <<  "#Date and Time:             " << std::ctime(&end_time);
@@ -51,7 +41,7 @@ void NeuralNetwork::SaveParameters(){
     stream <<  "Title                       " << this->recorder->GetTitle()  << "\n";
     stream <<  "#*****************************************************************\n";
     stream <<  "simulationTime              " << std::to_string(info.simulationTime)  << " \t\tseconds\n";
-    stream <<  "dt                          " << std::to_string(info.dt)  << " \t\tseconds\n";
+    stream <<  "dt_timestep                 " << std::to_string(info.dt)  << " \t\tseconds\n";
 	stream <<  "globalSeed                  " << std::to_string(info.globalSeed)  << " \t\t\t\t#overrides all other seeds if unequal -1\n";
 
 	stream << "#*****************************************************************\n";
@@ -249,7 +239,7 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
             else
                 title = values.at(0);
         }
-        else if(name.find("dt") != std::string::npos){
+        else if(name.find("dt_timestep") != std::string::npos){
             info.dt = std::stod(values.at(0));
         }
         else if(name.find("simulationTime") != std::string::npos){
@@ -257,14 +247,14 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
         }
 
         else if(name.find("globalSeed") != std::string::npos){
-            info.globalSeed       = std::stod(values.at(0));
+            info.globalSeed = static_cast<int> (std::stod(values.at(0)));
             info.globalGenerator  = std::default_random_engine(info.globalSeed);
         }
 		else if (name.find("density") != std::string::npos) {
-			info.density = std::stod(values.at(0));
+            info.density = static_cast<int>(std::stod(values.at(0)));
 		}
 		else if (name.find("Dimensions") != std::string::npos) {
-			info.Dimensions = std::stod(values.at(0));
+            info.Dimensions = static_cast<int>(std::stod(values.at(0)));
 		}
         else if((name.find("synapticScaling") != std::string::npos) ||
                 (name.find("scalingSynapticStrength") != std::string::npos)){
@@ -366,7 +356,7 @@ int NeuralNetwork::WellDefined(){
 int NeuralNetwork::Simulate()
 {
     if(!WellDefined())
-        return 0;
+        return 1;
 
     //******************************
     // Declarations & Initialization
@@ -376,14 +366,14 @@ int NeuralNetwork::Simulate()
     unsigned int      P = neurons->GetTotalPopulations();
     std::uniform_real_distribution<double> uni_distribution (0.0,1.0);
     int      simSteps      = int(info.simulationTime/info.dt);  // number of simulation time steps
-    // int      global_D_max = this->synapses->GetMaxD();          // get maximum delay across all synapses: size of waiting matrix
+    // int      global_D_max = this->synapses->GetMaxD();          // get maximum delay across all synapses: size of waiting matrix DEPRECATED
 
     std::vector<std::vector<double>> synaptic_dV;
     synaptic_dV.resize(P);
     for(unsigned int p = 0; p < P; p++)
 		synaptic_dV[p].resize(neurons->GetNeuronsPop(p),0);
 
-    // Initialize waiting matrix for synaptic delays
+    // Initialize waiting matrix for synaptic delays (safe to delete?) DEPRECATED
 	/*
     std::vector<std::vector<std::vector<double>>> waiting_matrix (global_D_max+1, std::vector<std::vector<double>>(P, std::vector<double>(0)));
     for(int d_index = 0; d_index < waiting_matrix.size(); d_index++){
@@ -392,6 +382,7 @@ int NeuralNetwork::Simulate()
         }
     }*/
 
+    //OPTIMIZATION: Here we should open the six streams and keep them open until the end of the simulation, for performance's sake
     this->recorder->SetFilenameDate();
     SaveParameters();
     this->recorder->WriteDataHeader();
@@ -407,13 +398,17 @@ int NeuralNetwork::Simulate()
     this->synapses->ConnectNeurons();
     this->recorder->WriteConnectivity();
     this->recorder->WriteDistributionD();
-    this->recorder->WriteDistributionJ();
+    this->recorder->WriteDistributionJ(); //Heteroclasses do not use Js at all!!!!
 
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
+	auto start = std::chrono::high_resolution_clock::now();
+//Remember remember
+    NeuralNetwork::outputHeteroEvents();
+//The 5th of November
     while(info.time_step <= simSteps)
     {
-		for (unsigned int p = 0; p < P; p++) {
-			for (unsigned long i = 0;i < neurons->GetNeuronsPop(p);i++)
+        for (unsigned int p{0}; p < P; p++) {
+            for (unsigned long i{ 0 }; i < neurons->GetNeuronsPop(p); i++)
 				synaptic_dV[p][i] = 0.0;
 		}
         this->synapses->advect(&synaptic_dV);
@@ -423,11 +418,11 @@ int NeuralNetwork::Simulate()
 		this->synapses->reset();
 
 
-        if(info.time_step%((int)(simSteps*0.01)) == 1){
+        if(info.time_step%(static_cast<int>(simSteps*0.01)) == 1){
             intermediate_time = clock();
-            r       = ((double)info.time_step/(double)simSteps);
-            t_comp  = double(intermediate_time-begin)/CLOCKS_PER_SEC;
-            std::cout << (int)(r*100) << "%  -- Comp. time: " << (int)(t_comp) << "/" << (int)(t_comp/r) << " sec. -- " << " \n";
+            r = (static_cast<double>(info.time_step) / static_cast<double>(simSteps));
+            t_comp = static_cast<double>(intermediate_time - begin) / CLOCKS_PER_SEC;
+            std::cout << static_cast<int>(r*100) << "%  -- Comp. time: " << static_cast<int>(t_comp) << "/" << static_cast<int>(t_comp/r) << " sec. -- " << " \n";
         }
 
         info.time_step++;
@@ -436,9 +431,51 @@ int NeuralNetwork::Simulate()
     this->recorder->Record(&synaptic_dV);
     this->recorder->writeFinalDataFile(t_comp);
 	std::cout << "\nPandas end simulation : " <<this->recorder->GetTitle() << "\n";
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    std::cout << "\nTotal simulation time(s): " << duration.count() << "\n";
+
+    NeuralNetwork::outputHeteroEvents();
+//We should also make sure this content is stored in an output file .txt. This function is a console output for debugging.
+
     //*****************************************************
     // --------------- END OF THE SIMULATION ------------
     //*****************************************************
 
-    return 1;
+    return 0;
+}
+
+void NeuralNetwork::makeInputCopy(const std::string& inputFile) {
+    this->recorder->makeInputCopy(inputFile);
+}
+
+void NeuralNetwork::outputHeteroEvents(){
+        unsigned long potentiationCount {0}, depressionCount {0}, inBetweeners {0}, stable {0};
+
+    for (unsigned long popId{ 0 }; popId < this->neurons->GetTotalPopulations(); popId++) {
+        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
+        if (pop!=nullptr){
+            for (unsigned long nId{ 0 }; nId < pop->GetNoNeurons(); nId++) {
+                unsigned long synCount{ pop->getSynapseCount(nId) };
+                for (unsigned long sId{ 0 }; sId < synCount; ++sId) {
+                    double w{ pop->getWeight(nId, sId) };
+                    if (w > 1.8) {
+                        potentiationCount++;
+                    }else if (w < 0.2) {
+                        depressionCount++;
+                    }else if (w > 0.8 && w < 1.2) {
+                        stable++;
+                    }else {
+                        inBetweeners++;
+                    }
+                }
+            }
+        }
+    }
+
+    //std::ofstream stream(this->recorder->GetDirectoryPath(),  );
+    std::cout << "Potentiation Count: " << potentiationCount << std::endl;
+    std::cout << "Depression Count: " << depressionCount << std::endl;
+    std::cout << "Stable Count: " << stable << std::endl;
+    std::cout << "InBetweener Count: " << inBetweeners << std::endl;
 }

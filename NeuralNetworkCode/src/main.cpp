@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    unsigned int iterate1_len = iterate1_entries.front().values.size();
-    unsigned int iterate2_len = iterate2_entries.front().values.size();
+    unsigned int iterate1_len = static_cast<unsigned int>(iterate1_entries.front().values.size());
+    unsigned int iterate2_len = static_cast<unsigned int>(iterate2_entries.front().values.size());
 
     //******************************************
     //******************************************
@@ -169,6 +169,7 @@ int main(int argc, char* argv[])
 
             NeuralNetwork neuralNetwork(base,&parEntries);
             neuralNetwork.Simulate();
+            neuralNetwork.makeInputCopy(inputFile);
         }
     }
 

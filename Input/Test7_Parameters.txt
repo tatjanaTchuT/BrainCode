@@ -2,7 +2,7 @@
 Title                       Test7_Mongillo_Bistability
 #*****************************************************************
 simulationTime              40.000000 		seconds
-dt                          0.000010 		seconds
+dt_timestep                          0.000010 		seconds
 globalSeed                  -1 				#overrides all other seeds if unequal -1
 #*****************************************************************
 #****************        Spatial parameters        ***************

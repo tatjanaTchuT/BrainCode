@@ -137,12 +137,13 @@ void DistanceConnectivity::ConnectNeuronsExact()
 	unsigned long	source;
 	double	randdistance;
 	double	randtheta;
-	long	Nconnect = round((noPre-1) * PeakProbability);
+	long	Nconnect = lround((noPre - 1) * PeakProbability);
 	long	NxPre = noPre;
 	double	DXsource=info->Lx/NxPre;
 
 	if (info->Dimensions == 2) {
-		NxPre = round(sqrt(noPre));//in 2D the distance between rows is different
+		//lround() returns a long integer
+		NxPre = lround(sqrt(noPre));//in 2D the distance between rows is different
 		DXsource = info->Lx / NxPre;
 		if (0.86*Nconnect > (4 * atan(1))*pow(2*StdProbability, 2)*noPre / (a*pow(info->Lx,2)))//86% of the Gaussian distribution should fall within the ellipse of radii 2sigma, 2sigma/a.
 			std::cout << "WARNING !! \n Connectivity pattern cannot follow a Gaussian pdf: sigma too low, density too low or Connection_probability too high\n";
@@ -174,14 +175,14 @@ void DistanceConnectivity::ConnectNeuronsExact()
 			x_pr = StdProbability * sqrt(-2 * log(randdistance))*cos(2 * (4 * atan(1))*randtheta) + x_ps;//Box Muller transform
 			while (x_pr < 0)
 				x_pr = x_pr + info->Lx;
-			Xsource = round(x_pr / DXsource);
+			Xsource = lround(x_pr / DXsource);
 			while (Xsource >(NxPre - 1))
 				Xsource = Xsource - NxPre;
 			if (info->Dimensions == 2) {
 				y_pr = StdProbability/a * sqrt(-2 * log(randdistance))*sin(2 * (4 * atan(1))*randtheta) + y_ps;
 				while (y_pr < 0)
 					y_pr = y_pr + info->Lx;
-				Ysource = round(y_pr / DXsource);
+				Ysource = lround(y_pr / DXsource);
 				while (Ysource >(NxPre - 1))
 					Ysource = Ysource - NxPre;
 				source = Xsource + NxPre * Ysource;
@@ -207,12 +208,12 @@ void DistanceConnectivity::ConnectNeuronsExact()
 
 unsigned long  DistanceConnectivity::GetNumberAverageSourceNeurons() {
 	if (exact == 1)
-		return synapse->GetNoNeuronsPre()*PeakProbability;
+		return static_cast<unsigned long>(synapse->GetNoNeuronsPre() * PeakProbability);
 	else {
 		if (info->Dimensions == 2)
-			return (synapse->GetNoNeuronsPre() / (double)info->N) * 2 * (4 * atan(1)) * info->density * PeakProbability * pow(StdProbability, 2) / a;//integral of density*probability(x,y)dxdy over the infinite 2D space
+			return static_cast<unsigned long>((synapse->GetNoNeuronsPre() / static_cast<double>(info->N)) * 2 * (4 * atan(1)) * info->density * PeakProbability * pow(StdProbability, 2) / a);//integral of density*probability(x,y)dxdy over the infinite 2D space
 		else if (info->Dimensions == 1)
-			return (synapse->GetNoNeuronsPre() / (double)info->N) * sqrt(2 * (4 * atan(1))) * info->density * PeakProbability * StdProbability;//integral of density*probability(x,y)dxdy over the infinite 1D space
+			return static_cast<unsigned long>((synapse->GetNoNeuronsPre() / static_cast<double>(info->N)) * sqrt(2 * (4 * atan(1))) * info->density * PeakProbability * StdProbability);//integral of density*probability(x,y)dxdy over the infinite 1D space
         else{
             throw "ERROR DistanceConnectivity::GetNumberAverageSourceNeurons";
         }

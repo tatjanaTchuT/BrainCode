@@ -21,11 +21,11 @@
 class ExponentialCurrentSynapse : public Synapse
 {
 protected:
-	double	Tau;
-	void advect_spikers(std::vector<double> * currents, long spiker); // here, only expAddon is advected
-	void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) {}
-    void ResetWaitingMatrixEntry();  // synaptic_dV is updated here!
-	void resetcumulatedDV();
+    double Tau{};
+	void advect_spikers(std::vector<double>& currents, long spiker) override; // here, only expAddon is advected
+	void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {}
+    void ResetWaitingMatrixEntry() override;  // synaptic_dV is updated here!
+	void resetcumulatedDV() override;
 
 public:
     ExponentialCurrentSynapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * info);
@@ -33,14 +33,14 @@ public:
     //*****************************
     //******* Get Functions *******
     //*****************************
-    int                     GetNumberOfDataColumns(){ return 1;}
-    std::string             GetDataHeader(int data_column);
-	std::string				GetUnhashedDataHeader();
-    std::valarray<double>   GetSynapticState(int pre_neuron);
-    std::string             GetTypeStr(){return str_exponentialCurrentSynapse;};
+    int GetNumberOfDataColumns() override { return 1;}
+    std::string GetDataHeader(int data_column) override;
+	std::string GetUnhashedDataHeader() override;
+    std::valarray<double> GetSynapticState(int pre_neuron) override;
+    std::string GetTypeStr() override { return str_exponentialCurrentSynapse; };
 
-    void SaveParameters(std::ofstream * stream,std::string id_str);
-    void LoadParameters(std::vector<std::string> *input);
+    void SaveParameters(std::ofstream * stream,std::string id_str) override;
+    void LoadParameters(std::vector<std::string> *input) override;
 
     //~ExponentialCurrentSynapse(){ delete expAddon;}
 };

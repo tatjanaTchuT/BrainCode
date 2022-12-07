@@ -14,7 +14,7 @@
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
-#Makefile
+Makefile
 cmake_install.cmake
 install_manifest.txt
 
@@ -23,6 +23,7 @@ install_manifest.txt
 *.slo
 *.lo
 *.o
+main
 
 ### XCode ###
 xcuserdata/
@@ -69,3 +70,26 @@ DerivedData/
 ### Simulation Results ###
 /InputTest*/
 InputParameterOptions.txt
+*.vsidx
+*.lock
+Saifcompile/.vs/Saifcompile/v17/.suo
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.vcxproj
+*.filters
+*.user
+*.obj
+*.log
+*.tlog
+*.idb
+*.pdb
+*.recipe
+*.iobj
+*.ipdb
+*.txt
+*.dat
+*.sarif
+*.xml

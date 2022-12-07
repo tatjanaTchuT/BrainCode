@@ -13,6 +13,7 @@
 #include "Synapse/PRGSynapseContinuous.hpp"
 #include "Synapse/ExponentialCurrentSynapse.hpp"
 #include "Synapse/PowerLawSynapse.hpp"
+#include "Synapse/HeteroCurrentSynapse.hpp"
 
 #ifndef SYNAPSESAMPLE_HPP
 #define SYNAPSESAMPLE_HPP

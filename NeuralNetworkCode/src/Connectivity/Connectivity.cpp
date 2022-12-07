@@ -5,6 +5,9 @@
 Connectivity::Connectivity(Synapse * syn,GlobalSimInfo  * info){
     this->info = info;
     synapse   = syn;
+
+    // SUGGESTION: Use vector of vectors instead of array of vectors
+    // https://github.com/saiftyfirst/BP_Demos/blob/master/C%2B%2B/arrayOfVectors_vs_vectorOfVectors.cpp
     target_id = new std::vector<unsigned long> [synapse->GetNoNeuronsPre()];
     D_distribution = new std::vector<int> [synapse->GetNoNeuronsPre()];
     J_distribution = new std::vector<double> [synapse->GetNoNeuronsPre()];
@@ -18,10 +21,12 @@ Connectivity::Connectivity(Synapse * syn,GlobalSimInfo  * info){
 
 Connectivity::~Connectivity(){
     delete [] target_id;
+    delete [] D_distribution;
+    delete [] J_distribution;
 }
 
-void Connectivity::SaveParameters(std::ofstream * stream,std::string id_str){
-     *stream << id_str << "connectivity_type\t\t\t\t" << GetTypeStr() << "\n";
+void Connectivity::SaveParameters(std::ofstream * stream, const std::string& id_str){
+    *stream << id_str << "connectivity_type\t\t\t\t" << GetTypeStr() << "\n";
     //if(info->globalSeed == -1){
     *stream << id_str << "connectivity_seed\t\t\t\t" << std::to_string(this->seed)  << "\n";
     //}
@@ -30,11 +35,11 @@ void Connectivity::SaveParameters(std::ofstream * stream,std::string id_str){
 void Connectivity::Test(){
 
     for(unsigned long i = 0;i<synapse->GetNoNeuronsPre();i++){
-        for(unsigned int j = 0;j<target_id[i].size();j++){
+        for(unsigned long j : target_id[i]){
             //std::cout << synapse->GetNoNeuronsPost() << " -- ";
-            if(target_id[i].at(j) >= synapse->GetNoNeuronsPost()){
+            if(j >= synapse->GetNoNeuronsPost()){
                 std::cout << synapse->GetIdStr() << " - ";
-                std::cout << std::to_string(target_id[i].at(j)) << "\n";
+                std::cout << std::to_string(j) << "\n";
                 return;
             }
         }
@@ -60,8 +65,8 @@ void Connectivity::LoadParameters(std::vector<std::string> *input){
     std::string              name;
     std::vector<std::string> values;
 
-    for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
-        SplitString(&(*it),&name,&values);
+    for(auto & it : *input) {
+        SplitString(&it,&name,&values);
         if(name.find("seed") != std::string::npos){
             SetSeed(std::stoi(values.at(0)));
             fixSeed = true;
@@ -70,7 +75,7 @@ void Connectivity::LoadParameters(std::vector<std::string> *input){
 
 }
 
-void Connectivity::WriteConnectivity(std::string filename,unsigned long noNeuronsConnectivity){
+void Connectivity::WriteConnectivity(const std::string& filename,unsigned long noNeuronsConnectivity){
 
     int count;
     unsigned long i;
@@ -80,9 +85,7 @@ void Connectivity::WriteConnectivity(std::string filename,unsigned long noNeuron
     if(noNeuronsConnectivity <= 0)
         return;
 
-	std::ofstream    stream;
-    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
-
+    std::ofstream stream(filename + ".txt"); //ios::binary
 
     if(noTargetNeurons > noNeuronsConnectivity)
         noTargetNeurons = noNeuronsConnectivity;
@@ -139,7 +142,7 @@ void Connectivity::SetDistributionD(){
     //std::cout << "printing D_distribution: \n";
     for(unsigned long source_neuron = 0; source_neuron < this->synapse->GetNoNeuronsPre(); source_neuron++){
         if(target_id[source_neuron].size()!=0){
-			noTarget = (target_id[source_neuron]).size();
+            noTarget = static_cast<unsigned long>((target_id[source_neuron]).size());
 			D_distribution[source_neuron].resize(noTarget);
 			for (unsigned long target_neuron = 0; target_neuron < noTarget; target_neuron++) {
                 int d = uni_distribution(generator);
@@ -178,7 +181,7 @@ void Connectivity::SetDistributionJ(){
     //std::cout << "printing J_distribution: \n";
     Threshold = this->synapse->GetPPot();
     for(unsigned long source_neuron = 0; source_neuron < this->synapse->GetNoNeuronsPre(); source_neuron++){
-		noTarget = (target_id[source_neuron]).size();
+        noTarget = static_cast<unsigned long>((target_id[source_neuron]).size());
 		J_distribution[source_neuron].resize(noTarget);
 		//std::cout <<  "\n";
         for(unsigned long target_neuron = 0; target_neuron < noTarget; target_neuron++){
@@ -201,7 +204,7 @@ void Connectivity::SetDistributionJ(){
 }
 
 
-void Connectivity::WriteDistributionD(std::string filename,unsigned long noNeuronsDelay){
+void Connectivity::WriteDistributionD(const std::string& filename, unsigned long noNeuronsDelay){
 
     int count;
     unsigned long i;
@@ -212,8 +215,7 @@ void Connectivity::WriteDistributionD(std::string filename,unsigned long noNeuro
     if(noNeuronsDelay <= 0)
         return;
 
-    std::ofstream    stream;
-    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
+    std::ofstream stream(filename + ".txt"); //ios::binary
 
     if(noTargetNeurons > noNeuronsDelay)
         noTargetNeurons = noNeuronsDelay;
@@ -263,7 +265,7 @@ void Connectivity::WriteDistributionD(std::string filename,unsigned long noNeuro
 }
 
 
-void Connectivity::WriteDistributionJ(std::string filename,unsigned long noNeuronsJPot){
+void Connectivity::WriteDistributionJ(const std::string& filename,unsigned long noNeuronsJPot){
 
     int count;
     unsigned long i;
@@ -274,8 +276,7 @@ void Connectivity::WriteDistributionJ(std::string filename,unsigned long noNeuro
     if(noNeuronsJPot <= 0)
         return;
 
-    std::ofstream    stream;
-    stream.open(filename + ".txt", std::ofstream::out | std::ofstream::app); //ios::binary
+    std::ofstream stream(filename + ".txt"); //ios::binary
 
     if(noTargetNeurons > noNeuronsJPot)
         noTargetNeurons = noNeuronsJPot;

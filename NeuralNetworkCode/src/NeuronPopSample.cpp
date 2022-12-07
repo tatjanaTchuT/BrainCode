@@ -7,6 +7,7 @@
 //
 
 #include "NeuronPopSample.hpp"
+#include "NeuronPop/HeterosynapricNeuronPop/HeteroLIFNeuronPop.hpp"
 
 
 NeuronPopSample::NeuronPopSample(std::vector<std::string> *input,GlobalSimInfo * info){
@@ -35,12 +36,12 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
         SplitString(&(*it),&name,&values);
 
         if(name.find("noPopulations") != std::string::npos){
-            noPopulations = (int)(std::stod(values.at(0)));
+            noPopulations = static_cast<int>(std::stod(values.at(0)));
             newFormat     = true;
         }
-        else if(name.find("Ni") != std::string::npos){
+        else if(name.find("Ni") != std::string::npos){//Deprecated. I do not even know what this is
             Ni            = values;
-            noPopulations = (int)(values.size());
+            noPopulations = static_cast<int>(values.size());
         }
         else if(name.find("generalNeuronSeed") != std::string::npos){
             generalNeuronSeed = std::stoi(values.at(0));
@@ -79,26 +80,29 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){
-            if(neuronPops[p] == NULL)
-                delete neuronPops[p];
+            //delete statements have been removed
             neuronPops[p] = new LIFNeuronPop(info,p);
-        }
-		else if (type == str_EIFNeuron) {
-			if (neuronPops[p] == NULL)
-				delete neuronPops[p];
+        } else if (type == str_EIFNeuron) {
 			neuronPops[p] = new EIFNeuronPop(info, p);
-		}
-        else if(type == str_PoissonNeuron){
-            if(neuronPops[p] == NULL)
-                delete neuronPops[p];
-            neuronPops[p] = new PoissonNeuronPop(info,p);
+        } else if (type == str_PoissonNeuron) {
+            neuronPops[p] = new PoissonNeuronPop(info, p);
+        } else if (type==str_QIFNeuron){
+            neuronPops[p] = new QIFNeuronPop(info, p);
+        } else if (type == str_HeteroLIFNeuron) {
+            // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
+            neuronPops[p] = new HeteroLIFNeuronPop(info, p);
+        } else if (type == str_HeteroPoissonNeuron) {
+            // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
+            neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
+        }else {
+            throw std::runtime_error(">>>Undefined type of NeuronPop.\n>>>Check Parameters.txt.");
         }
 
         //load parameters
         if(newFormat)
             neuronPops[p]->LoadParameters(&neurons_strs);
         else
-            neuronPops[p]->LoadParameters(&neurons_strs,std::stod(Ni.at(p)));
+            neuronPops[p]->LoadParameters(&neurons_strs, static_cast<unsigned long>(std::stod(Ni.at(p))));
     }
 
     //Set seeds
@@ -118,11 +122,11 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
     }
 
 	if (info->Dimensions == 1) {
-		info->Lx = info->N / (double)info->density;
+		info->Lx = info->N / static_cast<double>(info->density);
 		info->Ly = 0;
 	}
 	else if (info->Dimensions == 2) {
-		info->Lx = sqrt(info->N / (double)info->density );
+		info->Lx = sqrt(info->N / static_cast<double>(info->density) );
 		info->Ly = info->Lx;
 	}
 

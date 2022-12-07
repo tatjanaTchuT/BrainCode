@@ -1,3 +1,9 @@
+#ifndef SYNAPSE_HPP
+#define SYNAPSE_HPP
+
+//class RandomConnectivity;
+//class Connectivity;
+
 #include <iostream>
 #include <vector>
 #include <random>
@@ -8,22 +14,16 @@
 #include "../NeuronPop/NeuronPop.hpp"
 #include "../Connectivity/Connectivity.hpp"
 #include "../Connectivity/RandomConnectivity.hpp"
+#include "../Connectivity/HeteroRandomConnectivity.hpp"
 #include "../Connectivity/BinaryRandomConnectivity.hpp"
 #include "../Connectivity/DistanceConnectivity.hpp"
-#include "../Connectivity/IndividualRandomConnectivity.hpp"
-#ifndef SYNAPSE_HPP
-#define SYNAPSE_HPP
-
-//class RandomConnectivity;
-//class Connectivity;
 
 /*
  * class Synapse is a virtual base class for the population of synapses
  * from one neural population to another
  */
 
-class Synapse
-{
+class Synapse {
 protected:
 
     NeuronPop       * neuronsPre,* neuronsPost; // conductance based synapses need access to membrane potential
@@ -40,27 +40,25 @@ protected:
 	//Synaptic delay
     int                 D_min;
     int                 D_max;
-	std::vector<std::vector<double>> waiting_matrix;
+	std::vector<std::vector<double> > waiting_matrix;
 
     //Cumulated synaptic currents
     double cumulatedDV; // collects all synaptic currents in one time step
 
     //double GetCouplingStrength();
-    double GetCouplingStrength(long preNeuronId, long postNeuronId);
+    double GetCouplingStrength(unsigned long preNeuronId, unsigned long postNeuronId);
 
     //virtual void advect_finalize(std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix) = 0;
-	void ReadWaitingMatrixEntry(std::vector<std::vector<double>>* waiting_matrix, std::vector<double>* synaptic_dV);
+    void ReadWaitingMatrixEntry(std::vector<double>& synaptic_dV);
 	virtual void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) = 0;
-    virtual void advect_spikers (std::vector<double> * currents, long spiker) = 0;
+    virtual void advect_spikers (std::vector<double>& currents, long spiker) = 0;
 
-    void FillWaitingMatrix(long spiker, std::vector<double> * currents, std::vector<std::vector<double>> * waiting_matrix);
+    virtual void FillWaitingMatrix(long spiker, std::vector<double>& currents);
 	virtual void resetcumulatedDV();
-
-
 
 public:
     Synapse(NeuronPop * postNeurons,NeuronPop * preNeurons,GlobalSimInfo * info);
-    virtual ~Synapse() {}
+    virtual ~Synapse() = default;
 
     virtual void InitConnect(){}
     //*****************************
@@ -82,6 +80,14 @@ public:
 	std::valarray<double>			GetCurrentcontribution(int pre_neuron);
     unsigned long					GetNumberOfPostsynapticTargets(int pre_neuron);
 	double							GetrecurrentInput(int post_neuron);
+
+    double							GetCumulatedDV() const { return cumulatedDV;}
+    int								GetMaxD() const {return D_max;}
+    int								GetMinD() const {return D_min;}
+    double							GetJBase() const {return J;}
+    double							GetJPot() const {return J_pot;}
+    double							GetPPot() const {return P_pot;}
+
     double							GetCumulatedDV() { return cumulatedDV;}
     int								GetMaxD() {return D_max;}
     int								GetMinD() {return D_min;}
@@ -89,10 +95,13 @@ public:
     double							GetSigmaJ() { return SigmaJ; }
     double							GetJPot() {return J_pot;}
     double							GetPPot() {return P_pot;}
+
 	double							*GetJpointer() { return &J; }
 	int								*GetDpointer() { return &D_max; }
     virtual std::string				GetTypeStr() = 0;
 
+    NeuronPop*                      GetNeuronsPre();
+    NeuronPop*                      GetNeuronsPost();
 
    //*****************************
     //******* Set Functions *******
@@ -100,6 +109,7 @@ public:
     //virtual void advect(std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix);
 
 	virtual void ResetWaitingMatrixEntry();
+    //virtual void preAdvect();
     virtual void advect(std::vector<double> *  synaptic_dV);
     virtual void LoadParameters(std::vector<std::string> *input);
     virtual void SaveParameters(std::ofstream * stream,std::string id_str);
@@ -127,6 +137,12 @@ public:
     void Test(){geometry->Test();}
     std::string GetIdStr();
     std::string GetIdStrWithULine();
+
+    // Testing
+    friend std::vector<std::vector<double>> getWaitingMatrix(const Synapse&);
+
 };
+
+std::vector<std::vector<double>> getWaitingMatrix();
 
 #endif // SYNAPSE_HPP

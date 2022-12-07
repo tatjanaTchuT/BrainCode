@@ -78,8 +78,6 @@ plot(fullData.N,fullData.nu_I_finite,'--','color',color_2); hold on;
 l_exc_balanced = plot(fullData.N,nu_E_balanced*O,'-.','color',color_1); hold on;
 plot(fullData.N,nu_I_balanced*O,'-.','color',color_2); hold on;
 
-xlim([0 6e4])
-xticks([1 2 4 6]*1e4)
 xlabel('N');
 ylabel('Firing rate (Hz)','Interpreter','Latex');
 
@@ -93,8 +91,6 @@ plot(fullData.N,fullData.mu_I_finite,'--','color',color_2); hold on;
 plot(fullData.N,mu_E_balanced*O,'-.','color',color_1); hold on;
 plot(fullData.N,mu_I_balanced*O,'-.','color',color_2); hold on;
 
-xlim([0 6e4])
-xticks([1 2 4 6]*1e4)
 xlabel('N');
 ylabel('Current $\mu$','Interpreter','Latex');
 
@@ -108,13 +104,11 @@ plot(fullData.N,fullData.sigma_I_finite,'--','color',color_2); hold on;
 plot(fullData.N,sigma_E_balanced*O,'-.','color',color_1); hold on;
 plot(fullData.N,sigma_I_balanced*O,'-.','color',color_2); hold on;
 
-xlim([0 6e4])
-xticks([1 2 4 6]*1e4)
 xlabel('N');
 ylabel('$\sigma$','Interpreter','Latex');
 
 % ax_legend = axes('Position', [0.25 0.9 0.5 0.1]);
-ax_legend = axes('Position', [0.13 0.45 0.171 0.205]);
+ax_legend = axes('Position', [0.73 0.727 0.081 0.18]);
 axes(ax_legend);
 leg = legend(ax_legend, [l_exc,l_inh,l_exc_data,l_exc_finite,l_exc_balanced],...
             {'exc','inh','simulation','finite','balanced'},'Box','off');

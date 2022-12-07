@@ -38,7 +38,7 @@ void NeuronPop::SetNeurons(unsigned long noNeur) {
     std::uniform_real_distribution<double> uni_distribution (v_reset,v_thresh);
 
     for(unsigned long i = 0; i < noNeurons; i++){
-        previous_spike_step[i] = - rand() % int(3.0/info->dt);
+        previous_spike_step[i] = - rand() % static_cast<int>(3.0/info->dt);
         potential[i]           = uni_distribution(generator);
     }
 }
@@ -64,8 +64,8 @@ void NeuronPop::SetPosition(long noNeur)
 	//}
 
 	if (info->Dimensions == 2) {
-		rows = ceil(sqrt(noNeurons));
-		columns = floor(noNeurons / rows);
+        rows = static_cast<int>(ceil(sqrt(noNeurons)));
+		columns = noNeurons / rows;
 		mod = noNeurons -rows*columns;//the difference is added by including one extra column in each of the first mod rows
 
 		for (int i = 0; i < mod*(columns+1); i++) {
@@ -140,20 +140,23 @@ void NeuronPop::LoadParameters(std::vector<std::string> *input){
         else if(name.find("seedInitialPrevSpike") != std::string::npos){
             this->seed_InitialPrevSpike = (std::stoi(values.at(0)));
         }
-    }
-
-    for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
-
-        SplitString(&(*it),&name,&values);
-
-        if(name.find("noNeurons") != std::string::npos){
-            SetNeurons((long)(std::stod(values.at(0))));
-            //spiker              = new std::vector<int>[totalPopulations];
-            //neuronsInPopulation = new int[totalPopulations];
-            //for(int i = 0;i<totalPopulations;i++)
-            //    neuronsInPopulation[i] = std::stoi(values.at(i));
+        else if(name.find("noNeurons") != std::string::npos){
+                    SetNeurons((long)(std::stod(values.at(0))));
         }
     }
+
+    // for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
+    //
+    //     SplitString(&(*it),&name,&values);
+    //
+    //     if(name.find("noNeurons") != std::string::npos){
+    //         SetNeurons((long)(std::stod(values.at(0))));
+    //         //spiker              = new std::vector<int>[totalPopulations];
+    //         //neuronsInPopulation = new int[totalPopulations];
+    //         //for(int i = 0;i<totalPopulations;i++)
+    //         //    neuronsInPopulation[i] = std::stoi(values.at(i));
+    //     }
+    // }
 
 }
 

@@ -76,11 +76,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 				s.values[input] = std::stod(values.at(input));
 			}
             if(is_double(values.at(P)))
-                s.end_time = std::round(std::stod(values.at(P))/info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
             else
                 s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
             maxCurrent[Gaussian_i-1].push_back(s);
         }
 
@@ -92,11 +92,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 			s.values.resize(1);
 			s.values[0] = std::stod(values.at(0));
 			if (is_double(values.at(1)))
-				s.end_time = std::round(std::stod(values.at(1)) / info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(1)) / info->dt));
 			else
 				s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 			sigmaCurrent_x[Gaussian_i-1].push_back(s);
 		}
 
@@ -110,11 +110,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 				s.values[input] = std::stod(values.at(input));
 			}
 			if (is_double(values.at(P)))
-				s.end_time = std::round(std::stod(values.at(P)) / info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
 			else
 				s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 			sigmaCurrent_t[Gaussian_i-1].push_back(s);
         }
 		else if ((name.find("Background_Noise") != std::string::npos)) {
@@ -122,11 +122,11 @@ void SpatialGaussianStimulus::LoadParameters(std::vector<std::string> *input){
 			for (int input = 0;input < P;input++)
 				s.values[input] = std::stod(values.at(input));
 			if (is_double(values.at(P)))
-				s.end_time = std::round(std::stod(values.at(P)) / info->dt);
+				s.end_time = static_cast<int>(std::round(std::stod(values.at(P)) / info->dt));
 			else
 				s.end_time = INT_MAX;
 			if ((s.end_time < 0) || (s.end_time >std::round(info->simulationTime / info->dt)))
-				s.end_time = std::round(info->simulationTime / info->dt);
+				s.end_time = static_cast<int>(std::round(info->simulationTime / info->dt));
 			backgroundNoise.push_back(s);
 		}
     }
@@ -168,7 +168,7 @@ void SpatialGaussianStimulus::SaveParameters(std::ofstream * stream){
 			*stream << "stimulus_maxCurrent_" << std::to_string(Gauss_index + 1) << "                ";
 			for (int i = 0;i < P;i++)
 				*stream << std::to_string(s.values[i]) << "\t ";
-			*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+			*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 			*stream << " [column i: input to neurons of population i, at the center of the gaussian, last column: time until which input is set. Dimensions: [mV/sec , secs.]\n";
 		}
 
@@ -176,14 +176,14 @@ void SpatialGaussianStimulus::SaveParameters(std::ofstream * stream){
 			*stream << "stimulus_sigmaCurrent_t_" << std::to_string(Gauss_index + 1) << "            ";
 			for (int i = 0;i < P;i++)
 				*stream << std::to_string(s.values[i]) << "\t ";
-			*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+			*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 			*stream << " [column i: relative input noise to population i (relative to the mean current), last column: time until which input is set. Dimensions: [ -  , secs.]\n";
 		}
 
 		for (auto const &s : sigmaCurrent_x[Gauss_index]) {
 			*stream << "stimulus_sigmaCurrent_x_" << std::to_string(Gauss_index + 1) << "            ";
 			*stream << std::to_string(s.values[0]) << "\t ";//the width of the input is the same for all popluations
-			*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+			*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 			*stream << " [column 1: spatial spread (std of the Gaussian) of the input to all populations, last column: time until which input is set. Dimensions: [mm , secs.]\n";
 		}
 	}
@@ -192,7 +192,7 @@ void SpatialGaussianStimulus::SaveParameters(std::ofstream * stream){
 		*stream << "stimulus_Background_Noise            ";
 		for (int i = 0;i<P;i++)
 		*stream << std::to_string(s.values[i]) << "\t ";
-	*stream << std::to_string(((double)s.end_time)*info->dt) << " \t";
+	*stream << std::to_string(static_cast<double>(s.end_time)*info->dt) << " \t";
 	*stream << "Noise applied in the whole domain [mV/sqrt(sec) , secs.]\n";
 	}
 

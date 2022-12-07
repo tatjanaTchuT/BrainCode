@@ -38,7 +38,6 @@ void multiply_vector (std::vector<double> &vector, double value)
 }
 
 
-
 void TestWritingFile(std::string filename)
 {
     // if this test file does not appear in the target directory: stop the
@@ -162,6 +161,17 @@ void SaveDoubleFile(std::ofstream *file,double val,int precision){
     *file  << stream.str() << "\t";
 }
 
+void SaveTupleOfDoublesFile(std::ofstream *file, std::valarray<double> tuple, int precision) {
+    std::stringstream stream;
+    unsigned long i;
+    stream << "{";
+    for (i = 0; i < tuple.size()-1; ++i) {
+        stream << std::fixed << std::setprecision(precision) << tuple[i] << ",";
+    }
+    stream << std::fixed << std::setprecision(precision) << tuple[i] << "}";
+    *file  << stream.str() << "\t";
+}
+
 bool is_double(const std::string& s)
 {
     std::istringstream iss(s);
@@ -197,4 +207,18 @@ void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFi
     } else if (entries.front().values.size() < 1) {
         throw std::invalid_argument("No values given for iterate entry");
     }
+}
+
+void RemoveHashInString(std::vector<std::string> *string){
+    std::vector<std::string> new_string{};
+    std::string element;
+    for (int i{ 0 }; i < string->size(); i++) {
+        element = string->at(i);
+        if (element.find("#") != std::string::npos) {
+            break;
+        }
+        new_string.push_back(element);
+    }
+    *string = new_string;
+    return;
 }

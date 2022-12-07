@@ -49,12 +49,12 @@ private:
         double h;
 		if (info->networkScaling_extern == 0) {
 			if (info->Dimensions == 1)
-				h = (double)(2 * (4 * atan(1)) * noExternalNeurons / (info->Lx) * PeakConnectProba[pop] * lengthscale[pop]);
+				h = static_cast<double>(2 * (4 * atan(1)) * noExternalNeurons / (info->Lx) * PeakConnectProba[pop] * lengthscale[pop]);
 			else
-				h = (double)(2 * (4 * atan(1)) * noExternalNeurons/(info->Lx*info->Ly) * PeakConnectProba[pop] * pow(lengthscale[pop], 2));
+				h = static_cast<double>(2 * (4 * atan(1)) * noExternalNeurons/(info->Lx*info->Ly) * PeakConnectProba[pop] * pow(lengthscale[pop], 2));
 		}
         else if (info->networkScaling_extern == 1)
-            h = (double)neurons->GetTotalNeurons();
+            h = static_cast<double>(neurons->GetTotalNeurons());
         else{
             throw "ERROR: GetExternalCouplingStrength";
             h = 0;}
@@ -70,9 +70,9 @@ public:
     //*******************
     // Get-Functions
     //*******************
-    long    GetStimulusStep_Time(int i) {return next_stimulus_time_step.at(i);}
+    long    GetStimulusStep_Time(int i) {return static_cast<long>(next_stimulus_time_step.at(i)); }
     double  GetStimulusStep(int i)      {return next_stimulus_step.at(i);};
-    long    GetStimulusNoSteps()        {return next_stimulus_step.size();}
+    long    GetStimulusNoSteps()        {return static_cast<long> (next_stimulus_step.size());}
     std::string GetType()               {return str_spatialpoissonStimulus;}
     int     GetTable_entries()          {return table_entries;}
 
