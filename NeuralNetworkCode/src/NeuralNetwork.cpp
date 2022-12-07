@@ -41,7 +41,7 @@ void NeuralNetwork::SaveParameters(){
     stream <<  "Title                       " << this->recorder->GetTitle()  << "\n";
     stream <<  "#*****************************************************************\n";
     stream <<  "simulationTime              " << std::to_string(info.simulationTime)  << " \t\tseconds\n";
-    stream <<  "dt                          " << std::to_string(info.dt)  << " \t\tseconds\n";
+    stream <<  "dt_timestep                 " << std::to_string(info.dt)  << " \t\tseconds\n";
 	stream <<  "globalSeed                  " << std::to_string(info.globalSeed)  << " \t\t\t\t#overrides all other seeds if unequal -1\n";
 
 	stream << "#*****************************************************************\n";
