@@ -12,7 +12,8 @@ Connectivity::Connectivity(Synapse * syn,GlobalSimInfo  * info){
     D_distribution = new std::vector<int> [synapse->GetNoNeuronsPre()];
     J_distribution = new std::vector<double> [synapse->GetNoNeuronsPre()];
 
-	HasPot = true;
+//	HasPot = true;
+    HasJDistribution = true; //Either (Jpot and Ppot) or Sigma If not HasJDistribution, then all synapses have the same j
 	HasDdistribution = true;//By default, set as true
 
     fixSeed = false; //by default, seed can be changed
@@ -102,7 +103,7 @@ void Connectivity::WriteConnectivity(const std::string& filename,unsigned long n
 			else {
 				count = 1;
 				i++;
-				while (target_id[source].size() > i && target_id[source][i] == target) {
+				while (target_id[source].size() > i && target_id[source][i] == target) { //in case the same pair can be connected multiple times
 					i++;
 					count++;
 				}
@@ -155,7 +156,7 @@ void Connectivity::SetDistributionD(){
 
 double * Connectivity::GetDistributionJ(long preNeuronId, long postNeuronId)
 {
-	if (HasPot)
+	if (HasJDistribution)
 		return &J_distribution[preNeuronId][postNeuronId];
 	else {
 		return (synapse->GetJpointer());
@@ -165,28 +166,38 @@ double * Connectivity::GetDistributionJ(long preNeuronId, long postNeuronId)
 
 void Connectivity::SetDistributionJ(){
     std::uniform_real_distribution<double> real_distribution(0,1);
+    std::normal_distribution<double> Gaussian(0, 1);
 	unsigned long noTarget;
+    double rdj;//random number to determine if the synapse is potentiated
+    double rds;//random number to determine the deviation to the mean j
+    double Threshold;
+    double j;
 
-	if (synapse->GetPPot() == 0 || this->synapse->GetJPot() == this->synapse->GetJBase()) {
-		HasPot = false;
+
+	if (synapse->GetSigmaJ() == 0 && (synapse->GetPPot() == 0 || this->synapse->GetJPot() == this->synapse->GetJBase())) {
+        HasJDistribution = false;
 		return;
 	}
     //std::cout << "printing J_distribution: \n";
+    Threshold = this->synapse->GetPPot();
     for(unsigned long source_neuron = 0; source_neuron < this->synapse->GetNoNeuronsPre(); source_neuron++){
         noTarget = static_cast<unsigned long>((target_id[source_neuron]).size());
 		J_distribution[source_neuron].resize(noTarget);
 		//std::cout <<  "\n";
         for(unsigned long target_neuron = 0; target_neuron < noTarget; target_neuron++){
-			double j = real_distribution(generator);
-            double jj = this->synapse->GetPPot();
-            if(j < jj){
-				J_distribution[source_neuron][target_neuron] = (this->synapse->GetJPot());
-                //std::cout << std::to_string(this->synapse->GetJPot()) << " ";
+			rdj = real_distribution(generator);
+            rds = Gaussian(generator);
+            if(rdj < Threshold){
+				j = (this->synapse->GetJPot());
             }
             else{
-				J_distribution[source_neuron][target_neuron] = (this->synapse->GetJBase());
-	            //std::cout << std::to_string(this->synapse->GetJBase()) << " ";
+				j = (this->synapse->GetJBase());
             }
+            j = j + synapse->GetSigmaJ() * rds;
+            //if ((synapse->GetJPot() * synapse->GetJBase() >= 0) && (j * synapse->GetJBase() < 0)) {
+            //    j = 0;//Dale's law will be strictly enforced unless the provided J and Jpot already blatantly violate it
+            //}
+            J_distribution[source_neuron][target_neuron] = j;
 		}
 		//std::cout << "\n";
     }
@@ -281,7 +292,7 @@ void Connectivity::WriteDistributionJ(const std::string& filename,unsigned long 
 				stream << "nan ";
 			else {
 				count = 1;
-				if (HasPot) {
+				if (HasJDistribution) {
 					J = J_distribution[source][i];
 				}
 				else {
@@ -291,7 +302,7 @@ void Connectivity::WriteDistributionJ(const std::string& filename,unsigned long 
 				while (target_id[source].size() > i && target_id[source][i] == target) { // while connections are still to be written and target id matches
 					i++;
 					count++;
-					if (HasPot) {
+					if (HasJDistribution) {
 						J += J_distribution[source][i];
 					}
 					else {

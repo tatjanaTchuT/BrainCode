@@ -47,7 +47,7 @@ To analyse, copy the Matlab-code ```Test_Results/Test6/MatlabAnalysis``` into th
 
 ## Test 7: Large network Bistability (37h on cluster)
 
-Reproduces Fig 4 A of [Mongillo, G., Hansel, D., & Van Vreeswijk, C. (2012). "Bistability and spatiotemporal irregularity in neuronal networks with nonlinear synaptic transmission". PRL, 108(15), 158101](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.108.158101). The model simulates a network of 25000 neurons with STP synapses.
+Reproduces Fig 4 A of [Mongillo, G., Hansel, D., & Van Vreeswijk, C. (2012). "Bistability and spatiotemporal irregularity in neuronal networks with nonlinear synaptic transmission". PRL, 108(15), 158101](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.108.158101). The model simulates a network of 250000 neurons with STP synapses.
 
 To analyse, copy the R-files from ```Test_Results/AnalyseCode``` into the output folder and run the R-markdown file. For result, see [here](Test_Results/Test7/AnalyseData.pdf).
 

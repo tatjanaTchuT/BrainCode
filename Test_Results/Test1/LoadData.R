@@ -122,13 +122,15 @@ Load_Rasterplot <- function(folder_name,number_populations) {
 }
 
 
-Load_Connectivity <-function(folder_name,postpop,prepop){
+Load_Connectivity <-function(folder_name,postpop,prepop, bool_remove_last_row){
   Pattern <-paste("*_Connectivity_Matrix","_",toString(postpop),"_",toString(prepop),".txt",sep="")
   filename = list.files(path = folder_name,pattern=Pattern);
   full_filename <- paste(folder_name,"/",filename,sep="");
   if(file.exists(full_filename) && !dir.exists(full_filename)  ){
     data_ConnectivityMatrix <- read.table(full_filename, header = FALSE, sep = " ")
-    data_ConnectivityMatrix <- data_ConnectivityMatrix[1:(length(data_ConnectivityMatrix)-1)]
+    if (bool_remove_last_row) {
+      data_ConnectivityMatrix <- data_ConnectivityMatrix[1:(length(data_ConnectivityMatrix)-1)]
+    }
   }else{
     return()
   }

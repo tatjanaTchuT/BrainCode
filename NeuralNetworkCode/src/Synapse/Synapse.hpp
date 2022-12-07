@@ -34,6 +34,7 @@ protected:
 
     //Connection strength of neurons
     double        J;
+    double        SigmaJ;
     double        J_pot;
     double        P_pot;
 	//Synaptic delay
@@ -79,12 +80,22 @@ public:
 	std::valarray<double>			GetCurrentcontribution(int pre_neuron);
     unsigned long					GetNumberOfPostsynapticTargets(int pre_neuron);
 	double							GetrecurrentInput(int post_neuron);
+<<<<<<< NeuralNetworkCode/src/Synapse/Synapse.hpp
     double							GetCumulatedDV() const { return cumulatedDV;}
     int								GetMaxD() const {return D_max;}
     int								GetMinD() const {return D_min;}
     double							GetJBase() const {return J;}
     double							GetJPot() const {return J_pot;}
     double							GetPPot() const {return P_pot;}
+=======
+    double							GetCumulatedDV() { return cumulatedDV;}
+    int								GetMaxD() {return D_max;}
+    int								GetMinD() {return D_min;}
+    double							GetJBase() {return J;}
+    double							GetSigmaJ() { return SigmaJ; }
+    double							GetJPot() {return J_pot;}
+    double							GetPPot() {return P_pot;}
+>>>>>>> NeuralNetworkCode/src/Synapse/Synapse.hpp
 	double							*GetJpointer() { return &J; }
 	int								*GetDpointer() { return &D_max; }
     virtual std::string				GetTypeStr() = 0;

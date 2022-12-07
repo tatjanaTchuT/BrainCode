@@ -9,7 +9,6 @@
  * (c) Max-Planck Institute for Brain Research, Frankfurt am Main
  *
  */
-#include <sys/stat.h>
 #include <iostream>
 //#include <filesystem>
 #include "NeuralNetwork.hpp"
@@ -33,6 +32,7 @@ int main(int argc, char* argv[])
         base = argv[1];
         if(argc >= 3){
             inputFile = argv[2];
+
             pathTo_inputFile = getPathToInputFile(&inputFile, Windows);
         }
         else if (Windows) {
@@ -71,12 +71,11 @@ int main(int argc, char* argv[])
     // Read Parameter file
     //************************************************
     struct stat buffer;
-    if(stat(inputFile.c_str(),&buffer) != 0 && inputFile.find("Parameters.txt") != std::string::npos) 
-    {
+    if(stat(inputFile.c_str(),&buffer) != 0){
         std::cout << "*************************\n";
         std::cout <<inputFile<<" Input file does not exist\n";
         std::cout << "*************************\n";
-        return 1;
+        return 0;
     }
 
     std::ifstream stream(inputFile);
@@ -129,8 +128,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    unsigned int iterate1_len = static_cast<unsigned int> (iterate1_entries.front().values.size());
-    unsigned int iterate2_len = static_cast<unsigned int> (iterate2_entries.front().values.size());
+    unsigned int iterate1_len = iterate1_entries.front().values.size();
+    unsigned int iterate2_len = iterate2_entries.front().values.size();
 
     //******************************************
     //******************************************
@@ -170,14 +169,11 @@ int main(int argc, char* argv[])
 
             NeuralNetwork neuralNetwork(base,&parEntries);
             neuralNetwork.Simulate();
-            neuralNetwork.makeInputCopy(inputFile);
-            //This function is outputting a copy of the Parameters.txt in case there is a class in use that does not have a functional SaveParameters().
-            //This is the case of all hetero-things for now.
         }
     }
+
 
     //******************************************
     //******************************************
 	return 0;
 }
-            

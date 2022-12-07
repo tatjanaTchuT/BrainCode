@@ -24,9 +24,9 @@ protected:
     std::vector<unsigned long>  * target_id; //the list with postsynaptic (or target) neurons for each neuron of the presynaptic population
     std::vector<int>            * D_distribution; // the list with delays D that are associated with the synapses betweeen the source and its target neurons
     std::vector<double>         * J_distribution; // list of synaptic weights J
-	bool						HasPot;
+//	bool						HasPot;
 	bool						HasDdistribution;
-
+    bool                        HasJDistribution;
 public:
 
     Connectivity(Synapse *syn,GlobalSimInfo  * info);
