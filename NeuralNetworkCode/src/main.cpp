@@ -169,6 +169,7 @@ int main(int argc, char* argv[])
 
             NeuralNetwork neuralNetwork(base,&parEntries);
             neuralNetwork.Simulate();
+            neuralNetwork.makeInputCopy(inputFile);
         }
     }
 
