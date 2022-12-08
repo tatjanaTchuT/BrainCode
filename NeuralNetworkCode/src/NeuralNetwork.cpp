@@ -227,6 +227,7 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
     std::vector<std::string>        full_strs,neur_strs,syn_strs,stim_strs,rec_strs;
     std::string                     str_line,name,rec_type,stim_type,neurons_type;
     std::string                     line,title = "";
+    bool                            timestep_bool{false};
 
     for (auto & parEntry : *parEntries) {
 
@@ -239,8 +240,9 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
             else
                 title = values.at(0);
         }
-        else if(name.find("dt_timestep") != std::string::npos){
+        else if((name.find("dt_timestep") != std::string::npos || name.find("dt") != std::string::npos)&& !timestep_bool){
             info.dt = std::stod(values.at(0));
+            timestep_bool=true;
         }
         else if(name.find("simulationTime") != std::string::npos){
             info.simulationTime = std::stod(values.at(0));
