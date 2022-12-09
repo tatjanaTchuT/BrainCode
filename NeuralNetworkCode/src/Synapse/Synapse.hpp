@@ -17,6 +17,7 @@
 #include "../Connectivity/HeteroRandomConnectivity.hpp"
 #include "../Connectivity/BinaryRandomConnectivity.hpp"
 #include "../Connectivity/DistanceConnectivity.hpp"
+#include "../Connectivity/AdjacencyMatrixConnectivity.hpp"
 
 /*
  * class Synapse is a virtual base class for the population of synapses

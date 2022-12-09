@@ -8,12 +8,12 @@
 #include "../GlobalFunctions.hpp"
 #include "Connectivity.hpp"
 
-#ifndef IndividualRandomConnectivity_hpp
-#define IndividualRandomConnectivity_hpp
+#ifndef AdjacencyMatrixConnectivity_hpp
+#define AdjacencyMatrixConnectivity_hpp
 
 class Synapse;
 
-class IndividualRandomConnectivity : public Connectivity
+class AdjacencyMatrixConnectivity : public Connectivity
 {
 protected:
 
@@ -24,19 +24,18 @@ protected:
 
 public:
 
-    IndividualRandomConnectivity(Synapse* syn, GlobalSimInfo* info);
-    ~IndividualRandomConnectivity() {}
+    AdjacencyMatrixConnectivity(Synapse* syn, GlobalSimInfo* info);
+    ~AdjacencyMatrixConnectivity() {}
 
     void                ConnectNeurons();
     unsigned long       GetNumberAverageSourceNeurons() { return noSourceNeurons; }
-    std::string         GetTypeStr() { return str_individualRandomConnectivity; }
+    std::string         GetTypeStr() { return str_adjacencyMatrixConnectivity; }
     double              GetConnectionProbability();
     void                GetConnectionWeightsFromFile(std::string filepath);
 
     void SaveParameters(std::ofstream* stream, std::string id_str);
     void LoadParameters(std::vector<std::string>* input);
 
-    void                SetDistributionJ();
 };
 
-#endif /* RandomConnectivity_hpp */
+#endif /* AdjacencyMatrixConnectivity_hpp */

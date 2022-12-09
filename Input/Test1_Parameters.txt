@@ -82,10 +82,10 @@ synapses_0_0_type							CurrentSynapse
 synapses_0_0_D_min							0.000000 seconds
 synapses_0_0_D_max							0.000000 seconds
 synapses_0_0_J								0.000000 dmV/Spike
-synapses_0_0_Sigma_j						0.000000 dmV/Spike
+synapses_0_0_Sigma_j							0.000000 dmV/Spike
 synapses_0_0_J_pot							0.000000 dmV/Spike
 synapses_0_0_P_pot							0.000000
-synapses_0_0_connectivity_type				IndividualRandomConnectivity
+synapses_0_0_connectivity_type				AdjacencyMatrixConnectivity
 synapses_0_0_connectivity_seed				174061735
 #		IndividualRandomConnectivity: Each pre and post neurons have individual connection probability.
 #*************************************************
@@ -93,7 +93,7 @@ synapses_0_1_type							CurrentSynapse
 synapses_0_1_D_min							0.000000 seconds
 synapses_0_1_D_max							0.000000 seconds
 synapses_0_1_J								0.000000 dmV/Spike
-synapses_0_1_Sigma_j						0.000000 dmV/Spike
+synapses_0_1_Sigma_j							0.000000 dmV/Spike
 synapses_0_1_J_pot							0.000000 dmV/Spike
 synapses_0_1_P_pot							0.000000
 synapses_0_1_connectivity_type				RandomConnectivity
@@ -105,7 +105,7 @@ synapses_0_2_type							CurrentSynapse
 synapses_0_2_D_min							0.000000 seconds
 synapses_0_2_D_max							0.000000 seconds
 synapses_0_2_J								0.000000 dmV/Spike
-synapses_0_2_Sigma_j						0.000000 dmV/Spike
+synapses_0_2_Sigma_j							0.000000 dmV/Spike
 synapses_0_2_J_pot							0.000000 dmV/Spike
 synapses_0_2_P_pot							0.000000
 synapses_0_2_connectivity_type				RandomConnectivity
@@ -117,7 +117,7 @@ synapses_1_0_type							CurrentSynapse
 synapses_1_0_D_min							0.005000 seconds
 synapses_1_0_D_max							0.020000 seconds
 synapses_1_0_J								0.130000 dmV/Spike
-synapses_1_0_Sigma_j						0.025000 dmV/Spike
+synapses_1_0_Sigma_j							0.025000 dmV/Spike
 synapses_1_0_J_pot							0.230000 dmV/Spike
 synapses_1_0_P_pot							0.500000
 synapses_1_0_connectivity_type				RandomConnectivity
@@ -129,7 +129,7 @@ synapses_1_1_type							CurrentSynapse
 synapses_1_1_D_min							0.000000 seconds
 synapses_1_1_D_max							0.000000 seconds
 synapses_1_1_J								0.000000 dmV/Spike
-synapses_1_1_Sigma_j						0.000000 dmV/Spike
+synapses_1_1_Sigma_j							0.000000 dmV/Spike
 synapses_1_1_J_pot							0.000000 dmV/Spike
 synapses_1_1_P_pot							0.000000
 synapses_1_1_connectivity_type				RandomConnectivity
@@ -141,7 +141,7 @@ synapses_1_2_type							CurrentSynapse
 synapses_1_2_D_min							0.000000 seconds
 synapses_1_2_D_max							0.000000 seconds
 synapses_1_2_J								0.000000 dmV/Spike
-synapses_1_2_Sigma_j						0.000000 dmV/Spike
+synapses_1_2_Sigma_j							0.000000 dmV/Spike
 synapses_1_2_J_pot							0.000000 dmV/Spike
 synapses_1_2_P_pot							0.000000
 synapses_1_2_connectivity_type				RandomConnectivity
@@ -153,7 +153,7 @@ synapses_2_0_type							CurrentSynapse
 synapses_2_0_D_min							0.000000 seconds
 synapses_2_0_D_max							0.000000 seconds
 synapses_2_0_J								0.000000 dmV/Spike
-synapses_2_0_Sigma_j						0.000000 dmV/Spike
+synapses_2_0_Sigma_j							0.000000 dmV/Spike
 synapses_2_0_J_pot							0.000000 dmV/Spike
 synapses_2_0_P_pot							0.000000
 synapses_2_0_connectivity_type				RandomConnectivity
@@ -165,7 +165,7 @@ synapses_2_1_type							CurrentSynapse
 synapses_2_1_D_min							0.000000 seconds
 synapses_2_1_D_max							0.000000 seconds
 synapses_2_1_J								0.000000 dmV/Spike
-synapses_2_1_Sigma_j						0.000000 dmV/Spike
+synapses_2_1_Sigma_j							0.000000 dmV/Spike
 synapses_2_1_J_pot							0.000000 dmV/Spike
 synapses_2_1_P_pot							0.000000
 synapses_2_1_connectivity_type				RandomConnectivity
@@ -177,7 +177,7 @@ synapses_2_2_type							CurrentSynapse
 synapses_2_2_D_min							0.000000 seconds
 synapses_2_2_D_max							0.000000 seconds
 synapses_2_2_J								0.000000 dmV/Spike
-synapses_2_2_Sigma_j						0.000000 dmV/Spike
+synapses_2_2_Sigma_j							0.000000 dmV/Spike
 synapses_2_2_J_pot							0.000000 dmV/Spike
 synapses_2_2_P_pot							0.000000
 synapses_2_2_connectivity_type				RandomConnectivity

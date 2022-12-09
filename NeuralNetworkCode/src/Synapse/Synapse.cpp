@@ -94,6 +94,9 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 			} else if(values.at(0) == str_heteroRandomConnectivity) {
 			    delete geometry;
                 this->geometry = new HeteroRandomConnectivity(this, info);
+            } else if (values.at(0) == str_adjacencyMatrixConnectivity) {
+                delete geometry;
+                this->geometry = new AdjacencyMatrixConnectivity(this, info);
             }
         }
     }

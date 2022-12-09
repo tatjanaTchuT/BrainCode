@@ -1,7 +1,7 @@
-#include "IndividualRandomConnectivity.hpp"
+#include "AdjacencyMatrixConnectivity.hpp"
 #include "../Synapse/Synapse.hpp"
 
-IndividualRandomConnectivity::IndividualRandomConnectivity(Synapse* syn, GlobalSimInfo* info) :Connectivity(syn, info) {
+AdjacencyMatrixConnectivity::AdjacencyMatrixConnectivity(Synapse* syn, GlobalSimInfo* info) :Connectivity(syn, info) {
     noSourceNeurons = 0;
     SetSeed(0);
 
@@ -22,15 +22,15 @@ IndividualRandomConnectivity::IndividualRandomConnectivity(Synapse* syn, GlobalS
     connectionProbFile = info->pathTo_inputFile + "Connectivity_Matrix_"+idStr+".txt";
 }
 
-void IndividualRandomConnectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
+void AdjacencyMatrixConnectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
     Connectivity::SaveParameters(stream, id_str);
     //*stream << id_str << "connectivity_noSourceNeurons " << std::to_string(this->noSourceNeurons) << "\n";
     //*stream << id_str << "connectivity_ConnectionProba\t" << std::to_string(this->GetConnectionProbability()) << "\n";
     //*stream << "#" << id_str << "connectivity_noSourceNeurons " << std::to_string(this->noSourceNeurons) << "\n";
-    *stream << "#\t\t" << str_individualRandomConnectivity << ": Each pre and post neurons have individual connection probability.\n";
+    *stream << "#\t\t" << str_adjacencyMatrixConnectivity << ": Pre and post population has adjacency matrix.\n";
 }
 
-void IndividualRandomConnectivity::LoadParameters(std::vector<std::string>* input) {
+void AdjacencyMatrixConnectivity::LoadParameters(std::vector<std::string>* input) {
     Connectivity::LoadParameters(input);
 
     std::string              name;
@@ -49,7 +49,7 @@ void IndividualRandomConnectivity::LoadParameters(std::vector<std::string>* inpu
     GetConnectionWeightsFromFile(connectionProbFile);
 }
 
-void IndividualRandomConnectivity::SetNoSourceNeurons(unsigned long noSN) {
+void AdjacencyMatrixConnectivity::SetNoSourceNeurons(unsigned long noSN) {
     if (noSN < 0)
         noSourceNeurons = 0;
     else if (noSN > synapse->GetNoNeuronsPre())
@@ -62,14 +62,14 @@ void IndividualRandomConnectivity::SetNoSourceNeurons(unsigned long noSN) {
 
 }
 
-double IndividualRandomConnectivity::GetConnectionProbability() {
+double AdjacencyMatrixConnectivity::GetConnectionProbability() {
     if (synapse->GetNoNeuronsPre() == 0)
         return 0;
     else
         return static_cast<double>(noSourceNeurons) / static_cast<double>(synapse->GetNoNeuronsPre());
 }
 
-void IndividualRandomConnectivity::GetConnectionWeightsFromFile(std::string filepath) {
+void AdjacencyMatrixConnectivity::GetConnectionWeightsFromFile(std::string filepath) {
 
     std::vector<std::string> values;
     std::string str_line;
@@ -144,37 +144,7 @@ void IndividualRandomConnectivity::GetConnectionWeightsFromFile(std::string file
     stream.close();
 }
 
-void IndividualRandomConnectivity::SetDistributionJ() {
-
-    char line[2048];
-    std::vector<std::string> full_strs, values;
-    std::string str_line;
-
-    std::ifstream stream(connectionProbFile);
-    std::cout << connectionProbFile << std::endl;
-
-    std::string prefix;
-    while (stream.getline(line, 256)) {
-        if (line[0] == '#')
-            continue;
-
-        full_strs.push_back(line);
-        str_line = line;
-
-        std::vector<std::string> values;
-        SplitString(&str_line, &values);
-
-        int pre_synaptic_index = std::stoi(values.at(0));
-        int post_synaptic_index = std::stoi(values.at(1));
-        double probability = std::stod(values.at(2));
-        double synapticStr = std::stod(values.at(3));
-
-        J_distribution[pre_synaptic_index][post_synaptic_index] = synapticStr;
-    }
-    stream.close();
-}
-
-void IndividualRandomConnectivity::ConnectNeurons()
+void AdjacencyMatrixConnectivity::ConnectNeurons()
 {
 
     unsigned long    countedSourceNeurons;

@@ -81,7 +81,7 @@ struct RecorderOpenStreams {
     std::ofstream synStatesFileStream;
 };
 
-const std::string str_individualRandomConnectivity {"IndividualRandomConnectivity"};
+const std::string str_adjacencyMatrixConnectivity {"AdjacencyMatrixConnectivity"};
 const std::string str_randomConnectivity{"RandomConnectivity"};
 const std::string str_binaryrandomConnectivity{"BinaryRandomConnectivity"};
 const std::string str_distanceConnectivity{"DistanceConnectivity"};
