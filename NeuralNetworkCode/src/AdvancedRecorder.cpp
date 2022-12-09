@@ -483,10 +483,10 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     this->FileStreams.heteroSynapsesFileStream << "t\t";
 
-    std::shared_ptr<HeteroNeuronPop> heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synTrackCount;
     for(unsigned long p = 0;p<P;p++){
-        heteroNeuronPop = std::dynamic_pointer_cast<HeteroNeuronPop>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
             continue;
@@ -517,10 +517,10 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     this->FileStreams.hSOverallFileStream << "t\t";
 
     unsigned long synTrackCount;
-    std::shared_ptr<HeteroNeuronPop> heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
 
     for(unsigned long p = 0; p < P;p++){
-        heteroNeuronPop = std::dynamic_pointer_cast<HeteroNeuronPop>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
             continue;
@@ -675,7 +675,7 @@ void AdvancedRecorder::Record_Potential(){
 }*/
 
 void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * synaptic_dV){
-    //This function *should* be considered deprecated. The pair part should also be commented out, as the volume of files it creates can crash some file explorer programmes.
+    //This function *should* be considered deprecated. The pair part should also be commented out, as the volume of files it creates can crash some file explorer programmes
     if(noCorrNeurons.sum() == 0)
         return;
 
@@ -985,10 +985,10 @@ void AdvancedRecorder::Record_HeteroSynapses() {
 
     SaveDoubleFile(&this->FileStreams.heteroSynapsesFileStream,t,5);
 
-    std::shared_ptr<HeteroNeuronPop> heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synTrackCount;
     for(unsigned long p = 0;p < P; p++){
-        heteroNeuronPop = std::dynamic_pointer_cast<HeteroNeuronPop>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
             continue;
@@ -1013,10 +1013,10 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
 
     SaveDoubleFile(&this->FileStreams.hSOverallFileStream,t,5);
 
-    std::shared_ptr<HeteroNeuronPop> heteroNeuronPop;
+    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synTrackCount;
     for(unsigned long p = 0;p < P; p++){
-        heteroNeuronPop = std::dynamic_pointer_cast<HeteroNeuronPop>(this->neurons->GetPop(p));
+        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (heteroNeuronPop == nullptr || synTrackCount == 0) {
             continue;
