@@ -184,8 +184,13 @@ void NeuralNetwork::SaveParameterOptions(){
     syn = "synapses_" + std::to_string(0) + "_" + std::to_string(0) + "_";
     CurrentSynapse synapse_current(&neuronLIF,&neuronLIF,&mockInfo);
 
-    RandomConnectivity       geom_rc(&synapse_current,&mockInfo);
-    geom_rc.SaveParameters(&stream,syn);
+    RandomConnectivity       geom_rc(&synapse_current, &mockInfo);
+    geom_rc.SaveParameters(&stream, syn);
+
+    stream << "#************************************************\n";
+    AdjacencyMatrixConnectivity       geom_am(&synapse_current, &mockInfo);
+    geom_am.SaveParameters(&stream, syn);
+
     stream <<  "#************************************************\n";
     BinaryRandomConnectivity geom_brc(&synapse_current,&mockInfo);
     geom_brc.SaveParameters(&stream,syn);
