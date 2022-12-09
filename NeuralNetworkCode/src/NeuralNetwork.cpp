@@ -68,7 +68,7 @@ void NeuralNetwork::SaveParameters(){
     stream.close();
 }
 
-void NeuralNetwork::SaveParameterOptions(){
+void NeuralNetwork::SaveParameterOptions(){// This function should have stuff moved to the heap (and deleted at the end of the function)
 	//return;//SaveParameteroptions is disabled
 	std::cout << recorder->GetParameterOptionsFilename()<<"\n";
     std::ofstream stream(recorder->GetParameterOptionsFilename());
@@ -458,8 +458,8 @@ void NeuralNetwork::outputHeteroEvents(){
         unsigned long potentiationCount {0}, depressionCount {0}, inBetweeners {0}, stable {0};
 
     for (unsigned long popId{ 0 }; popId < this->neurons->GetTotalPopulations(); popId++) {
-        auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
-        if (pop!=nullptr){
+        if (dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId))){
+            auto* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId));
             for (unsigned long nId{ 0 }; nId < pop->GetNoNeurons(); nId++) {
                 unsigned long synCount{ pop->getSynapseCount(nId) };
                 for (unsigned long sId{ 0 }; sId < synCount; ++sId) {
