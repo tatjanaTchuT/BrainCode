@@ -1,6 +1,5 @@
 #include "NeuralNetwork.hpp"
 
-
 NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry> *parEntries)
 {
     neurons     = NULL;
@@ -389,7 +388,6 @@ int NeuralNetwork::Simulate()
         }
     }*/
 
-    //OPTIMIZATION: Here we should open the six streams and keep them open until the end of the simulation, for performance's sake
     this->recorder->SetFilenameDate();
     SaveParameters();
     this->recorder->WriteDataHeader();

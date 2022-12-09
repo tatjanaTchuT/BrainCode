@@ -67,7 +67,7 @@ protected:
     void Record_Rasterplot();
     void Record_Currents(std::vector<std::vector<double>> * synaptic_dV);
     void Record_Averages();
-    void Record_SynapseStates(int header = 0);
+    void Record_SynapseStates();
 	void Record_Heatmap();
 //    void Record_Histogram(std::vector<std::vector<double>> * synaptic_dV);
     void Record_Correlations(std::vector<std::vector<double>> * synaptic_dV);
@@ -78,6 +78,7 @@ protected:
     void WriteDataHeader_Currents();
     void WriteDataHeader_Rasterplot();
     void WriteDataHeader_Averages();
+    void WriteDataHeader_SynapseStates();
     void WriteDataHeader_Potential();
 //    void WriteDataHeader_Histogram();
     void WriteDataHeader_Correlations();
