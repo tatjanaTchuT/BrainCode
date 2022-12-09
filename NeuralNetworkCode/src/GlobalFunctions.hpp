@@ -57,7 +57,7 @@ struct SynapseExt {
     //Add branching here
     double lastSpike{};
     double theta{}; // heterosynaptic cooperativity
-    double weight{};
+    double weight{}; //Is this even compatible with negative weights? Yes, as the negative weight comes from J, weight is just a factor to multiply
     unsigned long globalId{}; // id for synapse within its population
     unsigned long localId{}; // id for synapse within its a synapse collection
 };

@@ -69,6 +69,7 @@ void Morphology::recordPostSpike() {
 
 
 void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
+    //Is there supposed to be a different Inhibitory function?
     this->synapseData.at(synSpikerId)->lastSpike = static_cast<double> (this->info->time_step) * this->info->dt;
     this->spikedSynapsesId.push_back(synSpikerId);
     this->spikedSynapses.at(synSpikerId) = true;
@@ -109,7 +110,7 @@ void Morphology::normalizeWeights() {
 
 void Morphology::hardNormalize() {
     for (auto& syn: this->synapseData) {
-        syn->weight = std::max(0.0, std::min(2.0, syn->weight));//Is this even compatible with negative weights? OPTIMIZATION
+        syn->weight = std::max(0.0, std::min(2.0, syn->weight));
     }
 }
 

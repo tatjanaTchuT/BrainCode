@@ -271,7 +271,7 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
     spiker->theta += hEffects;
     neighbor->theta += hEffects;
 
-//    if (hEffects != 0.0) {//OPTIMIZATION. Problems with heap allocation of the data. Needs to be moved to a file if necessary
+//    if (hEffects != 0.0) {//OPTIMIZATION. Problems with heap allocation of the data (causes an OOM error). Needs to be moved to a file if necessary
 ////        pseudoCoop( spikerId, neighborId);
 //
 //        this->theta_changes.emplace_back(spikerId, hEffects);

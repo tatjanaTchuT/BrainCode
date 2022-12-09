@@ -34,7 +34,7 @@ protected:
     GlobalSimInfo * info;
 
     unsigned int noPopulations;
-    NeuronPop **neuronPops;//OPTIMIZATION. This should be arranged in a vector, properly with unique_ptrs
+    NeuronPop** neuronPops;//OPTIMIZATION. This should be arranged in a vector, properly with unique_ptrs
 
 public:
     NeuronPopSample(std::vector<std::string> *input,GlobalSimInfo * info);
@@ -45,7 +45,7 @@ public:
     unsigned long GetTotalNeurons() { return info->N; }
     unsigned int  GetTotalPopulations() const { return this->noPopulations; }
     unsigned long GetNeuronsPop(int popId) { return neuronPops[popId]->GetNoNeurons(); }
-    NeuronPop * GetPop(int popId) { return neuronPops[popId]; }
+    NeuronPop* GetPop(int popId) { return neuronPops[popId]; }
     std::vector<long> * GetSpikers(int pop) { return neuronPops[pop]->GetSpikers(); }
 	double GetX_Pos(int pop, long i) { return neuronPops[pop]->get_Xpos(i); }
 	double GetY_Pos(int pop, long i) { return neuronPops[pop]->get_Ypos(i); }

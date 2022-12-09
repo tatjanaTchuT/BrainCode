@@ -22,19 +22,21 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 
     //Get list of spikers
     std::vector<long> spikers {*neuronsPre->GetSpikers()};
-
+    std::vector<std::pair<unsigned long, unsigned long>> targetList{};
     auto* connectivity { dynamic_cast<HeteroRandomConnectivity*>(this->geometry)};
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
     for(auto const& spiker: spikers){
-        //Constref is probably enough
-        std::vector<std::pair<unsigned long, unsigned long>> targetList { connectivity->getSynapticTargets(spiker)};
-        //std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
-        currents.resize(targetList.size(), 0.0);//OPTIMIZATION? All of this is implicitly innecessary. Change to reserve()?
-        //The two previous lines can be replaced by:, or store the current vectors and only refill.
-        //std::vector<double> currents(targetList.size(), 0.0);
-        advect_spikers(currents, spiker);
+        targetList = connectivity->getSynapticTargets(spiker);
 
+        currents.resize(targetList.size(), 0.0);
+        //OPTIMIZATION: To further improve speed, at the cost of memory, each neuron's currents matrix should be kept in the connectivity object, indexed per neuron.
+        // This would avoid having to resize and clear the currents matrix.
+
+
+        advect_spikers(currents, spiker);
+        //std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
+        
         FillWaitingMatrix(spiker, currents);
         currents.clear();//Remove this line if the std::fill() is uncommented
     }
@@ -44,9 +46,8 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 }
 
 void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
-    auto* connectivity { dynamic_cast<HeteroRandomConnectivity*>(this->geometry)};
-    std::vector<std::pair<unsigned long, unsigned long>> targetList{ connectivity->getSynapticTargets(spiker)}; 
-    //OPTIMIZATION, targetList could be passed as a const reference to the previous copy
+    const std::vector<std::pair<unsigned long, unsigned long>> targetList{ dynamic_cast<HeteroRandomConnectivity*>(this->geometry)->getSynapticTargets(spiker)}; 
+    //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
 
     auto* heteroNeuronsPost { dynamic_cast<HeteroNeuronPop*>(this->neuronsPost)}; 
 
@@ -57,6 +58,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
     unsigned long globalSynapseId;
 
     std::pair<unsigned long, unsigned long> neuronSynapsePair;
+
     for (int i = 0; i < targetList.size(); i++) {
         neuronSynapsePair = targetList.at(i);
         postNeuronId = neuronSynapsePair.first;
@@ -70,9 +72,8 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
             current = couplingStrength * this->synapseData[localSynapseId]->weight;
             heteroNeuronsPost->recordExcitatorySynapticSpike(postNeuronId, globalSynapseId);
         }
-        currents[i] += current;//Possible OPTIMIZATION? Maybe by putting the expression here and referencing currents[i]
+        currents[i] += current;
         this->cumulatedDV += current;
-        //heteroNeuronsPost->recordSynapticSpike(postNeuronId, globalSynapseId);
     }
 }
 

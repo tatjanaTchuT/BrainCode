@@ -161,9 +161,9 @@ void Synapse::advect(std::vector<double> * synaptic_dV)
     for(auto const& spiker: *spikersUsed){
         std::vector<unsigned long> tL = *geometry->GetTargetList(spiker);
         currents.resize(tL.size(),0);
-        std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
+        std::fill(currents.begin(), currents.end(), 0);//OPTIMIZATION: Change this to the HCS function (currents)
 
-        advect_spikers(currents, spiker);//Here target list is used again OPTIMIZATION
+        advect_spikers(currents, spiker);//Here target list is used again OPTIMIZATION. Both these optimizations can be done, but it requires a revision of all Synapse classes.
 
 
         FillWaitingMatrix(spiker, currents);//Here target list is used again OPTIMIZATION
