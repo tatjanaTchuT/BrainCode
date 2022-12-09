@@ -11,7 +11,6 @@ class HeteroRandomConnectivity: public RandomConnectivity {
 
 protected:
     std::vector<std::vector<std::pair<unsigned long, unsigned long>>> synapticTargets; //the list with postsynaptic (or target) neurons and syanpseId (Pair<>) for each neuron of the presynaptic population
-
 public:
     HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* info);
     ~HeteroRandomConnectivity() override = default;

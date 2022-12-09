@@ -48,7 +48,7 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
     const std::vector<std::pair<unsigned long, unsigned long>> targetList{ dynamic_cast<HeteroRandomConnectivity*>(this->geometry)->getSynapticTargets(spiker)}; 
     //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
-
+    //Overloaded function? Not necessary in others, as others use pointer. We cannot because the targetList is built differently
     auto* heteroNeuronsPost { dynamic_cast<HeteroNeuronPop*>(this->neuronsPost)}; 
 
     double couplingStrength;
