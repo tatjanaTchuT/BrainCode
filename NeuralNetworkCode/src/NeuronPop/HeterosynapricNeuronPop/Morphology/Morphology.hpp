@@ -48,7 +48,7 @@ protected:
     void reset();
     void normalizeWeights();
 
-    void timeDecay();
+    virtual void timeDecay();
 
 public:
     explicit Morphology(GlobalSimInfo * info);
