@@ -9,7 +9,7 @@ RandomConnectivity::RandomConnectivity(Synapse * syn,GlobalSimInfo  * info):Conn
 void RandomConnectivity::SaveParameters(std::ofstream * stream,std::string id_str){
     Connectivity::SaveParameters(stream,id_str);
     //*stream << id_str << "connectivity_noSourceNeurons " << std::to_string(this->noSourceNeurons) << "\n";
-    *stream << id_str << "connectivity_ConnectionProba\t\t\t\t" << std::to_string(this->GetConnectionProbability()) << "\n";
+    *stream << id_str << "connectivity_ConnectionProba\t\t\t" << std::to_string(this->GetConnectionProbability()) << "\n";
     //*stream << "#" << id_str << "connectivity_noSourceNeurons " << std::to_string(this->noSourceNeurons) << "\n";
     *stream << "#\t\t"<< str_randomConnectivity << ": Each neuron receives C = connectionProbability*N_p randomly chosen connections from the presynaptic population p (as used by [Brunel (2000)]).\n";
 }

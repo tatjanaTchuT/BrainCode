@@ -43,7 +43,7 @@ public:
     virtual void WriteDistributionD(const std::string& filename, unsigned long noNeuronsDelay);
     virtual void WriteDistributionJ(const std::string& filename, unsigned long noNeuronsJPot);
 
-    virtual void SaveParameters(std::ofstream * stream, const std::string&);
+    virtual void SaveParameters(std::ofstream * stream, std::string id_str);
     virtual void LoadParameters(std::vector<std::string> *input);
 
     int GetSeed() const { return seed; }

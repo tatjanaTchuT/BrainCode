@@ -6,7 +6,7 @@ BinaryRandomConnectivity::BinaryRandomConnectivity(Synapse * syn,GlobalSimInfo  
     SetSeed(0);
 }
 
-void BinaryRandomConnectivity::SaveParameters(std::ofstream * stream, const std::string& id_str){
+void BinaryRandomConnectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
     Connectivity::SaveParameters(stream,id_str);
     *stream << id_str << "connectivity_ConnectionProba\t" << std::to_string(this->connectionProbability) << "\n";
     if(info->globalSeed == -1){

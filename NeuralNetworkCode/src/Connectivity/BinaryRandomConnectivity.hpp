@@ -29,7 +29,7 @@ public:
 
     unsigned long GetNumberAverageSourceNeurons() override;
 
-    void SaveParameters(std::ofstream * stream, const std::string&) override;
+    void SaveParameters(std::ofstream* stream, std::string id_str) override;
     void LoadParameters(std::vector<std::string> *input) override;
 };
 

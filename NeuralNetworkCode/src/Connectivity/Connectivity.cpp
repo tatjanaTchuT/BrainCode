@@ -25,7 +25,7 @@ Connectivity::~Connectivity(){
     delete [] J_distribution;
 }
 
-void Connectivity::SaveParameters(std::ofstream * stream, const std::string& id_str){
+void Connectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
     *stream << id_str << "connectivity_type\t\t\t\t" << GetTypeStr() << "\n";
     //if(info->globalSeed == -1){
     *stream << id_str << "connectivity_seed\t\t\t\t" << std::to_string(this->seed)  << "\n";

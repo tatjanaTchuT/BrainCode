@@ -30,7 +30,7 @@ public:
     std::string         GetTypeStr(){return str_randomConnectivity;}
     double              GetConnectionProbability();
 
-    void SaveParameters(std::ofstream * stream,std::string id_str);
+    void SaveParameters(std::ofstream * stream, std::string id_str) override;
     void LoadParameters(std::vector<std::string> *input);
 };
 

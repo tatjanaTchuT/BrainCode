@@ -48,7 +48,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
 
 }
 
-void HeteroRandomConnectivity::SaveParameters(std::ofstream *stream, const std::string &id_str) {
+void HeteroRandomConnectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
     RandomConnectivity::SaveParameters(stream, id_str);
 }
 
