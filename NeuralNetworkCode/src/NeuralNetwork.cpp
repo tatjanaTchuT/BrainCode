@@ -220,6 +220,26 @@ void NeuralNetwork::SaveParameterOptions(){// This function should have stuff mo
     synapse_ecs.SaveParameters(&stream,syn);
     stream <<  "#************************************************\n";
 
+    stream <<  "#************************************************************************************************\n";
+    stream <<  "#*************  Heterosynaptic plasticity alternative classes ***********************************\n";
+    stream <<  "#************************************************************************************************\n";
+    stream <<  "#************************************************\n";
+    HeteroLIFNeuronPop hhneuronLIF(&mockInfo,0);
+    hhneuronLIF.SaveParameters(&stream);
+    stream <<  "#************************************************\n";
+
+    HeteroCurrentSynapse hhsynapse_current(&hhneuronLIF,&hhneuronLIF,&mockInfo);
+    hhsynapse_current.SaveParameters(&stream,syn);
+    stream <<  "#************************************************\n";
+    stream <<  "#************************************************************************************************\n";
+    stream <<  "#*************  Heterosynaptic dendrites ********************************************************\n";
+    stream <<  "#************************************************************************************************\n";
+    stream <<  "#************************************************\n";
+    MonoDendriteSTDPTazerart tazden(&mockInfo);
+    tazden.SaveParameters(&stream,"neurons_0");
+
+//Instead of LIF, heteroLIF, put morphology options from Tazerart and HCS and HCP
+
     stream << std::endl;
     stream.close();
 }

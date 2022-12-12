@@ -61,7 +61,6 @@ protected:
     virtual double getTimingEffects(const SynapseExt* synA, const SynapseExt* synB) const = 0;
 
 public:
-
     explicit MonoDendriteSTDP(GlobalSimInfo* info);
     ~MonoDendriteSTDP() override = default;
 

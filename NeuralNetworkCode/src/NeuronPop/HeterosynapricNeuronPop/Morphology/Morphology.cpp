@@ -38,11 +38,12 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
         }
 
     }
+    assert(normalizationFound);
 }
 void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
     *stream<< "#From here on is all Heterostuff\n";
-    *stream << neuronPreId<<"morphology\t\t\t\t"<<this->getType()<<"\n";
-    *stream << neuronPreId<<"morphology_weight_normalization\t";
+    *stream << neuronPreId<<"_morphology\t\t\t\t"<<this->getType()<<"\n";
+    *stream << neuronPreId<<"_morphology_weight_normalization\t";
     if (this->weightNormalization == HardNormalization){
         *stream<<"HardNormalization\n";
     }

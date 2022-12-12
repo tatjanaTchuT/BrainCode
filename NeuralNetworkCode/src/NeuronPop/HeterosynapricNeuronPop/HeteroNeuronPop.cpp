@@ -9,6 +9,9 @@ HeteroNeuronPop::HeteroNeuronPop(GlobalSimInfo *info, int id): NeuronPop(info, i
 
 void HeteroNeuronPop::SaveParameters(std::ofstream * stream) {
     NeuronPop::SaveParameters(stream);
+    if (this->morphology.size()!=0){
+        morphology.at(0)->SaveParameters(stream, "neurons_" + std::to_string(GetId()));
+    }
 }
 
 void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {

@@ -40,7 +40,7 @@ protected:
     std::vector<bool> spikedSynapses;
     std::vector<unsigned long> spikedSynapsesId;
 
-    WeightNormalization weightNormalization;
+    WeightNormalization weightNormalization {NOPNormalization};
 
     bool decayWeights{};
     double weightDecayConstant{};
