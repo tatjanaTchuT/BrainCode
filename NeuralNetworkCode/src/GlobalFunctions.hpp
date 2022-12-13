@@ -54,7 +54,6 @@ struct SynapseExt {
     unsigned long preNeuronId{};
     unsigned long postNeuronId{};
     double distToSoma{}; //Use this to build a generalizable distance matrix.
-    //Add branching here
     double lastSpike{};
     double theta{}; // heterosynaptic cooperativity
     double weight{}; //Is this even compatible with negative weights? Yes, as the negative weight comes from J, weight is just a factor to multiply
@@ -63,7 +62,7 @@ struct SynapseExt {
 };
 
 struct SynapseExtBranched : SynapseExt {
-
+    int branch{};
 };
 
 struct RecorderOpenStreams {
