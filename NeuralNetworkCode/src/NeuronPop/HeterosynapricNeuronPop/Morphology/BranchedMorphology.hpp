@@ -26,8 +26,22 @@ protected:
 
     std::vector<std::shared_ptr<Branch>> branches;
 
+public:
+    explicit BranchedMorphology(GlobalSimInfo * info);
+    virtual ~BranchedMorphology() = default; //what does default mean here?
+
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse() = 0;
+    virtual std::string getType() = 0;
+    virtual void advect();
+    virtual void recordPostSpike();
+    virtual void recordExcitatoryPreSpike(unsigned long synSpikerId);
+    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0;
+    virtual std::valarray<double> getOverallSynapticProfile() const = 0;
 
 
+
+    virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
+    virtual void LoadParameters(std::vector<std::string> *input);
 };
 
 
