@@ -483,12 +483,11 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     this->FileStreams.heteroSynapsesFileStream << "t\t";
 
-    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synTrackCount;
+
     for(unsigned long p = 0;p<P;p++){
-        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (heteroNeuronPop == nullptr || synTrackCount == 0) {
+        if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -517,12 +516,10 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     this->FileStreams.hSOverallFileStream << "t\t";
 
     unsigned long synTrackCount;
-    HeteroNeuronPop* heteroNeuronPop;
 
-    for(unsigned long p = 0; p < P;p++){
-        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
+    for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (heteroNeuronPop == nullptr || synTrackCount == 0) {
+        if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -985,17 +982,17 @@ void AdvancedRecorder::Record_HeteroSynapses() {
 
     SaveDoubleFile(&this->FileStreams.heteroSynapsesFileStream,t,5);
 
-    HeteroNeuronPop* heteroNeuronPop;
+
     unsigned long synTrackCount;
-    for(unsigned long p = 0;p < P; p++){
-        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
+
+    for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (heteroNeuronPop == nullptr || synTrackCount == 0) {
+        if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
             for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
-                SaveTupleOfDoublesFile(&this->FileStreams.heteroSynapsesFileStream, heteroNeuronPop->getIndividualSynapticProfile(i, k), 5);
+                SaveTupleOfDoublesFile(&this->FileStreams.heteroSynapsesFileStream, this->neurons->GetPop(p)->getIndividualSynapticProfile(i, k), 5);
             }
         }
     }
@@ -1013,16 +1010,15 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
 
     SaveDoubleFile(&this->FileStreams.hSOverallFileStream,t,5);
 
-    HeteroNeuronPop* heteroNeuronPop;
     unsigned long synTrackCount;
-    for(unsigned long p = 0;p < P; p++){
-        heteroNeuronPop = dynamic_cast<HeteroNeuronPop*>(this->neurons->GetPop(p));
+
+    for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (heteroNeuronPop == nullptr || synTrackCount == 0) {
+        if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-                SaveDoubleFile(&this->FileStreams.hSOverallFileStream, heteroNeuronPop->getOverallSynapticProfile(i)[0], 5);
+                SaveDoubleFile(&this->FileStreams.hSOverallFileStream, this->neurons->GetPop(p)->getOverallSynapticProfile(i)[0], 5);
             //Here is selecting only the average weight per neuron, with precision 5 digits.
         }
     }

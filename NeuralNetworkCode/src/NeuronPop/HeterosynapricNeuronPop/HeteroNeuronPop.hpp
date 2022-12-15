@@ -32,10 +32,10 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     // heterosynaptic functionality
-    std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId);
-    void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
-    std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
-    std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId) override;
+    virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
+    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
+    virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId) override;
 
     // Testing, check the purpose of this
     friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long);
@@ -46,7 +46,9 @@ public:
     void triggerStatOut(std::string dirPath);
     void printThetasAndWeights();
 
+    //To optimize dynamic_casting in if statements
 
+    virtual bool HasHeterosynapticPlasticity() override {return true;}
 
 };
 

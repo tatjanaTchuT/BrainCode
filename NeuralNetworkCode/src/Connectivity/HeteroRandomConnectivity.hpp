@@ -17,7 +17,7 @@ public:
 
     void ConnectNeurons() override;
 
-    std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(unsigned long);
+    virtual std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(unsigned long) override;
     void SaveParameters(std::ofstream * stream, std::string id_str) override;
     void LoadParameters(std::vector<std::string> *input) override;
 

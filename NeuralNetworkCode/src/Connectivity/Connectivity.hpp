@@ -60,6 +60,9 @@ public:
 
     void Test();
 
+    //Removing dynamic_casts from main loop
+    virtual std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(unsigned long) {assertm(false, "Non-hetero connectivity called getSynapticTargets.\n");}
+
 };
 
 #endif /* Connectivity_hpp */

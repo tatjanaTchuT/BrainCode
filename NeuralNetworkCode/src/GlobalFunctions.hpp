@@ -62,7 +62,9 @@ struct SynapseExt {
 };
 
 struct SynapseExtBranched : SynapseExt {
-    int branch{};
+    int branch{}; //This has to be discrete
+    int branch_position_id{}; //This has to be discrete
+    double distance_from_root{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
 };
 
 struct RecorderOpenStreams {

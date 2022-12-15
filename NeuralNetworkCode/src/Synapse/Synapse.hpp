@@ -142,6 +142,9 @@ public:
     // Testing
     friend std::vector<std::vector<double>> getWaitingMatrix(const Synapse&);
 
+    //Removal of dynamic_casting<>
+    virtual unsigned long allocateSynapse(unsigned long preId, unsigned long postId) {throw;}
+
 };
 
 std::vector<std::vector<double>> getWaitingMatrix();

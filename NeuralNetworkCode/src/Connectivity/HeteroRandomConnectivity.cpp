@@ -7,14 +7,13 @@ HeteroRandomConnectivity::HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* 
 
 void HeteroRandomConnectivity::ConnectNeurons() {
 
-    unsigned long numPostNeurons = synapse->GetNoNeuronsPost();
+    unsigned long numPostNeurons = this->synapse->GetNoNeuronsPost();
 
     unsigned long output_Interval = numPostNeurons / 10;
     output_Interval = output_Interval == 0 ? 1 : output_Interval; //Comparing a long to ints is not going to work out. Must be changed.
 
-    std::uniform_int_distribution<int> distribution(0,(int)synapse->GetNoNeuronsPre()-1);
+    std::uniform_int_distribution<int> distribution(0,(int)this->synapse->GetNoNeuronsPre()-1);
 
-    auto* heteroSynapse = dynamic_cast<HeteroCurrentSynapse*>(this->synapse);
     unsigned long source, countedSourceNeurons, synapseId;
 
     for(unsigned long target = 0; target < numPostNeurons; target++) {
@@ -23,7 +22,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
         while(countedSourceNeurons < this->noSourceNeurons) {
             source = distribution(generator);
 
-            if(synapse->IsRecurrent() && source == target) {
+            if(this->synapse->IsRecurrent() && source == target) {
                 continue;
             }
 
@@ -32,7 +31,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
             }
 
             try {
-                synapseId = heteroSynapse->allocateSynapse(source, target);
+                synapseId = this->synapse->allocateSynapse(source, target);
                 synapticTargets[source].push_back(std::make_pair(target, synapseId));
                 target_id[source].push_back(target);//Are both truly necessary?
                 countedSourceNeurons++;

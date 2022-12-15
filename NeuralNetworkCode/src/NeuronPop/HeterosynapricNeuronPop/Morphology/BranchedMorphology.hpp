@@ -15,7 +15,7 @@ struct Branch{
     
     
     //Methods
-    explicit Branch();
+    Branch();
 };
 
 class BranchedMorphology : public Morphology {

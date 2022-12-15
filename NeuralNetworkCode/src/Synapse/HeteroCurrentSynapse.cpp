@@ -3,15 +3,13 @@
 HeteroCurrentSynapse::HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* preNeurons, GlobalSimInfo* info):
     Synapse(postNeurons, preNeurons, info) {
 
-    // remove default legacy geometry initialization. It is done in HeteroCurrentSynapse::LoadParameters with appropriate assertions.
-    //Ok, but this is secondary for now
+    // remove default legacy geometry initialization. It is done in HeteroCurrentSynapse::LoadParameters with appropriate assertions. OPTIMIZATION.
     delete this->geometry;
     this->geometry = new HeteroRandomConnectivity(this, this->info);
 
     // assert that HeteroSynapses are allowed only when the post NeuronPop supports heterosynaptic behavior
-    assertm(dynamic_cast<HeteroNeuronPop*>(postNeurons) != nullptr,
-            "Attempting to create a Heterosynapse but the PostNeurons and/or PreNeurons are not Heterosynaptic.");
-    //GOOD
+    assertm(postNeurons->HasHeterosynapticPlasticity(),
+            "Attempting to create a Heterosynapse but the PostNeurons are not Heterosynaptic.");
 }
 
 void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
@@ -23,11 +21,10 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
     //Get list of spikers
     std::vector<long> spikers {*neuronsPre->GetSpikers()};
     std::vector<std::pair<unsigned long, unsigned long>> targetList{};
-    auto* connectivity { dynamic_cast<HeteroRandomConnectivity*>(this->geometry)};
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
     for(auto const& spiker: spikers){
-        targetList = connectivity->getSynapticTargets(spiker);
+        targetList = this->geometry->getSynapticTargets(spiker);
 
         currents.resize(targetList.size(), 0.0);
         //OPTIMIZATION: To further improve speed, at the cost of memory, each neuron's currents matrix should be kept in the connectivity object, indexed per neuron.
@@ -46,10 +43,9 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 }
 
 void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
-    const std::vector<std::pair<unsigned long, unsigned long>> targetList{ dynamic_cast<HeteroRandomConnectivity*>(this->geometry)->getSynapticTargets(spiker)}; 
+    const std::vector<std::pair<unsigned long, unsigned long>> targetList{this->geometry->getSynapticTargets(spiker)}; 
     //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
     //Overloaded function? Not necessary in others, as others use pointer. We cannot because the targetList is built differently
-    auto* heteroNeuronsPost { dynamic_cast<HeteroNeuronPop*>(this->neuronsPost)}; 
 
     double couplingStrength;
     double current;
@@ -70,7 +66,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
             current =  couplingStrength;
         } else {
             current = couplingStrength * this->synapseData[localSynapseId]->weight;
-            heteroNeuronsPost->recordExcitatorySynapticSpike(postNeuronId, globalSynapseId);
+            this->neuronsPost->recordExcitatorySynapticSpike(postNeuronId, globalSynapseId);
         }
         currents[i] += current;
         this->cumulatedDV += current;
@@ -91,9 +87,7 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
 
-    auto* heteroNeuronsPost = dynamic_cast<HeteroNeuronPop*>(this->neuronsPost);
-
-    std::shared_ptr<SynapseExt> synapseExtPtr = heteroNeuronsPost->allocateNewSynapse(postId);
+    std::shared_ptr<SynapseExt> synapseExtPtr = this->neuronsPost->allocateNewSynapse(postId);
 
     if (synapseExtPtr != nullptr) {
         synapseExtPtr->preNeuronId = preId;
@@ -123,14 +117,13 @@ std::valarray<double> HeteroCurrentSynapse::GetSynapticState(int pre_neuron) {
     for(unsigned int target=0; target < this->GetNumberOfPostsynapticTargets(pre_neuron); target++){
         Jsum += *(geometry->GetDistributionJ(pre_neuron,target));
     }
-    val[0] = Jsum/double(this->GetNumberOfPostsynapticTargets(pre_neuron));
+    val[0] = Jsum/static_cast<double>(this->GetNumberOfPostsynapticTargets(pre_neuron));
     //val[0] = GetCouplingStrength()*double(this->GetNumberOfPostsynapticTargets(pre_neuron));
     return val;
 }
 
 std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(HeteroCurrentSynapse& syn, unsigned long preId) {
-    auto* connectivity = dynamic_cast<HeteroRandomConnectivity*>(syn.geometry);
-    return connectivity->getSynapticTargets(preId);
+    return syn.geometry->getSynapticTargets(preId);
 }
 
 std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse& syn) {
