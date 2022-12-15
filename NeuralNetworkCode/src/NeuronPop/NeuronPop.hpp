@@ -77,10 +77,10 @@ public:
 
     //To optimize the dynamic_casting in if statements
     virtual bool HasHeterosynapticPlasticity(){return false;}
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId) {assertm(false, "Non-hetero NeuronPop called getIndividualSynapticProfile");}
-    virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId) {assertm(false, "Non-hetero NeuronPop called getOverallSynapticProfile");}
-    virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) {assertm(false, "Non-hetero NeuronPop called recordExcitatorySynapticSpike");}
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId){assertm(false, "Non-hetero NeuronPop called allocateNewSynapse");}
+    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
+    virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
+    virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId);
 };
 
 
