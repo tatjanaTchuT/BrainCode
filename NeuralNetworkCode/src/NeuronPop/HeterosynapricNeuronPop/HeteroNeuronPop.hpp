@@ -23,6 +23,7 @@ class HeteroNeuronPop: public NeuronPop {
 
 protected:
     std::vector<std::unique_ptr<Morphology>> morphology{};
+    bool isBranched{false};
 
 public:
     explicit HeteroNeuronPop(GlobalSimInfo * info, int id);
@@ -49,6 +50,8 @@ public:
     //To optimize dynamic_casting in if statements
 
     virtual bool HasHeterosynapticPlasticity() override {return true;}
+    bool IsBranched(){return isBranched;}
+    void SetBranchedTrue(){isBranched=true;}
 
 };
 
