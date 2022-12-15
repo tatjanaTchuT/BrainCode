@@ -29,7 +29,7 @@ public:
     void                ConnectNeurons();
 	void                ConnectNeuronsExact();
 	unsigned long		GetNumberAverageSourceNeurons();
-    std::string         GetTypeStr(){return str_distanceConnectivity;}
+    const std::string         GetTypeStr() override {return str_distanceConnectivity;}
 
     void SaveParameters(std::ofstream * stream,std::string id_str);
     void LoadParameters(std::vector<std::string> *input);

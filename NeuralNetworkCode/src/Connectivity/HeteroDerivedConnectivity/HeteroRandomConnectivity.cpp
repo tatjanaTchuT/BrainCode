@@ -1,8 +1,10 @@
-#include "../Synapse/HeteroCurrentSynapse.hpp"
-#include "HeteroRandomConnectivity.hpp"
+#include "./HeteroRandomConnectivity.hpp"
+#include "../../Synapse/Synapse.hpp"
+#include "../../Synapse/HeteroCurrentSynapse.hpp"
+
 
 HeteroRandomConnectivity::HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* info):
-    RandomConnectivity(syn, info), synapticTargets(syn->GetNoNeuronsPre()) {
+    RandomConnectivity(syn, info), HeteroConnectivity(syn->GetNoNeuronsPre()) {
 }
 
 void HeteroRandomConnectivity::ConnectNeurons() {
@@ -48,19 +50,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
 
 }
 
-void HeteroRandomConnectivity::SaveParameters(std::ofstream* stream, std::string id_str) {
-    RandomConnectivity::SaveParameters(stream, id_str);
-}
-
-void HeteroRandomConnectivity::LoadParameters(std::vector<std::string> *input) {
-    RandomConnectivity::LoadParameters(input);
-}
-
-std::vector<std::pair<unsigned long, unsigned long>> HeteroRandomConnectivity::getSynapticTargets(unsigned long preId) {
-    return this->synapticTargets.at(preId);
-}
-
-std::string HeteroRandomConnectivity::GetTypeStr() {
+const std::string HeteroRandomConnectivity::GetTypeStr() {
     return str_heteroRandomConnectivity;
 }
 

@@ -1,27 +1,22 @@
-#ifndef HeterosynapticConnectivity_hpp
-#define HeterosynapticConnectivity_hpp
+#ifndef _Heterosynaptic_RANDOM_Connectivity_hpp_derived_
+#define _Heterosynaptic_RANDOM_Connectivity_hpp_derived_
 
 #include <vector>
 #include <string>
 #include <utility>
-#include "../Connectivity/RandomConnectivity.hpp"
-#include "../Synapse/Synapse.hpp"
+#include "../../Connectivity/RandomConnectivity.hpp"
+#include "../../Connectivity/HeteroDerivedConnectivity/HeteroConnectivity.hpp"
 
-class HeteroRandomConnectivity: public RandomConnectivity {
+class HeteroRandomConnectivity: public RandomConnectivity, public HeteroConnectivity {
 
-protected:
-    std::vector<std::vector<std::pair<unsigned long, unsigned long>>> synapticTargets; //the list with postsynaptic (or target) neurons and syanpseId (Pair<>) for each neuron of the presynaptic population
+
 public:
     HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* info);
     ~HeteroRandomConnectivity() override = default;
 
     void ConnectNeurons() override;
 
-    std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(unsigned long);
-    void SaveParameters(std::ofstream * stream, std::string id_str) override;
-    void LoadParameters(std::vector<std::string> *input) override;
-
-    std::string GetTypeStr() override;
+    const std::string GetTypeStr() override;
 
     //    unsigned long GetNumberAverageSourceNeurons() override;
 
@@ -33,4 +28,4 @@ public:
 
 };
 
-#endif // HeterosynapticConnectivity_hpp
+#endif

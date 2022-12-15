@@ -36,7 +36,7 @@ public:
     // https://github.com/saiftyfirst/BP_Demos/blob/master/C%2B%2B/constRef_vs_pointer.cpp
     std::vector<unsigned long>* GetTargetList(long preNeuronId){return &target_id[preNeuronId];}
     virtual unsigned long GetNumberAverageSourceNeurons() =0;
-    virtual std::string GetTypeStr() = 0;
+    virtual const std::string GetTypeStr() = 0;
 
     virtual void ConnectNeurons() = 0;
     virtual void WriteConnectivity(const std::string& filename,unsigned long noNeuronsConnectivity);

@@ -35,7 +35,7 @@ public:
 	std::string GetDataHeader(int data_column) override;
 	std::string GetUnhashedDataHeader() override;
 	std::valarray<double> GetSynapticState(int pre_neuron) override;
-    std::string GetTypeStr() override { return str_prgSynapseContinuous; }
+    const std::string GetTypeStr() override { return str_prgSynapseContinuous; }
 
     void SaveParameters(std::ofstream * stream,std::string id_str) override;
     void LoadParameters(std::vector<std::string> *input) override;

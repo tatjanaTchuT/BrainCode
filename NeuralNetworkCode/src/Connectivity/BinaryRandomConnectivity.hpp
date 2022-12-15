@@ -25,7 +25,7 @@ public:
     ~BinaryRandomConnectivity() override = default;
 
     void ConnectNeurons() override;
-    std::string GetTypeStr() override { return str_binaryrandomConnectivity; }
+    const std::string GetTypeStr() override { return str_binaryrandomConnectivity; }
 
     unsigned long GetNumberAverageSourceNeurons() override;
 

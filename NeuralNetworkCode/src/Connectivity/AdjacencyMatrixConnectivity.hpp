@@ -29,7 +29,7 @@ public:
 
     void                ConnectNeurons();
     unsigned long       GetNumberAverageSourceNeurons() { return noSourceNeurons; }
-    std::string         GetTypeStr() { return str_adjacencyMatrixConnectivity; }
+    const std::string         GetTypeStr() override { return str_adjacencyMatrixConnectivity; }
     double              GetConnectionProbability();
     void                GetConnectionWeightsFromFile(std::string filepath);
 
