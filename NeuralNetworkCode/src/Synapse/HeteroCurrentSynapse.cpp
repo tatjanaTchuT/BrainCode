@@ -23,7 +23,7 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
     //Get list of spikers
     std::vector<long> spikers {*neuronsPre->GetSpikers()};
     std::vector<std::pair<unsigned long, unsigned long>> targetList{};
-    auto* connectivity { dynamic_cast<HeteroRandomConnectivity*>(this->geometry)};
+    auto* connectivity { dynamic_cast<HeteroConnectivity*>(this->geometry)};
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
     for(auto const& spiker: spikers){
