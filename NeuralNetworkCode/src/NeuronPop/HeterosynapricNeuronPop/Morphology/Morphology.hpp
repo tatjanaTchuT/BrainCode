@@ -77,6 +77,9 @@ public:
 
     void printThetasAndWeights();
 
+    //Qualifying methods
+    virtual bool IsBranched(){return false;}
+
 };
 
 std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&);
