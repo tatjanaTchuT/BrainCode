@@ -36,6 +36,7 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
             this->decayWeights = true;
             this->weightDecayConstant = std::stod(values.at(0));
         }
+        //include here max and min weights
 
     }
     assert(normalizationFound);
@@ -53,6 +54,9 @@ void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) 
     else if (this->weightNormalization == NOPNormalization){
         *stream<<"NOPNormalization\n";
     }
+
+    *stream << neuronPreId<<"_morphology_weight_decay\t<<";
+    //include here max and min weights
 }
 
 
@@ -111,7 +115,7 @@ void Morphology::normalizeWeights() {
 
 void Morphology::hardNormalize() {
     for (auto& syn: this->synapseData) {
-        syn->weight = std::max(0.0, std::min(2.0, syn->weight));
+        syn->weight = std::max(minWeight, std::min(maxWeight, syn->weight));
     }
 }
 

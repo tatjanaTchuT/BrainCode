@@ -41,6 +41,9 @@ protected:
     std::vector<unsigned long> spikedSynapsesId;
 
     WeightNormalization weightNormalization {NOPNormalization};
+    double minWeight{0.0};
+    double initialWeights{1.0};
+    double maxWeight {2.0};
 
     bool decayWeights{};
     double weightDecayConstant{};
