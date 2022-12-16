@@ -14,7 +14,7 @@
 #include "../NeuronPop/NeuronPop.hpp"
 #include "../Connectivity/Connectivity.hpp"
 #include "../Connectivity/RandomConnectivity.hpp"
-#include "../Connectivity/HeteroRandomConnectivity.hpp"
+#include "../Connectivity/HeteroDerivedConnectivity/HeteroRandomConnectivity.hpp"
 #include "../Connectivity/BinaryRandomConnectivity.hpp"
 #include "../Connectivity/DistanceConnectivity.hpp"
 #include "../Connectivity/AdjacencyMatrixConnectivity.hpp"
@@ -99,7 +99,7 @@ public:
 
 	double							*GetJpointer() { return &J; }
 	int								*GetDpointer() { return &D_max; }
-    virtual std::string				GetTypeStr() = 0;
+    virtual const std::string				GetTypeStr() = 0;
 
     NeuronPop*                      GetNeuronsPre();
     NeuronPop*                      GetNeuronsPost();
@@ -136,7 +136,7 @@ public:
     void WriteDistributionD(std::string filename,int noNeuronsDelay){this->geometry->WriteDistributionD(filename,noNeuronsDelay);}
     void WriteDistributionJ(std::string filename,int noNeuronsJPot){this->geometry->WriteDistributionJ(filename,noNeuronsJPot);}
     void Test(){geometry->Test();}
-    std::string GetIdStr();
+    const std::string GetIdStr();
     std::string GetIdStrWithULine();
 
     // Testing

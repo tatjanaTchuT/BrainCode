@@ -476,7 +476,7 @@ void NeuralNetwork::makeInputCopy(const std::string& inputFile) {
 
 void NeuralNetwork::outputHeteroEvents(){
         unsigned long potentiationCount {0}, depressionCount {0}, inBetweeners {0}, stable {0};
-        bool printOut;
+        bool printOut{ false };
     for (unsigned long popId{ 0 }; popId < this->neurons->GetTotalPopulations(); popId++) {
         if (neurons->GetPop(popId)->HasHeterosynapticPlasticity()){
             HeteroNeuronPop* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId)); 
@@ -499,9 +499,10 @@ void NeuralNetwork::outputHeteroEvents(){
         }
     }
 
-    //std::ofstream stream(this->recorder->GetDirectoryPath(),  );
+if (printOut){    //std::ofstream stream(this->recorder->GetDirectoryPath(),  );
     std::cout << "Potentiation Count: " << potentiationCount << std::endl;
     std::cout << "Depression Count: " << depressionCount << std::endl;
     std::cout << "Stable Count: " << stable << std::endl;
     std::cout << "InBetweener Count: " << inBetweeners << std::endl;
+}
 }

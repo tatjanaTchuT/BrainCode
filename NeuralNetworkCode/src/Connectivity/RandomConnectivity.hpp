@@ -27,7 +27,7 @@ public:
 
     virtual void                ConnectNeurons() override;
     unsigned long       GetNumberAverageSourceNeurons() override {return noSourceNeurons;}
-    std::string         GetTypeStr() override {return str_randomConnectivity;}
+    const std::string         GetTypeStr() override {return str_randomConnectivity;}
     double              GetConnectionProbability();
 
     virtual void SaveParameters(std::ofstream * stream, std::string id_str) override;
