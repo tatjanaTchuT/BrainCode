@@ -487,7 +487,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
+        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()  || this->neurons->GetPop(p)->IsBranched()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -530,6 +530,44 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     this->FileStreams.hSOverallFileStream << "\n#************************************\n";
 }
 
+void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
+    unsigned long P = neurons->GetTotalPopulations();
+    for(unsigned long p = 0;p<P;p++){
+        if (this->neurons->GetPop(p)->IsBranched()){
+            hasBranchedSynapsePop=true;
+        }
+    }
+
+    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0 || !hasBranchedSynapsePop)
+        return;
+
+
+    this->FileStreams.heteroBSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
+
+    WriteHeader(&this->FileStreams.heteroBSynapsesFileStream);
+    this->FileStreams.heteroBSynapsesFileStream << "Profile -> {<dist to branch node>, <weight>, <last spike>} \n";
+    this->FileStreams.heteroBSynapsesFileStream << "\n#************************************\n";
+
+    this->FileStreams.heteroBSynapsesFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id_synapse_id \n";
+
+    this->FileStreams.heteroBSynapsesFileStream << "t\t";
+
+    unsigned long synTrackCount;
+
+    for(unsigned long p = 0;p<P;p++){
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranched()) {
+            continue;
+        }
+        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
+            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
+                this->FileStreams.heteroBSynapsesFileStream << "Profile_" << p << "_" << i << "_" << (k) <<  "\t";
+            }
+        }
+    }
+    this->FileStreams.heteroBSynapsesFileStream << "\n#************************************\n";
+}
+
 
 //void AdvancedRecorder::InitializeRecorder(std::string filename){
 void AdvancedRecorder::WriteDataHeader(){
@@ -544,6 +582,7 @@ void AdvancedRecorder::WriteDataHeader(){
 	WriteDataHeader_CurrentsContribution();
 	WriteDataHeader_HeteroSynapses();
 	WriteDataHeader_HeteroSynapsesOverall();
+    WriteDataHeader_HeteroSynapsesBranched();
     reset_statistics();
 }
 
@@ -1023,6 +1062,34 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
         }
     }
     this->FileStreams.hSOverallFileStream << "\n";
+}
+void AdvancedRecorder::Record_HeteroSynapsesBranched() {
+
+    if(!hasBranchedSynapsePop) {
+        return;
+    }
+
+    double           dt {info->dt};
+    double           t {static_cast<double>(info->time_step)*dt};
+    unsigned long             P {neurons->GetTotalPopulations()};
+
+    SaveDoubleFile(&this->FileStreams.heteroBSynapsesFileStream,t,5);
+
+
+    unsigned long synTrackCount;
+
+    for(unsigned long p = 0;p<P;p++){
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranched()) {
+            continue;
+        }
+        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
+            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
+                SaveTupleOfDoublesFile(&this->FileStreams.heteroBSynapsesFileStream, this->neurons->GetPop(p)->getIndividualSynapticProfile(i, k), 5);
+            }
+        }
+    }
+    this->FileStreams.heteroBSynapsesFileStream << "\n";
 }
 
 void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)

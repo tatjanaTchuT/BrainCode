@@ -59,13 +59,16 @@ struct SynapseExt {
     double weight{}; //Is this even compatible with negative weights? Yes, as the negative weight comes from J, weight is just a factor to multiply
     unsigned long globalId{}; // id for synapse within its population
     unsigned long localId{}; // id for synapse within its a synapse collection
+    //Methods
+    virtual std::valarray<double> getIndividualSynapticProfile() const;
 };
 
 struct SynapseExtBranched : SynapseExt {
     int branch_id{}; //This has to be discrete
     int branch_position_id{}; //This has to be discrete
     int distance_from_root{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
-    
+    //Methods
+    virtual std::valarray<double> getIndividualSynapticProfile() const override;
 };
 
 struct RecorderOpenStreams {
@@ -80,6 +83,7 @@ struct RecorderOpenStreams {
     std::ofstream pairCorrFileStream;
     std::ofstream heteroSynapsesFileStream;
     std::ofstream hSOverallFileStream;
+    std::ofstream heteroBSynapsesFileStream;
     std::ofstream synStatesFileStream;
 };
 

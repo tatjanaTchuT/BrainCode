@@ -62,12 +62,12 @@ public:
     virtual void LoadParameters(std::vector<std::string> *input) override; //define
     virtual std::string getType() = 0;
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse() = 0;
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse() = 0; //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched
 
     virtual void recordPostSpike();// define
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //define
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0; //define
-    virtual std::valarray<double> getOverallSynapticProfile() const = 0;//define
+    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const; //define
+    virtual std::valarray<double> getOverallSynapticProfile() const;//define
 //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
 //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 

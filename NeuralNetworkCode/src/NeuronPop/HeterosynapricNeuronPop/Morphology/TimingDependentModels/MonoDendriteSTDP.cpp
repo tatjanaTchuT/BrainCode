@@ -301,13 +301,7 @@ std::valarray<double> MonoDendriteSTDP::getIndividualSynapticProfile(unsigned lo
      * item 3: value of the synaptic weight
      * item 4: last spike time of the synapse
      * */
-    SynapseExt syn = *synapseData.at(synapseId);
-    std::valarray<double> ret(4);
-    ret[0] = syn.distToSoma;
-    ret[1] = syn.theta;
-    ret[2] = syn.weight;
-    ret[3] = syn.lastSpike;
-    return ret;
+    return synapseData.at(synapseId)->getIndividualSynapticProfile();
 }
 
 std::valarray<double> MonoDendriteSTDP::getOverallSynapticProfile() const {

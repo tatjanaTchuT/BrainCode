@@ -222,3 +222,19 @@ void RemoveHashInString(std::vector<std::string> *string){
     *string = new_string;
     return;
 }
+//Struct methods
+std::valarray<double> SynapseExt::getIndividualSynapticProfile() const {
+    std::valarray<double> ret(4);
+    ret[0] = this->distToSoma;
+    ret[1] = this->theta;
+    ret[2] = this->weight;
+    ret[3] = this->lastSpike;
+    return ret;
+};
+std::valarray<double> SynapseExtBranched::getIndividualSynapticProfile() const {
+    std::valarray<double> ret(3);
+    ret[0] = this->distance_from_root;
+    ret[1] = this->weight;
+    ret[2] = this->lastSpike;
+    return ret;
+};

@@ -106,17 +106,11 @@ double BranchedMorphology::generateSynapticWeight(){
 std::valarray<double> BranchedMorphology::getIndividualSynapticProfile(unsigned long synapseId) const {
     /*
      * returned array organised as follows:
-     * item 1: distance of synapse from soma
-     * item 2: value of heterosynaptic cooperativity
-     * item 3: value of the synaptic weight
-     * item 4: last spike time of the synapse
+     * item 1: distance of synapse from branch root
+     * item 2: value of the synaptic weight
+     * item 3: last spike time of the synapse
      * */
-    SynapseExt syn = *synapseData.at(synapseId);
-    std::valarray<double> ret(3);
-    ret[0] = syn.distance_from_root;
-    ret[1] = syn.weight;
-    ret[2] = syn.lastSpike;
-    return ret;
+    return synapseData.at(synapseId)->getIndividualSynapticProfile();
 }
 
 std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {

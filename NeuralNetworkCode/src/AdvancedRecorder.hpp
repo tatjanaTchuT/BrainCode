@@ -40,7 +40,7 @@ class AdvancedRecorder : public Recorder
 {
 protected:
 
-    bool trackSynapses; //, writeHistogram;
+    bool trackSynapses{false}; //, writeHistogram;
 	int Heatmap;
 	int current_t_0 = 0;
 	int raster_t_0 = 0;
@@ -59,7 +59,8 @@ protected:
     unsigned long stepCount;
     unsigned long heteroRecordingPerSteps;
 
-    bool neuronTrackingInitialized;
+    bool neuronTrackingInitialized{false};
+    bool hasBranchedSynapsePop{false};
 
     void reset_statistics(); //Resets all containers.
 
@@ -74,6 +75,7 @@ protected:
 	void Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV);
 	void Record_HeteroSynapses();
     void Record_HeteroSynapsesOverall();
+    void Record_HeteroSynapsesBranched();
 
     void WriteDataHeader_Currents();
     void WriteDataHeader_Rasterplot();
@@ -86,6 +88,7 @@ protected:
 	void WriteDataHeader_CurrentsContribution();
 	void WriteDataHeader_HeteroSynapses();
     void WriteDataHeader_HeteroSynapsesOverall();
+    void WriteDataHeader_HeteroSynapsesBranched();
 
 
     void SetNoRasterplotNeurons(std::vector<std::string> *values);
@@ -114,6 +117,7 @@ public:
 	std::string GetCurrentCrontributionFilename() { return this->directoryPath + title + "_CurrentContribution.dat"; }
     std::string GetHeteroSynapseStateFilename() { return this->directoryPath + title + "_HeteroSynapses.dat"; }
     std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHeteroSynapses.dat"; }
+    std::string GetHeteroBranchedSynapseStateFilename() { return this->directoryPath + title + "_BranchedHeteroSynapses.dat"; }
     std::string GetType()   {return str_advancedRecorder;}
 
     std::vector<std::vector<std::vector<double>>> savecurrents;

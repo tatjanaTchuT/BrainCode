@@ -50,7 +50,7 @@ public:
     //To optimize dynamic_casting in if statements
 
     virtual bool HasHeterosynapticPlasticity() override {return true;}
-    bool IsBranched(){return isBranched;}
+    virtual bool IsBranched() override {return isBranched;}
     void SetBranchedTrue(){isBranched=true;}
 
 };
