@@ -33,11 +33,11 @@ public:
     void advect(std::vector<double> *synaptic_dV) override;
 
     // Testing
-    friend std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(HeteroCurrentSynapse&, unsigned long);
+    friend const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, const unsigned long&);
     friend std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse&);
 };
 
-std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(HeteroCurrentSynapse&, unsigned long);
+const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, unsigned long);
 std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse&);
 
 #endif

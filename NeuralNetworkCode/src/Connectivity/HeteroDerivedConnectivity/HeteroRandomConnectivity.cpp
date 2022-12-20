@@ -34,7 +34,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
 
             try {
                 synapseId = this->synapse->allocateSynapse(source, target);
-                synapticTargets[source].push_back(std::make_pair(target, synapseId));
+                synapticTargets[source].push_back(std::make_pair(target, synapseId)); //Multi targeting has to change here (for random connectivity)
                 target_id[source].push_back(target);//Are both truly necessary?
                 countedSourceNeurons++;
             } catch (const noAllocatableSynapseException& e) {
@@ -51,6 +51,10 @@ void HeteroRandomConnectivity::ConnectNeurons() {
 
 const std::string HeteroRandomConnectivity::GetTypeStr() {
     return str_heteroRandomConnectivity;
+}
+
+std::vector<std::pair<unsigned long, unsigned long>>& HeteroRandomConnectivity::getSynapticTargets(const unsigned long& preId){
+    return HeteroConnectivity::getSynapticTargets(preId);
 }
 
 

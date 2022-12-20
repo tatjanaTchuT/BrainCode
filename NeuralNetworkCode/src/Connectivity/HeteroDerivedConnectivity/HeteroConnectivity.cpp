@@ -4,6 +4,6 @@
 HeteroConnectivity::HeteroConnectivity(unsigned long noNeuronsPre):synapticTargets(noNeuronsPre){
 }
 
-const std::vector<std::pair<unsigned long, unsigned long>> HeteroConnectivity::getSynapticTargets(unsigned long preId) {
-    return this->synapticTargets.at(preId);
+std::vector<std::pair<unsigned long, unsigned long>>& HeteroConnectivity::getSynapticTargets(const unsigned long& preId) {
+    return (this->synapticTargets.at(preId));
 }

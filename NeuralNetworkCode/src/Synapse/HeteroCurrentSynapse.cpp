@@ -20,13 +20,13 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 
     //Get list of spikers
     std::vector<long> spikers {*neuronsPre->GetSpikers()};
-    std::vector<std::pair<unsigned long, unsigned long>> targetList{};
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
     for(auto const& spiker: spikers){
-        targetList = this->geometry->getSynapticTargets(spiker);
 
-        currents.resize(targetList.size(), 0.0);
+        size_t targetList_size {this->geometry->getSynapticTargets(spiker).size()};
+
+        currents.resize(targetList_size, 0.0);
         //OPTIMIZATION: To further improve speed, at the cost of memory, each neuron's currents matrix should be kept in the connectivity object, indexed per neuron.
         // This would avoid having to resize and clear the currents matrix.
 
@@ -43,7 +43,7 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 }
 
 void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
-    const std::vector<std::pair<unsigned long, unsigned long>> targetList{this->geometry->getSynapticTargets(spiker)}; 
+    const std::vector<std::pair<unsigned long, unsigned long>>& targetList{this->geometry->getSynapticTargets(spiker)}; 
     //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
     //Overloaded function? Not necessary in others, as others use pointer. We cannot because the targetList is built differently (for now)
 
@@ -122,7 +122,7 @@ std::valarray<double> HeteroCurrentSynapse::GetSynapticState(int pre_neuron) {
     return val;
 }
 
-std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(HeteroCurrentSynapse& syn, unsigned long preId) {
+const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse& syn, const unsigned long& preId) {
     return syn.geometry->getSynapticTargets(preId);
 }
 

@@ -61,7 +61,7 @@ public:
     void Test();
 
     //Removing dynamic_casts from main loop
-    virtual std::vector<std::pair<unsigned long, unsigned long>> getSynapticTargets(unsigned long);
+    virtual std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(const unsigned long&);
 
 };
 

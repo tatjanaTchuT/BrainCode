@@ -45,7 +45,7 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             this->branchLength = std::stoi(values.at(0));
             dendriteInitialized = true;
         } else if (name.find("synaptic_gap") != std::string::npos) {
-            this->synapticGap = std::stod(values.at(0));
+            this->synapticGap = std::stoi(values.at(0));
             synapticGapInitialized = true;
         } else if (name.find("distribute_weights") != std::string::npos) {
             //This whole part is experimental, it seems it was not completely tested
@@ -133,4 +133,7 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     ret[1] = this->totalPostSpikes;
     ret[2] = this->totalPreSpikes;
     return ret;
+}
+void BranchedMorphology::SetUpBranch (int branch_id){
+    
 }

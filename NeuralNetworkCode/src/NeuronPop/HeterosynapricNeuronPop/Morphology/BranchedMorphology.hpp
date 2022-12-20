@@ -7,16 +7,16 @@
 
 struct Branch{
     //ID
-    int branch_id;
+    int branch_id{};
     //For setup
-    std::vector<int> anterior_branches;
+    std::vector<int> anterior_branches{};
 
-    int synapticGap;
-    int branchLength;
+    int synapticGap{};
+    int branchLength{};
 
-    std::vector<int> openSynapsesSlots;//We will pop_back() from here the position of the synapse being setup
+    std::vector<int> openSynapsesSlots{};//We will pop_back() from here the position of the synapse being setup
     //For the actual checks
-    std::vector<bool> spikedSyn;//Here, with the size of the branch open positions, we will store the bool indicating if the preneuron fired in the timestep
+    std::vector<bool> spikedSyn{};//Here, with the size of the branch open positions, we will store the bool indicating if the preneuron fired in the timestep
     std::vector<int> branchSynapsesID{}; // Here we store the actual positions of our synapses. Non-occupied will be -1? Or 0 if the openSynapsesPositions starts from 1.
 
     //Formed in constructor. The idea is to .pop_back() ids that have been ordered inside here
@@ -72,14 +72,14 @@ public:
 //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 
     //Branched specific methods
-    virtual void SetUpSynapseSlots(int branch_id) = 0; //This function will set up the open synapse slots of a branch object with its id.
-    virtual void SetUpBranch (int branch_id);//This one I have to define
+    virtual void SetUpSynapseSlots(int branch_id) = 0; //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks
+    virtual void SetUpBranch (int branch_id);//?
     int GenerateBranchId(){return branchIdGenerator++;}
 
     virtual bool IsBranched() override {return true;}
 
     //
-    double generateSynapticWeight();
+    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when 
 };
 
 

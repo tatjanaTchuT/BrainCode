@@ -325,8 +325,8 @@ void Connectivity::WriteDistributionJ(const std::string& filename,unsigned long 
 }
 
 //After this, all functions are virtual, not intended for running
-std::vector<std::pair<unsigned long, unsigned long>> Connectivity::getSynapticTargets(unsigned long){
-    assertm(false, "Non-hetero connectivity called getSynapticTargets.\n");
-    std::vector<std::pair<unsigned long, unsigned long>> empty {};
+std::vector<std::pair<unsigned long, unsigned long>>& Connectivity::getSynapticTargets(const unsigned long&){
+    throw;
+    std::vector<std::pair<unsigned long, unsigned long>> empty{};
     return empty;
     }

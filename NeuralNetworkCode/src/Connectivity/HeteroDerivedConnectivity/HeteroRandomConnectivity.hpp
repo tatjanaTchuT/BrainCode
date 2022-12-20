@@ -19,6 +19,10 @@ public:
 
     const std::string GetTypeStr() override;
 
+    //To solve multiple inheritance problem
+
+    virtual std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(const unsigned long&) override;
+
     //    unsigned long GetNumberAverageSourceNeurons() override;
 
     //    int* GetDistributionD(long preNeuronId, long postNeuronId) override;
