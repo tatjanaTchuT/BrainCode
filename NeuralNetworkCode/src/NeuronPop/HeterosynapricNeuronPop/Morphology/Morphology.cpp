@@ -10,10 +10,8 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
     std::string name;
     std::vector<std::string> values;
 
-    this->decayWeights = false;
-
     // checks for correct initialization
-    bool normalizationFound = false;
+    bool normalizationFound {false};
 
     for (auto& it : *input) {
         SplitString(&it, &name, &values);
@@ -31,10 +29,13 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
                 weightNormalization = SoftMaxNormalization;
                 normalizationFound = true;
             }
-        }
-        else if (name.find("weight_decay") != std::string::npos) {
-            this->decayWeights = true;
-            this->weightDecayConstant = std::stod(values.at(0));
+        } else if (name.find("weight_decay") != std::string::npos) {
+            this->decayWeights = {values.at(0)=="true"};
+            this->weightDecayConstant = std::stod(values.at(1));
+            this->expdt=exp(-this->info->dt/this->weightDecayConstant);
+        } else if (name.find("min-max_weights") != std::string::npos) {
+            this->minWeight = std::stod(values.at(0));
+            this->maxWeight = std::stod(values.at(1));
         }
         //include here max and min weights
 
@@ -55,7 +56,11 @@ void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) 
         *stream<<"NOPNormalization\n";
     }
 
-    *stream << neuronPreId<<"_morphology_weight_decay\t<<";
+    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<"\t"<<std::to_string(this->weightDecayConstant);
+    *stream<<"#The first bool activates the weight decay per timestep. The second number is the time constant on an exponential in seconds [exp(-dt/ctt)].\n";
+
+    *stream << neuronPreId<<"_morphology_min-max_weights\t"<<std::to_string(this->minWeight)<<"\t"<<std::to_string(this->maxWeight);
+    *stream<<"#Only relevant for HardNormalization and distribute_weights, the first number is the minimum weight in normalization, the second one the hard cap for weight.\n";
     //include here max and min weights
 }
 
@@ -99,9 +104,6 @@ double Morphology::getWeight(unsigned long synapseId) const {
 
 void Morphology::reset() {
     this->normalizeWeights();
-    for (unsigned long id: this->spikedSynapsesId) {
-        this->spikedSynapses.at(id) = false;
-    }
     this->spikedSynapsesId.clear();
 }
 
@@ -134,8 +136,7 @@ void Morphology::softMaxNormalize() {
 }
 
 void Morphology::timeDecay() {
-    double dt           = info->dt;
-    double expdt        = exp(-dt/weightDecayConstant);
+    const double& expdt {this->expdt};
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseExt>& syn: this->synapseData) {
             syn->weight *= expdt;

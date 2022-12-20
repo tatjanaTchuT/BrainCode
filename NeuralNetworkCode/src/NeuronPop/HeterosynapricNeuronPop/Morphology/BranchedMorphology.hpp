@@ -27,13 +27,9 @@ class BranchedMorphology : public Morphology {
 
 protected:
 //MonoDendriteSTDP moved
-    unsigned long synapseIdGenerator{}; // variable used to allocate new synapses. type is legacy compatible
+    unsigned long synapseIdGenerator{0}; // variable used to allocate new synapses. type is legacy compatible
     
     bool distributeWeights{false};
-    bool stepWeights{false};
-    std::vector<unsigned long> weightStepBoundary{};
-    std::vector<double> weightStepValue{};
-    unsigned long currWightStepId{};
     
     std::vector<bool> integratePostSpike{};
     std::vector<bool> integratePreSpike{};
@@ -79,7 +75,7 @@ public:
     virtual bool IsBranched() override {return true;}
 
     //
-    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when 
+    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
 };
 
 

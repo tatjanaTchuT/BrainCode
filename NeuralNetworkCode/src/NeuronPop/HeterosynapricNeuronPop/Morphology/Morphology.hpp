@@ -32,21 +32,22 @@ protected:
     GlobalSimInfo * info;
 
     std::vector<std::shared_ptr<SynapseExt>> synapseData;
-    double weightsSum{};
-    double totalPostSpikes{};
-    double totalPreSpikes{};
+    double weightsSum {};
+    double totalPostSpikes {};
+    double totalPreSpikes {};
 
     double lastPostSpikeTime;
     std::vector<bool> spikedSynapses;
     std::vector<unsigned long> spikedSynapsesId;
 
     WeightNormalization weightNormalization {NOPNormalization};
-    double minWeight{0.0};
-    double initialWeights{1.0};
+    double minWeight {0.0};
+    double initialWeights {1.0};
     double maxWeight {2.0};
 
-    bool decayWeights{};
-    double weightDecayConstant{};
+    bool decayWeights {false};
+    double weightDecayConstant {};
+    double expdt {};
 
     void reset();
     void normalizeWeights();
@@ -81,7 +82,7 @@ public:
     void printThetasAndWeights();
 
     //Qualifying methods
-    virtual bool IsBranched(){return false;}
+    virtual bool IsBranched() {return false;}
 
 };
 

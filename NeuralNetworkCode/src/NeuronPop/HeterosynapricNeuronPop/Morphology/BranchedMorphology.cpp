@@ -19,16 +19,6 @@ void BranchedMorphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     this->integratePreSpike.at(synSpikerId) = true;
 }
 
-void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
-    Morphology::SaveParameters(stream, neuronPreId);
-
-    *stream << neuronPreId<<"_branch_length\t\t\t"<<std::to_string(this->branchLength)<<" #μm";
-    *stream << "\t"<<"#Length of each branch.\n";
-
-    *stream << neuronPreId<<"_synaptic_gap\t\t\t\t"<<std::to_string(this->synapticGap)<<" #μm";
-    *stream << "\t"<<"#Unitary distance between synapse slots.\n";
-}
-
 void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     Morphology::LoadParameters(input);
 
@@ -52,25 +42,8 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             //As such, this is deprecated from publication
             if (values.at(0) == "true") {
                 distributeWeights = true;
-            } else if (values.at(0) == "step") {
-                stepWeights = true;
-                int cIdx = 1;
-                try {
-                    int weightSteps = std::stoi(values.at(cIdx++));
-                    for (int k = 0; k < weightSteps; k++) {
-                        this->weightStepBoundary.push_back(std::stoul(values.at(cIdx++)));
-                        this->weightStepValue.push_back(std::stod(values.at(cIdx++)));
-                    }
-                    this->currWightStepId = 0;
-                } catch (...) {
-                    bool x =false;
-                    assertm(x, "Issues with step weights..");
-                }
             } else {
-                try {
                     this->initialWeights = std::stod(values.at(1));
-                } catch (...) {
-                }
             }
         }
     }
@@ -78,19 +51,30 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     assertm(dendriteInitialized, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
 
-    this->synapseIdGenerator = 0;
 }
+
+void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    Morphology::SaveParameters(stream, neuronPreId);
+
+    *stream << neuronPreId<<"_morphology_branch_length\t\t"<<std::to_string(this->branchLength)<<" #μm";
+    *stream << "\t"<<"#Length of each branch.\n";
+
+    *stream << neuronPreId<<"_morphology_synaptic_gap\t\t\t"<<std::to_string(this->synapticGap)<<" #μm";
+    *stream << "\t"<<"#Unitary distance between synapse slots.\n";
+
+    *stream << neuronPreId<<"_morphology_distribute_weights\t\t";
+    if (this->distributeWeights){
+        *stream << "true\t";
+    }else{
+        *stream<<"false\t"<<std::to_string(this->initialWeights);
+    }
+    *stream << "\t"<<"#The bool corresponds to distributing weight between min and max uniformally. The number will be the weight assigned to all synapses if bool is false (do not confuse with implementation in MonoDendriteSTDP).\n";
+}
+
 
 double BranchedMorphology::generateSynapticWeight(){
     double weight{};
-    std::uniform_real_distribution<double> distribution(0.0,2.0);
-            if (stepWeights) {
-            if (synapseData.size() > weightStepBoundary.at(currWightStepId)) {
-                currWightStepId++;}
-
-            weight = weightStepValue.at(currWightStepId);
-            } 
-            else {
+    std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
             if (distributeWeights) {
                 std::random_device rd;
                 std::default_random_engine generator(rd()); // rd() provides a random seed
@@ -98,7 +82,6 @@ double BranchedMorphology::generateSynapticWeight(){
             } else {
                 weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
             }
-        }
         this->weightsSum += weight;
         return weight;
 }
@@ -135,5 +118,5 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     return ret;
 }
 void BranchedMorphology::SetUpBranch (int branch_id){
-    
+
 }
