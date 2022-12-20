@@ -82,7 +82,7 @@ void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     //Is there supposed to be a different Inhibitory function?
     this->synapseData.at(synSpikerId)->lastSpike = static_cast<double> (this->info->time_step) * this->info->dt;
     this->spikedSynapsesId.push_back(synSpikerId);
-    this->spikedSynapses.at(synSpikerId) = true;
+    this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
     this->totalPreSpikes++;
 
     // STDP Analysis
@@ -104,6 +104,7 @@ double Morphology::getWeight(unsigned long synapseId) const {
 
 void Morphology::reset() {
     this->normalizeWeights();
+    std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
     this->spikedSynapsesId.clear();
 }
 
