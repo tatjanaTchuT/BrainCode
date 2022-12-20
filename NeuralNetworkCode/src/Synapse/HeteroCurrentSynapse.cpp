@@ -121,7 +121,7 @@ std::valarray<double> HeteroCurrentSynapse::GetSynapticState(int pre_neuron) {
     //val[0] = GetCouplingStrength()*double(this->GetNumberOfPostsynapticTargets(pre_neuron));
     return val;
 }
-
+/*
 const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse& syn, const unsigned long& preId) {
     return syn.geometry->getSynapticTargets(preId);
 }
@@ -133,3 +133,4 @@ std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse& syn) {
     }
     return synData;
 }
+*/
