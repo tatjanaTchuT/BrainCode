@@ -223,6 +223,9 @@ void RemoveHashInString(std::vector<std::string> *string){
     return;
 }
 //Struct methods
+SynapseExt::SynapseExt(double distToSoma, double lastSpike, double weight): distToSoma{distToSoma}, lastSpike{lastSpike}, weight{weight}
+{}
+
 std::valarray<double> SynapseExt::getIndividualSynapticProfile() const {
     std::valarray<double> ret(4);
     ret[0] = this->distToSoma;
@@ -231,9 +234,11 @@ std::valarray<double> SynapseExt::getIndividualSynapticProfile() const {
     ret[3] = this->lastSpike;
     return ret;
 };
+SynapseExtBranched::SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchPositionId, int branchId) :SynapseExt(static_cast<double>(distanceFromNode), lastSpike, weight), distanceFromNode{ distanceFromNode }, branchPositionId{ branchPositionId }, branchId{ branchId }
+{}
 std::valarray<double> SynapseExtBranched::getIndividualSynapticProfile() const {
     std::valarray<double> ret(3);
-    ret[0] = this->distance_from_root;
+    ret[0] = this->distanceFromNode;
     ret[1] = this->weight;
     ret[2] = this->lastSpike;
     return ret;

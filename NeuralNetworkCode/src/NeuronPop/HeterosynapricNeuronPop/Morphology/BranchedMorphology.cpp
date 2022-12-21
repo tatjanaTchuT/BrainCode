@@ -1,6 +1,6 @@
 #include "BranchedMorphology.hpp"
 
-Branch::Branch(size_t synSlots, int gap, int branch_length):openSynapsesSlots(synSlots), spikedSyn(synSlots), synapticGap{gap}, branchLength{branch_length}{
+Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):branchSynapsesID(static_cast<size_t>(branchLength/gap), -1), spikedSyn(static_cast<size_t>(branchLength/gap)), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}{
     
 }
 
@@ -26,7 +26,8 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     std::vector<std::string> values;
 
     bool dendriteInitialized = false,
-        synapticGapInitialized = false;
+        synapticGapInitialized = false,
+        branchingsInitialized = false;
 
     for (auto & it : *input) {
         SplitString(&it,&name,&values);
@@ -45,12 +46,20 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             } else {
                     this->initialWeights = std::stod(values.at(1));
             }
+        } else if (name.find("dendrite_branchings") != std::string::npos) {
+            this->branchings = std::stoi(values.at(0));
+            if (this->branchings>28){
+                //EXCEPTION, integer overflow.
+            }
+            branchingsInitialized=true;
         }
     }
 
     assertm(dendriteInitialized, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
-
+    assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
+    std::vector<int> empty{};
+    SetUpBranches(this->branchings, empty);
 }
 
 void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
@@ -69,6 +78,8 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
         *stream<<"false\t"<<std::to_string(this->initialWeights);
     }
     *stream << "\t"<<"#The bool corresponds to distributing weight between min and max uniformally. The number will be the weight assigned to all synapses if bool is false (do not confuse with implementation in MonoDendriteSTDP).\n";
+    *stream << neuronPreId<<"_morphology_dendrite_branchings\t\t"<<std::to_string(this->branchings);
+    *stream << "\t"<<"#This specifies the number of branchings in the dendritic tree FOR EVERY EXISTING BRANCH. Total isolated branches are 2^n. More than 28 will cause integer overflow\n";
 }
 
 
@@ -104,10 +115,6 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
      * item 3: total pre spikes
      * */
     std::valarray<double> ret(3);
-//    double weightSum = 0;
-//    for (unsigned long i = 0; i < 1000; i++) {
-//        weightSum += synapseData.at(i).get()->weight;
-//    }
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
                                        [] (const double acc, const std::shared_ptr<SynapseExt>& syn) { return acc + syn->weight; });
@@ -117,6 +124,18 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     ret[2] = this->totalPreSpikes;
     return ret;
 }
-void BranchedMorphology::SetUpBranch (int branch_id){
-
+void BranchedMorphology::SetUpBranches (int remainingBranchingEvents, std::vector<int> anteriorBranches){ 
+    //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
+    remainingBranchingEvents-=1;
+    //First call is done with an empty int vector
+    for (int i : {1,2}){
+        int branchId{this->GenerateBranchId()};
+        this->branches.emplace_back(Branch(this->synapticGap, this->branchLength, anteriorBranches, branchId));//This vector should be sorted by ID by default (tested).
+        //Constructor here
+        if(remainingBranchingEvents>0){
+            std::vector<int> anteriorBranchesCopy(anteriorBranches);
+            anteriorBranchesCopy.push_back(branchId);
+            this->SetUpBranches(remainingBranchingEvents, anteriorBranchesCopy);
+        }
+    }
 }

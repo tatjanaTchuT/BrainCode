@@ -50,23 +50,23 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
     double couplingStrength;
     double current;
     unsigned long postNeuronId;
-    unsigned long localSynapseId;
-    unsigned long globalSynapseId;
+    unsigned long HCSSynapseId;
+    unsigned long morphoSynapseId;
 
     std::pair<unsigned long, unsigned long> neuronSynapsePair;
 
-    for (int i = 0; i < targetList.size(); i++) {
+    for (int i = 0; i < targetList.size(); i++) {//i here is a postNeuronId
         neuronSynapsePair = targetList.at(i);
         postNeuronId = neuronSynapsePair.first;
-        localSynapseId = neuronSynapsePair.second;
-        globalSynapseId = this->synapseData[localSynapseId]->globalId;
+        HCSSynapseId = neuronSynapsePair.second;
+        morphoSynapseId = this->synapseData[HCSSynapseId]->idInMorpho;
 
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
-        if (couplingStrength < 0.0) {
+        if (couplingStrength < 0.0) {//To avoid interaction with inhibitory synapses
             current =  couplingStrength;
         } else {
-            current = couplingStrength * this->synapseData[localSynapseId]->weight;
-            this->neuronsPost->recordExcitatorySynapticSpike(postNeuronId, globalSynapseId);
+            current = couplingStrength * this->synapseData[HCSSynapseId]->weight;
+            this->neuronsPost->recordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
         }
         currents[i] += current;
         this->cumulatedDV += current;
@@ -92,11 +92,11 @@ unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigne
     if (synapseExtPtr != nullptr) {
         synapseExtPtr->preNeuronId = preId;
         synapseExtPtr->postNeuronId = postId;
-        synapseExtPtr->localId = static_cast<unsigned long>(this->synapseData.size());
+        synapseExtPtr->idInHCS = static_cast<unsigned long>(this->synapseData.size());
 
         this->synapseData.push_back(synapseExtPtr);
 
-        return synapseExtPtr->localId;
+        return synapseExtPtr->idInHCS;
     }
 
     throw noAllocatableSynapseException();

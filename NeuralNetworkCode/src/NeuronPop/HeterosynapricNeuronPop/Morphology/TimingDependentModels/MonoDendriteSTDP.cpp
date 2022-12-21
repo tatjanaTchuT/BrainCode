@@ -43,9 +43,9 @@ void MonoDendriteSTDP::advect() {
     // update for pre-post effects for all synapses
     if (this->postSpiked){
         for (const auto& syn: this->synapseData) {
-            if (syn->lastSpike > 0 && this->integratePreSpike.at(syn->globalId)) {
-                this->updateLTP(syn->globalId);
-                this->integratePreSpike.at(syn->globalId) = false;
+            if (syn->lastSpike > 0 && this->integratePreSpike.at(syn->idInMorpho)) {
+                this->updateLTP(syn->idInMorpho);
+                this->integratePreSpike.at(syn->idInMorpho) = false;
             }
         }
         this->postSpiked=false;
@@ -246,7 +246,7 @@ std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse() {
             }
         }
         this->weightsSum += newSynapse->weight;
-        newSynapse->globalId = this->synapseIdGenerator++;
+        newSynapse->idInMorpho = this->synapseIdGenerator++;
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
 
