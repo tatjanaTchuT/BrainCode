@@ -86,8 +86,14 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 }
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
-
-    std::shared_ptr<SynapseExt> synapseExtPtr = this->neuronsPost->allocateNewSynapse(postId);
+    int branchId;
+    if (randomTargetBranch){
+    HeteroNeuronPop* heteroPop {dynamic_cast<HeteroNeuronPop*>(this->neuronsPost)};
+    int branchId = heteroPop->morphology.at(postId)->getrandomTargetBranch();// Fix this with a reference to morphology
+    }
+    else
+    { int branchId{targetBranch};}
+    std::shared_ptr<SynapseExt> synapseExtPtr = this->neuronsPost->allocateNewSynapse(postId, branchId);
 
     if (synapseExtPtr != nullptr) {
         synapseExtPtr->preNeuronId = preId;

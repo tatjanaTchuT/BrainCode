@@ -11,6 +11,10 @@ class HeteroCurrentSynapse : public Synapse {
 protected:
 
     std::vector<std::shared_ptr<SynapseExt>> synapseData{};
+    //Branching member variables 
+    int targetBranch{};
+    bool setTargetBranch{false};
+    bool randomTargetBranch{false};
 
     void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
     void advect_spikers (std::vector<double>& currents, long spiker) override;

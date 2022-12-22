@@ -487,7 +487,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()  || this->neurons->GetPop(p)->IsBranched()) {
+        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()  || this->neurons->GetPop(p)->isBranched()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -533,7 +533,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
     unsigned long P = neurons->GetTotalPopulations();
     for(unsigned long p = 0;p<P;p++){
-        if (this->neurons->GetPop(p)->IsBranched()){
+        if (this->neurons->GetPop(p)->isBranched()){
             hasBranchedSynapsePop=true;
         }
     }
@@ -556,7 +556,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranched()) {
+        if (synTrackCount == 0 || !this->neurons->GetPop(p)->isBranched()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -1080,7 +1080,7 @@ void AdvancedRecorder::Record_HeteroSynapsesBranched() {
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranched()) {
+        if (synTrackCount == 0 || !this->neurons->GetPop(p)->isBranched()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {

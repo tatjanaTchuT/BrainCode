@@ -77,11 +77,11 @@ public:
 
     //To optimize the dynamic_casting in if statements
     virtual bool HasHeterosynapticPlasticity(){return false;}
-    virtual bool IsBranched() {return false;}
+    virtual bool isBranched() {return false;}
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId);
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, int branchId);
 };
 
 

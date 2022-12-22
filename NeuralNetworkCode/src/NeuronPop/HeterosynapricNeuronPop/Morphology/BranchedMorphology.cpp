@@ -1,8 +1,6 @@
 #include "BranchedMorphology.hpp"
 
-Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):branchSynapsesID(static_cast<size_t>(branchLength/gap), -1), spikedSyn(static_cast<size_t>(branchLength/gap)), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}{
-    
-}
+
 
 BranchedMorphology::BranchedMorphology(GlobalSimInfo * info): Morphology(info){
 
@@ -59,7 +57,7 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
     std::vector<int> empty{};
-    SetUpBranches(this->branchings, empty);
+    setUpBranches(this->branchings, empty);
 }
 
 void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
@@ -124,18 +122,18 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     ret[2] = this->totalPreSpikes;
     return ret;
 }
-void BranchedMorphology::SetUpBranches (int remainingBranchingEvents, std::vector<int> anteriorBranches){ 
+void BranchedMorphology::setUpBranches (int remainingBranchingEvents, std::vector<int> anteriorBranches){ 
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
     //First call is done with an empty int vector
     for (int i : {1,2}){
-        int branchId{this->GenerateBranchId()};
-        this->branches.emplace_back(Branch(this->synapticGap, this->branchLength, anteriorBranches, branchId));//This vector should be sorted by ID by default (tested).
+        int branchId{this->generateBranchId()};
+        this->branches.emplace_back(std::make_shared<Branch>(Branch(this->synapticGap, this->branchLength, anteriorBranches, branchId)));//This vector should be sorted by ID by default (tested).
         //Constructor here
         if(remainingBranchingEvents>0){
             std::vector<int> anteriorBranchesCopy(anteriorBranches);
             anteriorBranchesCopy.push_back(branchId);
-            this->SetUpBranches(remainingBranchingEvents, anteriorBranchesCopy);
+            this->setUpBranches(remainingBranchingEvents, anteriorBranchesCopy);
         }
     }
 }

@@ -5,25 +5,6 @@
 #include <string>
 #include <numeric>
 
-struct Branch{
-    //ID
-    int branchId{};
-    //For setup
-    std::vector<int> anteriorBranches{}; 
-
-    int synapticGap{};
-    int branchLength{};
-
-    std::vector<int> openSynapsesSlots{};//We will pop_back() from here the position of the synapse being setup. Will push_back() in setup, so no default size
-    //For the actual checks
-    std::vector<bool> spikedSyn{};//Here, with the size of the branch discrete positions, we will store the bool indicating if the preneuron fired in the timestep
-    std::vector<int> branchSynapsesID{}; // Here we store the actual positions of our synapses. Non-occupied will be -1
-
-    //Formed in constructor. The idea is to .pop_back() ids that have been ordered inside here
-    Branch()=default;
-    Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
-};
-
 class BranchedMorphology : public Morphology {
 
 protected:
@@ -44,7 +25,8 @@ protected:
 
 //Branched specific
     int branchings{1};
-
+    bool orderedSynAllocation{false};// If not properly loaded from LP, exception
+    bool randomSynAllocation{false};
 
 
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
@@ -53,13 +35,14 @@ public:
     explicit BranchedMorphology(GlobalSimInfo * info);
     virtual ~BranchedMorphology() = default;
 
+
     //Methods derived from the MonoDendriteSTDP and Morphology classes
 
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;//defined
     virtual void LoadParameters(std::vector<std::string> *input) override; //defined
     virtual std::string getType() = 0;
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse() = 0; //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes)
+    
 
     virtual void recordPostSpike();// defined
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //defined
@@ -70,16 +53,23 @@ public:
 //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 
     //Branched specific methods
-    //There is also a need for a wrapper
-    virtual void SetUpSynapseSlots(int branchId) = 0; //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks
-    virtual void SetUpBranches(int remainingBranchingEvents, std::vector<int> anteriorBranches);// Here we set up the vector with the branches
+    //There is also a need for a wrapper called at the end of LP
+    virtual void setUpSynapseSlots(int branchId) = 0; //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks
+    //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered. 
+    virtual void setUpBranches(int remainingBranchingEvents, std::vector<int> anteriorBranches);// Here we set up the vector with the branches
 
-    int GenerateBranchId(){return branchIdGenerator++;}
-
-    virtual bool IsBranched() override {return true;}
+    //Allocation shennanigans
+    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(int branchId) override = 0; //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes) and here I need access to the subregion of the incoming synapse
+    virtual int randomBranchAllocation();
+    //virtual int orderedGuidedBranchAllocation(const char subregionID);
+    virtual void RandomSynapseAllocation(int branchID);
+    virtual void OrderedSynapseAllocation(int branchID);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
 
     //
-    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
+    virtual bool isBranched() override {return true;}
+    int generateBranchId(){return branchIdGenerator++;}
+
 };
 
 

@@ -33,7 +33,7 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     // heterosynaptic functionality
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId) override;
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, int branchId) override;
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId) override;
@@ -50,7 +50,7 @@ public:
     //To optimize dynamic_casting in if statements
 
     virtual bool HasHeterosynapticPlasticity() override {return true;}
-    virtual bool IsBranched() override {return isBranched;}
+    virtual bool isBranched() override {return isBranched;}
     void SetBranchedTrue(){isBranched=true;}
 
 };

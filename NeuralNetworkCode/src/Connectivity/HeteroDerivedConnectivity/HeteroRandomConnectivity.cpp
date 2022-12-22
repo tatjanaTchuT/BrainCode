@@ -21,14 +21,14 @@ void HeteroRandomConnectivity::ConnectNeurons() {
     for(unsigned long target = 0; target < numPostNeurons; target++) {
         countedSourceNeurons = 0;
 
-        while(countedSourceNeurons < this->noSourceNeurons) {
+        while(countedSourceNeurons < this->noSourceNeurons) {// This works in recurrent synapses because the noSourceNeurons is -1
             source = distribution(generator);
 
             if(this->synapse->IsRecurrent() && source == target) {
                 continue;
             }
 
-            if(!target_id[source].empty() && target_id[source].back() == target) {//Is it already plugged?
+            if(!target_id[source].empty() && target_id[source].back() == target) {//Has it been already plugged? (because of ordering)
                 continue;
             }
 
