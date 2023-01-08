@@ -19,6 +19,8 @@
 #include "../../GlobalFunctions.hpp"
 #include "../NeuronPop.hpp"
 
+class HeteroCurrentSynapse;
+
 class HeteroNeuronPop: public NeuronPop {
 
 protected:
@@ -33,7 +35,7 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     // heterosynaptic functionality
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, int branchId) override;
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId) override;
@@ -42,6 +44,7 @@ public:
     friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long);
     unsigned long getSynapseCount(unsigned long neuronId);
     double getWeight(unsigned long neuronId, unsigned long synapseId);
+    //Morphology& getMorphologyRef(int neuronId); //Return a reference to Morpho object
 
     // STDP Analysis
     void triggerStatOut(std::string dirPath);
@@ -50,7 +53,7 @@ public:
     //To optimize dynamic_casting in if statements
 
     virtual bool HasHeterosynapticPlasticity() override {return true;}
-    virtual bool isBranched() override {return isBranched;}
+    virtual bool isBranchedBool() override {return isBranched;}
     void SetBranchedTrue(){isBranched=true;}
 
 };

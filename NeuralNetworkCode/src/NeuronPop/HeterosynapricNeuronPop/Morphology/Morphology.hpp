@@ -9,6 +9,8 @@
 
 #include "../../../GlobalFunctions.hpp"
 
+class HeteroCurrentSynapse;
+
 enum WeightNormalization {
     NOPNormalization, HardNormalization, SoftMaxNormalization
 };
@@ -61,7 +63,7 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(int branchId) = 0;
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& syn)=0;
 
     virtual std::string getType() = 0;
 
@@ -82,7 +84,7 @@ public:
     void printThetasAndWeights();
 
     //Qualifying methods
-    virtual bool isBranched() {return false;}
+    virtual bool isBranchedBool() {return false;}
 
 };
 

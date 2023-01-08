@@ -33,7 +33,7 @@ void HeteroRandomConnectivity::ConnectNeurons() {
             }
 
             try {
-                synapseId = this->synapse->allocateSynapse(source, target);
+                synapseId = this->synapse->allocateSynapse(source, target);// synID equal to id in HCS
                 synapticTargets[source].push_back(std::make_pair(target, synapseId)); //Multi targeting has to change here (for random connectivity)
                 target_id[source].push_back(target);//Are both truly necessary?
                 countedSourceNeurons++;

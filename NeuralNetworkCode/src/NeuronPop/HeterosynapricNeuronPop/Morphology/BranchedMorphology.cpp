@@ -95,6 +95,23 @@ double BranchedMorphology::generateSynapticWeight(){
         return weight;
 }
 
+int BranchedMorphology::randomBranchAllocation()
+{
+        return 0;
+}
+
+void BranchedMorphology::RandomSynapseAllocation(int branchID)
+{
+}
+
+void BranchedMorphology::OrderedSynapseAllocation(int branchID)
+{
+}
+
+void BranchedMorphology::AlternatedSynapseAllocation(int branchID)
+{
+}
+
 std::valarray<double> BranchedMorphology::getIndividualSynapticProfile(unsigned long synapseId) const {
     /*
      * returned array organised as follows:

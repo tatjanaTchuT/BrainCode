@@ -11,6 +11,8 @@
 
 #include "../Morphology.hpp"
 
+class HeteroCurrentSynapse;
+
 class MonoDendriteSTDP: public Morphology {
 protected:
 
@@ -71,8 +73,8 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    std::shared_ptr<SynapseExt> allocateNewSynapse(int branchId)override;
-
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& syn) override;
+    
     std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
     std::valarray<double> getOverallSynapticProfile() const override;
 

@@ -5,6 +5,8 @@
 #include <string>
 #include <numeric>
 
+class HeteroCurrentSynapse;
+class Morphology;
 class BranchedMorphology : public Morphology {
 
 protected:
@@ -14,8 +16,8 @@ protected:
 
     bool distributeWeights{false};
     
-    std::vector<bool> integratePostSpike{};//
-    std::vector<bool> integratePreSpike{};//These two are created in allocateNewSynapse
+    std::vector<bool> integratePostSpike;//
+    std::vector<bool> integratePreSpike;//These two are created in allocateNewSynapse
     bool postSpiked{false};
 
     //Weight normalization vars
@@ -46,7 +48,7 @@ public:
 
     virtual void recordPostSpike();// defined
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //defined
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const; //defined in the SynapseExt structs
+    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override; //defined in the SynapseExt structs
     virtual std::valarray<double> getOverallSynapticProfile() const;//defined
     virtual void advect()=0;
 //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
@@ -60,14 +62,15 @@ public:
 
     //Allocation shennanigans
     double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(int branchId) override = 0; //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes) and here I need access to the subregion of the incoming synapse
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& syn) override =0; //Use the reference to call getBranchTarget
+    //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes) and here I need access to the subregion of the incoming synapse
     virtual int randomBranchAllocation();
     //virtual int orderedGuidedBranchAllocation(const char subregionID);
     virtual void RandomSynapseAllocation(int branchID);
     virtual void OrderedSynapseAllocation(int branchID);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
-
+    virtual void AlternatedSynapseAllocation(int branchID);
     //
-    virtual bool isBranched() override {return true;}
+    virtual bool isBranchedBool() override {return true;}
     int generateBranchId(){return branchIdGenerator++;}
 
 };

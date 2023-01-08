@@ -1,3 +1,8 @@
+
+
+#ifndef NeuronPop_HPP
+#define NeuronPop_HPP
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -7,9 +12,7 @@
 #include <string>
 #include "../GlobalFunctions.hpp"
 
-#ifndef NeuronPop_HPP
-#define NeuronPop_HPP
-
+class HeteroCurrentSynapse;
 
 class NeuronPop
 {
@@ -77,11 +80,11 @@ public:
 
     //To optimize the dynamic_casting in if statements
     virtual bool HasHeterosynapticPlasticity(){return false;}
-    virtual bool isBranched() {return false;}
+    virtual bool isBranchedBool() {return false;}
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, int branchId);
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
 };
 
 

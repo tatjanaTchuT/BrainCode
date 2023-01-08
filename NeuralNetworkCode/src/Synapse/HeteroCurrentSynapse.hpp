@@ -7,14 +7,20 @@
 #include "../NeuronPop/HeterosynapricNeuronPop/HeteroLIFNeuronPop.hpp"
 #include "../Connectivity/HeteroDerivedConnectivity/HeteroRandomConnectivity.hpp"
 
+struct BranchTargeting{
+    int targetBranch{};
+    bool setTargetBranch{false};
+    bool randomTargetBranch{false};
+    char subRegion{'0'};
+
+};
+
 class HeteroCurrentSynapse : public Synapse {
 protected:
 
     std::vector<std::shared_ptr<SynapseExt>> synapseData{};
     //Branching member variables 
-    int targetBranch{};
-    bool setTargetBranch{false};
-    bool randomTargetBranch{false};
+    BranchTargeting targetSection{};
 
     void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
     void advect_spikers (std::vector<double>& currents, long spiker) override;
@@ -35,6 +41,8 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     void advect(std::vector<double> *synaptic_dV) override;
+
+    const BranchTargeting& getBranchTarget(){return targetSection;}// return by const reference for now
 
     // Testing. Commented out because they are not used in the code
     //friend const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, const unsigned long&);
