@@ -73,7 +73,7 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& syn) override;
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse) override;
     
     std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
     std::valarray<double> getOverallSynapticProfile() const override;

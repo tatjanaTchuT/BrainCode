@@ -209,7 +209,7 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     this->synapseIdGenerator = 0;
 }
 
-std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& syn) {
+std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 

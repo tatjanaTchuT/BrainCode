@@ -56,8 +56,10 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     assertm(dendriteInitialized, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
-    std::vector<int> empty{};
-    setUpBranches(this->branchings, empty);
+    setUpBranchings(this->branchings);
+    for (auto branch : this->branches){
+        setUpSynapseSlots(branch);
+    }
 }
 
 void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
@@ -100,15 +102,15 @@ int BranchedMorphology::randomBranchAllocation()
         return 0;
 }
 
-void BranchedMorphology::RandomSynapseAllocation(int branchID)
+void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)
 {
 }
 
-void BranchedMorphology::OrderedSynapseAllocation(int branchID)
+void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
 }
 
-void BranchedMorphology::AlternatedSynapseAllocation(int branchID)
+void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
 }
 
@@ -139,7 +141,7 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     ret[2] = this->totalPreSpikes;
     return ret;
 }
-void BranchedMorphology::setUpBranches (int remainingBranchingEvents, std::vector<int> anteriorBranches){ 
+void BranchedMorphology::setUpBranchings (int remainingBranchingEvents, std::vector<int> anteriorBranches=std::vector<int>()){ 
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
     //First call is done with an empty int vector
@@ -150,7 +152,7 @@ void BranchedMorphology::setUpBranches (int remainingBranchingEvents, std::vecto
         if(remainingBranchingEvents>0){
             std::vector<int> anteriorBranchesCopy(anteriorBranches);
             anteriorBranchesCopy.push_back(branchId);
-            this->setUpBranches(remainingBranchingEvents, anteriorBranchesCopy);
+            this->setUpBranchings(remainingBranchingEvents, anteriorBranchesCopy);
         }
     }
 }

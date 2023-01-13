@@ -56,19 +56,21 @@ public:
 
     //Branched specific methods
     //There is also a need for a wrapper called at the end of LP
-    virtual void setUpSynapseSlots(int branchId) = 0; //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks
-    //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered. 
-    virtual void setUpBranches(int remainingBranchingEvents, std::vector<int> anteriorBranches);// Here we set up the vector with the branches
+    virtual void setUpSynapseSlots(std::shared_ptr<Branch> branch) = 0; //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
+    //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
+    //The overriding function calls functions of BMorpho. 
+    virtual void setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
 
     //Allocation shennanigans
     double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& syn) override =0; //Use the reference to call getBranchTarget
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse) override =0; //Use the reference to call getBranchTarget
     //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes) and here I need access to the subregion of the incoming synapse
+    virtual int allocateBranch()=0;
     virtual int randomBranchAllocation();
     //virtual int orderedGuidedBranchAllocation(const char subregionID);
-    virtual void RandomSynapseAllocation(int branchID);
-    virtual void OrderedSynapseAllocation(int branchID);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
-    virtual void AlternatedSynapseAllocation(int branchID);
+    virtual void RandomSynapseAllocation(std::shared_ptr<Branch> branch);
+    virtual void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
+    virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
     //
     virtual bool isBranchedBool() override {return true;}
     int generateBranchId(){return branchIdGenerator++;}

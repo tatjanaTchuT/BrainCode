@@ -63,7 +63,7 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& syn)=0;
+    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
 
     virtual std::string getType() = 0;
 
