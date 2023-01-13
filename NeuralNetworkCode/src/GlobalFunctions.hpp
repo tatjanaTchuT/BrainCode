@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <valarray>
 #include <numeric>
+#include <deque>
 
 #define assertm(exp, msg) assert(((void)msg, exp))
 
@@ -33,7 +34,6 @@ struct GlobalSimInfo {
     double  networkScaling_synStrength{};
     int     networkScaling_extern{}; // 0: default (=1)
     long    N{};
-
 } ;
 
 struct ParameterFileEntry {
@@ -63,6 +63,7 @@ struct SynapseExt {
     //Methods
     SynapseExt()=default;
     SynapseExt(double distToSoma, double lastSpike, double weight);
+    //virtual int getPosition()//Requires to change dsitToSoma to an int everywhere. lasSpike probably should too
     virtual std::valarray<double> getIndividualSynapticProfile() const;
 };
 
@@ -70,10 +71,10 @@ struct SynapseExtBranched : SynapseExt {
     int branchId{}; //This has to be discrete
     int branchPositionId{}; //This has to be discrete
     int distanceFromNode{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
-    int uniqueId{};
+    //int uniqueTreeId{}; Useful only in the indexing of the triangular matrix if implemented
     //Methods
     SynapseExtBranched()=default;
-    SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchPositionId, int branchId);
+    SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     virtual std::valarray<double> getIndividualSynapticProfile() const override;
 };
 
@@ -109,13 +110,14 @@ struct Branch{
     const int synapticGap{};
     const int branchLength{};
 
-    std::vector<int> openSynapsesSlots{};//We will pop_back() from here the position of the synapse being setup. Will push_back() in setup, so no default size
+    std::deque<int> openSynapsesSlots{};//We will pop_back() from here the position of the synapse being setup. Will push_back() in setup, so no default size
     //The idea is to .pop_front() ids that have been ordered inside here
     //For the actual checks
     std::vector<bool> spikedSyn{};//Here, with the size of the branch discrete positions, we will store the bool indicating if the preneuron fired in the timestep
     //Because of how the kernelized version of plasticity works, I will  use the branch ID and relative position ID from the SynapseExtBranched, so the next two vectors are unnecessary
     //std::vector<int> relativeBranchSynapseIDs{}; // Here we store the local/HCS or global/DendriteobjectID of our synapses. Non-occupied will be -1. What do I actually use this for?
-    //std::vector<int> uniqueSynapsePositionIDs{};// Unique ID for the poisition in the dendritic tree. Probably going to be for allocation only
+    //std::vector<int> uniqueSynapsePositionIDs{};// REMEMBER TO PUT IN CONSTRUCTOR Unique ID for the poisition in the dendritic tree. Probably going to be for allocation only
+    //Maybe more vectors will be needed. Not in use commented out. 
     Branch()=default;
     Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
 };

@@ -4,6 +4,9 @@
 #include "Morphology.hpp"
 #include <string>
 #include <numeric>
+#include <algorithm>
+#include <deque>
+#include <iterator>
 
 class HeteroCurrentSynapse;
 class Morphology;
@@ -27,9 +30,10 @@ protected:
 
 //Branched specific
     int branchings{1};
+    /* These are functionall present in derived classes
     bool orderedSynAllocation{false};// If not properly loaded from LP, exception
     bool randomSynAllocation{false};
-
+    */
 
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
     //initialize with the pointer, push_back() the pointer
@@ -65,12 +69,14 @@ public:
     double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
     virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse) override =0; //Use the reference to call getBranchTarget
     //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes) and here I need access to the subregion of the incoming synapse
-    virtual int allocateBranch()=0;
+    virtual int allocateBranch()=0;//The selected branch allocation is simple. Subregion will be implemented in the future
     virtual int randomBranchAllocation();
+    virtual int orderedBranchAllocation();
+    //setBranchAllocation is implicit in the function (or has to be) allocate NewSynapse
     //virtual int orderedGuidedBranchAllocation(const char subregionID);
     virtual void RandomSynapseAllocation(std::shared_ptr<Branch> branch);
     virtual void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
-    virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
+    //virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
     //
     virtual bool isBranchedBool() override {return true;}
     int generateBranchId(){return branchIdGenerator++;}

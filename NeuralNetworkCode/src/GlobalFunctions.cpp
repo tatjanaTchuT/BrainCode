@@ -18,7 +18,6 @@
 #include "GlobalFunctions.hpp"
 
 
-using namespace std;
 
 void multiply_vector (std::vector<unsigned long> &vector, unsigned long value)
 {
@@ -234,7 +233,7 @@ std::valarray<double> SynapseExt::getIndividualSynapticProfile() const {
     ret[3] = this->lastSpike;
     return ret;
 };
-SynapseExtBranched::SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchPositionId, int branchId) :SynapseExt(static_cast<double>(distanceFromNode), lastSpike, weight), distanceFromNode{ distanceFromNode }, branchPositionId{ branchPositionId }, branchId{ branchId }
+SynapseExtBranched::SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchId,int branchPositionId) :SynapseExt(static_cast<double>(distanceFromNode), lastSpike, weight), distanceFromNode{ distanceFromNode }, branchId{ branchId }, branchPositionId {branchPositionId}
 {}
 std::valarray<double> SynapseExtBranched::getIndividualSynapticProfile() const {
     std::valarray<double> ret(3);
@@ -244,7 +243,7 @@ std::valarray<double> SynapseExtBranched::getIndividualSynapticProfile() const {
     return ret;
 };
 
-Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):spikedSyn(static_cast<size_t>(branchLength/gap)), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,branchSynapseIDs(static_cast<size_t>(branchLength/gap), -1)
+Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):spikedSyn(static_cast<size_t>(branchLength/gap), false), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,branchSynapseIDs(static_cast<size_t>(branchLength/gap), -1)
 {
     //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchLength/gap));
 }

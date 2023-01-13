@@ -87,8 +87,7 @@ double BranchedMorphology::generateSynapticWeight(){
     double weight{};
     std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
             if (distributeWeights) {
-                std::random_device rd;
-                std::default_random_engine generator(rd()); // rd() provides a random seed
+                std::default_random_engine& generator = this->info->globalGenerator;
                 weight = distribution(generator);
             } else {
                 weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
@@ -99,20 +98,55 @@ double BranchedMorphology::generateSynapticWeight(){
 
 int BranchedMorphology::randomBranchAllocation()
 {
-        return 0;
+        std::default_random_engine& generator = this->info->globalGenerator;
+        //For now, the distribution will be uniform
+        std::uniform_real_distribution<int> branchdsitribution(0,static_cast<int>(branches.size())+1);
+        int branchID{branchdsitribution(generator)};
+        return branchID;
+}
+
+int BranchedMorphology::orderedBranchAllocation()
+{
+    for (auto& branch:branches){
+        if (branch->openSynapsesSlots.size()==0){
+            continue;
+        }
+        return branch->branchId;
+    }
 }
 
 void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)
 {
+    std::default_random_engine& generator = this->info->globalGenerator;
+        for (auto& branch:branches){
+            std::vector<int> possibleSlots(branch->spikedSyn.size());
+            std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
+            //Now we have our vector from 0 to maxSlots to pull random numbers from
+            std::sample(possibleSlots.begin(), possibleSlots.end(),std::back_inserter(branch->openSynapsesSlots),branch->spikedSyn.size(),this->info->globalGenerator);
+        //Then I will have to pop_front() in allocateNewSynapse
+        }
 }
 
 void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
+    for (auto& branch:branches){
+        std::deque<int> possibleSlots(branch->spikedSyn.size());
+        std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
+        //Now we have our vector from 0 to maxSlots to pull random numbers from
+        copy(possibleSlots.begin(), possibleSlots.end(), back_inserter(branch->openSynapsesSlots));
+    }
+    return;
 }
 
-void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
+/*void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
-}
+        for (auto& branch:branches){
+        std::deque<int> possibleSlots(branch->spikedSyn.size());
+        std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
+        copy(possibleSlots.begin(), possibleSlots.end(), back_inserter(branch->openSynapsesSlots));
+        }
+        //For now it is the same as ordered, the possibility of alternating synapses will probably be more useful with multiple synapses pre-post neuron.
+}*/
 
 std::valarray<double> BranchedMorphology::getIndividualSynapticProfile(unsigned long synapseId) const {
     /*
