@@ -65,7 +65,7 @@ public:
 
     virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
 
-    virtual std::string getType() = 0;
+    virtual const std::string const getType() = 0;
 
     virtual void advect();
     virtual void recordPostSpike();
@@ -84,7 +84,7 @@ public:
     void printThetasAndWeights();
 
     //Qualifying methods
-    virtual bool isBranchedBool() {return false;}
+    virtual bool const isBranchedBool() {return false;}
 
 };
 

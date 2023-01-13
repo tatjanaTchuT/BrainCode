@@ -46,7 +46,7 @@ public:
 
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;//defined
     virtual void LoadParameters(std::vector<std::string> *input) override; //defined
-    virtual std::string getType() = 0;
+    virtual const std::string const getType() = 0;
 
     
 
@@ -55,8 +55,8 @@ public:
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override; //defined in the SynapseExt structs
     virtual std::valarray<double> getOverallSynapticProfile() const;//defined
     virtual void advect()=0;
-//This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
-//Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
+    //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
+    //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 
     //Branched specific methods
     //There is also a need for a wrapper called at the end of LP
@@ -78,11 +78,10 @@ public:
     virtual void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
     //virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
     //
-    virtual bool isBranchedBool() override {return true;}
+    virtual bool const isBranchedBool() override {return true;}
     int generateBranchId(){return branchIdGenerator++;}
 
 };
-
 
 
 #endif

@@ -25,7 +25,7 @@ class HeteroNeuronPop: public NeuronPop {
 
 protected:
     std::vector<std::unique_ptr<Morphology>> morphology{};
-    bool isBranched{false};
+    bool isBranched{false}; //PARAMETERLOADING with Set isBranchedTrue
 
 public:
     explicit HeteroNeuronPop(GlobalSimInfo * info, int id);

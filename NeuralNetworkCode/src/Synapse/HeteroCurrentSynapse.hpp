@@ -20,7 +20,7 @@ protected:
 
     std::vector<std::shared_ptr<SynapseExt>> synapseData{};
     //Branching member variables 
-    BranchTargeting targetSection{};
+    BranchTargeting targetSection{};//This has necessity of PARAMETERLOADING
 
     void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
     void advect_spikers (std::vector<double>& currents, long spiker) override;

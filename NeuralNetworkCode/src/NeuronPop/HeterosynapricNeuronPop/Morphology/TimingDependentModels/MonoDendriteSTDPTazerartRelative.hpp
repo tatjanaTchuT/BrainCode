@@ -32,7 +32,7 @@ protected:
 public:
     explicit MonoDendriteSTDPTazerartRelative(GlobalSimInfo* info);
     ~MonoDendriteSTDPTazerartRelative() override = default;
-    std::string getType() override;
+    virtual const std::string const getType() override;
 
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;

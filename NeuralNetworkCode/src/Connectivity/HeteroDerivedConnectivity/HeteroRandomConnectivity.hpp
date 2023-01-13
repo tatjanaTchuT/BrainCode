@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <utility>
-//Do not include synpase related hpps, it creates an include loop
+//Do not include synapse related hpps, it creates an include loop
 #include "../../Connectivity/RandomConnectivity.hpp"
 #include "../../Connectivity/HeteroDerivedConnectivity/HeteroConnectivity.hpp"
 
