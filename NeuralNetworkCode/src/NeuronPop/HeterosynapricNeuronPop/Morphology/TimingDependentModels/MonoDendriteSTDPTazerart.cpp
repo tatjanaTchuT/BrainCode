@@ -142,7 +142,7 @@ double MonoDendriteSTDPTazerart::aLTD(double theta) const {
     return - (base_ltd - decr_ltd * (1 - exp(-this->beta * theta)));
 }
 
-std::string MonoDendriteSTDPTazerart::getType() {
+const std::string MonoDendriteSTDPTazerart::getType() {
     return str_MonoDendriteSTDPTazerart;
 }
 

@@ -46,7 +46,7 @@ public:
 
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;//defined
     virtual void LoadParameters(std::vector<std::string> *input) override; //defined
-    virtual const std::string const getType() = 0;
+    virtual const std::string getType() = 0;
 
     
 

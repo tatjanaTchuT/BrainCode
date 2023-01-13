@@ -95,7 +95,7 @@ double MonoDendriteSTDPTazerartRelative::aLTD(double theta) const {
     return -exp(-this->beta * theta);
 }
 
-std::string MonoDendriteSTDPTazerartRelative::getType() {
+const std::string MonoDendriteSTDPTazerartRelative::getType() {
     return str_MonoDendriteSTDPTazerartRelative;
 }
 

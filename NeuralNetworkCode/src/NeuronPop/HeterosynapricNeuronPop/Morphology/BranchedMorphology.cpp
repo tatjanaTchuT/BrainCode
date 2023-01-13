@@ -100,7 +100,7 @@ int BranchedMorphology::randomBranchAllocation()
 {
         std::default_random_engine& generator = this->info->globalGenerator;
         //For now, the distribution will be uniform
-        std::uniform_real_distribution<int> branchdsitribution(0,static_cast<int>(branches.size())+1);
+        std::uniform_int_distribution<int> branchdsitribution(0,static_cast<int>(branches.size())+1);
         int branchID{branchdsitribution(generator)};
         return branchID;
 }
@@ -175,7 +175,7 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     ret[2] = this->totalPreSpikes;
     return ret;
 }
-void BranchedMorphology::setUpBranchings (int remainingBranchingEvents, std::vector<int> anteriorBranches=std::vector<int>()){ 
+void BranchedMorphology::setUpBranchings (int remainingBranchingEvents, std::vector<int> anteriorBranches){ 
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
     //First call is done with an empty int vector

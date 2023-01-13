@@ -97,7 +97,7 @@ double MonoDendriteSTDPBiWindow::aLTD(double theta) const {
     return - (base_ltd - decr_ltd * (1 - exp(-this->beta * theta)));
 }
 
-std::string MonoDendriteSTDPBiWindow::getType() {
+const std::string MonoDendriteSTDPBiWindow::getType() {
     return str_MonoDendriteSTDPBiWindow;
 }
 
