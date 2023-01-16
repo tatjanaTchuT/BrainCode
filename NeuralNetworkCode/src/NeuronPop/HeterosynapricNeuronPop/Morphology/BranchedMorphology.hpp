@@ -16,15 +16,12 @@ protected:
 //MonoDendriteSTDP moved
     unsigned long synapseIdGenerator{0}; // variable used to allocate new synapses. type is legacy compatible
     int branchIdGenerator{0}; //Same but in branches. Should be 1 or 0?
-
     bool distributeWeights{false};
-    
     std::vector<bool> integratePostSpike;//
     std::vector<bool> integratePreSpike;//These two are created in allocateNewSynapse
     bool postSpiked{false};
 
     //Weight normalization vars
-
     int synapticGap{};
     int branchLength{};
 
@@ -34,21 +31,16 @@ protected:
     bool orderedSynAllocation{false};// If not properly loaded from LP, exception
     bool randomSynAllocation{false};
     */
-
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
     //initialize with the pointer, push_back() the pointer
 public:
     explicit BranchedMorphology(GlobalSimInfo * info);
     virtual ~BranchedMorphology() = default;
 
-
     //Methods derived from the MonoDendriteSTDP and Morphology classes
-
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;//defined
     virtual void LoadParameters(std::vector<std::string> *input) override; //defined
     virtual const std::string getType() = 0;
-
-    
 
     virtual void recordPostSpike();// defined
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //defined
@@ -60,6 +52,7 @@ public:
 
     //Branched specific methods
     //There is also a need for a wrapper called at the end of LP
+    void setUpMorphology();
     virtual void setUpSynapseSlots(std::shared_ptr<Branch> branch) = 0; //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
     //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
     //The overriding function calls functions of BMorpho. 

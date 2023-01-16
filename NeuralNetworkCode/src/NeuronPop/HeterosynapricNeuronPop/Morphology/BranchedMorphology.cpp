@@ -52,10 +52,16 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             branchingsInitialized=true;
         }
     }
-
+    //Improve exception handling
     assertm(dendriteInitialized, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
+
+    setUpMorphology();
+}
+
+void BranchedMorphology::setUpMorphology()
+{
     setUpBranchings(this->branchings);
     for (auto branch : this->branches){
         setUpSynapseSlots(branch);
@@ -175,7 +181,9 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     ret[2] = this->totalPreSpikes;
     return ret;
 }
-void BranchedMorphology::setUpBranchings (int remainingBranchingEvents, std::vector<int> anteriorBranches){ 
+
+void BranchedMorphology::setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
+{
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
     //First call is done with an empty int vector
