@@ -1,5 +1,3 @@
-#include <iostream>
-#include <string>
 #include "Morphology.hpp"
 
 Morphology::Morphology(GlobalSimInfo *info): info(info), lastPostSpikeTime(-200), weightsSum(0), totalPostSpikes(0), totalPreSpikes(0), weightNormalization(NOPNormalization) {
@@ -80,7 +78,7 @@ void Morphology::recordPostSpike() {
 
 void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     //Is there supposed to be a different Inhibitory function?
-    this->synapseData.at(synSpikerId)->lastSpike = static_cast<double> (this->info->time_step) * this->info->dt;
+    this->synapseData.at(synSpikerId)->setLastSpike(static_cast<double> (this->info->time_step) * this->info->dt);
     this->spikedSynapsesId.push_back(synSpikerId);
     this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
     this->totalPreSpikes++;
@@ -99,7 +97,7 @@ unsigned long Morphology::getSynapseCount() const {
 }
 
 double Morphology::getWeight(unsigned long synapseId) const {
-    return this->synapseData.at(synapseId)->weight;
+    return this->synapseData.at(synapseId)->getWeight();
 }
 
 void Morphology::reset() {
@@ -118,7 +116,7 @@ void Morphology::normalizeWeights() {
 
 void Morphology::hardNormalize() {
     for (auto& syn: this->synapseData) {
-        syn->weight = std::max(minWeight, std::min(maxWeight, syn->weight));
+        syn->setWeight(std::max(minWeight, std::min(maxWeight, syn->getWeight())));
     }
 }
 
@@ -127,20 +125,20 @@ void Morphology::softMaxNormalize() {
 
     maxWeights = std::numeric_limits<double>::min();
     for (auto& syn : this->synapseData) {
-        maxWeights = std::max(maxWeights, syn->weight);
+        maxWeights = std::max(maxWeights, syn->getWeight());
     }
 
     sumWeights = 0;
     for (auto& syn : this->synapseData) {
-        sumWeights += std::exp(syn->weight - maxWeights);
+        sumWeights += std::exp(syn->getWeight() - maxWeights);
     }
 }
 
 void Morphology::timeDecay() {
     const double& expdt {this->expdt};
     if (this->decayWeights) {
-        for (const std::shared_ptr<SynapseExt>& syn: this->synapseData) {
-            syn->weight *= expdt;
+        for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
+            syn->setWeight(syn->getWeight() * expdt);
         }
     }
 }
@@ -188,13 +186,13 @@ void Morphology::triggerStatOut(std::string dirPath) {
 void Morphology::printThetasAndWeights() {
     std::cout << "weights: " << std::endl;
     for (auto& syn: this->synapseData) {
-        std::cout << syn->weight << ", ";
+        std::cout << syn->getWeight() << ", ";
     }
     std::cout << std::endl;
 
     std::cout << "thetas: " << std::endl;
     for (auto& syn: this->synapseData) {
-        std::cout << syn->theta << ", ";
+        std::cout << syn->getTheta() << ", ";
     }
     std::cout << std::endl;
 }

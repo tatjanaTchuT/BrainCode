@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include "../GlobalFunctions.hpp"
+#include "./HeterosynapricNeuronPop/Morphology/SynapseSpine.hpp"
 
 class HeteroCurrentSynapse;
 
@@ -84,7 +85,7 @@ public:
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
+    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
 };
 
 

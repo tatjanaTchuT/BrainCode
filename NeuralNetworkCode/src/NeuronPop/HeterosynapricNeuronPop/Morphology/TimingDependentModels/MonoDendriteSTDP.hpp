@@ -59,8 +59,8 @@ protected:
     virtual double aLTP(double theta) const = 0;
     virtual double aLTD(double theta) const = 0;
 
-    virtual double getDistanceEffects(const SynapseExt* synA, const SynapseExt* synB) const = 0;
-    virtual double getTimingEffects(const SynapseExt* synA, const SynapseExt* synB) const = 0;
+    virtual double getDistanceEffects(const SynapseSpine* synA, const SynapseSpine* synB) const = 0;
+    virtual double getTimingEffects(const SynapseSpine* synA, const SynapseSpine* synB) const = 0;
 
 public:
     explicit MonoDendriteSTDP(GlobalSimInfo* info);
@@ -73,7 +73,7 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse) override;
+    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(HeteroCurrentSynapse& synapse) override;
     
     std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
     std::valarray<double> getOverallSynapticProfile() const override;

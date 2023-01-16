@@ -45,11 +45,11 @@ void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {
 }
 
 void MonoDendriteSTDPBiWindow::updateLTP(unsigned long synId) {
-    SynapseExt* syn = this->synapseData[synId].get();
+    SynapseSpine* syn = this->synapseData[synId].get();
 //    this->weightsSum -= this->synapseData[synId]->weight;
-    double time = this->lastPostSpikeTime - syn->lastSpike;
-    double change = this->preFactorLTP * this->aLTP(syn->theta) * this->gLTP(this->lastPostSpikeTime - syn->lastSpike);
-    this->synapseData[synId]->weight += change;
+    double time = this->lastPostSpikeTime - syn->getLastSpike();
+    double change = this->preFactorLTP * this->aLTP(syn->getTheta()) * this->gLTP(this->lastPostSpikeTime - syn->getLastSpike());
+    this->synapseData[synId]->addToWeight(change);
 
     this->weight_changes.emplace_back(synId, change);
 
@@ -63,12 +63,12 @@ void MonoDendriteSTDPBiWindow::updateLTP(unsigned long synId) {
 }
 
 void MonoDendriteSTDPBiWindow::updateLTD(unsigned long synId) {
-    SynapseExt* syn = this->synapseData[synId].get();
+    SynapseSpine* syn = this->synapseData[synId].get();
 //    this->weightsSum -= this->synapseData[synId]->weight;
 
 //    double time = this->lastPostSpikeTime - syn->lastSpike;
-    double change  = this->preFactorLTD * this->aLTD(syn->theta) * this->gLTD(this->lastPostSpikeTime - syn->lastSpike);
-    this->synapseData[synId]->weight += change;
+    double change  = this->preFactorLTD * this->aLTD(syn->getTheta()) * this->gLTD(this->lastPostSpikeTime - syn->getLastSpike());
+    this->synapseData[synId]->addToWeight(change);
 
     this->weight_changes.emplace_back(synId, change);
 
@@ -101,19 +101,19 @@ const std::string MonoDendriteSTDPBiWindow::getType() {
     return str_MonoDendriteSTDPBiWindow;
 }
 
-double MonoDendriteSTDPBiWindow::getTimingEffects(const SynapseExt* synA, const SynapseExt* synB) const {
+double MonoDendriteSTDPBiWindow::getTimingEffects(const SynapseSpine* synA, const SynapseSpine* synB) const {
     if (synA == synB) {
         return 0.0;
     }
-    if (synA->lastSpike < 0 || synB->lastSpike < 0) {
+    if (synA->getLastSpike() < 0 || synB->getLastSpike() < 0) {
         return 0.0;
     }
-    return exp(-std::abs(synA->lastSpike - synB->lastSpike) / this->tauDelay);
+    return exp(-std::abs(synA->getLastSpike() - synB->getLastSpike()) / this->tauDelay);
 }
 
-double MonoDendriteSTDPBiWindow::getDistanceEffects(const SynapseExt* synA, const SynapseExt* synB) const {
+double MonoDendriteSTDPBiWindow::getDistanceEffects(const SynapseSpine* synA, const SynapseSpine* synB) const {
     if (synA == synB) {
         return 0;
     }
-    return exp(-std::abs(synA->distToSoma - synB->distToSoma) / this->lambdaDist);
+    return exp(-std::abs(synA->getDistToSoma() - synB->getDistToSoma()) / this->lambdaDist);
 }

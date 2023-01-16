@@ -43,9 +43,9 @@ void MonoDendriteSTDP::advect() {
     // update for pre-post effects for all synapses
     if (this->postSpiked){
         for (const auto& syn: this->synapseData) {
-            if (syn->lastSpike > 0 && this->integratePreSpike.at(syn->idInMorpho)) {
-                this->updateLTP(syn->idInMorpho);
-                this->integratePreSpike.at(syn->idInMorpho) = false;
+            if (syn->getLastSpike() > 0 && this->integratePreSpike.at(syn->getIdInMorpho())) {
+                this->updateLTP(syn->getIdInMorpho());
+                this->integratePreSpike.at(syn->getIdInMorpho()) = false;
             }
         }
         this->postSpiked=false;
@@ -55,8 +55,8 @@ void MonoDendriteSTDP::advect() {
 }
 
 void MonoDendriteSTDP::timeDecay() {
-    for (const std::shared_ptr<SynapseExt>& syn: this->synapseData) {
-        syn->theta *= exp(-this->info->dt/this->tauTheta);
+    for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
+        syn->setTheta(syn->getTheta() * exp(-this->info->dt/this->tauTheta));
     }
 }
 
@@ -209,14 +209,14 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     this->synapseIdGenerator = 0;
 }
 
-std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& synapse) {
+std::shared_ptr<SynapseSpine> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 
-    std::shared_ptr<SynapseExt> newSynapse;
+    std::shared_ptr<SynapseSpine> newSynapse;
 
     if (this->nextPos < this->dendriticLength) {
-        newSynapse = std::make_shared<SynapseExt>();
+        newSynapse = std::make_shared<SynapseSpine>();
 
 //        if (this->allocateDistal) {
 //            newSynapse->distToSoma = this->posHi;
@@ -228,25 +228,25 @@ std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSy
 //
 //        this->allocateDistal = !this->allocateDistal;
 
-        newSynapse->distToSoma = this->nextPos;
-        newSynapse->lastSpike = -200.0; // large negative value indicates no spikes of synapse during simulation
-        newSynapse->theta = 0;
+        newSynapse->setDistToSoma( this->nextPos);
+        newSynapse->setLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulation
+        newSynapse->setTheta(0);
         if (stepWeights) {
             if (synapseData.size() > weightStepBoundary.at(currWightStepId)) {
                 currWightStepId++;
             }
-            newSynapse->weight = weightStepValue.at(currWightStepId);
+            newSynapse->setWeight(weightStepValue.at(currWightStepId));
         } else {
             if (distributeWeights) {
                 std::random_device rd;
                 std::default_random_engine generator(rd()); // rd() provides a random seed
-                newSynapse->weight = distribution(generator);
+                newSynapse->setWeight(distribution(generator));
             } else {
-                newSynapse->weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
+                newSynapse->setWeight(this->initialWeights); // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
             }
         }
-        this->weightsSum += newSynapse->weight;
-        newSynapse->idInMorpho = this->synapseIdGenerator++;
+        this->weightsSum += newSynapse->getWeight();
+        newSynapse->setIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
 
@@ -262,14 +262,14 @@ std::shared_ptr<SynapseExt> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSy
 }
 
 void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long neighborId) {
-    SynapseExt* spiker = this->synapseData.at(spikerId).get();
-    SynapseExt* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpine* spiker = this->synapseData.at(spikerId).get();
+    SynapseSpine* neighbor = this->synapseData.at(neighborId).get();
 
     double hEffects = getDistanceEffects(spiker, neighbor);
     hEffects *= getTimingEffects(spiker, neighbor);
-    hEffects *= spiker->weight * neighbor->weight;
-    spiker->theta += hEffects;
-    neighbor->theta += hEffects;
+    hEffects *= spiker->getWeight() * neighbor->getWeight();
+    spiker->addToTheta(hEffects);
+    neighbor->addToTheta(hEffects);
 
 //    if (hEffects != 0.0) {//OPTIMIZATION. Problems with heap allocation of the data (causes an OOM error). Needs to be moved to a file if necessary
 ////        pseudoCoop( spikerId, neighborId);
@@ -282,11 +282,11 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
 }
 
 void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId) {
-    SynapseExt* spiker = this->synapseData.at(synId).get();
-    SynapseExt* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpine* spiker = this->synapseData.at(synId).get();
+    SynapseSpine* neighbor = this->synapseData.at(neighborId).get();
     std::cout << "id 1: " << synId << ", id 2: " << neighborId << std::endl;
-    std::cout << "dist: " << abs(spiker->distToSoma - neighbor->distToSoma) << std::endl;
-    std::cout << "time: " << abs(spiker->lastSpike - neighbor->lastSpike) << std::endl;
+    std::cout << "dist: " << abs(spiker->getDistToSoma() - neighbor->getDistToSoma()) << std::endl;
+    std::cout << "time: " << abs(spiker->getLastSpike() - neighbor->getLastSpike()) << std::endl;
     std::cout << "dist effect: " << getDistanceEffects(spiker, neighbor);
     std::cout << "time effect: " << getTimingEffects(spiker, neighbor);
 
@@ -318,7 +318,7 @@ std::valarray<double> MonoDendriteSTDP::getOverallSynapticProfile() const {
 //    }
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
-                                       [] (const double acc, const std::shared_ptr<SynapseExt>& syn) { return acc + syn->weight; });
+                                       [] (const double acc, const std::shared_ptr<SynapseSpine>& syn) { return acc + syn->getWeight(); });
 
     ret[0] = weightSum / this->synapseData.size();
     ret[1] = this->totalPostSpikes;

@@ -18,7 +18,7 @@ struct BranchTargeting{
 class HeteroCurrentSynapse : public Synapse {
 protected:
 
-    std::vector<std::shared_ptr<SynapseExt>> synapseData{};
+    std::vector<std::shared_ptr<SynapseSpine>> synapseData{};
     //Branching member variables 
     BranchTargeting targetSection{};//This has necessity of PARAMETERLOADING
 
@@ -46,10 +46,10 @@ public:
 
     // Testing. Commented out because they are not used in the code
     //friend const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, const unsigned long&);
-    //friend std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse&);
+    //friend std::vector<SynapseSpine> getSynapseData(HeteroCurrentSynapse&);
 };
 
 //const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, unsigned long);
-//std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse&); 
+//std::vector<SynapseSpine> getSynapseData(HeteroCurrentSynapse&); 
 
 #endif

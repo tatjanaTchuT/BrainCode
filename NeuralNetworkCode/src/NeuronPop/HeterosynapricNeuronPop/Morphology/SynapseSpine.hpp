@@ -1,3 +1,5 @@
+#ifndef _SYNAPSE_SPINE_CLASS_HEADER
+#define _SYNAPSE_SPINE_CLASS_HEADER
 #include <valarray>
 
 
@@ -30,22 +32,22 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     SynapseSpine(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //Methods
     //Bool checks
-    bool IsBranchedBool() {return IsBranched;}
+    bool IsBranchedBool() const  {return IsBranched;}
     bool SetBranchedTrue() {IsBranched=true;}
     //Getters
     //Legacy
-    unsigned long getPreNeuronId(){return preNeuronId;};
-    unsigned long getPostNeuronId(){return postNeuronId;};
-    double getDistToSoma(){return distToSoma;};
-    double getLastSpike(){return lastSpike;};
-    double getTheta(){return theta;};
-    double getWeight(){return weight;};
-    unsigned long getIdInMorpho(){return idInMorpho;};
-    unsigned long getIdInHCS(){return idInHCS;};
+    unsigned long getPreNeuronId() const {return preNeuronId;};
+    unsigned long getPostNeuronId() const {return postNeuronId;};
+    double getDistToSoma() const {return distToSoma;};
+    double getLastSpike() const {return lastSpike;};
+    double getTheta() const {return theta;};
+    double getWeight() const {return weight;};
+    unsigned long getIdInMorpho() const {return idInMorpho;};
+    unsigned long getIdInHCS() const {return idInHCS;};
     //Branched variables
-    int getBranchId(){return branchId;};
-    int getBranchPositionId(){return branchPositionId;};
-    int getDistanceFromNode(){return distanceFromNode;};
+    int getBranchId() const {return branchId;};
+    int getBranchPositionId() const {return branchPositionId;};
+    int getDistanceFromNode() const {return distanceFromNode;};
 
     //Setters
     //Legacy
@@ -62,9 +64,14 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     void setBranchPositionId(int positionId){branchPositionId=positionId;};
     void setDistanceFromNode(int distance){distanceFromNode=distance;};
 
+    //Misc
+    void addToTheta(double hEffect){theta+=hEffect;}
+    void addToWeight(double change){weight+=change;}
 
     //Recorder functions
     std::valarray<double> getIndividualSynapticProfileLegacy() const;
     std::valarray<double> getIndividualSynapticProfileBranched() const;
     virtual std::valarray<double> getIndividualSynapticProfile() const;
 };
+
+#endif

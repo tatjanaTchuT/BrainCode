@@ -168,7 +168,7 @@ std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
     std::valarray<double> ret(3);
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
-                                       [] (const double acc, const std::shared_ptr<SynapseExt>& syn) { return acc + syn->weight; });
+                                       [] (const double acc, const std::shared_ptr<SynapseSpine>& syn) { return acc + syn->getWeight(); });
 
     ret[0] = weightSum / this->synapseData.size();
     ret[1] = this->totalPostSpikes;

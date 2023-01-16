@@ -221,27 +221,6 @@ void RemoveHashInString(std::vector<std::string> *string){
     *string = new_string;
     return;
 }
-//Struct methods
-SynapseExt::SynapseExt(double distToSoma, double lastSpike, double weight): distToSoma{distToSoma}, lastSpike{lastSpike}, weight{weight}
-{}
-
-std::valarray<double> SynapseExt::getIndividualSynapticProfile() const {
-    std::valarray<double> ret(4);
-    ret[0] = this->distToSoma;
-    ret[1] = this->theta;
-    ret[2] = this->weight;
-    ret[3] = this->lastSpike;
-    return ret;
-};
-SynapseExtBranched::SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchId,int branchPositionId) :SynapseExt(static_cast<double>(distanceFromNode), lastSpike, weight), distanceFromNode{ distanceFromNode }, branchId{ branchId }, branchPositionId {branchPositionId}
-{}
-std::valarray<double> SynapseExtBranched::getIndividualSynapticProfile() const {
-    std::valarray<double> ret(3);
-    ret[0] = this->distanceFromNode;
-    ret[1] = this->weight;
-    ret[2] = this->lastSpike;
-    return ret;
-};
 
 Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):spikedSyn(static_cast<size_t>(branchLength/gap), false), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,branchSynapseIDs(static_cast<size_t>(branchLength/gap), -1)
 {

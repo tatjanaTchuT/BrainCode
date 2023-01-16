@@ -184,10 +184,10 @@ void NeuronPop::SaveParameters(std::ofstream * stream){
 
 //From here on 
 
-std::shared_ptr<SynapseExt> NeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse&syn) {
+std::shared_ptr<SynapseSpine> NeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse&syn) {
         assertm(false, "Non-hetero NeuronPop called allocateNewSynapse");
         throw; 
-        std::shared_ptr<SynapseExt> empty{};
+        std::shared_ptr<SynapseSpine> empty{};
         return empty;
 }
 

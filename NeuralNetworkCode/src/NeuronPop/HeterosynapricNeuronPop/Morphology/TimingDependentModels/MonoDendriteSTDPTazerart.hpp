@@ -19,8 +19,8 @@ protected:
     double aLTP(double theta) const override;
     double aLTD(double theta) const override;
 
-    double getDistanceEffects(const SynapseExt* synA, const SynapseExt* synB) const override;
-    double getTimingEffects(const SynapseExt* synA, const SynapseExt* synB) const override;
+    double getDistanceEffects(const SynapseSpine* synA, const SynapseSpine* synB) const override;
+    double getTimingEffects(const SynapseSpine* synA, const SynapseSpine* synB) const override;
 
     double muLTP{};
     double sigmaLTP{};

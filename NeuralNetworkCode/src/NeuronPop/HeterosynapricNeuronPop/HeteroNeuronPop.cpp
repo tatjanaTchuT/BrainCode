@@ -53,11 +53,13 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
     assertm(morphologyFound == true, "Please specify morphology of the neurons to be used.");
 }
 
-std::shared_ptr<SynapseExt> HeteroNeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& synapse) {
+std::shared_ptr<SynapseSpine> HeteroNeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse &synapse)
+{
     return this->morphology[neuronId]->allocateNewSynapse(synapse);
 }
 
-void HeteroNeuronPop::recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) {
+void HeteroNeuronPop::recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId)
+{
     this->morphology[neuronId]->recordExcitatoryPreSpike(synapseId);
 }
 

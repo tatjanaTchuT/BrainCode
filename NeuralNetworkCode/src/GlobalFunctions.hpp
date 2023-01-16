@@ -51,32 +51,7 @@ struct IterableParameterFileEntry : ParameterFileEntry {
     }
 };
 
-struct SynapseExt {
-    unsigned long preNeuronId{};
-    unsigned long postNeuronId{};
-    double distToSoma{}; //Use this to build a generalizable distance matrix.
-    double lastSpike{};
-    double theta{}; // heterosynaptic cooperativity
-    double weight{}; //Is this even compatible with negative weights? Yes, as the negative weight comes from J, weight is just a factor to multiply
-    unsigned long idInMorpho{}; // id for synapse within its population
-    unsigned long idInHCS{}; // id for synapse within its a synapse collection
-    //Methods
-    SynapseExt()=default;
-    SynapseExt(double distToSoma, double lastSpike, double weight);
-    //virtual int getPosition()//Requires to change dsitToSoma to an int everywhere. lasSpike probably should too
-    virtual std::valarray<double> getIndividualSynapticProfile() const;
-};
 
-struct SynapseExtBranched : SynapseExt {
-    int branchId{}; //This has to be discrete
-    int branchPositionId{}; //This has to be discrete
-    int distanceFromNode{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
-    //int uniqueTreeId{}; Useful only in the indexing of the triangular matrix if implemented
-    //Methods
-    SynapseExtBranched()=default;
-    SynapseExtBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
-    virtual std::valarray<double> getIndividualSynapticProfile() const override;
-};
 
 struct RecorderOpenStreams {
     std::ofstream heatmapFileStream;

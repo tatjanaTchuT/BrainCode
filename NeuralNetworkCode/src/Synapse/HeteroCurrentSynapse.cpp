@@ -59,13 +59,13 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         neuronSynapsePair = targetList.at(i);
         postNeuronId = neuronSynapsePair.first;
         HCSSynapseId = neuronSynapsePair.second;
-        morphoSynapseId = this->synapseData[HCSSynapseId]->idInMorpho;
+        morphoSynapseId = this->synapseData[HCSSynapseId]->getIdInMorpho();
 
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
         if (couplingStrength < 0.0) {//To avoid interaction with inhibitory synapses
             current =  couplingStrength;
         } else {
-            current = couplingStrength * this->synapseData[HCSSynapseId]->weight;
+            current = couplingStrength * this->synapseData[HCSSynapseId]->getWeight();
             this->neuronsPost->recordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
         }
         currents[i] += current;
@@ -93,16 +93,16 @@ unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigne
     }
     else
     { int branchId{targetBranch};}*/
-    std::shared_ptr<SynapseExt> synapseExtPtr = this->neuronsPost->allocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
+    std::shared_ptr<SynapseSpine> SynapseSpinePtr = this->neuronsPost->allocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
 
-    if (synapseExtPtr != nullptr) {
-        synapseExtPtr->preNeuronId = preId;
-        synapseExtPtr->postNeuronId = postId;
-        synapseExtPtr->idInHCS = static_cast<unsigned long>(this->synapseData.size());
+    if (SynapseSpinePtr != nullptr) {
+        SynapseSpinePtr->setPreNeuronId(preId);
+        SynapseSpinePtr->setPostNeuronId(postId);
+        SynapseSpinePtr->setIdInHCS(static_cast<unsigned long>(this->synapseData.size()));
 
-        this->synapseData.push_back(synapseExtPtr);
+        this->synapseData.push_back(SynapseSpinePtr);
 
-        return synapseExtPtr->idInHCS;
+        return SynapseSpinePtr->getIdInHCS();
     }
 
     throw noAllocatableSynapseException();
@@ -132,8 +132,8 @@ const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(H
     return syn.geometry->getSynapticTargets(preId);
 }
 
-std::vector<SynapseExt> getSynapseData(HeteroCurrentSynapse& syn) {
-    std::vector<SynapseExt> synData;
+std::vector<SynapseSpine> getSynapseData(HeteroCurrentSynapse& syn) {
+    std::vector<SynapseSpine> synData;
     for (const auto& item: syn.synapseData) {
         synData.push_back(*item);
     }

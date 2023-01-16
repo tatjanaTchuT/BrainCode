@@ -52,7 +52,7 @@ public:
 
     virtual void recordPostSpike();// defined
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //defined
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override; //defined in the SynapseExt structs
+    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override; //defined in the SynapseSpine class
     virtual std::valarray<double> getOverallSynapticProfile() const;//defined
     virtual void advect()=0;
     //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
@@ -67,8 +67,8 @@ public:
 
     //Allocation shennanigans
     double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse) override =0; //Use the reference to call getBranchTarget
-    //VERY IMPORTANT that the SynapseExt pointer poiints to a SynapseExtBranched (in derived classes) and here I need access to the subregion of the incoming synapse
+    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(HeteroCurrentSynapse& synapse) override =0; //Use the reference to call getBranchTarget
+
     virtual int allocateBranch()=0;//The selected branch allocation is simple. Subregion will be implemented in the future
     virtual int randomBranchAllocation();
     virtual int orderedBranchAllocation();

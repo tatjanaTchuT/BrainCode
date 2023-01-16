@@ -1,13 +1,15 @@
 #ifndef NEURALNETWORK_MORPHOLOGY_H
 #define NEURALNETWORK_MORPHOLOGY_H
 
+#include "./SynapseSpine.hpp"
+#include "./../../../GlobalFunctions.hpp"
 #include <vector>
 #include <cmath>
 #include <limits>
 #include <valarray>
 #include <algorithm>
-
-#include "../../../GlobalFunctions.hpp"
+#include <iostream>
+#include <string>
 
 class HeteroCurrentSynapse;
 
@@ -33,7 +35,7 @@ protected:
 
     GlobalSimInfo * info;
 
-    std::vector<std::shared_ptr<SynapseExt>> synapseData;
+    std::vector<std::shared_ptr<SynapseSpine>> synapseData;
     double weightsSum {};
     double totalPostSpikes {};
     double totalPreSpikes {};
@@ -63,7 +65,7 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual std::shared_ptr<SynapseExt> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
+    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
 
     virtual const std::string getType() = 0;
 
