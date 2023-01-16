@@ -134,8 +134,8 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
         std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
         //Now we have our vector from 0 to maxSlots to pull random numbers from
         copy(possibleSlots.begin(), possibleSlots.end(), back_inserter(branch->openSynapsesSlots));
+        //Then I will have to pop_front() in allocateNewSynapse
     }
-    return;
 }
 
 /*void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
