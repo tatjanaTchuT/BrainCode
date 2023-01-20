@@ -77,11 +77,42 @@ void HeteroCurrentSynapse::advect_finalize(std::vector<std::vector<double>> * wa
 }
 
 void HeteroCurrentSynapse::LoadParameters(std::vector<std::string> *input){
+    std::string              name;
+    std::vector<std::string> values;
+
+    for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
+        SplitString(&(*it),&name,&values);
+        if(name.find("target_branch") != std::string::npos){
+            if (values.at(0).find("Random")){
+                this->synapseTargeting.randomTargetBranch=true;
+            } else if (values.at(0).find("None") != std::string::npos){
+                //Here nothing is done to handle the case where we do not used branched
+                //Checking if the input is an integer would take more time than checking if None is in a single string with 5 characters max (I think).
+            } else {
+            this->synapseTargeting.targetBranch = std::stoi(values.at(1));
+            this->synapseTargeting.setTargetBranch=true;
+            //Missing exception management for when the input is not an integer.
+            }
+        } else if(name.find("subregion") != std::string::npos){
+            this->synapseTargeting.subRegion = values[0][0];
+        }
+    }
+
     Synapse::LoadParameters(input);
 }
 
 void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id_str){
-    // TODO: What extra parameters need to be saved
+
+    *stream << id_str << "target_branch\t\t\t\t\t";
+    if (this->synapseTargeting.randomTargetBranch){
+        *stream<<"Random\n"; //Missing comments on what this is supposed to do
+    } else if(this->synapseTargeting.setTargetBranch){
+        *stream<<std::to_string(this->synapseTargeting.targetBranch)<<"\n";//Missing comments on what this is supposed to do
+    } else {
+        *stream<<"None\n";//Missing comments on what this is supposed to do
+    }
+    *stream << id_str << "subregion\t\t\t\t\t\t" << (this->synapseTargeting.subRegion) << "\n";
+    //Missing comments on what this is supposed to do and check if char goes out properly
     Synapse::SaveParameters(stream,id_str);
 }
 

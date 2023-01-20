@@ -12,7 +12,6 @@ struct BranchTargeting{
     bool setTargetBranch{false};
     bool randomTargetBranch{false};
     char subRegion{'0'};
-
 };
 
 class HeteroCurrentSynapse : public Synapse {
