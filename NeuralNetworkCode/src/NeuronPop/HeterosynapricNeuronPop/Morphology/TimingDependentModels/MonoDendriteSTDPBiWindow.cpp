@@ -47,11 +47,11 @@ void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {
 void MonoDendriteSTDPBiWindow::updateLTP(unsigned long synId) {
     SynapseSpine* syn = this->synapseData[synId].get();
 //    this->weightsSum -= this->synapseData[synId]->weight;
-    double time = this->lastPostSpikeTime - syn->getLastSpike();
+//    double time = this->lastPostSpikeTime - syn->getLastSpike();
     double change = this->preFactorLTP * this->aLTP(syn->getTheta()) * this->gLTP(this->lastPostSpikeTime - syn->getLastSpike());
     this->synapseData[synId]->addToWeight(change);
 
-    this->weight_changes.emplace_back(synId, change);
+//    this->weight_changes.emplace_back(synId, change);
 
 //    if (synId == 0) {
 //        std::cout << change << std::endl;
@@ -70,7 +70,7 @@ void MonoDendriteSTDPBiWindow::updateLTD(unsigned long synId) {
     double change  = this->preFactorLTD * this->aLTD(syn->getTheta()) * this->gLTD(this->lastPostSpikeTime - syn->getLastSpike());
     this->synapseData[synId]->addToWeight(change);
 
-    this->weight_changes.emplace_back(synId, change);
+//    this->weight_changes.emplace_back(synId, change);
 
 
 //    std::cout << change << std::endl;
@@ -89,11 +89,11 @@ double MonoDendriteSTDPBiWindow::gLTD(double deltaT) const {
     return exp(deltaT / this->tauLTD);
 }
 
-double MonoDendriteSTDPBiWindow::aLTP(double theta) const {
+double MonoDendriteSTDPBiWindow::aLTP(double theta) const {//coop
     return base_ltp + incr_ltp * (1 - exp(-this->alpha * theta));
 }
 
-double MonoDendriteSTDPBiWindow::aLTD(double theta) const {
+double MonoDendriteSTDPBiWindow::aLTD(double theta) const {//coop
     return - (base_ltd - decr_ltd * (1 - exp(-this->beta * theta)));
 }
 

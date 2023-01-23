@@ -17,7 +17,8 @@ class HeteroPoissonNeuronPop: public HeteroNeuronPop {
 
 protected:
     double r_target; // target firing rate
-
+    double lambda{};
+    bool inputDependant{true};
     int seed;
     std::default_random_engine generator;
     std::uniform_real_distribution<double> uni_distribution;

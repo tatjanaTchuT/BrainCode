@@ -11,9 +11,10 @@ void PoissonNeuronPop::advect(std::vector<double> * synaptic_dV)
     for(unsigned long i = 0 ; i < noNeurons; i++)
     {
         // set target rate
-        r_target = synaptic_dV->at(i);
-        //double lambda 	= r_target*dt;
-        double lambda 	= r_target;
+        if (inputDependant){
+            r_target = synaptic_dV->at(i);
+            lambda = r_target;
+        }
 
         //check spiking
         if (uni_distribution(generator) < lambda)
@@ -26,15 +27,19 @@ void PoissonNeuronPop::LoadParameters(std::vector<std::string> *input){
 
     NeuronPop::LoadParameters(input);
 
-    /*std::string              name,token;
+    std::string              name,token;
     std::vector<std::string> values;
 
     for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
         SplitString(&(*it),&name,&values);
-        if(name.find("r_target") != std::string::npos){
+        if(name.find("r_target") != std::string::npos) {
             r_target = std::stoi(values.at(0));
+            inputDependant = false;
+            lambda 	= r_target*this->info->dt;
+        } else if (name.find("seedPoisson") != std::string::npos) {
+            seed = std::stoi(values.at(0));
         }
-    }*/
+    }
 
     if(info->globalSeed != -1){
         std::uniform_int_distribution<int> distribution(0,INT32_MAX);
@@ -58,7 +63,9 @@ void PoissonNeuronPop::SaveParameters(std::ofstream * stream){
 	if (info->globalSeed == -1) {
 		*stream << id + "_seedPoisson                 " << std::to_string(seed) << "\n";
 	}
-    //*stream <<  id + "_r_target                   " << std::to_string(r_target)  << "\n";
+    if (!inputDependant){
+        *stream <<  id + "_r_target                   " << std::to_string(r_target)  << "\n";
+    }
     *stream <<  "#\t\tPoisson neuron: produces Poisson spiking with rate r_target (defined under stimulus) \n";
 
 }
