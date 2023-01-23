@@ -8,6 +8,7 @@ MonoDendriteSTDPBiWindow::MonoDendriteSTDPBiWindow(GlobalSimInfo *info) : MonoDe
 }
 
 void MonoDendriteSTDPBiWindow::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    //COMPLETE SP HERE
     MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
 }
 
