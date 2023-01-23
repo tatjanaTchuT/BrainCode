@@ -50,6 +50,10 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
         }
     }
 
+    if (this->morphology.at(0)->isBranchedBool()){
+        this->SetBranchedTrue();
+    }
+
     assertm(morphologyFound == true, "Please specify morphology of the neurons to be used.");
 }
 
