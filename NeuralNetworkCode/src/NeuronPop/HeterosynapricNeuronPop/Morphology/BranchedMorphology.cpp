@@ -48,6 +48,7 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             this->branchings = std::stoi(values.at(0));
             if (this->branchings>28){
                 //EXCEPTION, integer overflow.
+                throw;
             }
             branchingsInitialized=true;
         }
@@ -119,6 +120,11 @@ int BranchedMorphology::orderedBranchAllocation()
         }
         return branch->branchId;
     }
+}
+
+int BranchedMorphology::setBranchAllocation(HeteroCurrentSynapse &synapse)
+{
+    return synapse.getBranchTarget().targetBranch;
 }
 
 void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)

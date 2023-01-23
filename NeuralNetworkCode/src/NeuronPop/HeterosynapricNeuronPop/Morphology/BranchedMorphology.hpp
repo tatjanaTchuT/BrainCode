@@ -1,14 +1,13 @@
 #ifndef _BRANCHED_MORPHOLOGY_HEADER_
 #define _BRANCHED_MORPHOLOGY_HEADER_
 
-#include "Morphology.hpp"
+#include "HeteroCurrentSynapse.hpp"
 #include <string>
 #include <numeric>
 #include <algorithm>
 #include <deque>
 #include <iterator>
 
-class HeteroCurrentSynapse;
 class Morphology;
 class BranchedMorphology : public Morphology {
 
@@ -65,7 +64,8 @@ public:
     virtual int allocateBranch()=0;//The selected branch allocation is simple. Subregion will be implemented in the future
     virtual int randomBranchAllocation();
     virtual int orderedBranchAllocation();
-    //setBranchAllocation is implicit in the function (or has to be) allocate NewSynapse
+    virtual int setBranchAllocation(HeteroCurrentSynapse& synapse);
+    //setBranchAllocation() is implicit in the function (or has to be) allocate NewSynapse
     //virtual int orderedGuidedBranchAllocation(const char subregionID);
     virtual void RandomSynapseAllocation(std::shared_ptr<Branch> branch);
     virtual void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
