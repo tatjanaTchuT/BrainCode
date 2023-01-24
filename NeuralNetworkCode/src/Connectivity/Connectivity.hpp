@@ -16,7 +16,7 @@ class Connectivity{
 protected:
 
     GlobalSimInfo               * info;
-    bool                        fixSeed;
+    bool                        fixSeed{false};
     int                         seed{};
     std::default_random_engine  generator;
 
@@ -25,8 +25,8 @@ protected:
     std::vector<int>            * D_distribution; // the list with delays D that are associated with the synapses betweeen the source and its target neurons
     std::vector<double>         * J_distribution; // list of synaptic weights J
 //	bool						HasPot;
-	bool						HasDdistribution;
-    bool                        HasJDistribution;
+	bool						HasDdistribution{false};
+    bool                        HasJDistribution{false};
 public:
 
     Connectivity(Synapse *syn,GlobalSimInfo  * info);

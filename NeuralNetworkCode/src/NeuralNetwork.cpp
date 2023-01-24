@@ -423,7 +423,7 @@ int NeuralNetwork::Simulate()
     this->synapses->ConnectNeurons();
     this->recorder->WriteConnectivity();
     this->recorder->WriteDistributionD();
-    this->recorder->WriteDistributionJ(); //Heteroclasses do not use Js at all!!!!
+    this->recorder->WriteDistributionJ();
 
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
 	auto start = std::chrono::high_resolution_clock::now();

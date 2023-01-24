@@ -33,7 +33,7 @@ void PoissonNeuronPop::LoadParameters(std::vector<std::string> *input){
     for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
         SplitString(&(*it),&name,&values);
         if(name.find("r_target") != std::string::npos) {
-            r_target = std::stoi(values.at(0));
+            r_target = std::stod(values.at(0));
             inputDependant = false;
             lambda 	= r_target*this->info->dt;
         } else if (name.find("seedPoisson") != std::string::npos) {

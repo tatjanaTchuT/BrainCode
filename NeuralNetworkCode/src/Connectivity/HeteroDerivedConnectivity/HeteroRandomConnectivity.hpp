@@ -10,7 +10,6 @@
 
 class HeteroRandomConnectivity: public RandomConnectivity, public HeteroConnectivity {
 
-
 public:
     HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* info);
     ~HeteroRandomConnectivity() override = default;

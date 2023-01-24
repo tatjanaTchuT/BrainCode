@@ -90,22 +90,22 @@ void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronP
     *stream << "\t"<<"#Or tauDelay, decay constant of heterosynaptic effects over inter-synapse spike timing difference.\n";
 
     *stream << neuronPreId<<"_pre_factor_LTP\t\t\t"<<std::to_string(this->preFactorLTP);
-    *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTP. If set to zero, LTP will be zero.\n";
+    *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTP. If set to zero, LTP will be zero. \"A\" equivalent\n";
 
     *stream << neuronPreId<<"_pre_factor_LTD\t\t\t"<<std::to_string(this->preFactorLTD);
-    *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTD. If set to zero, LTD will be zero.\n";
+    *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTD. If set to zero, LTD will be zero. \"A\" equivalent\n";
 
     *stream << neuronPreId<<"_incr_ltp\t\t\t\t"<<std::to_string(this->incr_ltp);
-    *stream << "\t"<<"#Missing info\n";
+    *stream << "\t"<<"#Max possible increase in LTP due to cooperativity . \"I\" equivalent\n";
 
     *stream << neuronPreId<<"_decr_ltd\t\t\t\t"<<std::to_string(this->decr_ltd);
-    *stream << "\t"<<"#Missing info\n";
+    *stream << "\t"<<"#Max possible LTD due to cooperativity.  \"D\" equivalent\n";
 
     *stream << neuronPreId<<"_base_ltp\t\t\t\t"<<std::to_string(this->base_ltp);
-    *stream << "\t"<<"#Default increase in weight per LTP check.\n";
+    *stream << "\t"<<"#Default increase in weight per LTP check.  \"B\" equivalent\n";
 
     *stream << neuronPreId<<"_base_ltd\t\t\t\t"<<std::to_string(this->base_ltd);
-    *stream << "\t"<<"#Default decrease of weight per LTD check.\n";
+    *stream << "\t"<<"#Default decrease of weight per LTD check. \"B\" equivalent\n";
 }
 
 void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {

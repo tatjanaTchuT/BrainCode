@@ -8,8 +8,9 @@ HeteroCurrentSynapse::HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* pr
     this->geometry = new HeteroRandomConnectivity(this, this->info);
 
     // assert that HeteroSynapses are allowed only when the post NeuronPop supports heterosynaptic behavior
-    assertm(postNeurons->HasHeterosynapticPlasticity(),
-            "Attempting to create a Heterosynapse but the PostNeurons are not Heterosynaptic.");
+    if (!postNeurons->HasHeterosynapticPlasticity()){
+        throw;
+    }
 }
 
 void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {

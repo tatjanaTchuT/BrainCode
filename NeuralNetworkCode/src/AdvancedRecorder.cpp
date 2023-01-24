@@ -150,7 +150,7 @@ void AdvancedRecorder::SetNoTrackNeuronPotentials(std::vector<std::string> *valu
         notrackNeuronPotentials[i] = std::stoul(values->at(i));
         if((notrackNeuronPotentials[i] >= neurons->GetNeuronsPop(i)) ||
             (notrackNeuronPotentials[i] < 0)){
-            std::cout << "Potentials: Tracking all neurons of population" << i << "\n";
+            std::cout << "Potentials: Tracking all neurons of population " << i << "\n";
             notrackNeuronPotentials[i] = neurons->GetNeuronsPop(i);
         }
     }
@@ -161,7 +161,7 @@ void AdvancedRecorder::SetNoCurrentContribution(std::vector<std::string> *values
 	for (unsigned int i = 0;i < min_(P, values->size());i++) {
 		CurrentContributions[i] = min_(neurons->GetNeuronsPop(i), std::stoul(values->at(i)));
 		if (CurrentContributions[i] < 0) {
-			std::cout << "Current contribution of all neurons in population" << i << "\n";
+			std::cout << "Current contribution of all neurons in population " << i << "\n";
 			CurrentContributions[i] = neurons->GetNeuronsPop(i);
 		}
 	}
@@ -201,7 +201,7 @@ void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
 
 void AdvancedRecorder::SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values) {
     int P = static_cast<int>(neurons->GetTotalPopulations());
-    RemoveHashInString(values);
+    RemoveCommentInString(values);
     for(int i = 0; i < min_(P,static_cast<int>(values->size()));i++){//min() only makes sense if you remove the hash
         noTrackHeteroSynapsePerTrackedNeuron[i] = std::stoi(values->at(i));
     }
@@ -504,6 +504,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0)
         return;
 
+    std::cout << "The file has been properly created!!!!\n";
     unsigned long P = neurons->GetTotalPopulations();
     this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 

@@ -42,10 +42,11 @@ void HeteroRandomConnectivity::ConnectNeurons() {
                 break;
             }
         }
-        if((target)%output_Interval == 0) {
+        if ((target % output_Interval) == 0) {
             std::cout << 100 * target / numPostNeurons << "%-";
         }
     }
+    std::cout << "100%\n";
 
 }
 

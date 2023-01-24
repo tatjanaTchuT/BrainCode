@@ -116,8 +116,8 @@ public:
     std::string GetPairCorrelationsFilename() {return this->directoryPath + title + "_BinCorrelations" + std::to_string(info->time_step) + ".dat";}
 	std::string GetCurrentCrontributionFilename() { return this->directoryPath + title + "_CurrentContribution.dat"; }
     std::string GetHeteroSynapseStateFilename() { return this->directoryPath + title + "_HeteroSynapses.dat"; }
-    std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHeteroSynapses.dat"; }
-    std::string GetHeteroBranchedSynapseStateFilename() { return this->directoryPath + title + "_BranchedHeteroSynapses.dat"; }
+    std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHS.dat"; }
+    std::string GetHeteroBranchedSynapseStateFilename() { return this->directoryPath + title + "_BranchedHS.dat"; }
     std::string GetType()   {return str_advancedRecorder;}
 
     std::vector<std::vector<std::vector<double>>> savecurrents;

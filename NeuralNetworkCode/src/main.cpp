@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
 
     //Check for consistency Iterate 1: do all entries have the same lenght?
     if(iterate1_entries.empty()){
-        iterate1_entries.push_back(IterableParameterFileEntry("iterate1", "placeholder", {""}));
+        iterate1_entries.push_back(IterableParameterFileEntry("iterate_1", "placeholder", {""}));
     } else {
         try {
             checkConsistencyOfIterationParameters(iterate1_entries);
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 
     //Check for consistency Iterate 2: do all entries have the same lenght?
     if(iterate2_entries.empty()){
-        iterate2_entries.push_back(IterableParameterFileEntry("iterate2", "placeholder", {""}));
+        iterate2_entries.push_back(IterableParameterFileEntry("iterate_2", "placeholder", {""}));
     } else {
         try {
             checkConsistencyOfIterationParameters(iterate2_entries);
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
                 if((parEntry.name.compare("Title") == 0)){
                     if(iterate1_entries[0].name.compare("placeholder") != 0)
                         parEntry.values[0].append("_i1_"+std::to_string(i1+1)+"_"+iterate1_entries[0].name+"_"+iterate1_entries[0].values[i1]);
-                    if(iterate1_entries[0].name.compare("placeholder") != 0)
+                    if(iterate2_entries[0].name.compare("placeholder") != 0)
                         parEntry.values[0].append("_i2_"+std::to_string(i2+1)+"_"+iterate2_entries[0].name+"_"+iterate2_entries[0].values[i2]);
                 }
             }

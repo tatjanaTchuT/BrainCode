@@ -31,7 +31,7 @@ void SynapseSample::LoadParameters(std::vector<std::string> *input){
 
     for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
         SplitString(&(*it),&name,&values);
-        if(name.find("type") != std::string::npos){
+        if ((name.find("type") != std::string::npos)&&((name.find("connectivity") == std::string::npos))) {
             SaveSynapseType(name,values.at(0),input);
         }
         if(name.find("generalSynapseSeed") != std::string::npos){
@@ -95,7 +95,7 @@ void SynapseSample::SaveSynapseType(std::string name,std::string type,std::vecto
     for(i = 0; i < P; i++){
         for(j = 0; j < P; j++){
             synNo = std::to_string(i) + "_" + std::to_string(j);
-            if(name.find(synNo) != std::string::npos){
+            if(name.find(synNo) != std::string::npos && (name.find("connectivity")== std::string::npos)) {
                 found = true;
                 break;
             }

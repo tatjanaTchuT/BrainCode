@@ -176,7 +176,7 @@ struct noAllocatableSynapseException : std::exception {
     }
 };
 
-void RemoveHashInString(std::vector<std::string>* string);
+void RemoveCommentInString(std::vector<std::string>* string);
 //int INTMAX = 2;
 //double PI = 3.14159265359;
 

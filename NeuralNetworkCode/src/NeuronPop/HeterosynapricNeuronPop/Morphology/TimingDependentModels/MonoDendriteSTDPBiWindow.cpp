@@ -100,7 +100,7 @@ double MonoDendriteSTDPBiWindow::gLTD(double deltaT) const {
 }
 
 double MonoDendriteSTDPBiWindow::aLTP(double theta) const {//coop
-    return base_ltp + incr_ltp * (1 - exp(-this->alpha * theta));
+    return base_ltp +  incr_ltp * (1 - exp(-this->alpha * theta));
 }
 
 double MonoDendriteSTDPBiWindow::aLTD(double theta) const {//coop

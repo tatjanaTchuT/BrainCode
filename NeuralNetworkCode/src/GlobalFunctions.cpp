@@ -208,7 +208,7 @@ void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFi
     }
 }
 
-void RemoveHashInString(std::vector<std::string> *string){
+void RemoveCommentInString(std::vector<std::string> *string){
     std::vector<std::string> new_string{};
     std::string element;
     for (int i{ 0 }; i < string->size(); i++) {
