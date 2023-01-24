@@ -8,8 +8,17 @@ MonoDendriteSTDPBiWindow::MonoDendriteSTDPBiWindow(GlobalSimInfo *info) : MonoDe
 }
 
 void MonoDendriteSTDPBiWindow::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
-    //COMPLETE SP HERE
     MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
+
+    *stream << neuronPreId<<"_tau_LTP\t\t\t"<<std::to_string(this->tauLTP);
+    *stream << "\t"<<"#Decay constant of the temporal effect in LTP.\n";
+    *stream << neuronPreId<<"_tau_LTD\t\t\t"<<std::to_string(this->tauLTD);
+    *stream << "\t"<<"#Decay constant of the temporal effect in LTD.\n";
+    *stream << neuronPreId<<"_alpha_LTP\t\t\t"<<std::to_string(this->tauLTD);
+    *stream << "\t"<<"#Cooperativity decay for LTP.\n";
+    *stream << neuronPreId<<"_beta_LTD\t\t\t"<<std::to_string(this->tauLTD);
+    *stream << "\t"<<"#Cooperativity decay for LTD.\n";
+
 }
 
 void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {
