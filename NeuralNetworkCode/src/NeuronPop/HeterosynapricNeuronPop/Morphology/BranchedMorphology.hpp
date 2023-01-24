@@ -1,7 +1,7 @@
 #ifndef _BRANCHED_MORPHOLOGY_HEADER_
 #define _BRANCHED_MORPHOLOGY_HEADER_
 
-#include "HeteroCurrentSynapse.hpp"
+#include "../../../Synapse/HeteroCurrentSynapse.hpp"
 #include <string>
 #include <numeric>
 #include <algorithm>
