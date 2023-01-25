@@ -89,7 +89,6 @@ Saifcompile/.vs/Saifcompile/v17/.suo
 *.recipe
 *.iobj
 *.ipdb
-*.txt
 *.dat
 *.sarif
 *.xml
