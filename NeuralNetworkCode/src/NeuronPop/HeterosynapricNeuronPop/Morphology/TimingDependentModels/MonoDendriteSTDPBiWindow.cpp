@@ -10,13 +10,13 @@ MonoDendriteSTDPBiWindow::MonoDendriteSTDPBiWindow(GlobalSimInfo *info) : MonoDe
 void MonoDendriteSTDPBiWindow::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
     MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
 
-    *stream << neuronPreId<<"_tau_LTP\t\t\t"<<std::to_string(this->tauLTP);
+    *stream << neuronPreId<<"_tau_ltp\t\t\t"<<std::to_string(this->tauLTP);
     *stream << "\t"<<"#Decay constant of the temporal effect in LTP.\n";
-    *stream << neuronPreId<<"_tau_LTD\t\t\t"<<std::to_string(this->tauLTD);
+    *stream << neuronPreId<<"_tau_ltd\t\t\t"<<std::to_string(this->tauLTD);
     *stream << "\t"<<"#Decay constant of the temporal effect in LTD.\n";
-    *stream << neuronPreId<<"_alpha_LTP\t\t\t"<<std::to_string(this->tauLTD);
+    *stream << neuronPreId<<"_alpha_ltp\t\t\t"<<std::to_string(this->alpha);
     *stream << "\t"<<"#Cooperativity decay for LTP.\n";
-    *stream << neuronPreId<<"_beta_LTD\t\t\t"<<std::to_string(this->tauLTD);
+    *stream << neuronPreId<<"_beta_ltd\t\t\t"<<std::to_string(this->beta);
     *stream << "\t"<<"#Cooperativity decay for LTD.\n";
 
 }
@@ -32,16 +32,16 @@ void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {
     for (auto & it : *input) {
         SplitString(&it, &name, &values);
 
-        if (name.find("tau_LTP") != std::string::npos) {
+        if (name.find("tau_ltp") != std::string::npos) {
             this->tauLTP = std::stod(values.at(0));
             tauLTPInitialized = true;
-        } else if (name.find("tau_LTD") != std::string::npos) {
+        } else if (name.find("tau_ltd") != std::string::npos) {
             this->tauLTD = std::stod(values.at(0));
             tauLTDInitialized = true;
-        }  else if (name.find("alpha_LTP") != std::string::npos) {
+        }  else if (name.find("alpha_ltp") != std::string::npos) {
             this->alpha = std::stod(values.at(0));
             alphaInitialized = true;
-        } else if (name.find("beta_LTD") != std::string::npos) {
+        } else if (name.find("beta_ltd") != std::string::npos) {
             this->beta = std::stod(values.at(0));
             betaInitialized = true;
         }
@@ -96,7 +96,7 @@ double MonoDendriteSTDPBiWindow::gLTP(double deltaT) const {
 
 double MonoDendriteSTDPBiWindow::gLTD(double deltaT) const {
     if (deltaT >= 0.0) return 0.0;
-    return exp(deltaT / this->tauLTD);
+    return -exp(deltaT / this->tauLTD);
 }
 
 double MonoDendriteSTDPBiWindow::aLTP(double theta) const {//coop
@@ -104,7 +104,7 @@ double MonoDendriteSTDPBiWindow::aLTP(double theta) const {//coop
 }
 
 double MonoDendriteSTDPBiWindow::aLTD(double theta) const {//coop
-    return - (base_ltd - decr_ltd * (1 - exp(-this->beta * theta)));
+    return (base_ltd - decr_ltd * (1 - exp(-this->beta * theta)));
 }
 
 const std::string MonoDendriteSTDPBiWindow::getType() {

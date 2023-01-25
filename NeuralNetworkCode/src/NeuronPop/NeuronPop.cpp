@@ -192,17 +192,17 @@ std::shared_ptr<SynapseSpine> NeuronPop::allocateNewSynapse(unsigned long neuron
 }
 
 void NeuronPop::recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId){
-    assertm(false, "Non-hetero NeuronPop called recordExcitatorySynapticSpike");
+    throw;
 }
 
 std::valarray<double> NeuronPop::getOverallSynapticProfile(unsigned long neuronId){
-    assertm(false, "Non-hetero NeuronPop called getOverallSynapticProfile");
+    throw;
     std::valarray<double> empty{};
     return empty;
 }
 
 std::valarray<double> NeuronPop::getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId){
-    assertm(false, "Non-hetero NeuronPop called getIndividualSynapticProfile");
+    throw;
     std::valarray<double> empty{};
     return empty;
 }

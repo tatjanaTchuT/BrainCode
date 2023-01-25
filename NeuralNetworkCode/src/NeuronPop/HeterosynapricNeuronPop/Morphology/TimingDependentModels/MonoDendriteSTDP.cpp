@@ -13,7 +13,7 @@ void MonoDendriteSTDP::advect() {
 
     Morphology::advect();
 
-    this->timeDecay();
+    this->thetaDecay();
 
     // update cooperativity between spiker and spiker pairs -> avoids double counting when combined with loop that follows
     for (unsigned long i = 0; i < this->spikedSynapsesId.size(); ++i) {
@@ -54,7 +54,7 @@ void MonoDendriteSTDP::advect() {
     this->reset();
 }
 
-void MonoDendriteSTDP::timeDecay() {
+void MonoDendriteSTDP::thetaDecay() {
     for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
         syn->setTheta(syn->getTheta() * exp(-this->info->dt/this->tauTheta));
     }
@@ -74,11 +74,11 @@ void MonoDendriteSTDP::recordExcitatoryPreSpike(unsigned long synSpikerId) {
 void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
     Morphology::SaveParameters(stream, neuronPreId);
 
-    *stream << neuronPreId<<"_dendritic_length\t\t\t"<<std::to_string(this->dendriticLength)<<" μm";
-    *stream << "\t"<<"#Length of the dendritic arm.\n";
+    *stream << neuronPreId<<"_dendritic_length\t\t\t"<<std::to_string(this->dendriticLength);
+    *stream << "\t"<<"#Length of the dendritic arm (μm).\n";
 
-    *stream << neuronPreId<<"_synaptic_gap\t\t\t\t"<<std::to_string(this->synapticGap)<<" μm";
-    *stream << "\t"<<"#Forced distance between synapses.\n";
+    *stream << neuronPreId<<"_synaptic_gap\t\t\t\t"<<std::to_string(this->synapticGap);
+    *stream << "\t"<<"#Forced distance between synapses (μm).\n";
 
     *stream << neuronPreId<<"_heterosynaptic_theta_decay\t"<<std::to_string(this->tauTheta);
     *stream << "\t"<<"#Or tauTheta, decay constant of heterosynaptic effects in spines.\n";
@@ -89,10 +89,10 @@ void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronP
     *stream << neuronPreId<<"_intersynapse_spike_timing_decay\t"<<std::to_string(this->tauDelay);
     *stream << "\t"<<"#Or tauDelay, decay constant of heterosynaptic effects over inter-synapse spike timing difference.\n";
 
-    *stream << neuronPreId<<"_pre_factor_LTP\t\t\t"<<std::to_string(this->preFactorLTP);
+    *stream << neuronPreId<<"_pre_factor_ltp\t\t\t"<<std::to_string(this->preFactorLTP);
     *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTP. If set to zero, LTP will be zero. \"A\" equivalent\n";
 
-    *stream << neuronPreId<<"_pre_factor_LTD\t\t\t"<<std::to_string(this->preFactorLTD);
+    *stream << neuronPreId<<"_pre_factor_ltd\t\t\t"<<std::to_string(this->preFactorLTD);
     *stream << "\t"<<"#Base factor that is multiplied by the spatio-temporal effects in LTD. If set to zero, LTD will be zero. \"A\" equivalent\n";
 
     *stream << neuronPreId<<"_incr_ltp\t\t\t\t"<<std::to_string(this->incr_ltp);

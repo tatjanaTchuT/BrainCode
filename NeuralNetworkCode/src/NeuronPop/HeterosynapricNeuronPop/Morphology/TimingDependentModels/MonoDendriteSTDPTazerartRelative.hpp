@@ -8,6 +8,7 @@
 #include "MonoDendriteSTDP.hpp"
 
 class MonoDendriteSTDPTazerartRelative: public MonoDendriteSTDP  {
+    //This class is missing a complete SP!!
 protected:
     void updateLTP(unsigned long synId) override;
     void updateLTD(unsigned long synId) override;

@@ -8,6 +8,7 @@ MonoDendriteSTDPTazerartRelative::MonoDendriteSTDPTazerartRelative(GlobalSimInfo
 }
 
 void MonoDendriteSTDPTazerartRelative::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
+    //Missing SP
     MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
 }
 
@@ -27,22 +28,22 @@ void MonoDendriteSTDPTazerartRelative::LoadParameters(std::vector<std::string> *
     for (auto & it : *input) {
         SplitString(&it, &name, &values);
 
-        if (name.find("mu_LTP") != std::string::npos) {
+        if (name.find("mu_ltp") != std::string::npos) {
             this->muLTP = std::stod(values.at(0));
             muLTPInitialized = true;
-        } else if (name.find("sigma_LTP") != std::string::npos) {
+        } else if (name.find("sigma_ltp") != std::string::npos) {
             this->sigmaLTP = std::stod(values.at(0));
             sigmaLTPInitialized = true;
-        } else if (name.find("alpha_LTP") != std::string::npos) {
+        } else if (name.find("alpha_ltp") != std::string::npos) {
             this->alpha = std::stod(values.at(0));
             alphaInitialized = true;
-        } else if (name.find("mu_LTD") != std::string::npos) {
+        } else if (name.find("mu_ltd") != std::string::npos) {
             this->muLTD = std::stod(values.at(0));
             muLTDInitialized = true;
-        } else if (name.find("sigma_LTD") != std::string::npos) {
+        } else if (name.find("sigma_ltd") != std::string::npos) {
             this->sigmaLTD = std::stod(values.at(0));
             sigmaLTDInitialized = true;
-        } else if (name.find("beta_LTD") != std::string::npos) {
+        } else if (name.find("beta_ltd") != std::string::npos) {
             this->beta = std::stod(values.at(0));
             betaInitialized = true;
         }

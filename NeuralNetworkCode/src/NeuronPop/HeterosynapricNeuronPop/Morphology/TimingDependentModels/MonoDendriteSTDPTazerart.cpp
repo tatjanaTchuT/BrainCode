@@ -10,22 +10,22 @@ MonoDendriteSTDPTazerart::MonoDendriteSTDPTazerart(GlobalSimInfo *info) : MonoDe
 void MonoDendriteSTDPTazerart::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
     MonoDendriteSTDP::SaveParameters(stream, neuronPreId);
     *stream <<"#Tazerart's exclusive here.\n";
-    *stream << neuronPreId<<"_mu_LTP\t\t\t\t\t"<<std::to_string(this->muLTP);
+    *stream << neuronPreId<<"_mu_ltp\t\t\t\t\t"<<std::to_string(this->muLTP);
     *stream << "\t"<<"#Time interval at which the LTP effect is maximized.\n";
 
-    *stream << neuronPreId<<"_sigma_LTP\t\t\t\t"<<std::to_string(this->sigmaLTP);
+    *stream << neuronPreId<<"_sigma_ltp\t\t\t\t"<<std::to_string(this->sigmaLTP);
     *stream << "\t"<<"#used in gLTP, spread of the effect distribution.\n";
 
-    *stream << neuronPreId<<"_alpha_LTP\t\t\t\t"<<std::to_string(this->alpha);
+    *stream << neuronPreId<<"_alpha_ltp\t\t\t\t"<<std::to_string(this->alpha);
     *stream << "\t"<<"#used in aLTP.\n";
 
-    *stream << neuronPreId<<"_mu_LTD\t\t\t\t\t"<<std::to_string(this->muLTD);
+    *stream << neuronPreId<<"_mu_ltd\t\t\t\t\t"<<std::to_string(this->muLTD);
     *stream << "\t"<<"#(negative) interval of time at which the ltd effect is maximized.\n";
 
-    *stream << neuronPreId<<"_sigma_LTD\t\t\t\t"<<std::to_string(this->sigmaLTD);
+    *stream << neuronPreId<<"_sigma_ltd\t\t\t\t"<<std::to_string(this->sigmaLTD);
     *stream << "\t"<<"#used in gLTD, spread of the effect distribution.\n";
 
-    *stream << neuronPreId<<"_beta_LTD\t\t\t\t"<<std::to_string(this->beta);
+    *stream << neuronPreId<<"_beta_ltd\t\t\t\t"<<std::to_string(this->beta);
     *stream << "\t"<<"#used in aLTD.\n";
 }
 
@@ -45,22 +45,22 @@ void MonoDendriteSTDPTazerart::LoadParameters(std::vector<std::string> *input) {
     for (auto & it : *input) {
         SplitString(&it, &name, &values);
 
-        if (name.find("mu_LTP") != std::string::npos) {
+        if (name.find("mu_ltp") != std::string::npos) {
             this->muLTP = std::stod(values.at(0));
             muLTPInitialized = true;
-        } else if (name.find("sigma_LTP") != std::string::npos) {
+        } else if (name.find("sigma_ltp") != std::string::npos) {
             this->sigmaLTP = std::stod(values.at(0));
             sigmaLTPInitialized = true;
-        } else if (name.find("alpha_LTP") != std::string::npos) {
+        } else if (name.find("alpha_ltp") != std::string::npos) {
             this->alpha = std::stod(values.at(0));
             alphaInitialized = true;
-        } else if (name.find("mu_LTD") != std::string::npos) {
+        } else if (name.find("mu_ltd") != std::string::npos) {
             this->muLTD = std::stod(values.at(0));
             muLTDInitialized = true;
-        } else if (name.find("sigma_LTD") != std::string::npos) {
+        } else if (name.find("sigma_ltd") != std::string::npos) {
             this->sigmaLTD = std::stod(values.at(0));
             sigmaLTDInitialized = true;
-        } else if (name.find("beta_LTD") != std::string::npos) {
+        } else if (name.find("beta_ltd") != std::string::npos) {
             this->beta = std::stod(values.at(0));
             betaInitialized = true;
         }

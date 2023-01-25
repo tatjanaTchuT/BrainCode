@@ -22,10 +22,7 @@ protected:
     std::uniform_real_distribution<double> uni_distribution;
 
 public:
-    PoissonNeuronPop(GlobalSimInfo * info,int id):NeuronPop(info,id){
-        //r_target = 0; seed = 2;
-        generator = std::default_random_engine(seed);
-        uni_distribution = std::uniform_real_distribution<double>(0.0,1.0);}
+    PoissonNeuronPop(GlobalSimInfo * info,int id);
     virtual ~PoissonNeuronPop(){};
 
     void advect(std::vector<double> * synaptic_dV);

@@ -38,7 +38,7 @@ protected:
     std::vector<bool> integratePreSpike{};
     bool postSpiked{};
 
-    double initialWeights{};
+    double initialWeights{1.0};
 
     double base_ltp{};
     double base_ltd{};
@@ -46,7 +46,7 @@ protected:
     double incr_ltp{};
     double decr_ltd{};
 
-    void timeDecay();
+    void thetaDecay();
     void updateCooperativity(unsigned long synId, unsigned long neighborId);
     void pseudoCoop(unsigned long synId, unsigned long neighborId);
 
