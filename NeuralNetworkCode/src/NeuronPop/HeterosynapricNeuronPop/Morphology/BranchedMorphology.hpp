@@ -53,6 +53,7 @@ public:
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
     virtual std::valarray<double> getOverallSynapticProfile() const;
     virtual void advect()=0;
+    void reset() override;
     //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
     //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 

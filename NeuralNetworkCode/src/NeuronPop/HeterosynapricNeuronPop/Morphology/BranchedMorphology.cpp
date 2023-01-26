@@ -16,6 +16,15 @@ void BranchedMorphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     this->branches.at(this->synapseData.at(synSpikerId)->getBranchId())->spikedSyn.at(this->synapseData.at(synSpikerId)->getBranchPositionId())=true;
 }
 
+void BranchedMorphology::reset()
+{
+    Morphology::reset();
+    for (std::shared_ptr<Branch> branch : branches){
+        std::fill(branch->spikedSyn.begin(), branch->spikedSyn.end(), false);
+    }
+    this->postSpiked=false;
+}
+
 void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     Morphology::LoadParameters(input);
 

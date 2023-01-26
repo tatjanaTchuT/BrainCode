@@ -53,7 +53,7 @@ protected:
     double weightDecayConstant {};
     double expdt {};
 
-    void reset();
+    virtual void reset();
     void normalizeWeights();
 
     virtual void timeDecay();
