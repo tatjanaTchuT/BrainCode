@@ -90,8 +90,8 @@ struct Branch{
     //For the actual checks
     std::vector<bool> spikedSyn{};//Here, with the size of the branch discrete positions, we will store the bool indicating if the preneuron fired in the timestep
     //Because of how the kernelized version of plasticity works, I will  use the branch ID and relative position ID from the SynapseExtBranched, so the next two vectors are unnecessary
-    //std::vector<int> relativeBranchSynapseIDs{}; // Here we store the local/HCS or global/DendriteobjectID of our synapses. Non-occupied will be -1. What do I actually use this for?
-    //std::vector<int> uniqueSynapsePositionIDs{};// REMEMBER TO PUT IN CONSTRUCTOR Unique ID for the poisition in the dendritic tree. Probably going to be for allocation only
+    std::vector<int> synapseSlotClosedIndex{}; // Here we store the used indexes in the vector, to check for stuff faster and only go to indexes
+    std::vector<int> morphoSynapseIDs{};// REMEMBER TO PUT IN CONSTRUCTOR Unique ID for the poisition in the dendritic tree. Probably going to be for allocation only
     //Maybe more vectors will be needed. Not in use commented out. 
     Branch()=default;
     Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);

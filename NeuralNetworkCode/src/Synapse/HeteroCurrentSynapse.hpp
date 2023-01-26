@@ -11,6 +11,7 @@ struct BranchTargeting{
     int targetBranch{};
     bool setTargetBranch{false};
     bool randomTargetBranch{false};
+    bool orderedTargetBranch{false};
     char subRegion{'0'};
 };
 
@@ -19,7 +20,7 @@ protected:
 
     std::vector<std::shared_ptr<SynapseSpine>> synapseData{};
     //Branching member variables 
-    BranchTargeting synapseTargeting{};//This has necessity of PARAMETERLOADING
+    BranchTargeting synapseTargeting{};
 
     void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
     void advect_spikers (std::vector<double>& currents, long spiker) override;
@@ -41,7 +42,7 @@ public:
 
     void advect(std::vector<double> *synaptic_dV) override;
 
-    const BranchTargeting& getBranchTarget(){return synapseTargeting;}// return by const reference for now
+    const BranchTargeting& getBranchTarget() const {return synapseTargeting;}// return by const reference for now
 
     // Testing. Commented out because they are not used in the code
     //friend const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, const unsigned long&);

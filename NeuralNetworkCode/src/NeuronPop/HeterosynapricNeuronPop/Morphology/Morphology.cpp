@@ -70,7 +70,6 @@ void Morphology::advect() {
 void Morphology::recordPostSpike() {
     this->lastPostSpikeTime = this->info->dt * static_cast<double> (this->info->time_step);
     this->totalPostSpikes++;
-
     // STDP Analysis
     //this->postSpikes.push_back(this->lastPostSpikeTime);
 }
