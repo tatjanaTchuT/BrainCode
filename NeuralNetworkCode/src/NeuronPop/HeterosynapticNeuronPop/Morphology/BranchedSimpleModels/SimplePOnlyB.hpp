@@ -4,6 +4,8 @@
 #include "../BranchedMorphology.hpp"
 #include <numeric>
 
+class BranchedMorphology;
+
 class SimplePlasticityOnlyBranch : public BranchedMorphology {
 
 protected:

@@ -1,19 +1,11 @@
-#ifndef HETEROCURRENTSYNAPSE
-#define HETEROCURRENTSYNAPSE
+#ifndef _HETEROCURRENTSYNAPSE_
+#define _HETEROCURRENTSYNAPSE_
 
 #include <cassert>
 
 #include "Synapse.hpp"
-#include "../NeuronPop/HeterosynapricNeuronPop/HeteroLIFNeuronPop.hpp"
+//#include "../NeuronPop/HeterosynapticNeuronPop/HeteroLIFNeuronPop.hpp"// And removing this include avoids a second include loop
 #include "../Connectivity/HeteroDerivedConnectivity/HeteroRandomConnectivity.hpp"
-
-struct BranchTargeting{
-    int targetBranch{};
-    bool setTargetBranch{false};
-    bool randomTargetBranch{false};
-    bool orderedTargetBranch{false};
-    char subRegion{'0'};
-};
 
 class HeteroCurrentSynapse : public Synapse {
 protected:

@@ -75,6 +75,14 @@ struct SubRegion{
     SubRegion(char regionID, std::vector<int> branchesInRegion);
 };
 
+struct BranchTargeting{
+    int targetBranch{};
+    bool setTargetBranch{false};
+    bool randomTargetBranch{false};
+    bool orderedTargetBranch{false};
+    char subRegion{'0'};
+};
+
 struct Branch{
     //ID
     const int branchId{};

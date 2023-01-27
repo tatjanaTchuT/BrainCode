@@ -1,5 +1,6 @@
 #include "SynapseSpine.hpp"
 
+
 SynapseSpine::SynapseSpine(double distToSoma, double lastSpike, double weight): distToSoma{distToSoma}, lastSpike{lastSpike}, weight{weight}
 {
 }
@@ -29,7 +30,7 @@ std::valarray<double> SynapseSpine::getIndividualSynapticProfileBranched() const
 
 std::valarray<double> SynapseSpine::getIndividualSynapticProfile() const
 {
-    if (IsBranched){
+    if (this->getBranchedBool()){
         return getIndividualSynapticProfileBranched();
     }
     else{

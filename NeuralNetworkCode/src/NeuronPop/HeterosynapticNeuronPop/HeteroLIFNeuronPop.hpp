@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include "../FundamentalNeuronPop/LIFNeuronPop.hpp"
-#include "HeteroNeuronPop.hpp"
+#include "./HeteroNeuronPop.hpp"
 #include "../../GlobalFunctions.hpp"
 
 
@@ -21,7 +21,7 @@ public:
     HeteroLIFNeuronPop(GlobalSimInfo * info, int id);
     ~HeteroLIFNeuronPop() override = default;
 
-    void advect(std::vector<double> * synaptic_dV) override;
+    void advect(std::vector<double>* synaptic_dV) override;
     std::string GetType() override;
     void SaveParameters(std::ofstream * stream) override;
     void LoadParameters(std::vector<std::string> *input) override;

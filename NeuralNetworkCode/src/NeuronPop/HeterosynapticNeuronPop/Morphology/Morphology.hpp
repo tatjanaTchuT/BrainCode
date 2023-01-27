@@ -1,8 +1,10 @@
 #ifndef NEURALNETWORK_MORPHOLOGY_H
 #define NEURALNETWORK_MORPHOLOGY_H
 
+
 #include "./SynapseSpine.hpp"
 #include "./../../../GlobalFunctions.hpp"
+#include "../../../Synapse/HeteroCurrentSynapse.hpp"
 #include <vector>
 #include <cmath>
 #include <limits>
@@ -11,7 +13,6 @@
 #include <iostream>
 #include <string>
 
-class HeteroCurrentSynapse;
 
 enum WeightNormalization {
     NOPNormalization, HardNormalization, SoftMaxNormalization

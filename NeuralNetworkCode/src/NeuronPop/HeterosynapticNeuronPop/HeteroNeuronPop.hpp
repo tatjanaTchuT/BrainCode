@@ -12,7 +12,6 @@
 #include <unordered_set>
 #include <algorithm>
 
-#include "Morphology/Morphology.hpp"
 #include "Morphology/TimingDependentModels/MonoDendriteSTDPTazerart.hpp"
 #include "Morphology/TimingDependentModels/MonoDendriteSTDPTazerartRelative.hpp"
 #include "Morphology/TimingDependentModels/MonoDendriteSTDPBiWindow.hpp"
@@ -22,7 +21,7 @@
 #include "./Morphology/SynapseSpine.hpp"
 
 class HeteroCurrentSynapse;
-
+class SynapseSpine;
 class HeteroNeuronPop: public NeuronPop {
 
 protected:

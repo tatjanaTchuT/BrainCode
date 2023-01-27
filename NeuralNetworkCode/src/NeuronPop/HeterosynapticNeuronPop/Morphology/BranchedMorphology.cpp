@@ -1,4 +1,4 @@
-#include "BranchedMorphology.hpp"
+#include "./BranchedMorphology.hpp"
 
 
 
@@ -95,7 +95,7 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
 void BranchedMorphology::setUpMorphology()
 {
     setUpBranchings(this->branchings);
-    for (auto branch : this->branches){
+    for (auto& branch : this->branches){
         setUpSynapseSlots(branch);
     }
 }
@@ -155,8 +155,8 @@ double BranchedMorphology::generateSynapticWeight(){
     double weight{};
     std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
             if (this->distributeWeights) {
-                std::default_random_engine& generator = generator;
-                weight = distribution(generator);
+                std::default_random_engine& generatorRef = this->generator;
+                weight = distribution(generatorRef);
             } else {
                 weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
             }
@@ -190,6 +190,7 @@ std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurre
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->getIdInMorpho());
 
+    newSynapse->setBranchedTrue();
     //Storage (other)
     this->synapseData.push_back(newSynapse);
 
@@ -203,7 +204,7 @@ std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurre
 int BranchedMorphology::allocateBranch(const HeteroCurrentSynapse &synapse)
 {
         const BranchTargeting& target= synapse.getBranchTarget();
-        if (target.setTargetBranch && !(target.setTargetBranch>this->branches.size())){
+        if (target.setTargetBranch && !(target.targetBranch>this->branches.size())){
             return target.targetBranch;
         } else if (target.randomTargetBranch){
             return randomBranchAllocation();
@@ -225,12 +226,15 @@ int BranchedMorphology::randomBranchAllocation()
 
 int BranchedMorphology::orderedBranchAllocation()
 {
+    int branchId{};
     for (auto& branch:branches){
         if (branch->openSynapsesSlots.size()==0){
             continue;
         }
-        return branch->branchId;
+        branchId= branch->branchId ;
+        break;
     }
+    return branchId;
 }
 
 void BranchedMorphology::randomSynapseAllocation(std::shared_ptr<Branch> branch)

@@ -7,7 +7,7 @@
 //
 
 #include "NeuronPopSample.hpp"
-#include "NeuronPop/HeterosynapricNeuronPop/HeteroLIFNeuronPop.hpp"
+#include "NeuronPop/HeterosynapticNeuronPop/HeteroLIFNeuronPop.hpp"
 
 
 NeuronPopSample::NeuronPopSample(std::vector<std::string> *input,GlobalSimInfo * info){

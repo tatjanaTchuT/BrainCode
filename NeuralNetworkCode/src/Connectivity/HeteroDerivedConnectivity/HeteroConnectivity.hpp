@@ -14,7 +14,7 @@ protected:
 public:
     ~HeteroConnectivity() = default;
 
-    virtual std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(const unsigned long&);
+    virtual std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(const unsigned long&)=0;
 };
 
 #endif

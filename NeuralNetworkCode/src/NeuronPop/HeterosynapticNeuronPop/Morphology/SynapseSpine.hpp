@@ -1,8 +1,7 @@
 #ifndef _SYNAPSE_SPINE_CLASS_HEADER
 #define _SYNAPSE_SPINE_CLASS_HEADER
+
 #include <valarray>
-
-
 
 
 class SynapseSpine { //This class is poorly done, yes, but it is my effort to make the legacy part of the code to work with branched code. This is partly self-inflicted, but inheritance is not a good option in this case.
@@ -19,7 +18,7 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     unsigned long idInMorpho{}; // id for synapse within its population
     unsigned long idInHCS{}; // id for synapse within its a synapse collection
     //Branched variables
-    //bool IsBranched{false}; For now it is not useful
+    bool isBranchedBool{false};// For now it is not useful
     int branchId{}; //This has to be discrete
     int branchPositionId{}; //This has to be discrete
     int distanceFromNode{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
@@ -48,7 +47,7 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     int getBranchId() const {return branchId;};
     int getBranchPositionId() const {return branchPositionId;};
     int getDistanceFromNode() const {return distanceFromNode;};
-
+    bool getBranchedBool() const { return isBranchedBool; }
     //Setters
     //Legacy
     void setPreNeuronId(unsigned long neuronId){preNeuronId=neuronId;};
@@ -63,6 +62,8 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     void setBranchId(int idIn){branchId=idIn;};
     void setBranchPositionId(int positionId){branchPositionId=positionId;};
     void setDistanceFromNode(int distance){distanceFromNode=distance;};
+    void setBranchedTrue(){isBranchedBool=true;}
+
 
     //Misc
     void addToTheta(double hEffect){theta+=hEffect;}

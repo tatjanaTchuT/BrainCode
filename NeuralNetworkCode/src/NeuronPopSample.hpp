@@ -22,8 +22,8 @@
 #include "NeuronPop/FundamentalNeuronPop/EIFNeuronPop.hpp"
 #include "NeuronPop/FundamentalNeuronPop/QIFNeuronPop.hpp"
 #include "NeuronPop/FundamentalNeuronPop/PoissonNeuronPop.hpp"
-#include "NeuronPop/HeterosynapricNeuronPop/HeteroLIFNeuronPop.hpp"
-#include "NeuronPop/HeterosynapricNeuronPop/HeteroPoissonNeuronPop.hpp"
+#include "NeuronPop/HeterosynapticNeuronPop/HeteroLIFNeuronPop.hpp"
+#include "NeuronPop/HeterosynapticNeuronPop/HeteroPoissonNeuronPop.hpp"
 
 class NeuronPopSample
 {

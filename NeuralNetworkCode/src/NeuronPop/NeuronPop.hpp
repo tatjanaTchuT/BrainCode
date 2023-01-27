@@ -11,9 +11,10 @@
 #include <fstream>
 #include <string>
 #include "../GlobalFunctions.hpp"
-#include "./HeterosynapricNeuronPop/Morphology/SynapseSpine.hpp"
+#include "./HeterosynapticNeuronPop/Morphology/SynapseSpine.hpp"
 
 class HeteroCurrentSynapse;
+class SynapseSpine;
 
 class NeuronPop
 {

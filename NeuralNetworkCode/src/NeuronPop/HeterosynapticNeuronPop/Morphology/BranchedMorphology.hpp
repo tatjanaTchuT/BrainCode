@@ -1,20 +1,23 @@
 #ifndef _BRANCHED_MORPHOLOGY_HEADER_
 #define _BRANCHED_MORPHOLOGY_HEADER_
 
-#include "../../../Synapse/HeteroCurrentSynapse.hpp"
+#include "../../../Synapse/HeteroCurrentSynapse.hpp" //This include also causes an include loop. Careful
 #include <string>
 #include <numeric>
 #include <algorithm>
 #include <deque>
 #include <iterator>
+#include <random>
+#include "../../../GlobalFunctions.hpp"
+#include "./Morphology.hpp"
+#include "./SynapseSpine.hpp"
 
-class Morphology;
 class BranchedMorphology : public Morphology {
 
 protected:
 //MonoDendriteSTDP moved
-    int seed;
-    std::default_random_engine generator;
+    int seed{0};
+    std::default_random_engine generator{ std::default_random_engine(seed) };
 
     unsigned long synapseIdGenerator{0}; // variable used to allocate new synapses. type is legacy compatible
     int branchIdGenerator{0}; //Same but in branches. Should be 1 or 0?

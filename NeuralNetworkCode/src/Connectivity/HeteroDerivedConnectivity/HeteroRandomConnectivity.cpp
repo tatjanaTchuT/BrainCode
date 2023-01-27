@@ -2,7 +2,6 @@
 #include "../../Synapse/Synapse.hpp"
 #include "../../Synapse/HeteroCurrentSynapse.hpp"
 
-
 HeteroRandomConnectivity::HeteroRandomConnectivity(Synapse* syn, GlobalSimInfo* info):
     RandomConnectivity(syn, info), HeteroConnectivity(syn->GetNoNeuronsPre()) {
 }
