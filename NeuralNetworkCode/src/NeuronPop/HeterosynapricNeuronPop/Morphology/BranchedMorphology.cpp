@@ -125,6 +125,7 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
         *stream<<"false\t"<<std::to_string(this->initialWeights);
     }
     *stream << "\t"<<"#The bool corresponds to distributing weight between min and max uniformally. The number will be the weight assigned to all synapses if bool is false (do not confuse with implementation in MonoDendriteSTDP).\n";
+    
     *stream << neuronPreId<<"_morphology_dendrite_branchings\t\t"<<std::to_string(this->branchings);
     *stream << "\t"<<"#This specifies the number of branchings in the dendritic tree FOR EVERY EXISTING BRANCH. Total isolated branches are 2^n. More than 28 will cause integer overflow\n";
     
@@ -134,7 +135,7 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     }else if (this->randomSynAllocationB){
         *stream<<"random\t";
     }
-    *stream << "\t"<<"#Missing comments\n";
+    *stream << "\t"<<"#'ordered' synapse allocation will allocate synapses from the branch node to the end of the branch. 'random' will allocate random positions in each branch\n";
 
     *stream << neuronPreId<<"_morphology_seed\t\t\t"<<std::to_string(this->seed);//Missing comments
     /*
@@ -188,8 +189,6 @@ std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurre
     newSynapse->setDistanceFromNode(position*branches.at(branch)->synapticGap);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->getIdInMorpho());
-    //Other
-    newSynapse->SetBranchedTrue();
 
     //Storage (other)
     this->synapseData.push_back(newSynapse);
@@ -197,18 +196,22 @@ std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurre
     this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);
     //this->integratePreSpike.push_back(false);
+
+    return newSynapse;
     }
 
 int BranchedMorphology::allocateBranch(const HeteroCurrentSynapse &synapse)
 {
         const BranchTargeting& target= synapse.getBranchTarget();
-        if (target.setTargetBranch){
+        if (target.setTargetBranch && !(target.setTargetBranch>this->branches.size())){
             return target.targetBranch;
         } else if (target.randomTargetBranch){
             return randomBranchAllocation();
         } else if (target.orderedTargetBranch){
             return orderedBranchAllocation();
-        } 
+        } else {
+            throw noAllocatableSynapseException();
+        }
 }
 
 int BranchedMorphology::randomBranchAllocation()

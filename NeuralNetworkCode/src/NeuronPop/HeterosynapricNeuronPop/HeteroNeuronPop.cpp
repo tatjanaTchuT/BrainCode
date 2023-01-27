@@ -46,6 +46,12 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
                     this->morphology.back()->LoadParameters(input);
                 }
                 morphologyFound = true;
+            } else if (values.at(0) == str_SimplePlasticityOnlyBranches) {
+                for (unsigned long i = 0; i < this->noNeurons; i++) {
+                    this->morphology.push_back(std::make_unique<SimplePlasticityOnlyBranch>(this->info));
+                    this->morphology.back()->LoadParameters(input);
+                }
+                morphologyFound = true;
             }
         }
     }
@@ -54,7 +60,9 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
         this->SetBranchedTrue();
     }
 
-    assertm(morphologyFound == true, "Please specify morphology of the neurons to be used.");
+    if (!morphologyFound){
+        throw;
+    }
 }
 
 std::shared_ptr<SynapseSpine> HeteroNeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse &synapse)

@@ -57,10 +57,10 @@ void EIFNeuronPop::SaveParameters(std::ofstream * stream){
 	std::string id = "neurons_" + std::to_string(GetId());
 
 	NeuronPop::SaveParameters(stream);
-	*stream << id + "_V_Crit                      " << std::to_string(v_critical) << " mV\n";
+	*stream << id + "_V_Crit                      " << std::to_string(v_critical) << " #mV\n";
 	*stream << id + "_sharpness                   " << std::to_string(sharpness) << "\n";
-	*stream << id + "_V_lowerbound                " << std::to_string(V_lowerbound) << " mV\n";
-	*stream << id + "_V_leak                      " << std::to_string(Vleak) << " mV\n";
+	*stream << id + "_V_lowerbound                " << std::to_string(V_lowerbound) << " #mV\n";
+	*stream << id + "_V_leak                      " << std::to_string(Vleak) << " #mV\n";
     *stream <<  "#\t\tEIF neuron : dV/dt = -(V-Vleak)/tau_m + sharpness/tau_m * exp((V-V_Crit)/sharpness) + RI/tau_m \n";
 	*stream <<  "#\t\tVcannot be lower than V_lowerbound";
 	*stream <<  "#\t\treset: v = v_reset + (v - v_thresh)\n";

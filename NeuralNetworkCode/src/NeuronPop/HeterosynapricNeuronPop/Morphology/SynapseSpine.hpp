@@ -19,7 +19,7 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     unsigned long idInMorpho{}; // id for synapse within its population
     unsigned long idInHCS{}; // id for synapse within its a synapse collection
     //Branched variables
-    bool IsBranched{false};
+    //bool IsBranched{false}; For now it is not useful
     int branchId{}; //This has to be discrete
     int branchPositionId{}; //This has to be discrete
     int distanceFromNode{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
@@ -32,8 +32,8 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     SynapseSpine(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //Methods
     //Bool checks
-    bool IsBranchedBool() const  {return IsBranched;}
-    bool SetBranchedTrue() {IsBranched=true;}
+    //bool IsBranchedBool() const  {return IsBranched;}
+    //bool SetBranchedTrue() {IsBranched=true;}
     //Getters
     //Legacy
     unsigned long getPreNeuronId() const {return preNeuronId;};

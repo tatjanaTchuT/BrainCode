@@ -167,10 +167,10 @@ void NeuronPop::SaveParameters(std::ofstream * stream){
     *stream <<  "#***********************************************\n";
     *stream <<  id + "_noNeurons                   " << noNeurons << "\n";
     *stream <<  id + "_type                        " << GetType() << "\n";
-    *stream <<  id + "_tauM                        " << std::to_string(this->tau_m)  << " seconds\n";
-    *stream <<  id + "_vReset                      " << std::to_string(this->v_reset)  << " mV \n";
-    *stream <<  id + "_vThresh                     " << std::to_string(this->v_thresh)  << " mV\n";
-    *stream <<  id + "_refractoryTime              " << std::to_string(this->refractorySteps*info->dt)  << " seconds\n";
+    *stream <<  id + "_tauM                        " << std::to_string(this->tau_m)  << " #seconds\n";
+    *stream <<  id + "_vReset                      " << std::to_string(this->v_reset)  << " #mV \n";
+    *stream <<  id + "_vThresh                     " << std::to_string(this->v_thresh)  << " #mV\n";
+    *stream <<  id + "_refractoryTime              " << std::to_string(this->refractorySteps*info->dt)  << " #seconds\n";
     //*stream <<  id + "_r_target                    " << std::to_string(this->r_target)  << " Hz\n";
     if(info->globalSeed == -1){
         *stream <<  id + "_seedInitialPotentials       " << this->seed_InitialPotentials << "\n";
