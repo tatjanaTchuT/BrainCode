@@ -147,6 +147,8 @@ const std::string str_MonoDendriteSTDPTazerartRelative{"MonoDendriteSTDPTazerart
 const std::string str_MonoDendriteSTDPBiWindow{"MonoDendriteSTDPBiWindow"};
 const std::string str_MonoDendriteSTDPBiExponential{"MonoDendriteSTDPBiExponential"};
 
+const std::string str_SimplePlasticityOnlyBranches{"SimplePlasticityOnlyBranches"};
+
 void multiply_vector (std::vector<unsigned long> &vector, unsigned long value);
 void multiply_vector (std::vector<double> &vector, double value);
 

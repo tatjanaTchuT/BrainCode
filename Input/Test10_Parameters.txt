@@ -42,7 +42,7 @@ neurons_1_resetType                   0
 #***********************************************
 neurons_0_noNeurons                       1
 neurons_0_type                            HeteroLIFNeuron
-neurons_0_morphology				MonoDendriteSTDPBiWindow
+neurons_0_morphology_type				MonoDendriteSTDPBiWindow
 neurons_0_morphology_weight_normalization	HardNormalization
 neurons_0_tauM                            0.020000 seconds
 neurons_0_vReset                          10.000000 mV 

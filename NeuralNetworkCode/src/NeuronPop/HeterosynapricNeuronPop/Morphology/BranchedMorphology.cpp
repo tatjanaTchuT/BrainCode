@@ -197,9 +197,7 @@ std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurre
     this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);
     //this->integratePreSpike.push_back(false);
-
-    throw noAllocatableSynapseException();
-}
+    }
 
 int BranchedMorphology::allocateBranch(const HeteroCurrentSynapse &synapse)
 {

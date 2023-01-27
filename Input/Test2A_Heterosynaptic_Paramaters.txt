@@ -27,7 +27,7 @@ neurons_generalNeuronSeed             0
 #***********************************************
 neurons_0_noNeurons                       100
 neurons_0_type                            HeteroNeuron
-neurons_0_morphology					  MonoDendrite
+neurons_0_morphology_type					  MonoDendrite
 neurons_0_tauM                            0.020000 seconds
 neurons_0_vReset                          10.000000 mV 
 neurons_0_vThresh                         20.000000 mV
@@ -54,7 +54,7 @@ neurons_0_resetType                   0
 #***********************************************
 neurons_1_noNeurons                       100
 neurons_1_type                            HeteroNeuron
-neurons_1_morphology					  MonoDendrite
+neurons_1_morphology_type					  MonoDendrite
 neurons_1_tauM                            0.020000 seconds
 neurons_1_vReset                          10.000000 mV 
 neurons_1_vThresh                         20.000000 mV

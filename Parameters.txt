@@ -27,7 +27,7 @@ neurons_generalNeuronSeed             0
 #***********************************************
 neurons_0_noNeurons                       50
 neurons_0_type                            HeteroLIFNeuron
-neurons_0_morphology				MonoDendriteSTDPTazerart
+neurons_0_morphology_type				MonoDendriteSTDPTazerart
 neurons_0_morphology_weight_normalization	NOPNormalization
 neurons_0_tauM                            0.020000 seconds #This is the time constant of decay of the membrane potential
 neurons_0_vReset                          10.000000 mV     #This is the voltage that is set for the neuron after an AP
@@ -62,7 +62,7 @@ neurons_0_resetType                   1
 #***********************************************
 neurons_1_noNeurons                       50
 neurons_1_type                            HeteroLIFNeuron
-neurons_1_morphology					  MonoDendriteSTDPTazerart
+neurons_1_morphology_type					  MonoDendriteSTDPTazerart
 neurons_1_morphology_weight_normalization		NOPNormalization
 neurons_1_tauM                            0.020000 seconds
 neurons_1_vReset                          10.000000 mV 
