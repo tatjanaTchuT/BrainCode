@@ -32,7 +32,8 @@ protected:
     Connectivity    * geometry;
     GlobalSimInfo   * info;
 
-
+    //Connected boolean
+    bool isConnectedBool{true};
     //Connection strength of neurons
     double        J;
     double        SigmaJ;
@@ -118,6 +119,7 @@ public:
 	virtual void SetSeed(std::default_random_engine *generator);
 
     bool IsRecurrent(){ return (neuronsPre == neuronsPost);}
+    bool IsConnected(){return isConnectedBool;}
 
     unsigned long GetNoNeuronsPre()	{return this->neuronsPre->GetNoNeurons();}
     unsigned long GetNoNeuronsPost()	{return this->neuronsPost->GetNoNeurons();}
@@ -129,6 +131,7 @@ public:
 
     virtual void ConnectNeurons();
 
+    void SetConnectedFalse(){isConnectedBool=false;}
     void SetDistributionD();
     void SetDistributionJ(); // For distribution of Js
 

@@ -98,6 +98,14 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
                 delete geometry;
                 this->geometry = new AdjacencyMatrixConnectivity(this, info);
             }
+        } else if(name.find("connected") != std::string::npos){
+            if (values.at(0).find("false")!=std::string::npos){
+                this->SetConnectedFalse();
+            } else if (values.at(0).find("true")!=std::string::npos){
+                this->isConnectedBool=true; //just to make sure
+            } else {
+                throw; //if connected is there, but the input is not correct, exception
+            }
         }
     }
 
@@ -128,6 +136,7 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 
 void Synapse::SaveParameters(std::ofstream * stream,std::string id_str){
     *stream << id_str << "type\t\t\t\t\t\t\t" << GetTypeStr() << "\n";
+    *stream << id_str << "connected\t\t\t\t\t\t" << std::boolalpha << this->isConnectedBool << "\n";
     *stream << id_str << "D_min\t\t\t\t\t\t\t" << std::to_string(this->D_min*info->dt) << " seconds\n";
     *stream << id_str << "D_max\t\t\t\t\t\t\t" << std::to_string(this->D_max*info->dt) << " seconds\n";
     *stream << id_str << "J\t\t\t\t\t\t\t\t" << std::to_string(this->J) << " dmV/Spike\n";
@@ -208,7 +217,9 @@ void Synapse::SetSeed(std::default_random_engine *generator){
 }
 
 void Synapse::ConnectNeurons(){
-    geometry->ConnectNeurons();
+    if (IsConnected()){
+        geometry->ConnectNeurons();
+    }
 }
 
 /*double Synapse::GetCouplingStrength(){
