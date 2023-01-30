@@ -220,7 +220,7 @@ void Synapse::ConnectNeurons(){
     if (IsConnected()){
         geometry->ConnectNeurons();
     } else {
-        std::cout<<"\n";
+        std::cout<< "Connection skipped." <<"\n";
     }
 }
 
