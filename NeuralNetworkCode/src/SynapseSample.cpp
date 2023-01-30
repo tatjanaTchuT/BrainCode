@@ -194,6 +194,9 @@ void SynapseSample::advect(std::vector<std::vector<double>> * synaptic_dV){
 
 	for (int source_pop = 0; source_pop < P; source_pop++) {
 		for (int target_pop = 0; target_pop < P; target_pop++) {
+            if (!synapses[target_pop][source_pop]->IsConnected()){
+                continue;
+            }
 			synapses[target_pop][source_pop]->advect(&synaptic_dV->at(target_pop));
 		}
 
