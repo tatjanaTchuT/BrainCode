@@ -219,6 +219,8 @@ void Synapse::SetSeed(std::default_random_engine *generator){
 void Synapse::ConnectNeurons(){
     if (IsConnected()){
         geometry->ConnectNeurons();
+    } else {
+        std::cout<<"\n";
     }
 }
 
