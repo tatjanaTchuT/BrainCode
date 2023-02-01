@@ -54,7 +54,7 @@ void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) 
         *stream<<"NOPNormalization\n";
     }
 
-    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<"\t"<<std::to_string(this->weightDecayConstant);
+    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<std::noboolalpha<<"\t"<<std::to_string(this->weightDecayConstant);
     *stream<<"\t"<<"#The first bool activates the weight decay per timestep. The second number is the time constant on an exponential in seconds [exp(-dt/ctt)].\n";
 
     *stream << neuronPreId<<"_morphology_min-max_weights\t"<<std::to_string(this->minWeight)<<"\t"<<std::to_string(this->maxWeight);

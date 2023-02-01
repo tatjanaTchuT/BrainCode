@@ -32,6 +32,9 @@ protected:
 
     int    seed_InitialPotentials,seed_InitialPrevSpike;
 
+    bool streamingOutputBool{false};
+    std::string outputFilename;
+
     std::valarray<double>   potential;         // membrane potential
     std::vector<long>       spiker;            // indices of all neurons that have emitted a spike in the previous time step
     std::valarray<long>     previous_spike_step;   // last spike time for every neuron
@@ -64,9 +67,9 @@ public:
     double              GetPotential(long i) {return potential[i]; }
 
     virtual std::string GetType() = 0;
-    int     GetId(){return this->identifier;}
+    int  const  GetId(){return this->identifier;}  
 
-
+    bool const streamingOutput(){return streamingOutputBool;};//functions
 	//*******************
     //Set-Functions
     //*******************
