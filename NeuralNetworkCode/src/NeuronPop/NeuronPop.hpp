@@ -90,6 +90,11 @@ public:
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
     virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
+
+    //Output functions
+
+    std::vector<int> OutputVector();
+    int didNeuronSpike(int neuronId);
 };
 
 

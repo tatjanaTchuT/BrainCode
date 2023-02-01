@@ -64,6 +64,7 @@ protected:
 
     void reset_statistics(); //Resets all containers.
 
+//Record functions
     void Record_Potential();
     void Record_Rasterplot();
     void Record_Currents(std::vector<std::vector<double>> * synaptic_dV);
@@ -76,7 +77,9 @@ protected:
 	void Record_HeteroSynapses();
     void Record_HeteroSynapsesOverall();
     void Record_HeteroSynapsesBranched();
+    void Record_AllNeuronsOutput();
 
+//WriteDataHeader functions
     void WriteDataHeader_Currents();
     void WriteDataHeader_Rasterplot();
     void WriteDataHeader_Averages();
@@ -89,6 +92,7 @@ protected:
 	void WriteDataHeader_HeteroSynapses();
     void WriteDataHeader_HeteroSynapsesOverall();
     void WriteDataHeader_HeteroSynapsesBranched();
+    void WriteDataHeader_AllNeuronsOutput();
 
 
     void SetNoRasterplotNeurons(std::vector<std::string> *values);
@@ -118,6 +122,7 @@ public:
     std::string GetHeteroSynapseStateFilename() { return this->directoryPath + title + "_HeteroSynapses.dat"; }
     std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHS.dat"; }
     std::string GetHeteroBranchedSynapseStateFilename() { return this->directoryPath + title + "_BranchedHS.dat"; }
+    std::string GetNeuronOutputFilename(int popId) { return this->directoryPath + title + "_NeuronPop_" + std::to_string(popId) + "_Output.dat"; }
     std::string GetType()   {return str_advancedRecorder;}
 
     std::vector<std::vector<std::vector<double>>> savecurrents;
