@@ -588,7 +588,7 @@ void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
         this->FileStreams.neuronOuputFileStreams.back() << "#1 t (secs.)\t 2-"<<1+this->neurons->GetPop(neuronPop)->GetNoNeurons()<<" Spikes_neuron_neuron_id \n";
         this->FileStreams.neuronOuputFileStreams.back() << "t\t";
         for (unsigned long k = 0; k < this->neurons->GetPop(neuronPop)->GetNoNeurons(); ++k) {
-                this->FileStreams.neuronOuputFileStreams.back() << "Spikes_neuron_" << k <<  "\t";
+                this->FileStreams.neuronOuputFileStreams.back() << "SN" << k <<  "\t";
             }
         this->FileStreams.neuronOuputFileStreams.back() << "#************************************ \n";
     }
@@ -1131,15 +1131,15 @@ void AdvancedRecorder::Record_AllNeuronsOutput()
         int neuronPopId= streamingNeuronPops.at(index);
         NeuronPop& population = *this->neurons->GetPop(neuronPopId);
         std::ofstream& stream = this->FileStreams.neuronOuputFileStreams.at(index);
-        int spikerIndex{0};
+        int spikerIndex{ static_cast<int>(population.GetSpikers()->size()-1) };
 
         SaveDoubleFile(&stream,time_t,5);
 
         for (long neuron = 0; neuron < (static_cast<long>(population.GetNoNeurons())); neuron++) {
-            if (neuron==population.GetSpikers()->at(spikerIndex)){
+            if ((spikerIndex==0) && (neuron == population.GetSpikers()->at(spikerIndex))) {
                 //The logic behind this loop's if statements and indexes is to get around cross checking every ID
                 stream<<std::to_string(1)<<"\t";
-                spikerIndex++;
+                spikerIndex--;
             } else {
                 stream<<std::to_string(0)<<"\t";
             }

@@ -170,7 +170,7 @@ void NeuronPop::SaveParameters(std::ofstream * stream){
     std::string id = "neurons_" + std::to_string(GetId());
 
     *stream <<  "#***********************************************\n";
-    *stream <<  id + "streamOutput                " << std::boolalpha<< streamingOutputBool << std::noboolalpha << "\n";
+    *stream <<  id + "_streamOutput                " << std::boolalpha<< streamingOutputBool << std::noboolalpha << "\n";
     *stream <<  id + "_noNeurons                   " << noNeurons << "\n";
     *stream <<  id + "_type                        " << GetType() << "\n";
     *stream <<  id + "_tauM                        " << std::to_string(this->tau_m)  << " #seconds\n";

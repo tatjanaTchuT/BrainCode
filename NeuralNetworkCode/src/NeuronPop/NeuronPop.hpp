@@ -33,7 +33,6 @@ protected:
     int    seed_InitialPotentials,seed_InitialPrevSpike;
 
     bool streamingOutputBool{false};
-    std::string outputFilename;
 
     std::valarray<double>   potential;         // membrane potential
     std::vector<long>       spiker;            // indices of all neurons that have emitted a spike in the previous time step
