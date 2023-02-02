@@ -62,6 +62,9 @@ protected:
     bool neuronTrackingInitialized{false};
     bool hasBranchedSynapsePop{false};
 
+    bool streamingOutputBool{false};
+    std::vector<int> streamingNeuronPops{};
+
     void reset_statistics(); //Resets all containers.
 
 //Record functions

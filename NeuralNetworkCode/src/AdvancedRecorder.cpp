@@ -569,6 +569,32 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
     this->FileStreams.heteroBSynapsesFileStream << "\n#************************************\n";
 }
 
+void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
+{
+    unsigned long P = neurons->GetTotalPopulations();
+    for(unsigned long p = 0;p<P;p++){
+        if (this->neurons->GetPop(p)->streamingOutput()){
+            streamingOutputBool=true;
+            streamingNeuronPops.push_back(p);
+        }
+    }
+    if (!streamingOutputBool){
+        return;
+    }
+    for(int neuronPop : streamingNeuronPops){
+        this->FileStreams.neuronOuputFileStreams.emplace_back(std::ofstream(GetNeuronOutputFilename(neuronPop), std::ofstream::out | std::ofstream::app));
+        WriteHeader(&this->FileStreams.neuronOuputFileStreams.back());
+        this->FileStreams.neuronOuputFileStreams.back() << "#Spiking stream output in binary per timestep \n";
+        this->FileStreams.neuronOuputFileStreams.back() << "#1 t (secs.)\t 2-"<<1+this->neurons->GetPop(neuronPop)->GetNoNeurons()<<" Spikes_neuron_neuron_id \n";
+        this->FileStreams.neuronOuputFileStreams.back() << "t\t";
+        for (unsigned long k = 0; k < this->neurons->GetPop(neuronPop)->GetNoNeurons(); ++k) {
+                this->FileStreams.neuronOuputFileStreams.back() << "Spikes_neuron_" << k <<  "\t";
+            }
+        this->FileStreams.neuronOuputFileStreams.back() << "#************************************ \n";
+    }
+
+    this->FileStreams.heteroBSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
+}
 
 //void AdvancedRecorder::InitializeRecorder(std::string filename){
 void AdvancedRecorder::WriteDataHeader(){
@@ -584,6 +610,7 @@ void AdvancedRecorder::WriteDataHeader(){
 	WriteDataHeader_HeteroSynapses();
 	WriteDataHeader_HeteroSynapsesOverall();
     WriteDataHeader_HeteroSynapsesBranched();
+    WriteDataHeader_AllNeuronsOutput();
     reset_statistics();
 }
 
@@ -1093,6 +1120,35 @@ void AdvancedRecorder::Record_HeteroSynapsesBranched() {
     this->FileStreams.heteroBSynapsesFileStream << "\n";
 }
 
+void AdvancedRecorder::Record_AllNeuronsOutput()
+{
+    if (!streamingOutputBool){
+        return;
+    }
+    double time_t {static_cast<double>(info->time_step*info->dt)};
+
+    for (int index = 0; index<streamingNeuronPops.size(); index++){
+        int neuronPopId= streamingNeuronPops.at(index);
+        NeuronPop& population = *this->neurons->GetPop(neuronPopId);
+        std::ofstream& stream = this->FileStreams.neuronOuputFileStreams.at(index);
+        int spikerIndex{0};
+
+        SaveDoubleFile(&stream,time_t,5);
+
+        for (long neuron = 0; neuron < (static_cast<long>(population.GetNoNeurons())); neuron++) {
+            if (neuron==population.GetSpikers()->at(spikerIndex)){
+                //The logic behind this loop's if statements and indexes is to get around cross checking every ID
+                stream<<std::to_string(1)<<"\t";
+                spikerIndex++;
+            } else {
+                stream<<std::to_string(0)<<"\t";
+            }
+        }
+        stream<<"\n";
+    }
+
+}
+
 void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 {
     this->stepCount++;
@@ -1166,6 +1222,7 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
         Record_HeteroSynapses();
     	Record_HeteroSynapsesOverall();
     }
+    Record_AllNeuronsOutput();
 }
 
 void AdvancedRecorder::writeFinalDataFile(double comp_time)

@@ -69,7 +69,7 @@ public:
     virtual std::string GetType() = 0;
     int  const  GetId(){return this->identifier;}  
 
-    bool const streamingOutput(){return streamingOutputBool;};//functions
+
 	//*******************
     //Set-Functions
     //*******************
@@ -92,7 +92,7 @@ public:
     virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
 
     //Output functions
-
+    bool const streamingOutput(){return streamingOutputBool;};//functions
     std::vector<int> OutputVector();
     int didNeuronSpike(int neuronId);
 };
