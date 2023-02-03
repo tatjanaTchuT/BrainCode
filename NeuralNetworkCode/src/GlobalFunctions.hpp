@@ -36,18 +36,18 @@ struct GlobalSimInfo {
     long    N{};
 } ;
 
-struct ParameterFileEntry {
+struct FileEntry {
     std::string name;
     std::vector<std::string> values;
 
-    ParameterFileEntry(std::string n, std::vector<std::string> v) : name(std::move(n)), values(std::move(v)) {
+    FileEntry(std::string n, std::vector<std::string> v) : name(std::move(n)), values(std::move(v)) {
     }
-    ParameterFileEntry(){}
+    FileEntry(){}
 };
 
-struct IterableParameterFileEntry : ParameterFileEntry {
+struct IterableFileEntry : FileEntry {
     std::string iterate_id;
-    IterableParameterFileEntry(std::string it_id, std::string n, std::vector<std::string> v) :  ParameterFileEntry(n, v), iterate_id(it_id){
+    IterableFileEntry(std::string it_id, std::string n, std::vector<std::string> v) :  FileEntry(n, v), iterate_id(it_id){
     }
 };
 
@@ -163,7 +163,7 @@ void multiply_vector (std::vector<double> &vector, double value);
 
 void TestWritingFile(std::string filename);
 
-void FilterStringEntries(std::vector<ParameterFileEntry> *str_full,std::string token,std::vector<ParameterFileEntry> *str_filtered);
+void FilterStringEntries(std::vector<FileEntry> *str_full,std::string token,std::vector<FileEntry> *str_filtered);
 void FilterStringVector(std::vector<std::string> *str_full,std::string token,std::vector<std::string> *str_filtered);
 void SplitString(std::string *full_str,std::string *name,std::vector<std::string> *values);
 void SplitString(std::string *full_str, std::string *iterate_id, std::string *name, std::vector<std::string> *values);
@@ -176,10 +176,10 @@ void SaveTupleOfDoublesFile(std::ofstream *file, std::valarray<double>, int prec
 
 bool is_double(const std::string& s);
 
-ParameterFileEntry stringToParameterFileEntry(std::string);
-IterableParameterFileEntry stringToIterableParameterFileEntry(std::string);
+FileEntry stringToFileEntry(std::string);
+IterableFileEntry stringToIterableFileEntry(std::string);
 
-void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFileEntry>&);
+void checkConsistencyOfIterationParameters(const std::vector<IterableFileEntry>&);
 
 struct noAllocatableSynapseException : std::exception {
     char const* what() const noexcept override {
@@ -187,7 +187,7 @@ struct noAllocatableSynapseException : std::exception {
     }
 };
 
-void RemoveCommentInString(std::vector<std::string>* string);
+void RemoveCommentInString(std::vector<std::string>* string, char commentCharacter='#');
 //int INTMAX = 2;
 //double PI = 3.14159265359;
 

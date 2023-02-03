@@ -36,8 +36,12 @@ struct bin_data {
     std::valarray<std::valarray<long long>>             no_recordedSynapses;
 } ;
 
+class DatafileParser;
+
 class AdvancedRecorder : public Recorder
 {
+    friend class DatafileParser;
+
 protected:
 
     bool trackSynapses{false}; //, writeHistogram;

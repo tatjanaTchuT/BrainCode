@@ -59,13 +59,13 @@ int main(int argc, char* argv[])
     // Read parameter file
     //******************************************
 
-    //array of ParameterFileEntry structs
+    //array of FileEntry structs
     char                            line[2048];
-    std::vector<ParameterFileEntry> parameterEntries;
+    std::vector<FileEntry> parameterEntries;
     std::vector<std::string>        full_strs,values;
     std::string                     str_line,name,iterate_id;
-    std::vector<IterableParameterFileEntry> iterate1_entries;
-    std::vector<IterableParameterFileEntry> iterate2_entries;
+    std::vector<IterableFileEntry> iterate1_entries;
+    std::vector<IterableFileEntry> iterate2_entries;
 
     //************************************************
     // Read Parameter file
@@ -92,21 +92,21 @@ int main(int argc, char* argv[])
 
         // if the entry in the parameter file is prefixed with iterate_1 or iterate_2, push them on iterateX_entries vector
         if (prefix.compare("iterate_1") == 0) {
-            iterate1_entries.push_back(stringToIterableParameterFileEntry(str_line));
+            iterate1_entries.push_back(stringToIterableFileEntry(str_line));
         } else if (prefix.compare("iterate_2") == 0) {
-            iterate2_entries.push_back(stringToIterableParameterFileEntry(str_line));
+            iterate2_entries.push_back(stringToIterableFileEntry(str_line));
         } else {
-            parameterEntries.push_back(stringToParameterFileEntry(str_line));
+            parameterEntries.push_back(stringToFileEntry(str_line));
         }
     }
     stream.close();
 
     //Get path to input parameters file and save it in the parameterEntries
-    parameterEntries.push_back(stringToParameterFileEntry("pathToInputFile  " + pathTo_inputFile));
+    parameterEntries.push_back(stringToFileEntry("pathToInputFile  " + pathTo_inputFile));
 
     //Check for consistency Iterate 1: do all entries have the same lenght?
     if(iterate1_entries.empty()){
-        iterate1_entries.push_back(IterableParameterFileEntry("iterate_1", "placeholder", {""}));
+        iterate1_entries.push_back(IterableFileEntry("iterate_1", "placeholder", {""}));
     } else {
         try {
             checkConsistencyOfIterationParameters(iterate1_entries);
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 
     //Check for consistency Iterate 2: do all entries have the same lenght?
     if(iterate2_entries.empty()){
-        iterate2_entries.push_back(IterableParameterFileEntry("iterate_2", "placeholder", {""}));
+        iterate2_entries.push_back(IterableFileEntry("iterate_2", "placeholder", {""}));
     } else {
         try {
             checkConsistencyOfIterationParameters(iterate2_entries);
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
     for(unsigned int i1 = 0; i1 < iterate1_len; i1++) {
         for(unsigned int i2 = 0; i2 < iterate2_len; i2++){
 
-            std::vector<ParameterFileEntry> parEntries = parameterEntries;
+            std::vector<FileEntry> parEntries = parameterEntries;
             std::cout << "******************************************" << std::endl;
             std::cout << "i1 = " << i1+1 << " , i2 = " << i2+1 << std::endl;
             for(auto & parEntry : parEntries){

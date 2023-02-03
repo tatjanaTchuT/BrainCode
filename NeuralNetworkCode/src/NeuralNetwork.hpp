@@ -37,12 +37,12 @@ private:
     Stimulus              *stimulus;
 
     void SaveParameters();
-    int  LoadParameters(std::string baseDir,std::vector<ParameterFileEntry> *parEntries);
+    int  LoadParameters(std::string baseDir,std::vector<FileEntry> *parEntries);
     int  WellDefined();
 
     void SaveParameterOptions();
 public:
-    NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry> *parEntries);//std::string baseDir);
+    NeuralNetwork(std::string baseDir,std::vector<FileEntry> *parEntries);//std::string baseDir);
     ~NeuralNetwork(){}
 
     int  Simulate();

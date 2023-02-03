@@ -201,7 +201,7 @@ void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
 
 void AdvancedRecorder::SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values) {
     int P = static_cast<int>(neurons->GetTotalPopulations());
-    RemoveCommentInString(values);
+    //RemoveCommentInString(values);//This has been removed, as now every values vector should lack comments
     for(int i = 0; i < min_(P,static_cast<int>(values->size()));i++){//min() only makes sense if you remove the hash
         noTrackHeteroSynapsePerTrackedNeuron[i] = std::stoi(values->at(i));
     }

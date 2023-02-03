@@ -1,6 +1,6 @@
 #include "NeuralNetwork.hpp"
 
-NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry> *parEntries)
+NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<FileEntry> *parEntries)
 {
     neurons     = NULL;
     synapses    = NULL;
@@ -250,7 +250,7 @@ void NeuralNetwork::SaveParameterOptions(){// This function should have stuff mo
 }
 
 
-int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileEntry> *parEntries){
+int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<FileEntry> *parEntries){
 
     std::vector<std::string>        values;
     std::vector<std::string>        full_strs,neur_strs,syn_strs,stim_strs,rec_strs;
