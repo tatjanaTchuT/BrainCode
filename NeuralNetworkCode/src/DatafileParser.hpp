@@ -18,6 +18,10 @@ class DatafileParser {
 
 protected:
 
+    //Bools will be necessary to check which parsing is needed, or whether it is needed or not
+    bool parsingNOutputBool{false};
+    //Add here more if there are more files to be parsed at the end of the simulation
+
     std::string folderPath;
     std::string extension {".dat"};
 
@@ -26,8 +30,8 @@ protected:
     std::vector<DataOnFile> metaDataForFile; //Here we store any extra information to write in the file that may be necessary for reading the datafile in the future.
 
 public:
-
-    DatafileParser(AdvancedRecorder& recorder);
+    //Constructor/destructor
+    explicit DatafileParser(AdvancedRecorder& recorder);
     ~DatafileParser()=default;
 
     std::string indexToFilePath(int vecIndex);//To iterate through the files
@@ -37,6 +41,8 @@ public:
     std::vector<std::vector<int>> parseSpikesToSpikeTimes(std::string rfilePath); //Create a vector of vectors (one per neuron) of spike times from the read file
 
     void writeSpikeTimesFile(std::vector<std::vector<int>> parsedData, std::string wfilePath); //
+
+    void parse();
 
 };
 

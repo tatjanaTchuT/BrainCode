@@ -145,7 +145,7 @@ void NeuronPop::LoadParameters(std::vector<std::string> *input){
         }
         else if(name.find("streamOutput") != std::string::npos){
                     if (values.at(0).find("true") != std::string::npos){
-                        streamingOutputBool=true;
+                        streamingNOutputBool=true;
                     }
         }
     }
@@ -170,7 +170,7 @@ void NeuronPop::SaveParameters(std::ofstream * stream){
     std::string id = "neurons_" + std::to_string(GetId());
 
     *stream <<  "#***********************************************\n";
-    *stream <<  id + "_streamOutput                " << std::boolalpha<< streamingOutputBool << std::noboolalpha << "\n";
+    *stream <<  id + "_streamOutput                " << std::boolalpha<< streamingNOutputBool << std::noboolalpha << "\n";
     *stream <<  id + "_noNeurons                   " << noNeurons << "\n";
     *stream <<  id + "_type                        " << GetType() << "\n";
     *stream <<  id + "_tauM                        " << std::to_string(this->tau_m)  << " #seconds\n";

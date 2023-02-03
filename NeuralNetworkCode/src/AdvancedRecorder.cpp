@@ -574,11 +574,11 @@ void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
     unsigned long P = neurons->GetTotalPopulations();
     for(unsigned long p = 0;p<P;p++){
         if (this->neurons->GetPop(p)->streamingOutput()){
-            streamingOutputBool=true;
+            streamingNOutputBool=true;
             streamingNeuronPops.push_back(p);
         }
     }
-    if (!streamingOutputBool){
+    if (!streamingNOutputBool){
         return;
     }
     for(int neuronPop : streamingNeuronPops){
@@ -1122,7 +1122,7 @@ void AdvancedRecorder::Record_HeteroSynapsesBranched() {
 
 void AdvancedRecorder::Record_AllNeuronsOutput()
 {
-    if (!streamingOutputBool){
+    if (!streamingNOutputBool){
         return;
     }
     double time_t {static_cast<double>(info->time_step*info->dt)};
