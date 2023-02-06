@@ -588,7 +588,7 @@ void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
         this->FileStreams.neuronOuputFileStreams.back() << "#1 t (secs.)\t 2-"<<1+this->neurons->GetPop(neuronPop)->GetNoNeurons()<<" Spikes_neuron_neuron_id \n";
         this->FileStreams.neuronOuputFileStreams.back() << "t\t";
         for (unsigned long k = 0; k < this->neurons->GetPop(neuronPop)->GetNoNeurons(); ++k) {
-                this->FileStreams.neuronOuputFileStreams.back() << "SN" << k <<  "\t";
+                this->FileStreams.neuronOuputFileStreams.back() << "N" << k <<  "\t";
             }
         this->FileStreams.neuronOuputFileStreams.back() << "#************************************ \n";
     }
