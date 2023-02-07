@@ -122,9 +122,11 @@ void DatafileParser::parse()
                 throw;
             }
         //Now we assume the file exist
-        writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream, metaDataForFiles.at(index)), fileNamesToParse.at(index), metaDataForFiles.at(index));
+        writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream, metaDataForFiles.at(index)), this->indexToParsedOutputStreamFilePath(index), metaDataForFiles.at(index));
+        int deleteResult{remove(fileNamesToParse.at(index).c_str())}; //This should delete the already parsed and converted file
         index++;
     }
+    std::cout<<"\nParsing operations are finished.\n";
     } else {
         std::cout<<"\nNo parsing is needed\n";
     }
