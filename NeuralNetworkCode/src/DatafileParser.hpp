@@ -40,14 +40,14 @@ public:
     explicit DatafileParser(AdvancedRecorder& recorder);
     ~DatafileParser()=default;
 
-    std::string indexToParsedOutputStreamFilePath(int vecIndex);
+    std::string indexToParsedOutputStreamFilePath(int vecIndex) {return directoryPath + title + "_NeuronPop_" + std::to_string(neuronPopIds[vecIndex]) + "_ParsedOutput.dat";}
     std::vector<int> entryToNeuronIndexes(FileEntry fileEntry);
 
     std::vector<std::vector<double>> parseSpikesToSpikeTimes(std::ifstream& fileStream, DataOnFile metadata); //Create a vector of vectors (one per neuron) of spike times from the read file
 
     std::vector<FileEntry> parseFileToEntries(std::ifstream& fileStream);
 
-    void writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath); //
+    void writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata); //
 
     void parse();
 

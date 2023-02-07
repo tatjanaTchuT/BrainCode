@@ -19,10 +19,6 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder)
     //After this constructor it is no longer necessary to keep the NN object in scope
 }
 
-std::string DatafileParser::indexToParsedOutputStreamFilePath(int vecIndex)
-{
-    return directoryPath + title + "_NeuronPop_" + std::to_string(neuronPopIds[vecIndex]) + "_ParsedOutput.dat";
-}
 std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStream)
 {    
     //Here I have to parse each line (ignoring the first one with the column titles) and create FileEntries for each line
@@ -31,15 +27,17 @@ std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStr
     while (fileStream.getline(entry,_MAX_CHARACTERS_PER_LINE)){
         if(entry[0] == '#'){
             delete[] entry;
+            entry = new char[_MAX_CHARACTERS_PER_LINE];
             continue;
         } else if (entry[0] == 't') {
             delete[] entry;
+            entry = new char[_MAX_CHARACTERS_PER_LINE];
             continue;
         } else {
             parsedFileEntries.emplace_back(stringToFileEntry(std::move(static_cast<std::string>(entry))));
         }
-
         delete[] entry;
+        entry = new char[_MAX_CHARACTERS_PER_LINE];
     }
 
     return parsedFileEntries;
@@ -71,6 +69,10 @@ std::vector<std::vector<double>> DatafileParser::parseSpikesToSpikeTimes(std::if
     std::vector<FileEntry> parsedEntries{parseFileToEntries(fileStream)};
     double currentTimestep;
     std::vector<int> spikedNeurons;
+    if (parsedEntries[0].values.size() > static_cast<size_t>(metadata.noNeurons - 1)) {
+        std::cout << "Error: the file contains more neurons than it should";
+        throw;
+    }
     for (FileEntry& parsedEntry : parsedEntries){
         currentTimestep = std::stod(parsedEntry.name);
         for (int neuron : entryToNeuronIndexes(parsedEntry)){
@@ -87,10 +89,22 @@ std::vector<std::vector<double>> DatafileParser::parseSpikesToSpikeTimes(std::if
 
 
 
-void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath)
+void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata)
 {
     //Wrapper 2
-    //Here I will have to first, create the filepaths, then the ofstreams in a vector with same index. Then basically iterate over the 
+    std::ofstream stream(wfilePath, std::ofstream::out | std::ofstream::trunc);
+    int neuronIndex{};
+    stream<<"M="<<std::to_string(metadata.noNeurons)<<','<<std::to_string(metadata.dt)<<','<<std::to_string(metadata.totalTimesteps)<<','<<std::to_string(metadata.neuronPopId)<<'\n';
+    for (std::vector<double>& neuronRec : parsedData){
+        stream<<"N_"<<std::to_string(neuronIndex)<<"=";
+        for (double spiketime : neuronRec){
+            stream<<std::to_string(spiketime)<<",";
+        }
+        neuronIndex++;
+    }
+    //Here I will have to first create the ofstream. Then basically iterate over the vector and print each vector with a comma separator and write in desired format:
+    //M(etadata)=noNeurons,dt,totaltimesteps,neuronPopId
+    //N(euronpop)_1=spiketime1,spiketime2,
 }
 
 void DatafileParser::parse()
@@ -103,12 +117,16 @@ void DatafileParser::parse()
             struct stat buffer;
             if(stat(fileNamesToParse.at(index).c_str(),&buffer) != 0){
                 std::cout << "*************************\n";
-                std::cout <<fileNamesToParse.at(index)<<" Input file does not exist\n";
+                std::cout <<fileNamesToParse.at(index)<<" file does not exist\n";
                 std::cout << "*************************\n";
                 throw;
             }
-
+        //Now we assume the file exist
+        writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream, metaDataForFiles.at(index)), fileNamesToParse.at(index), metaDataForFiles.at(index));
+        index++;
     }
+    } else {
+        std::cout<<"\nNo parsing is needed\n";
     }
 }
 
