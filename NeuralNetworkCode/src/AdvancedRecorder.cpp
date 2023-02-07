@@ -343,7 +343,7 @@ void AdvancedRecorder::WriteDataHeader_Potential(){
         return;
 
     unsigned long             P = neurons->GetTotalPopulations();
-    this->FileStreams.potentialFileStream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.potentialFileStream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.potentialFileStream);
     this->FileStreams.potentialFileStream << "#1 t (secs.)\t 2-"<<1+notrackNeuronPotentials.sum()<<" V_pop_id (mV) \n";
@@ -363,7 +363,7 @@ void AdvancedRecorder::WriteDataHeader_Currents(){
         return;
 
     unsigned long             P = neurons->GetTotalPopulations();
-    this->FileStreams.currentsFileStream.open(GetCurrentsFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.currentsFileStream.open(GetCurrentsFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.currentsFileStream);
     this->FileStreams.currentsFileStream << "#1 t (sec)\t 2-"<<1+ notrackNeuronPotentials.sum()<<" mu_pop_id / tau_m(dmV / sec)\n";
@@ -384,7 +384,7 @@ void AdvancedRecorder::WriteDataHeader_CurrentsContribution() {
 	long index;
 	long HeaderIndex;
 	long N;
-	this->FileStreams.cCurrentsFileStream.open(GetCurrentCrontributionFilename(), std::ofstream::out | std::ofstream::app);
+	this->FileStreams.cCurrentsFileStream.open(GetCurrentCrontributionFilename(), std::ofstream::out | std::ofstream::trunc);
 
 	WriteHeader(&this->FileStreams.cCurrentsFileStream);
 	this->FileStreams.cCurrentsFileStream << "# 1 t (sec)\n";
@@ -460,7 +460,7 @@ void AdvancedRecorder::WriteDataHeader_Correlations(){
     if(noCorrNeurons.sum() == 0)
         return;
 
-    this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.meanCorrFileStream);
     this->FileStreams.meanCorrFileStream << "#1 t (sec) \t #2 CC_EE \t #3 CC_EI \t #4 CC_IE \t #5 CC_II\t\n";
@@ -473,7 +473,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
         return;
 
     unsigned long P = neurons->GetTotalPopulations();
-    this->FileStreams.heteroSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.heteroSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.heteroSynapsesFileStream);
     this->FileStreams.heteroSynapsesFileStream << "Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n";
@@ -506,7 +506,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 
     std::cout << "The file has been properly created!!!!\n";
     unsigned long P = neurons->GetTotalPopulations();
-    this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
+    this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.hSOverallFileStream);
     this->FileStreams.hSOverallFileStream << "Overall Profile -> {<average weight>, <total post spikes>, <total pre spikes>} \n";
