@@ -33,6 +33,7 @@ protected:
     int    seed_InitialPotentials,seed_InitialPrevSpike;
 
     bool streamingNOutputBool{false};
+    bool taskOutputBool{false};
 
     std::valarray<double>   potential;         // membrane potential
     std::vector<long>       spiker;            // indices of all neurons that have emitted a spike in the previous time step
@@ -91,9 +92,9 @@ public:
     virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
 
     //Output functions
-    bool const streamingOutput(){return streamingNOutputBool;};//functions
-    std::vector<int> OutputVector();
-    int didNeuronSpike(int neuronId);
+    bool const streamingOutput(){return streamingNOutputBool;}//functions
+    bool const taskOutput(){return taskOutputBool;}
+    std::vector<int> taskOutputVector(); //This function is not complete, will be implemented together with the task framework (supposed to return a vector of 0s and 1s equivalent to spikers)
 };
 
 
