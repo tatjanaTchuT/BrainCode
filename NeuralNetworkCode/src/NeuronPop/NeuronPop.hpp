@@ -10,6 +10,7 @@
 #include <valarray>
 #include <fstream>
 #include <string>
+#include <memory>
 #include "../GlobalFunctions.hpp"
 #include "./HeterosynapticNeuronPop/Morphology/SynapseSpine.hpp"
 
