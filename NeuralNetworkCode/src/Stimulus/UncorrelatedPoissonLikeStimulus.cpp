@@ -170,7 +170,7 @@ void UncorrelatedPoissonLikeStimulus::SaveParameters(std::ofstream * stream){
 
 void UncorrelatedPoissonLikeStimulus::LoadParameters(std::vector<std::string> *input){
 
-    Stimulus::LoadParameters(input);
+    //Stimulus::LoadParameters(input);
     std::string              name,token;
     std::vector<std::string> values;
     int                      P = neurons->GetTotalPopulations();

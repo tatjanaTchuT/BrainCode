@@ -87,7 +87,7 @@ public:
     void    Update(std::vector<std::vector<double>> * synaptic_dV);
 
     void    SaveParameters(std::ofstream * stream);
-    void    LoadParameters(std::vector<std::string> *input);
+    void    LoadParameters(std::vector<std::string> *input) override;
     //void    LoadParameters(std::vector<std::string> *input,double synapticScaling);
 };
 

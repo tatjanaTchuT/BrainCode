@@ -422,7 +422,7 @@ void AdvancedRecorder::WriteDataHeader_CurrentsContribution() {
 
 
 void AdvancedRecorder::WriteDataHeader_SynapseStates() {
-    double dt { info->dt };
+    //double dt { info->dt };
     unsigned    P  {neurons->GetTotalPopulations()};
 
     if(!trackSynapses)
@@ -1227,12 +1227,29 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 
 void AdvancedRecorder::CloseStreams()
 {
-    if (neuronTrackingInitialized){
+    FileStreams.averagesFileStream.close();
+    if (Heatmap!=0){
+        FileStreams.heatmapFileStream.close();
+    } if (noRasterPlotNeurons.sum()!=0){
+        FileStreams.rasterplotFileStream.close();
+    } if (notrackNeuronPotentials.sum()!=0){
+        FileStreams.potentialFileStream.close();
+        FileStreams.currentsFileStream.close();
+    } if (CurrentContributions.sum()!=0){
+        FileStreams.cCurrentsFileStream.close();
+    } if (trackSynapses){
+        FileStreams.synStatesFileStream.close();
+    } if (noCorrNeurons.sum()!=0){
+        FileStreams.meanCorrFileStream.close();
+    } if (noTrackHeteroSynapsePerTrackedNeuron.sum()!=0){
+        FileStreams.heteroSynapsesFileStream.close();
+        FileStreams.hSOverallFileStream.close();
+    } if (hasBranchedSynapsePop){
+        FileStreams.heteroBSynapsesFileStream.close();
+    }if (neuronTrackingInitialized){
         for (std::ofstream& stream : FileStreams.neuronOuputFileStreams){
         stream.close();
     }}
-
-    FileStreams.averagesFileStream.close();
 }
 
 void AdvancedRecorder::writeFinalDataFile(double comp_time)

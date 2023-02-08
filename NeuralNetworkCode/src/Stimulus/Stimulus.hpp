@@ -36,7 +36,7 @@ public:
     virtual std::string GetType() = 0;
 
     virtual void SaveParameters(std::ofstream * stream);
-    virtual void LoadParameters(std::vector<std::string> *input){}
+    virtual void LoadParameters(std::vector<std::string>* input)=0;
 
     double       GetSignalArray(int p,int i){return signal_array[p][i];}
 };

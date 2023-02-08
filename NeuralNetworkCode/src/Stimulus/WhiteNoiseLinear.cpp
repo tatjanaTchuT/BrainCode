@@ -17,7 +17,7 @@ WhiteNoiseLinear::WhiteNoiseLinear(NeuronPopSample *neur, std::vector<std::strin
 
 void WhiteNoiseLinear::LoadParameters(std::vector<std::string> *input) {
 
-	Stimulus::LoadParameters(input);
+	//Stimulus::LoadParameters(input);
 	std::string              name, token;
 	std::vector<std::string> values;
 	unsigned int                      P = neurons->GetTotalPopulations();
