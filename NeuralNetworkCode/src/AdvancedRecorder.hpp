@@ -117,6 +117,7 @@ public:
     void WriteDataHeader();
     void writeFinalDataFile(double comp_time);
     void Record(std::vector<std::vector<double>> * synapticInput);
+    void CloseStreams();
 
     std::string GetRasterplotFilename() {return this->directoryPath + title + "_Rasterplot.dat";}
     std::string GetCurrentsFilename()   {return this->directoryPath + title + "_Currents.dat";}

@@ -1225,6 +1225,16 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
     Record_AllNeuronsOutput();
 }
 
+void AdvancedRecorder::CloseStreams()
+{
+    if (neuronTrackingInitialized){
+        for (std::ofstream& stream : FileStreams.neuronOuputFileStreams){
+        stream.close();
+    }}
+
+    FileStreams.averagesFileStream.close();
+}
+
 void AdvancedRecorder::writeFinalDataFile(double comp_time)
 {
     std::chrono::time_point<std::chrono::system_clock> t;
@@ -1236,7 +1246,7 @@ void AdvancedRecorder::writeFinalDataFile(double comp_time)
     stream <<  "#Comp. finalized: " << std::ctime(&end_time);
     stream <<  "#Comp. time: " << comp_time << " secs.\n";
     stream.close();
-
+    CloseStreams();
     std::cout << "Results saved in " << directoryPath << "\n";
 
 }
