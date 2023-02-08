@@ -4,9 +4,6 @@
 
 void LIFNeuronPop::advect(std::vector<double> * synaptic_dV)
 {
-    double dt           = info->dt;
-    double expdt        = exp(-dt/tau_m);
-
     ClearSpiker();
 
     //#pragma omp parallel for
@@ -50,7 +47,7 @@ void LIFNeuronPop::LoadParameters(std::vector<std::string> *input){
             reset_type = std::stoi(values.at(0));
         }
     }
-
+    expdt=exp(-info->dt/tau_m);
 }
 
 
