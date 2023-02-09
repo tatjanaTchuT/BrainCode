@@ -1246,7 +1246,7 @@ void AdvancedRecorder::CloseStreams()
         FileStreams.hSOverallFileStream.close();
     } if (hasBranchedSynapsePop){
         FileStreams.heteroBSynapsesFileStream.close();
-    }if (neuronTrackingInitialized){
+    } if (neuronTrackingInitialized){
         for (std::ofstream& stream : FileStreams.neuronOuputFileStreams){
         stream.close();
     }}

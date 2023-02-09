@@ -9,12 +9,16 @@ struct Instruction{
     long endTimeStep;
     int fireEveryNSteps;//This variable describes the timesteps between every AP. If 3, it will fire every 3 timesteps, so 2 no and 1 yes.
     bool completed{false};
+    Instruction(int neuronId, long startTimeStep, long endTimeStep, int fireEveryNSteps);
 };
 
 class InputNeuronPop: public NeuronPop {
     protected:
     std::vector<std::vector<Instruction>> inputInstructions;//A vector of instructions for each neuron of the population
     bool instructionBasedBool{false};
+
+    std::string inputFileAddress;
+    std::ifstream inputStreamFile;//A stream to read the spikers per time-step
     bool spikerListFiringBasedBool{false};
 
     public:
@@ -26,6 +30,7 @@ class InputNeuronPop: public NeuronPop {
     
     void advect(std::vector<double> * synaptic_dV) override; //Here I will have to set the spikers depending on the instructions (using modular with fireEveryNsteps)
     //Possibility of instead of instructions, giving the spikers per timestep (probably calculate the raw firing first, then the spikers per timestep) and set them in the advect function
+    void ReadInstructionsFromFile();
     void GenerateSpikersFromInstructions();
     void ReadSpikersFromFile();
 }; 

@@ -51,7 +51,6 @@ std::vector<int> DatafileParser::entryToNeuronIndexes(FileEntry fileEntry)
         if (str_point.find("1") != std::string::npos){
             spikedNeurons.push_back(neuronIndex);
         } else if (str_point.find("0") != std::string::npos){
-
         } else {
             std::cout<<"Parsing error oversight. The unexpected parsed input was: "<< str_point<<"\n";
             throw;
