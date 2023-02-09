@@ -94,10 +94,11 @@ void InputNeuronPop::GenerateSpikersFromInstructions()
             if ((!instruction.completed) && (instruction.startTimeStep>info->time_step)){ //Here not >= to avoid a spike of frequency when changing instructions
                 if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
                     spiker.push_back(neuronId);
-                } if (instruction.endTimeStep>=info->time_step){
+                    if (instruction.endTimeStep>=info->time_step){
                     instruction.completed=true;
                 }
                 break;
+                } 
             }
         }
     }
