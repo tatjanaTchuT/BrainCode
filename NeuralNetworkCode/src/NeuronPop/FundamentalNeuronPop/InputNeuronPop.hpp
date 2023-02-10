@@ -9,12 +9,14 @@ struct Instruction{
     long endTimeStep;
     int fireEveryNSteps;//This variable describes the timesteps between every AP. If 3, it will fire every 3 timesteps, so 2 no and 1 yes.
     bool completed{false};
+    bool last{false};
     Instruction(int neuronId, long startTimeStep, long endTimeStep, int fireEveryNSteps);
 };
 
 class InputNeuronPop: public NeuronPop {
     protected:
     std::vector<std::vector<Instruction>> inputInstructions;//A vector of instructions for each neuron of the population
+    std::vector<int> activeInstructions;
     bool instructionBasedBool{false};
 
     std::string inputFileAddress;
@@ -33,6 +35,8 @@ class InputNeuronPop: public NeuronPop {
     void ReadInstructionsFromFile();
     void GenerateSpikersFromInstructions();
     void ReadSpikersFromFile();
+
+    std::string GetType() override {return str_InputNeuron;}
 }; 
 
 #endif

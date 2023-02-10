@@ -25,6 +25,7 @@ void InputNeuronPop::LoadParameters(std::vector<std::string> *input)
             } else if (values.at(0).find("instruction") != std::string::npos){
                 instructionBasedBool=true;
                 inputInstructions.resize(noNeurons);
+                activeInstructions.resize(noNeurons);
                 ReadInstructionsFromFile();
             } else {
                 throw;
@@ -89,16 +90,31 @@ void InputNeuronPop::ReadInstructionsFromFile()
 
 void InputNeuronPop::GenerateSpikersFromInstructions()
 {
-    for (int neuronId = 0; neuronId<static_cast<int>(inputInstructions.size()); neuronId++){
-        for (Instruction& instruction : inputInstructions.at(neuronId)){
-            if ((!instruction.completed) && (instruction.startTimeStep>info->time_step)){ //Here not >= to avoid a spike of frequency when changing instructions
-                if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
-                    spiker.push_back(neuronId);
-                    if (instruction.endTimeStep>=info->time_step){
-                    instruction.completed=true;
+    // //loop option 1 (inefficient but less exception prone)
+    // for (int neuronId = 0; neuronId<static_cast<int>(inputInstructions.size()); neuronId++){
+    //     for (Instruction& instruction : inputInstructions.at(neuronId)){
+    //         if ((!instruction.completed) && (instruction.startTimeStep>info->time_step)){ //Here not >= to avoid a spike of frequency when changing instructions
+    //             if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
+    //                 spiker.push_back(neuronId);
+    //                 if (instruction.endTimeStep>=info->time_step){
+    //                 instruction.completed=true;
+    //             }
+    //             break;
+    //             } 
+    //         }
+    //     }
+    // }
+    //loop option 2 (efficient but probably worse overall)
+    for (int neuronId = 0; neuronId<static_cast<int>(activeInstructions.size()); neuronId++){
+        Instruction& instruction = inputInstructions.at(neuronId).at(activeInstructions.at(neuronId));
+        if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
+            if (instruction.completed){continue;}
+            spiker.push_back(neuronId);
+            if (instruction.endTimeStep>=info->time_step){
+                if (!(instruction.last)){
+                    activeInstructions.at(neuronId)++;
                 }
-                break;
-                } 
+                instruction.completed=true;
             }
         }
     }

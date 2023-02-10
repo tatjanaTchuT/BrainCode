@@ -9,6 +9,8 @@
 #ifndef NeuronPopSample_hpp
 #define NeuronPopSample_hpp
 
+#include "NeuronPop/FundamentalNeuronPop/InputNeuronPop.hpp"
+
 #include <iostream>
 #include <vector>
 #include <random>
