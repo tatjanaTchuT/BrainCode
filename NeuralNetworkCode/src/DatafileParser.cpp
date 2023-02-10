@@ -45,17 +45,11 @@ std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStr
 
 std::vector<int> DatafileParser::entryToNeuronIndexes(FileEntry fileEntry)
 {
+    //I need to change this if I change how the output is written
     int neuronIndex{};
     std::vector<int> spikedNeurons;
     for (std::string str_point : fileEntry.values){
-        if (str_point.find("1") != std::string::npos){
-            spikedNeurons.push_back(neuronIndex);
-        } else if (str_point.find("0") != std::string::npos){
-        } else {
-            std::cout<<"Parsing error oversight. The unexpected parsed input was: "<< str_point<<"\n";
-            throw;
-        }
-        neuronIndex++;
+        spikedNeurons.push_back(std::stoi(str_point));
     }
     //Here we check the 1s and output the neuron indexes/numbers that spiked on a given timestep
     return spikedNeurons;

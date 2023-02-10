@@ -19,7 +19,7 @@ void InputNeuronPop::LoadParameters(std::vector<std::string> *input)
 
         SplitString(&(*it),&name,&values);
 
-        if(name.find("inputFile_type") != std::string::npos){
+        if(name.find("inputFile") != std::string::npos){
             if(values.at(0).find("spiker") != std::string::npos){
                 spikerListFiringBasedBool=true;
             } else if (values.at(0).find("instruction") != std::string::npos){
@@ -41,7 +41,7 @@ void InputNeuronPop::SaveParameters(std::ofstream *stream)
 
     NeuronPop::SaveParameters(stream);
 
-    *stream <<  id + "_inputFile_type                   ";
+    *stream <<  id + "_inputFile                   ";
     if (spikerListFiringBasedBool){
         *stream<<"spiker";
     } else if (instructionBasedBool){
@@ -86,6 +86,9 @@ void InputNeuronPop::ReadInstructionsFromFile()
             throw;
         }
     }
+    for (std::vector<Instruction>& neuronInstructions: inputInstructions){
+        neuronInstructions.back().last=true;
+    }
 }
 
 void InputNeuronPop::GenerateSpikersFromInstructions()
@@ -110,7 +113,7 @@ void InputNeuronPop::GenerateSpikersFromInstructions()
         if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
             if (instruction.completed){continue;}
             spiker.push_back(neuronId);
-            if (instruction.endTimeStep>=info->time_step){
+            if (instruction.endTimeStep<=info->time_step){
                 if (!(instruction.last)){
                     activeInstructions.at(neuronId)++;
                 }

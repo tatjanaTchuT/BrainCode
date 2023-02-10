@@ -76,7 +76,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
             }
         }
 
-        //std::cout << "neuron type: " << type << "\n";
+        std::cout << "neuron type: " << type << "\n";
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){

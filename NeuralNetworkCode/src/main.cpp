@@ -11,6 +11,7 @@
  */
 #include <iostream>
 //#include <filesystem>
+#include "./DatafileParser.hpp"
 #include "NeuralNetwork.hpp"
 #include "GlobalFunctions.hpp"
 //namespace fs = std::__fs::filesystem;
@@ -170,6 +171,9 @@ int main(int argc, char* argv[])
             NeuralNetwork neuralNetwork(base,&parEntries);
             neuralNetwork.Simulate();
             neuralNetwork.makeInputCopy(inputFile);
+            DatafileParser parser(neuralNetwork.GetRecorder());
+            neuralNetwork.~NeuralNetwork();
+            parser.parse();
         }
     }
 

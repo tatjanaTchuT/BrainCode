@@ -49,6 +49,7 @@ public:
 
     void makeInputCopy(const std::string&);
     void outputHeteroEvents();
+    AdvancedRecorder& GetRecorder(){return *dynamic_cast<AdvancedRecorder*>(recorder);}
 };
 
 #endif // NeuralNetwork_HPP

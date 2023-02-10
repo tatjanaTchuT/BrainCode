@@ -585,11 +585,8 @@ void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
         this->FileStreams.neuronOuputFileStreams.emplace_back(std::ofstream(GetNeuronOutputFilename(neuronPop), std::ofstream::out | std::ofstream::app));
         WriteHeader(&this->FileStreams.neuronOuputFileStreams.back());
         this->FileStreams.neuronOuputFileStreams.back() << "#Spiking stream output in binary per timestep \n";
-        this->FileStreams.neuronOuputFileStreams.back() << "#1 t (secs.)\t 2-"<<1+this->neurons->GetPop(neuronPop)->GetNoNeurons()<<" Spikes_neuron_neuron_id \n";
+        this->FileStreams.neuronOuputFileStreams.back() << "#1 t (secs.)\t spiker neurons \n";
         this->FileStreams.neuronOuputFileStreams.back() << "t\t";
-        for (unsigned long k = 0; k < this->neurons->GetPop(neuronPop)->GetNoNeurons(); ++k) {
-                this->FileStreams.neuronOuputFileStreams.back() << "N" << k <<  "\t";
-            }
         this->FileStreams.neuronOuputFileStreams.back() << "#************************************ \n";
     }
 
@@ -1122,29 +1119,41 @@ void AdvancedRecorder::Record_HeteroSynapsesBranched() {
 
 void AdvancedRecorder::Record_AllNeuronsOutput()
 {
+    //I need to change this if I change how the output is written
     if (!streamingNOutputBool){
         return;
     }
     double time_t {static_cast<double>(info->time_step*info->dt)};
 
     for (int index = 0; index<streamingNeuronPops.size(); index++){
-        int neuronPopId= streamingNeuronPops.at(index);
-        NeuronPop& population = *this->neurons->GetPop(neuronPopId);
+        //int neuronPopId= streamingNeuronPops.at(index);
+        NeuronPop& population = *this->neurons->GetPop(streamingNeuronPops.at(index));
         std::ofstream& stream = this->FileStreams.neuronOuputFileStreams.at(index);
-        int spikerIndex{ static_cast<int>(population.GetSpikers()->size()-1) };
+        std::stringstream inputString;
+        //int spikerIndex{ static_cast<int>(population.GetSpikers()->size()-1) };
 
-        SaveDoubleFile(&stream,time_t,5);
+        SaveDoubleFile(&stream,time_t,5);//In this format fileEntry.name would be the timestep
 
-        for (long neuron = 0; neuron < (static_cast<long>(population.GetNoNeurons())); neuron++) {
-            if ((spikerIndex==0) && (neuron == population.GetSpikers()->at(spikerIndex))) {
-                //The logic behind this loop's if statements and indexes is to get around cross checking every ID
-                stream<<std::to_string(1)<<"\t";
-                spikerIndex--;
-            } else {
-                stream<<std::to_string(0)<<"\t";
-            }
+        for (long neuronId : *population.GetSpikers()){
+            inputString<<std::to_string(neuronId)<<"\t";
         }
-        stream<<"\n";
+
+        //This loop is deprecated
+        // for (long neuron = 0; neuron < (static_cast<long>(population.GetNoNeurons())); neuron++) {
+        //     if (neuron == population.GetSpikers()->at(spikerIndex)) {
+        //         //The logic behind this loop's if statements and indexes is to get around cross checking every ID
+        //         stream<<std::to_string(1)<<"\t";
+        //         if (spikerIndex==0){
+        //             break;
+        //         } else {
+        //             spikerIndex--;
+        //         }
+
+        //     } else {
+        //         stream<<std::to_string(0)<<"\t";
+        //     }
+        // }
+        stream<<inputString.str()<<"\n";
     }
 
 }
