@@ -85,7 +85,7 @@ std::vector<std::vector<double>> DatafileParser::parseSpikesToSpikeTimes(std::if
 void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata)
 {
     //Wrapper 2
-    std::ofstream stream(wfilePath, std::ofstream::out | std::ofstream::trunc);
+    std::ofstream stream(wfilePath);
     int neuronIndex{};
     stream<<"M="<<std::to_string(metadata.noNeurons)<<','<<std::to_string(metadata.dt)<<','<<std::to_string(metadata.totalTimesteps)<<','<<std::to_string(metadata.neuronPopId)<<'\n';
     for (std::vector<double>& neuronRec : parsedData){
