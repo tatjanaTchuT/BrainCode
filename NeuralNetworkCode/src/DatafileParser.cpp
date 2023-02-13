@@ -39,7 +39,7 @@ std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStr
         delete[] entry;
         entry = new char[_MAX_CHARACTERS_PER_LINE];
     }
-
+    fileStream.close();
     return parsedFileEntries;
 }
 
@@ -93,11 +93,26 @@ void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsed
         for (double spiketime : neuronRec){
             stream<<std::to_string(spiketime)<<",";
         }
+        stream<<"\n";
         neuronIndex++;
     }
+    stream.close();
     //Here I will have to first create the ofstream. Then basically iterate over the vector and print each vector with a comma separator and write in desired format:
     //M(etadata)=noNeurons,dt,totaltimesteps,neuronPopId
     //N(euronpop)_1=spiketime1,spiketime2,
+}
+
+bool DatafileParser::closeOpenFile(int index)
+{
+    filesToParse.at(index).close();
+    if (std::remove(fileNamesToParse.at(index).c_str())==0){
+        return true;
+    } else {
+        std::cout<<stderr<<" "<<errno<<" ";
+        perror("Error msg");
+        return false;
+    }
+
 }
 
 void DatafileParser::parse()
@@ -114,12 +129,17 @@ void DatafileParser::parse()
                 std::cout << "*************************\n";
                 throw;
             }
-        //Now we assume the file exist
-        writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream, metaDataForFiles.at(index)), this->indexToParsedOutputStreamFilePath(index), metaDataForFiles.at(index));
-        remove(fileNamesToParse.at(index).c_str()); //This should delete the already parsed and converted file
-        index++;
-    }
-    std::cout<<"\nParsing operations are finished.\n";
+            //Now we assume the file exist
+            writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream, metaDataForFiles.at(index)), this->indexToParsedOutputStreamFilePath(index), metaDataForFiles.at(index));
+            //For now files cannot be deleted in the server by the programme, they have to be deleted manually.
+            // if(closeOpenFile(index)){
+            //     std::cout<<"Unparsed file removed\n";
+            // } else {
+            //     std::cout<<"Unable to remove file : "<<fileNamesToParse.at(index)<<"\n";
+            // }; //This should delete the already parsed and converted file
+            index++;
+            }
+        std::cout<<"\nParsing operations are finished.\n";
     } else {
         std::cout<<"\nNo parsing is needed\n";
     }

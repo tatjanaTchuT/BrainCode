@@ -5,8 +5,11 @@
 #include "AdvancedRecorder.hpp"
 #include "GlobalFunctions.hpp"
 
+#include <stdlib.h>
+#include <errno.h>
 #include <vector>
 #include <iostream>
+#include <filesystem>
 
 struct DataOnFile{
     unsigned long noNeurons;
@@ -48,6 +51,7 @@ public:
     std::vector<FileEntry> parseFileToEntries(std::ifstream& fileStream);
 
     void writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata); //
+    bool closeOpenFile(int index);
 
     void parse();
 
