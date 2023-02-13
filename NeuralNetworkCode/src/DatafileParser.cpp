@@ -8,10 +8,10 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder)
     neuronPopIds=recorder.streamingNeuronPops;
     if(parsingNOutputBool){
         for (int neuronPop : recorder.streamingNeuronPops){
-            metaDataForFiles.emplace_back(DataOnFile(recorder.neurons->GetNeuronsPop(neuronPop),recorder.info->dt,static_cast<int>(recorder.info->simulationTime/recorder.info->dt), neuronPop));
+            metaDataForFiles.emplace_back(DataOnFile(recorder.neurons->GetNeuronsPop(neuronPop),recorder.info->dt,static_cast<int>(recorder.info->time_step), neuronPop));
             fileNamesToParse.emplace_back(recorder.GetNeuronOutputFilename(neuronPop));
         } for (std::string fileName : fileNamesToParse){
-            filesToParse.emplace_back(std::ifstream(fileName));
+            filesToParse.emplace_back(std::ifstream(fileName, std::ifstream::in));
         }
     }
     //Here we have to access the recorder to obtain the filepaths/filenames and paths in general (and the metadata)
@@ -39,6 +39,13 @@ std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStr
         delete[] entry;
         entry = new char[_MAX_CHARACTERS_PER_LINE];
     }
+    if (fileStream.eof()){
+        std::cout<<"End of file.\n";
+    }
+    if (fileStream.fail()){
+        std::cout<<strerror(errno)<<"\n";
+    }
+    std::cout<<std::boolalpha<<fileStream.fail()<<"\n";
     fileStream.close();
     return parsedFileEntries;
 }

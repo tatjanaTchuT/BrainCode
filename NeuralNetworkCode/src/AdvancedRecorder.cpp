@@ -583,14 +583,7 @@ void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
     }
     for(int neuronPop : streamingNeuronPops){
         this->FileStreams.neuronOuputFileStreams.emplace_back(std::ofstream(GetNeuronOutputFilename(neuronPop), std::ofstream::out | std::ofstream::app));
-        WriteHeader(&this->FileStreams.neuronOuputFileStreams.back());
-        this->FileStreams.neuronOuputFileStreams.back() << "#Spiking stream output in binary per timestep \n";
-        this->FileStreams.neuronOuputFileStreams.back() << "#1 t (secs.)\t spiker neurons \n";
-        this->FileStreams.neuronOuputFileStreams.back() << "t\t";
-        this->FileStreams.neuronOuputFileStreams.back() << "#************************************ \n";
     }
-
-    this->FileStreams.heteroBSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
 }
 
 //void AdvancedRecorder::InitializeRecorder(std::string filename){
@@ -1257,7 +1250,8 @@ void AdvancedRecorder::CloseStreams()
         FileStreams.heteroBSynapsesFileStream.close();
     } if (neuronTrackingInitialized){
         for (std::ofstream& stream : FileStreams.neuronOuputFileStreams){
-        stream.close();
+            stream<<EOF;
+            stream.close();
     }}
 }
 
