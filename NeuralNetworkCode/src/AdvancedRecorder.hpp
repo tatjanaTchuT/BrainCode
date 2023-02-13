@@ -63,7 +63,6 @@ protected:
     unsigned long stepCount;
     unsigned long heteroRecordingPerSteps;
 
-    bool neuronTrackingInitialized{false};
     bool hasBranchedSynapsePop{false};
 
     bool streamingNOutputBool{false};
@@ -117,7 +116,7 @@ public:
     void WriteDataHeader();
     void writeFinalDataFile(double comp_time);
     void Record(std::vector<std::vector<double>> * synapticInput);
-    void CloseStreams();
+    void CloseStreams() override;
 
     std::string GetRasterplotFilename() {return this->directoryPath + title + "_Rasterplot.dat";}
     std::string GetCurrentsFilename()   {return this->directoryPath + title + "_Currents.dat";}

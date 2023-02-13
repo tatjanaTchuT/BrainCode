@@ -51,7 +51,7 @@ public:
     std::vector<FileEntry> parseFileToEntries(std::ifstream& fileStream);
 
     void writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata); //
-    bool closeOpenFile(int index);
+    //bool closeOpenFile(int index);
 
     void parse();
 

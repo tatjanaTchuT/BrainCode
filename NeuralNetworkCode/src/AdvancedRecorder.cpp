@@ -1147,6 +1147,7 @@ void AdvancedRecorder::Record_AllNeuronsOutput()
         //     }
         // }
         stream<<inputString.str()<<"\n";
+        //stream.flush();
     }
 
 }
@@ -1248,9 +1249,10 @@ void AdvancedRecorder::CloseStreams()
         FileStreams.hSOverallFileStream.close();
     } if (hasBranchedSynapsePop){
         FileStreams.heteroBSynapsesFileStream.close();
-    } if (neuronTrackingInitialized){
+    } if (streamingNOutputBool){
         for (std::ofstream& stream : FileStreams.neuronOuputFileStreams){
             stream<<EOF;
+            stream.flush();
             stream.close();
     }}
 }
@@ -1266,7 +1268,6 @@ void AdvancedRecorder::writeFinalDataFile(double comp_time)
     stream <<  "#Comp. finalized: " << std::ctime(&end_time);
     stream <<  "#Comp. time: " << comp_time << " secs.\n";
     stream.close();
-    CloseStreams();
     std::cout << "Results saved in " << directoryPath << "\n";
 
 }

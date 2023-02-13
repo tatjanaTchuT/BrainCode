@@ -2,6 +2,7 @@
 
 DatafileParser::DatafileParser(AdvancedRecorder& recorder)
 {
+    recorder.CloseStreams();
     parsingNOutputBool=recorder.streamingNOutputBool;//We keep it to run parse()
     directoryPath=recorder.directoryPath;
     title=recorder.title;
@@ -14,6 +15,7 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder)
             filesToParse.emplace_back(std::ifstream(fileName, std::ifstream::in));
         }
     }
+
     //Here we have to access the recorder to obtain the filepaths/filenames and paths in general (and the metadata)
     //Then we have to convert the filepaths into the proper ifstreams
     //After this constructor it is no longer necessary to keep the NN object in scope
@@ -22,28 +24,26 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder)
 std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStream)
 {    
     //Here I have to parse each line (ignoring the first one with the column titles) and create FileEntries for each line
-    char*    entry = new char[_MAX_CHARACTERS_PER_LINE];
     std::vector<FileEntry> parsedFileEntries;
-    while (fileStream.getline(entry,_MAX_CHARACTERS_PER_LINE)){
-        if(entry[0] == '#'){
-            delete[] entry;
-            entry = new char[_MAX_CHARACTERS_PER_LINE];
-            continue;
-        } else if (entry[0] == 't') {
-            delete[] entry;
-            entry = new char[_MAX_CHARACTERS_PER_LINE];
+    for (std::string entry; std::getline(fileStream, entry);){
+        if (fileStream.eof()){
+            std::cout<<entry<<" "<<fileStream.gcount()<<"\n";
+            //fileStream.clear();
+            break;
+        }
+        if(entry.c_str()[0] == '#'){
             continue;
         } else {
             parsedFileEntries.emplace_back(stringToFileEntry(std::move(static_cast<std::string>(entry))));
         }
-        delete[] entry;
-        entry = new char[_MAX_CHARACTERS_PER_LINE];
     }
+
     if (fileStream.eof()){
         std::cout<<"End of file.\n";
     }
     if (fileStream.fail()){
         std::cout<<strerror(errno)<<"\n";
+        std::cout<<"fk u";
     }
     std::cout<<std::boolalpha<<fileStream.fail()<<"\n";
     fileStream.close();
@@ -109,18 +109,18 @@ void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsed
     //N(euronpop)_1=spiketime1,spiketime2,
 }
 
-bool DatafileParser::closeOpenFile(int index)
-{
-    filesToParse.at(index).close();
-    if (std::remove(fileNamesToParse.at(index).c_str())==0){
-        return true;
-    } else {
-        std::cout<<stderr<<" "<<errno<<" ";
-        perror("Error msg");
-        return false;
-    }
+// bool DatafileParser::closeOpenFile(int index)
+// {
+//     filesToParse.at(index).close();
+//     if (std::remove(fileNamesToParse.at(index).c_str())==0){
+//         return true;
+//     } else {
+//         std::cout<<stderr<<" "<<errno<<" ";
+//         perror("Error msg");
+//         return false;
+//     }
 
-}
+// }
 
 void DatafileParser::parse()
 {
