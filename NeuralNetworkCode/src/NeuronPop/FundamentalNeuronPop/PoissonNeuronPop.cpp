@@ -70,6 +70,6 @@ void PoissonNeuronPop::SaveParameters(std::ofstream * stream){
     if (!inputDependant){
         *stream <<  id + "_r_target                   " << std::to_string(r_target)  << "\n";
     }
-    *stream <<  "#\t\tPoisson neuron: produces Poisson spiking with rate r_target (defined under stimulus) \n";
+    *stream <<  "#\t\tPoisson neuron: produces Poisson spiking with rate r_target (defined under stimulus). ZERO DOES NOT REMOVE THE FEATURE, YOU MUST REMOVE THE ENTIRE LINE \n";
 
 }

@@ -47,7 +47,7 @@ void InputNeuronPop::SaveParameters(std::ofstream *stream)
     } else if (instructionBasedBool){
         *stream<<"instruction";
     } else {
-        *stream<<"None (sth went wrong)";
+        *stream<<"None";
     }
     *stream <<  "#Write 'instruction' for instruction-based, and 'spiker' for spiker-based \n";
 }
@@ -78,6 +78,7 @@ void InputNeuronPop::ReadInstructionsFromFile()
             continue;
         } else if (entry[0] == '>'){
             FileEntry s_entry {std::move(stringToFileEntry(std::move(static_cast<std::string>(entry))))};
+            if (std::stoi(s_entry.values.at(3))<=0){throw;}
             inputInstructions.at(std::stoi(s_entry.values.at(0))).emplace_back(Instruction(std::stoi(s_entry.values.at(0)),std::lround(std::stod(s_entry.values.at(1))/info->dt), std::lround(std::stod(s_entry.values.at(2))/info->dt), std::stoi(s_entry.values.at(3))));
             delete[] entry;
             entry = new char[2048];
@@ -112,7 +113,7 @@ void InputNeuronPop::GenerateSpikersFromInstructions()
         Instruction& instruction = inputInstructions.at(neuronId).at(activeInstructions.at(neuronId));
         if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
             if (instruction.completed){continue;}
-            spiker.push_back(neuronId);
+            if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
             if (instruction.endTimeStep<=info->time_step){
                 if (!(instruction.last)){
                     activeInstructions.at(neuronId)++;
@@ -139,8 +140,8 @@ void InputNeuronPop::ReadSpikersFromFile()
                 std::cout<<"There was a reading alignment error";
                 throw;
             } else {
-                for (int i = 1; i<static_cast<int>(s_entry.values.size()); i++){
-                    spiker.push_back(std::stoi(s_entry.values.at(i)));
+                for (std::string value : s_entry.values){
+                    spiker.push_back(std::stoi(value));
                 }
             }
         } else {

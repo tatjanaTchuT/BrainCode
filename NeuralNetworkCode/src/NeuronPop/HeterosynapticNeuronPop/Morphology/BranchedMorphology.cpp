@@ -137,7 +137,7 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     }
     *stream << "\t"<<"#'ordered' synapse allocation will allocate synapses from the branch node to the end of the branch. 'random' will allocate random positions in each branch\n";
 
-    *stream << neuronPreId<<"_morphology_seed\t\t\t"<<std::to_string(this->seed);//Missing comments
+    *stream << neuronPreId<<"_morphology_seed\t\t\t"<<std::to_string(this->seed)<<"\n";//Missing comments
     /*
     *stream << neuronPreId<<"_morphology_branch_allocation\t\t";
     if (this->randomBranchAllocationB){

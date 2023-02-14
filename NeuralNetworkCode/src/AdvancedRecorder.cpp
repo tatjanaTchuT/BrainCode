@@ -648,7 +648,7 @@ void AdvancedRecorder::Record_Rasterplot(){
 
         for(auto const &spiker_id : (*spiker) ){
             if (spiker_id == std::round(static_cast<double>(Ntot) / Nrec * std::round(static_cast<double>(Nrec * spiker_id / Ntot))))
-                this->FileStreams.rasterplotFileStream << double(info->time_step)*dt <<"\t" << spiker_id << "\t" << pop << "\n";
+                this->FileStreams.rasterplotFileStream << static_cast<double>(info->time_step)*dt <<"\t" << spiker_id << "\t" << pop << "\n";
         }
     }
 }

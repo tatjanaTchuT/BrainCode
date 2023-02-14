@@ -1,4 +1,5 @@
-#>neuron start end fire_every_n_steps
+#>neuron start end fire_every_n_steps (number of dts for a spike)
+#NEVER WRITE A ZERO IN THE LAST COLUMN
 > 0 0 1.0 10
 > 1 0 1.0 20
 > 2 0 1.0 30
