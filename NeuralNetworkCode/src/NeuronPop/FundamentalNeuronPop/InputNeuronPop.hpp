@@ -7,11 +7,16 @@ struct Instruction{
     int neuronId;//The neuron specific to the instruction (-1 is equivalent to all?)
     long startTimeStep;//Will have to convert times to timesteps. Or make a short python programme to do it in a file by itself
     long endTimeStep;
+    double frequency;
     int fireEveryNSteps;//This variable describes the timesteps between every AP. If 3, it will fire every 3 timesteps, so 2 no and 1 yes.
     bool completed{false};
     bool last{false};
     Instruction(int neuronId, long startTimeStep, long endTimeStep, int fireEveryNSteps);
 };
+
+//ControlledNeuronPop
+//Reader/FileNeuronPop
+//DictatNeuronPop WINNER
 
 class InputNeuronPop: public NeuronPop {
     protected:

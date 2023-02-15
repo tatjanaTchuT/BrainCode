@@ -24,8 +24,9 @@ class DatafileParser {
 
 protected:
 
+    bool parsingEnabled{false};
     //Bools will be necessary to check which parsing is needed, or whether it is needed or not
-    bool parsingNOutputBool{false};
+    bool parsingRasterDataBool{false};
     //Add here more if there are more files to be parsed at the end of the simulation
 
     std::string directoryPath;

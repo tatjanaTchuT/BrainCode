@@ -3,11 +3,18 @@
 DatafileParser::DatafileParser(AdvancedRecorder& recorder)
 {
     recorder.CloseStreams();
-    parsingNOutputBool=recorder.streamingNOutputBool;//We keep it to run parse()
+    parsingEnabled=recorder.parserEnabled;
+
+    parsingRasterDataBool=(recorder.noRasterPlotNeurons.sum() != 0);//We keep it to run parse()
     directoryPath=recorder.directoryPath;
     title=recorder.title;
+    for (int i = 0; i < recorder.noRasterPlotNeurons.size(); i++){
+        if (recorder.noRasterPlotNeurons[i] != 0){
+
+        }
+    }
     neuronPopIds=recorder.streamingNeuronPops;
-    if(parsingNOutputBool){
+    if(parsingRasterDataBool){
         for (int neuronPop : recorder.streamingNeuronPops){
             metaDataForFiles.emplace_back(DataOnFile(recorder.neurons->GetNeuronsPop(neuronPop),recorder.info->dt,static_cast<int>(recorder.info->time_step), neuronPop));
             fileNamesToParse.emplace_back(recorder.GetNeuronOutputFilename(neuronPop));
@@ -26,26 +33,12 @@ std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStr
     //Here I have to parse each line (ignoring the first one with the column titles) and create FileEntries for each line
     std::vector<FileEntry> parsedFileEntries;
     for (std::string entry; std::getline(fileStream, entry);){
-        if (fileStream.eof()){
-            std::cout<<entry<<" "<<fileStream.gcount()<<"\n";
-            //fileStream.clear();
-            break;
-        }
         if(entry.c_str()[0] == '#'){
             continue;
         } else {
             parsedFileEntries.emplace_back(stringToFileEntry(std::move(static_cast<std::string>(entry))));
         }
     }
-
-    if (fileStream.eof()){
-        std::cout<<"End of file.\n";
-    }
-    if (fileStream.fail()){
-        std::cout<<strerror(errno)<<"\n";
-        std::cout<<"fk u";
-    }
-    std::cout<<std::boolalpha<<fileStream.fail()<<"\n";
     fileStream.close();
     return parsedFileEntries;
 }
@@ -125,7 +118,7 @@ void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsed
 void DatafileParser::parse()
 {
     //Parent wrapper of wrappers 1 and 2
-    if(parsingNOutputBool){
+    if(parsingRasterDataBool){
 
         int index{};
         for (std::ifstream& fileStream : filesToParse){

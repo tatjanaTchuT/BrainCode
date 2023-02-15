@@ -3,7 +3,7 @@
 
 InputNeuronPop::InputNeuronPop(GlobalSimInfo *info, int id) : NeuronPop (info, id)
 {
-    inputFileAddress = info->pathTo_inputFile + "Input_File_"+std::to_string(id)+".txt";
+    inputFileAddress = info->pathTo_inputFile + "InputNeuronPop_"+std::to_string(id)+"_spikers.txt";
     inputStreamFile.open(inputFileAddress, std::ifstream::in);
     //Then just open and read, with bools for raw spikers or instruction-baseds
 }

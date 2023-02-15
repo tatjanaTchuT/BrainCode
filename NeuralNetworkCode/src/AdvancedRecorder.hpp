@@ -44,6 +44,7 @@ class AdvancedRecorder : public Recorder
 
 protected:
 
+    bool parserEnabled{false};
     bool trackSynapses{false}; //, writeHistogram;
 	int Heatmap;
 	int current_t_0 = 0;
@@ -65,8 +66,8 @@ protected:
 
     bool hasBranchedSynapsePop{false};
 
-    bool streamingNOutputBool{false};
-    std::vector<int> streamingNeuronPops{};
+    // bool streamingNOutputBool{false};
+    // std::vector<int> streamingNeuronPops{};
 
     void reset_statistics(); //Resets all containers.
 
@@ -83,7 +84,7 @@ protected:
 	void Record_HeteroSynapses();
     void Record_HeteroSynapsesOverall();
     void Record_HeteroSynapsesBranched();
-    void Record_AllNeuronsOutput();
+    //void Record_AllNeuronsOutput();
 
 //WriteDataHeader functions
     void WriteDataHeader_Currents();
@@ -98,7 +99,7 @@ protected:
 	void WriteDataHeader_HeteroSynapses();
     void WriteDataHeader_HeteroSynapsesOverall();
     void WriteDataHeader_HeteroSynapsesBranched();
-    void WriteDataHeader_AllNeuronsOutput();
+    //void WriteDataHeader_AllNeuronsOutput();
 
 
     void SetNoRasterplotNeurons(std::vector<std::string> *values);
@@ -129,7 +130,7 @@ public:
     std::string GetHeteroSynapseStateFilename() { return this->directoryPath + title + "_HeteroSynapses.dat"; }
     std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHS.dat"; }
     std::string GetHeteroBranchedSynapseStateFilename() { return this->directoryPath + title + "_BranchedHS.dat"; }
-    std::string GetNeuronOutputFilename(int popId) { return this->directoryPath + title + "_NeuronPop_" + std::to_string(popId) + "_Output.dat"; }
+    //std::string GetNeuronOutputFilename(int popId) { return this->directoryPath + title + "_NeuronPop_" + std::to_string(popId) + "_Output.dat"; }
     std::string GetType()   {return str_advancedRecorder;}
 
     std::vector<std::vector<std::vector<double>>> savecurrents;

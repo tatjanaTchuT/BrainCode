@@ -67,7 +67,7 @@ struct RecorderOpenStreams {
     std::ofstream heteroSynapsesFileStream;
     std::ofstream hSOverallFileStream;
     std::ofstream heteroBSynapsesFileStream;
-    std::vector<std::ofstream> neuronOuputFileStreams;
+    //std::vector<std::ofstream> neuronOuputFileStreams;
 };
 
 struct SubRegion{
