@@ -1,39 +1,41 @@
 #include "DatafileParser.hpp"
 
-DatafileParser::DatafileParser(AdvancedRecorder& recorder)
+DatafileParser::DatafileParser(AdvancedRecorder& recorder) //revised
 {
     recorder.CloseStreams();
     parsingEnabled=recorder.parserEnabled;
 
-    parsingRasterDataBool=(recorder.noRasterPlotNeurons.sum() != 0);//We keep it to run parse()
+    totalRecordedRasterNeurons=recorder.noRasterPlotNeurons.sum();
     directoryPath=recorder.directoryPath;
     title=recorder.title;
     for (int i = 0; i < recorder.noRasterPlotNeurons.size(); i++){
         if (recorder.noRasterPlotNeurons[i] != 0){
-
+            neuronPopRasterIds.push_back(i);
         }
     }
-    neuronPopIds=recorder.streamingNeuronPops;
-    if(parsingRasterDataBool){
-        for (int neuronPop : recorder.streamingNeuronPops){
-            metaDataForFiles.emplace_back(DataOnFile(recorder.neurons->GetNeuronsPop(neuronPop),recorder.info->dt,static_cast<int>(recorder.info->time_step), neuronPop));
-            fileNamesToParse.emplace_back(recorder.GetNeuronOutputFilename(neuronPop));
-        } for (std::string fileName : fileNamesToParse){
+    if(recorder.noRasterPlotNeurons.sum() != 0){
+        for (int neuronPop : neuronPopRasterIds){
+            rasterPlotMetadata.emplace_back(recNeuronPopData(recorder.noRasterPlotNeurons[neuronPop],recorder.info->dt,static_cast<int>(recorder.info->time_step), neuronPop, recorder.info->simulationTime));
+        }    
+        fileNamesToParse.emplace_back(recorder.GetRasterplotFilename());
+        fileTypes.push_back(RasterPlot);
+    }
+    for (std::string fileName : fileNamesToParse){
             filesToParse.emplace_back(std::ifstream(fileName, std::ifstream::in));
-        }
     }
-
     //Here we have to access the recorder to obtain the filepaths/filenames and paths in general (and the metadata)
     //Then we have to convert the filepaths into the proper ifstreams
     //After this constructor it is no longer necessary to keep the NN object in scope
 }
 
-std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStream)
+std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStream) //revised
 {    
     //Here I have to parse each line (ignoring the first one with the column titles) and create FileEntries for each line
     std::vector<FileEntry> parsedFileEntries;
     for (std::string entry; std::getline(fileStream, entry);){
         if(entry.c_str()[0] == '#'){
+            continue;
+        } else if (entry.c_str()[0] == 'S'){
             continue;
         } else {
             parsedFileEntries.emplace_back(stringToFileEntry(std::move(static_cast<std::string>(entry))));
@@ -43,34 +45,38 @@ std::vector<FileEntry> DatafileParser::parseFileToEntries(std::ifstream& fileStr
     return parsedFileEntries;
 }
 
-std::vector<int> DatafileParser::entryToNeuronIndexes(FileEntry fileEntry)
+void DatafileParser::setUpSpikeTimesVector(std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> &spikeTimesVector)
 {
-    //I need to change this if I change how the output is written
-    int neuronIndex{};
-    std::vector<int> spikedNeurons;
-    for (std::string str_point : fileEntry.values){
-        spikedNeurons.push_back(std::stoi(str_point));
+    //population level
+    for (int neuronPop: neuronPopRasterIds){ //To do proper indexing later, I will need a index-tracing function to get the index in the neuronPopRasterIds vector to index the larger vector properly when reading entries
+    //neuron level
+        std::vector<std::pair<std::vector<double>, std::pair<int, int>>> tempVector;
+        for (int i = 0; i<rasterPlotMetadata.at(neuronPop).noNeurons;i++){
+            // std::pair<std::vector<double>, std::pair<int, int>> tempElement;
+            // tempElement.second=std::pair<int, int>(neuronPop, i);
+            tempVector.push_back(std::pair<std::vector<double>, std::pair<int, int>>({}, std::pair<int, int>(neuronPop, i)));
+        }
+        spikeTimesVector.push_back(tempVector);
     }
-    //Here we check the 1s and output the neuron indexes/numbers that spiked on a given timestep
-    return spikedNeurons;
 }
 
-std::vector<std::vector<double>> DatafileParser::parseSpikesToSpikeTimes(std::ifstream& fileStream, DataOnFile metadata)
+std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> DatafileParser::parseSpikesToSpikeTimes(std::ifstream &fileStream) // changing
 {
     //Wrapper 1, assume the file does exist
-    std::vector<std::vector<double>> spikeTimesVector (metadata.noNeurons); //vector of vectors of size equal to the number of neurons
+    std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> spikeTimesVector; //vector of vectors of size equal to the number of neurons
+    setUpSpikeTimesVector(spikeTimesVector);
     std::vector<FileEntry> parsedEntries{parseFileToEntries(fileStream)};
-    double currentTimestep;
-    std::vector<int> spikedNeurons;
-    if (parsedEntries[0].values.size() > static_cast<size_t>(metadata.noNeurons - 1)) {
-        std::cout << "Error: the file contains more neurons than it should";
+    if (parsedEntries[0].values.size() > 2) {
+        std::cout << "Error: the file is not properly formatted"<<"\n";
         throw;
     }
     for (FileEntry& parsedEntry : parsedEntries){
-        currentTimestep = std::stod(parsedEntry.name);
-        for (int neuron : entryToNeuronIndexes(parsedEntry)){
-            spikeTimesVector.at(neuron).push_back(currentTimestep);
+        int neuronPopIndex = std::distance(neuronPopRasterIds.begin(), std::find(neuronPopRasterIds.begin(),neuronPopRasterIds.end(), parsedEntry.values.at(1))); //How do we do exception management here?
+        if (neuronPopIndex == std::distance(neuronPopRasterIds.begin(), neuronPopRasterIds.end())){
+            throw;
+            std::cout<<"Indexing error: the neuron population was not found"<<"\n";
         }
+        spikeTimesVector.at(neuronPopIndex).at(std::stoi(parsedEntry.values.at(0))).first.push_back(std::stod(parsedEntry.name));
     }
 
     //Here we can use the FileEntry struct functions to parse a line, then iterate over values(two different loops). Name will be the timestep, luckily enough. 
@@ -82,19 +88,25 @@ std::vector<std::vector<double>> DatafileParser::parseSpikesToSpikeTimes(std::if
 
 
 
-void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata)
+void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> parsedData, std::string wfilePath, std::vector<recNeuronPopData> metadataVec)//later
 {
     //Wrapper 2
     std::ofstream stream(wfilePath);
-    int neuronIndex{};
-    stream<<"M="<<std::to_string(metadata.noNeurons)<<','<<std::to_string(metadata.dt)<<','<<std::to_string(metadata.totalTimesteps)<<','<<std::to_string(metadata.neuronPopId)<<'\n';
-    for (std::vector<double>& neuronRec : parsedData){
-        stream<<"N_"<<std::to_string(neuronIndex)<<"=";
-        for (double spiketime : neuronRec){
-            stream<<std::to_string(spiketime)<<",";
+    //Metadata loop
+    for (recNeuronPopData singleMetadata : metadataVec){
+        stream<<"M_"<<std::to_string(singleMetadata.neuronPopId)<<'='<<std::to_string(singleMetadata.noNeurons)<<','<<std::to_string(singleMetadata.dt)<<','<<std::to_string(singleMetadata.totalTimesteps)<<','<<std::to_string(singleMetadata.neuronPopId)<<','<<std::to_string(singleMetadata.simTime)<<'\n';
+    }
+    //Population loop
+    for (std::vector<std::pair<std::vector<double>, std::pair<int, int>>>& population : parsedData){
+        //neuron loop
+        for (std::pair<std::vector<double>, std::pair<int, int>>& neuron : population){
+            stream<<"N_"<<std::to_string(neuron.second.first)<<'_'<<std::to_string(neuron.second.second)<<"=";
+            for (double spiketime : neuron.first){
+                stream<<std::to_string(spiketime);
+            }
+            stream<<"\n";
         }
-        stream<<"\n";
-        neuronIndex++;
+        stream<<"N_"<<std::to_string(1)<<"=";
     }
     stream.close();
     //Here I will have to first create the ofstream. Then basically iterate over the vector and print each vector with a comma separator and write in desired format:
@@ -102,24 +114,10 @@ void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<double>> parsed
     //N(euronpop)_1=spiketime1,spiketime2,
 }
 
-// bool DatafileParser::closeOpenFile(int index)
-// {
-//     filesToParse.at(index).close();
-//     if (std::remove(fileNamesToParse.at(index).c_str())==0){
-//         return true;
-//     } else {
-//         std::cout<<stderr<<" "<<errno<<" ";
-//         perror("Error msg");
-//         return false;
-//     }
-
-// }
-
 void DatafileParser::parse()
 {
     //Parent wrapper of wrappers 1 and 2
-    if(parsingRasterDataBool){
-
+    if (parsingEnabled){
         int index{};
         for (std::ifstream& fileStream : filesToParse){
             struct stat buffer;
@@ -129,22 +127,19 @@ void DatafileParser::parse()
                 std::cout << "*************************\n";
                 throw;
             }
-            //Now we assume the file exist
-            writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream, metaDataForFiles.at(index)), this->indexToParsedOutputStreamFilePath(index), metaDataForFiles.at(index));
-            //For now files cannot be deleted in the server by the programme, they have to be deleted manually.
-            // if(closeOpenFile(index)){
-            //     std::cout<<"Unparsed file removed\n";
-            // } else {
-            //     std::cout<<"Unable to remove file : "<<fileNamesToParse.at(index)<<"\n";
-            // }; //This should delete the already parsed and converted file
-            index++;
+            if(neuronPopRasterIds.size() !=0 && fileTypes.at(index)==RasterPlot){
+                //Now we assume the file exist
+                writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream), this->GetParsedSpikeTimesFilePath(), rasterPlotMetadata);
+            } else {
+                std::cout<<"\nSomething went wrong\n";
+                throw;
             }
-        std::cout<<"\nParsing operations are finished.\n";
-    } else {
-        std::cout<<"\nNo parsing is needed\n";
+            index++;
+        }
     }
+    std::cout<<"\nParsing operations are finished.\n";
 }
 
-DataOnFile::DataOnFile(unsigned long noNeurons, double dt, int totalTimesteps,int neuronPopId): noNeurons{noNeurons}, dt{dt}, totalTimesteps{totalTimesteps}, neuronPopId{neuronPopId}
+recNeuronPopData::recNeuronPopData(int noNeurons, double dt, int totalTimesteps,int neuronPopId, double simTime): noNeurons{noNeurons}, dt{dt}, totalTimesteps{totalTimesteps}, neuronPopId{neuronPopId}, simTime{simTime}
 {
 }

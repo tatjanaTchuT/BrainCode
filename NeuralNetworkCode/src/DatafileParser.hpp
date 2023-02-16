@@ -10,14 +10,18 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
-struct DataOnFile{
-    unsigned long noNeurons;
+struct recNeuronPopData{
+    int noNeurons;
     double dt;
+    double simTime;
     int totalTimesteps;
     int neuronPopId;
-    char separator {','};
-    DataOnFile(unsigned long noNeurons, double dt, int totalTimesteps,int neuronPopId);
+    recNeuronPopData(int noNeurons, double dt, int totalTimesteps,int neuronPopId, double simTime);
+};
+enum fileType{
+    RasterPlot, GeneralData, Currents, SynapseStates, Potential, Heatmap, CurrentsContribution, HeteroSynapseStates, HeteroSynapseOverall
 };
 
 class DatafileParser {
@@ -26,32 +30,34 @@ protected:
 
     bool parsingEnabled{false};
     //Bools will be necessary to check which parsing is needed, or whether it is needed or not
-    bool parsingRasterDataBool{false};
+    int totalRecordedRasterNeurons{};
     //Add here more if there are more files to be parsed at the end of the simulation
 
     std::string directoryPath;
     std::string title;
     std::string extension {".dat"};
 
-    std::vector<int> neuronPopIds;
+    std::vector<int> neuronPopRasterIds;
 
     std::vector<std::string> fileNamesToParse; //Here we store the file names to open. A similar path will be used for writing, adding _parsed to the filename
     std::vector<std::ifstream> filesToParse; //Here we store the streams to read. Streams to write can be  opened and closed locally.
-    std::vector<DataOnFile> metaDataForFiles; //Here we s tore any extra information to write in the file that may be necessary for reading the datafile in the future.
+    std::vector<fileType> fileTypes; // To have a way to know the filetype we are parsing
+
+    std::vector<recNeuronPopData> rasterPlotMetadata; //Here we s tore any extra information to write in the file that may be necessary for reading the datafile in the future.
 
 public:
     //Constructor/destructor
     explicit DatafileParser(AdvancedRecorder& recorder);
     ~DatafileParser()=default;
 
-    std::string indexToParsedOutputStreamFilePath(int vecIndex) {return directoryPath + title + "_NeuronPop_" + std::to_string(neuronPopIds[vecIndex]) + "_ParsedOutput.dat";}
-    std::vector<int> entryToNeuronIndexes(FileEntry fileEntry);
+    std::string GetParsedSpikeTimesFilePath() {return directoryPath + title + "_ParsedSpikeTimes" + extension;}
 
-    std::vector<std::vector<double>> parseSpikesToSpikeTimes(std::ifstream& fileStream, DataOnFile metadata); //Create a vector of vectors (one per neuron) of spike times from the read file
+    void setUpSpikeTimesVector(std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>>& spikeTimesVector);
+    std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> parseSpikesToSpikeTimes(std::ifstream& fileStream); //Create a vector of vectors (one per neuron) of spike times from the read file
 
     std::vector<FileEntry> parseFileToEntries(std::ifstream& fileStream);
 
-    void writeSpikeTimesFile(std::vector<std::vector<double>> parsedData, std::string wfilePath, DataOnFile metadata); //
+    void writeSpikeTimesFile(std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> parsedData, std::string wfilePath, std::vector<recNeuronPopData> metadataVEC); //
     //bool closeOpenFile(int index);
 
     void parse();
