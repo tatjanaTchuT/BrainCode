@@ -2,10 +2,10 @@
 
 NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<FileEntry> *parEntries)
 {
-    neurons     = NULL;
-    synapses    = NULL;
-    recorder    = NULL;
-    stimulus    = NULL;
+    neurons     = nullptr;
+    synapses    = nullptr;
+    recorder    = nullptr;
+    stimulus    = nullptr;
 
     info.dt                         = 0.0;
     info.simulationTime             = 0.0;

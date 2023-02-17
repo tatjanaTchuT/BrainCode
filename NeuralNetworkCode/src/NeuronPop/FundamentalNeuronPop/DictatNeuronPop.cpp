@@ -78,7 +78,6 @@ void DictatNeuronPop::ReadInstructionsFromFile()
             continue;
         } else if (entry[0] == '>'){
             FileEntry s_entry {std::move(stringToFileEntry(std::move(static_cast<std::string>(entry))))};
-            if (std::stoi(s_entry.values.at(3))<=0){throw;}
             inputInstructions.at(std::stoi(s_entry.values.at(0))).emplace_back(Instruction(std::stoi(s_entry.values.at(0)),std::stod(s_entry.values.at(1)), std::stod(s_entry.values.at(2)), std::stod(s_entry.values.at(3)), info->dt));
             delete[] entry;
             entry = new char[2048];
@@ -156,5 +155,9 @@ Instruction::Instruction(int neuronId, double startTime, double endTime, double 
         this->off=true;
     } else {
         fireEveryNSteps=std::lround((1/frequency)/dt);
+        if (fireEveryNSteps==0){
+            std::cout<<"\n"<<"FATAL ERROR: YOU CHOSE A FREQUENCY THAT IS TOO HIGH FOR NEURON "<<std::to_string(neuronId)<<"\n\n\n"<<"**********************************";
+            throw;
+        }
     }
 }

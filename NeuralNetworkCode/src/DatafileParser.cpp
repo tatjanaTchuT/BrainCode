@@ -101,7 +101,7 @@ void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<std::pair<std::
         for (std::pair<std::vector<double>, std::pair<int, int>>& neuron : population){
             stream<<"N_"<<std::to_string(neuron.second.first)<<'_'<<std::to_string(neuron.second.second)<<"=";
             for (double spiketime : neuron.first){
-                stream<<std::to_string(spiketime);
+                stream<<std::to_string(spiketime)<<",";
             }
             stream<<"\n";
         }
