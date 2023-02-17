@@ -175,7 +175,7 @@ void NeuralNetwork::SaveParameterOptions(){// This function should have stuff mo
     PoissonNeuronPop neuronPoisson(&mockInfo,0);
     neuronPoisson.SaveParameters(&stream);
 
-    InputNeuronPop neuronInput(&mockInfo, 0);
+    DictatNeuronPop neuronInput(&mockInfo, 0);
     neuronInput.SaveParameters(&stream);
 
     stream <<  "#************************************************************************************************\n";

@@ -76,7 +76,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
             }
         }
 
-        std::cout << "neuron type: " << type << "\n";
+        //std::cout << "neuron type: " << type << "\n";
 
         //define neuronPopulation according to type
         if(type == str_LIFNeuron){
@@ -96,7 +96,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
             neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
         }else if (type == str_InputNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
-            neuronPops[p] = new InputNeuronPop(info, p);
+            neuronPops[p] = new DictatNeuronPop(info, p);
         }else {
             throw std::runtime_error(">>>Undefined type of NeuronPop.\n>>>Check Parameters.txt.");
         }

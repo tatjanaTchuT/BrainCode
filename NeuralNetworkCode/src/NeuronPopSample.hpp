@@ -9,7 +9,7 @@
 #ifndef NeuronPopSample_hpp
 #define NeuronPopSample_hpp
 
-#include "NeuronPop/FundamentalNeuronPop/InputNeuronPop.hpp"
+#include "NeuronPop/FundamentalNeuronPop/DictatNeuronPop.hpp"
 
 #include <iostream>
 #include <vector>

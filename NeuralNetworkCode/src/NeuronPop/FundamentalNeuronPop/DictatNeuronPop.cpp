@@ -1,16 +1,16 @@
-#include "./InputNeuronPop.hpp"
-#include "InputNeuronPop.hpp"
+#include "./DictatNeuronPop.hpp"
+#include "DictatNeuronPop.hpp"
 
-InputNeuronPop::InputNeuronPop(GlobalSimInfo *info, int id) : NeuronPop (info, id)
+DictatNeuronPop::DictatNeuronPop(GlobalSimInfo *info, int id) : NeuronPop (info, id)
 {
-    inputFileAddress = info->pathTo_inputFile + "InputNeuronPop_"+std::to_string(id)+"_spikers.txt";
+    inputFileAddress = info->pathTo_inputFile + "DictatNeuronPop_"+std::to_string(id)+"_spikers.txt";
     inputStreamFile.open(inputFileAddress, std::ifstream::in);
     //Then just open and read, with bools for raw spikers or instruction-baseds
 }
 
-void InputNeuronPop::LoadParameters(std::vector<std::string> *input)
+void DictatNeuronPop::LoadParameters(std::vector<std::string> *input)
 {
-    NeuronPop::LoadParameters(input);//For now this is commented out to avoid confusion, and prevent from recording output in InputNeuronPop
+    NeuronPop::LoadParameters(input);//For now this is commented out to avoid confusion, and prevent from recording output in DictatNeuronPop
 
     std::string              name,token;
     std::vector<std::string> values;
@@ -34,7 +34,7 @@ void InputNeuronPop::LoadParameters(std::vector<std::string> *input)
     }
 }
 
-void InputNeuronPop::SaveParameters(std::ofstream *stream)
+void DictatNeuronPop::SaveParameters(std::ofstream *stream)
 {
 
     std::string id = "neurons_" + std::to_string(GetId());
@@ -52,7 +52,7 @@ void InputNeuronPop::SaveParameters(std::ofstream *stream)
     *stream <<  "#Write 'instruction' for instruction-based, and 'spiker' for spiker-based \n";
 }
 
-void InputNeuronPop::advect(std::vector<double> *synaptic_dV)
+void DictatNeuronPop::advect(std::vector<double> *synaptic_dV)
 {
     ClearSpiker();
     if (spikerListFiringBasedBool){
@@ -64,7 +64,7 @@ void InputNeuronPop::advect(std::vector<double> *synaptic_dV)
     }
 }
 
-void InputNeuronPop::ReadInstructionsFromFile()
+void DictatNeuronPop::ReadInstructionsFromFile()
 {
     /*Instruction files for a population should be written in the following format:
     > neuronid starttime1 endtime1 fire_every_n_steps
@@ -79,7 +79,7 @@ void InputNeuronPop::ReadInstructionsFromFile()
         } else if (entry[0] == '>'){
             FileEntry s_entry {std::move(stringToFileEntry(std::move(static_cast<std::string>(entry))))};
             if (std::stoi(s_entry.values.at(3))<=0){throw;}
-            inputInstructions.at(std::stoi(s_entry.values.at(0))).emplace_back(Instruction(std::stoi(s_entry.values.at(0)),std::lround(std::stod(s_entry.values.at(1))/info->dt), std::lround(std::stod(s_entry.values.at(2))/info->dt), std::stoi(s_entry.values.at(3))));
+            inputInstructions.at(std::stoi(s_entry.values.at(0))).emplace_back(Instruction(std::stoi(s_entry.values.at(0)),std::lround(std::stod(s_entry.values.at(1))/info->dt), std::lround(std::stod(s_entry.values.at(2))/info->dt), std::stod(s_entry.values.at(3))));
             delete[] entry;
             entry = new char[2048];
         } else {
@@ -92,7 +92,7 @@ void InputNeuronPop::ReadInstructionsFromFile()
     }
 }
 
-void InputNeuronPop::GenerateSpikersFromInstructions()
+void DictatNeuronPop::GenerateSpikersFromInstructions()
 {
     // //loop option 1 (inefficient but less exception prone)
     // for (int neuronId = 0; neuronId<static_cast<int>(inputInstructions.size()); neuronId++){
@@ -111,20 +111,20 @@ void InputNeuronPop::GenerateSpikersFromInstructions()
     //loop option 2 (efficient but probably worse overall)
     for (int neuronId = 0; neuronId<static_cast<int>(activeInstructions.size()); neuronId++){
         Instruction& instruction = inputInstructions.at(neuronId).at(activeInstructions.at(neuronId));
-        if (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
-            if (instruction.completed){continue;}
-            if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
-            if (instruction.endTimeStep<=info->time_step){
-                if (!(instruction.last)){
-                    activeInstructions.at(neuronId)++;
-                }
-                instruction.completed=true;
+        if (instruction.endTimeStep<=info->time_step){
+            if (!(instruction.last)){
+                activeInstructions.at(neuronId)++;
             }
+            instruction.completed=true;
         }
+            if (!instruction.off && (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0)){
+                if (instruction.completed){continue;}
+                if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
+            }
     }
 }
 
-void InputNeuronPop::ReadSpikersFromFile()
+void DictatNeuronPop::ReadSpikersFromFile()
 {
     /*Spikers files for a population should be written in the following format:
     > time neuron1, neuron2, neuron 4.... (neurons that spike in time_step)
@@ -150,6 +150,7 @@ void InputNeuronPop::ReadSpikersFromFile()
             }
 }
 
-Instruction::Instruction(int neuronId, long startTimeStep, long endTimeStep, int fireEveryNSteps): neuronId{neuronId}, startTimeStep{startTimeStep}, endTimeStep{endTimeStep}, fireEveryNSteps{fireEveryNSteps}
+Instruction::Instruction(int neuronId, long startTimeStep, long endTimeStep, double frequency): neuronId{neuronId}, startTimeStep{startTimeStep}, endTimeStep{endTimeStep}, frequency{frequency}
 {
+    
 }

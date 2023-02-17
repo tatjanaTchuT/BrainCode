@@ -1,7 +1,8 @@
-#ifndef _INPUT_NEURON_POP_HEADER_
-#define _INPUT_NEURON_POP_HEADER_
+#ifndef _DICTAT_NEURON_POP_HEADER_
+#define _DICTAT_NEURON_POP_HEADER_
 
 #include "../NeuronPop.hpp"
+#include "../../GlobalFunctions.hpp"
 
 struct Instruction{
     int neuronId;//The neuron specific to the instruction (-1 is equivalent to all?)
@@ -11,14 +12,15 @@ struct Instruction{
     int fireEveryNSteps;//This variable describes the timesteps between every AP. If 3, it will fire every 3 timesteps, so 2 no and 1 yes.
     bool completed{false};
     bool last{false};
-    Instruction(int neuronId, long startTimeStep, long endTimeStep, int fireEveryNSteps);
+    bool off{false};
+    Instruction(int neuronId, long startTimeStep, long endTimeStep, double frequency);
 };
 
 //ControlledNeuronPop
 //Reader/FileNeuronPop
 //DictatNeuronPop WINNER
 
-class InputNeuronPop: public NeuronPop {
+class DictatNeuronPop: public NeuronPop {
     protected:
     std::vector<std::vector<Instruction>> inputInstructions;//A vector of instructions for each neuron of the population
     std::vector<int> activeInstructions;
@@ -29,8 +31,8 @@ class InputNeuronPop: public NeuronPop {
     bool spikerListFiringBasedBool{false};
 
     public:
-    InputNeuronPop(GlobalSimInfo* info, int id);
-    ~InputNeuronPop()=default;
+    DictatNeuronPop(GlobalSimInfo* info, int id);
+    ~DictatNeuronPop()=default;
 
     void LoadParameters(std::vector<std::string> *input) override;
     void SaveParameters(std::ofstream * stream) override;
