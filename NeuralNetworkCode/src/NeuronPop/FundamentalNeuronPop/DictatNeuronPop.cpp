@@ -79,7 +79,7 @@ void DictatNeuronPop::ReadInstructionsFromFile()
         } else if (entry[0] == '>'){
             FileEntry s_entry {std::move(stringToFileEntry(std::move(static_cast<std::string>(entry))))};
             if (std::stoi(s_entry.values.at(3))<=0){throw;}
-            inputInstructions.at(std::stoi(s_entry.values.at(0))).emplace_back(Instruction(std::stoi(s_entry.values.at(0)),std::lround(std::stod(s_entry.values.at(1))/info->dt), std::lround(std::stod(s_entry.values.at(2))/info->dt), std::stod(s_entry.values.at(3))));
+            inputInstructions.at(std::stoi(s_entry.values.at(0))).emplace_back(Instruction(std::stoi(s_entry.values.at(0)),std::stod(s_entry.values.at(1)), std::stod(s_entry.values.at(2)), std::stod(s_entry.values.at(3)), info->dt));
             delete[] entry;
             entry = new char[2048];
         } else {
@@ -117,7 +117,7 @@ void DictatNeuronPop::GenerateSpikersFromInstructions()
             }
             instruction.completed=true;
         }
-            if (!instruction.off && (((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0)){
+            if (!instruction.off && ((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
                 if (instruction.completed){continue;}
                 if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
             }
@@ -150,7 +150,11 @@ void DictatNeuronPop::ReadSpikersFromFile()
             }
 }
 
-Instruction::Instruction(int neuronId, long startTimeStep, long endTimeStep, double frequency): neuronId{neuronId}, startTimeStep{startTimeStep}, endTimeStep{endTimeStep}, frequency{frequency}
+Instruction::Instruction(int neuronId, double startTime, double endTime, double frequency, double dt): neuronId{neuronId}, startTimeStep{std::lround(startTime/dt)}, endTimeStep{std::lround(endTime/dt)}, frequency{frequency}
 {
-    
+    if (frequency < std::numeric_limits<double>::epsilon()){
+        this->off=true;
+    } else {
+        fireEveryNSteps=std::lround((1/frequency)/dt);
+    }
 }

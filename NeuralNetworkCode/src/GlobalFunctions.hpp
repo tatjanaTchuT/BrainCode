@@ -9,7 +9,6 @@
 #ifndef GlobalFunctions_h
 #define GlobalFunctions_h
 
-#define _ZERO_ 0.0000000001
 
 #include <random>
 #include <fstream>

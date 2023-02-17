@@ -78,17 +78,17 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
         }
         else if(name.find("connectivity_type") != std::string::npos){
             if(values.at(0) == str_randomConnectivity){
-                if(geometry != NULL) //Doing NOTHING, delete already checks
+                if(geometry != nullptr) //Doing NOTHING, delete already checks
                     delete geometry;
                 geometry           = new RandomConnectivity(this,info);
             }
             else if(values.at(0) == str_binaryrandomConnectivity){
-                if(geometry != NULL)
+                if(geometry != nullptr)
                     delete geometry;
                 geometry       = new BinaryRandomConnectivity(this,info);
             }
 			else if (values.at(0) == str_distanceConnectivity) {
-				if (geometry != NULL)
+				if (geometry != nullptr)
 					delete geometry;
 				geometry = new DistanceConnectivity(this, info);
 			} else if(values.at(0) == str_heteroRandomConnectivity) {
