@@ -78,17 +78,17 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
         }
         else if(name.find("connectivity_type") != std::string::npos){
             if(values.at(0) == str_randomConnectivity){
-                if(geometry != NULL) //Doing NOTHING, delete already checks
+                if(geometry != nullptr) //Doing NOTHING, delete already checks
                     delete geometry;
                 geometry           = new RandomConnectivity(this,info);
             }
             else if(values.at(0) == str_binaryrandomConnectivity){
-                if(geometry != NULL)
+                if(geometry != nullptr)
                     delete geometry;
                 geometry       = new BinaryRandomConnectivity(this,info);
             }
 			else if (values.at(0) == str_distanceConnectivity) {
-				if (geometry != NULL)
+				if (geometry != nullptr)
 					delete geometry;
 				geometry = new DistanceConnectivity(this, info);
 			} else if(values.at(0) == str_heteroRandomConnectivity) {
@@ -136,7 +136,7 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 
 void Synapse::SaveParameters(std::ofstream * stream,std::string id_str){
     *stream << id_str << "type\t\t\t\t\t\t\t" << GetTypeStr() << "\n";
-    *stream << id_str << "connected\t\t\t\t\t\t" << std::boolalpha << this->isConnectedBool << "\n";
+    *stream << id_str << "connected\t\t\t\t\t\t" << std::boolalpha << this->isConnectedBool <<std::noboolalpha<< "\n";
     *stream << id_str << "D_min\t\t\t\t\t\t\t" << std::to_string(this->D_min*info->dt) << " seconds\n";
     *stream << id_str << "D_max\t\t\t\t\t\t\t" << std::to_string(this->D_max*info->dt) << " seconds\n";
     *stream << id_str << "J\t\t\t\t\t\t\t\t" << std::to_string(this->J) << " dmV/Spike\n";
@@ -219,6 +219,8 @@ void Synapse::SetSeed(std::default_random_engine *generator){
 void Synapse::ConnectNeurons(){
     if (IsConnected()){
         geometry->ConnectNeurons();
+    } else {
+        std::cout<< "Connection skipped." <<"\n";
     }
 }
 
@@ -252,15 +254,15 @@ void Synapse::SetDistributionJ(){
 NeuronPop* Synapse::GetNeuronsPre() {
     return neuronsPre;
 }
-std::vector<std::vector<double>> getWaitingMatrix(const Synapse& synapse) {
-    std::vector<std::vector<double>> copy(synapse.waiting_matrix.size());
-    for (int i = 0; i < synapse.waiting_matrix.size(); ++i) {
-        for (auto& item: synapse.waiting_matrix[i]) {
-            copy[i].push_back(item);
-        }
-    }
-    return copy;
-}
+// std::vector<std::vector<double>> getWaitingMatrix(const Synapse& synapse) {
+//     std::vector<std::vector<double>> copy(synapse.waiting_matrix.size());
+//     for (int i = 0; i < synapse.waiting_matrix.size(); ++i) {
+//         for (auto& item: synapse.waiting_matrix[i]) {
+//             copy[i].push_back(item);
+//         }
+//     }
+//     return copy;
+// }
 
 NeuronPop* Synapse::GetNeuronsPost() {
     return neuronsPost;

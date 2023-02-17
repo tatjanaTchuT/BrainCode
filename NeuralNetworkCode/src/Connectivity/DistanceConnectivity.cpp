@@ -12,7 +12,7 @@ DistanceConnectivity::DistanceConnectivity(Synapse * syn,GlobalSimInfo  * info):
 
 void DistanceConnectivity::SaveParameters(std::ofstream * stream,std::string id_str){
     Connectivity::SaveParameters(stream,id_str);
-    *stream << id_str << "connectivity_ConnectionProba\t" << std::to_string(this->PeakProbability) << "\n";
+    *stream << id_str << "connectivity_ConnectionProba\t\t\t" << std::to_string(this->PeakProbability) << "\n";
 	*stream << id_str << "connectivity_StdProbability\t" << std::to_string(this->StdProbability) << "\tmm\n";
 	*stream << id_str << "connectivity_ExactConnections\t" << std::to_string(this->exact) << "\t\t\t(0/1)\tIf 1, each neuron will receive exactly C connections. \n";
 	if (info->Dimensions == 2) {

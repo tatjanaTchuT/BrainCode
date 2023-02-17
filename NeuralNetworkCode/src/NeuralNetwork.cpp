@@ -1,11 +1,11 @@
 #include "NeuralNetwork.hpp"
 
-NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<ParameterFileEntry> *parEntries)
+NeuralNetwork::NeuralNetwork(std::string baseDir,std::vector<FileEntry> *parEntries)
 {
-    neurons     = NULL;
-    synapses    = NULL;
-    recorder    = NULL;
-    stimulus    = NULL;
+    neurons     = nullptr;
+    synapses    = nullptr;
+    recorder    = nullptr;
+    stimulus    = nullptr;
 
     info.dt                         = 0.0;
     info.simulationTime             = 0.0;
@@ -175,6 +175,9 @@ void NeuralNetwork::SaveParameterOptions(){// This function should have stuff mo
     PoissonNeuronPop neuronPoisson(&mockInfo,0);
     neuronPoisson.SaveParameters(&stream);
 
+    DictatNeuronPop neuronInput(&mockInfo, 0);
+    neuronInput.SaveParameters(&stream);
+
     stream <<  "#************************************************************************************************\n";
     stream <<  "#*************  Connectivity options ************************************************************\n";
     stream <<  "#************************************************************************************************\n";
@@ -250,7 +253,7 @@ void NeuralNetwork::SaveParameterOptions(){// This function should have stuff mo
 }
 
 
-int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileEntry> *parEntries){
+int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<FileEntry> *parEntries){
 
     std::vector<std::string>        values;
     std::vector<std::string>        full_strs,neur_strs,syn_strs,stim_strs,rec_strs;
@@ -374,7 +377,7 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<ParameterFileE
 }
 
 int NeuralNetwork::WellDefined(){
-    if((neurons == NULL) || (synapses == NULL) || (recorder == NULL) || (stimulus == NULL)){
+    if((neurons == nullptr) || (synapses == nullptr) || (recorder == nullptr) || (stimulus == nullptr)){
         std::cout << "***************************************************\n";
         std::cout << "Neurons, Synapses, Recorder or Stimulus not defined\n";
         std::cout << "***************************************************\n";
@@ -396,7 +399,7 @@ int NeuralNetwork::Simulate()
     double   t_comp = 0;
     unsigned int      P = neurons->GetTotalPopulations();
     std::uniform_real_distribution<double> uni_distribution (0.0,1.0);
-    int      simSteps      = int(info.simulationTime/info.dt);  // number of simulation time steps
+    long      simSteps      = static_cast<long>(info.simulationTime/info.dt);  // number of simulation time steps
     // int      global_D_max = this->synapses->GetMaxD();          // get maximum delay across all synapses: size of waiting matrix DEPRECATED
 
     std::vector<std::vector<double>> synaptic_dV;
@@ -448,7 +451,7 @@ int NeuralNetwork::Simulate()
 		this->synapses->reset();
 
 
-        if(info.time_step%(static_cast<int>(simSteps*0.01)) == 1){
+        if(info.time_step%(static_cast<long>(simSteps*0.01)) == 1){
             intermediate_time = clock();
             r = (static_cast<double>(info.time_step) / static_cast<double>(simSteps));
             t_comp = static_cast<double>(intermediate_time - begin) / CLOCKS_PER_SEC;

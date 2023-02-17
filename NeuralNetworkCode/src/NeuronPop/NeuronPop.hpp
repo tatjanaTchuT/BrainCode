@@ -1,5 +1,4 @@
 
-
 #ifndef NeuronPop_HPP
 #define NeuronPop_HPP
 
@@ -10,6 +9,7 @@
 #include <valarray>
 #include <fstream>
 #include <string>
+#include <memory>
 #include "../GlobalFunctions.hpp"
 #include "./HeterosynapticNeuronPop/Morphology/SynapseSpine.hpp"
 
@@ -31,6 +31,9 @@ protected:
     //double r_target;
 
     int    seed_InitialPotentials,seed_InitialPrevSpike;
+
+    //bool streamingNOutputBool{false};
+    bool taskOutputBool{false};
 
     std::valarray<double>   potential;         // membrane potential
     std::vector<long>       spiker;            // indices of all neurons that have emitted a spike in the previous time step
@@ -64,7 +67,7 @@ public:
     double              GetPotential(long i) {return potential[i]; }
 
     virtual std::string GetType() = 0;
-    int     GetId(){return this->identifier;}
+    int  const  GetId(){return this->identifier;}  
 
 
 	//*******************
@@ -87,6 +90,11 @@ public:
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
     virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
+
+    //Output functions
+    //bool const streamingOutput(){return streamingNOutputBool;}//functions
+    bool const taskOutput(){return taskOutputBool;}
+    std::vector<int> taskOutputVector(); //This function is not complete, will be implemented together with the task framework (supposed to return a vector of 0s and 1s equivalent to spikers)
 };
 
 

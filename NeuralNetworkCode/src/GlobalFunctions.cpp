@@ -61,7 +61,7 @@ void FilterStringVector(std::vector<std::string> *str_full,std::string token,std
     }
 }
 
-void FilterStringEntries(std::vector<ParameterFileEntry> *str_full,std::string token,std::vector<ParameterFileEntry> *str_filtered){
+void FilterStringEntries(std::vector<FileEntry> *str_full,std::string token,std::vector<FileEntry> *str_filtered){
     str_filtered->clear();
 
     for (auto & parEntry : *str_full) {
@@ -131,7 +131,7 @@ void SplitString(std::string *full_str,std::string *name,std::vector<std::string
             values->push_back(token);
         }
     }
-
+    RemoveCommentInString(values);
 }
 
 void SplitString(std::string *full_str,std::string* iterate_id, std::string *name,std::vector<std::string> *values){
@@ -150,7 +150,7 @@ void SplitString(std::string *full_str,std::string* iterate_id, std::string *nam
             values->push_back(token);
         }
     }
-
+    RemoveCommentInString(values);
 }
 
 void SaveDoubleFile(std::ofstream *file,double val,int precision){
@@ -179,25 +179,34 @@ bool is_double(const std::string& s)
     return iss >> d && !(iss >> c);
 }
 
-ParameterFileEntry stringToParameterFileEntry(std::string str_line) {
+/*template <typename T>
+T stringToFileEntry(std::string str_line)
+{
     std::string name;
     std::vector<std::string> values;
     SplitString(&str_line, &name, &values);
-    return ParameterFileEntry(std::move(name), std::move(values));
+    return T(std::move(name), std::move(values));
+}*/
+
+FileEntry stringToFileEntry(std::string str_line) {
+    std::string name;
+    std::vector<std::string> values;
+    SplitString(&str_line, &name, &values);
+    return FileEntry(std::move(name), std::move(values));
 }
 
-IterableParameterFileEntry stringToIterableParameterFileEntry(std::string str_line) {
+IterableFileEntry stringToIterableFileEntry(std::string str_line) {
     std::string iterate_id;
     std::string name;
     std::vector<std::string> values;
     SplitString(&str_line, &iterate_id, &name, &values);
-    return IterableParameterFileEntry(std::move(iterate_id), std::move(name), std::move(values));
+    return IterableFileEntry(std::move(iterate_id), std::move(name), std::move(values));
 }
 
 
-void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFileEntry>& entries) {
+void checkConsistencyOfIterationParameters(const std::vector<IterableFileEntry>& entries) {
     bool consistent = std::all_of(
-        entries.begin(), entries.end(), [entries] (const IterableParameterFileEntry& x) {
+        entries.begin(), entries.end(), [entries] (const IterableFileEntry& x) {
             return x.values.size() == entries.front().values.size();
         }
     );
@@ -208,12 +217,12 @@ void checkConsistencyOfIterationParameters(const std::vector<IterableParameterFi
     }
 }
 
-void RemoveCommentInString(std::vector<std::string> *string){
+void RemoveCommentInString(std::vector<std::string> *string, char commentCharacter){
     std::vector<std::string> new_string{};
     std::string element;
     for (int i{ 0 }; i < string->size(); i++) {
         element = string->at(i);
-        if (element.find("#") != std::string::npos) {
+        if (element.find(commentCharacter) != std::string::npos) {
             break;
         }
         new_string.push_back(element);

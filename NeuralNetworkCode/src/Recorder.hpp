@@ -65,6 +65,8 @@ public:
     virtual void LoadParameters(std::vector<std::string> *input) = 0;
     virtual void SaveParameters(std::ofstream * stream);
 
+    virtual void CloseStreams() = 0;
+
     void WriteHeader(std::ofstream * stream);
     void WriteConnectivity();
     void WriteDistributionD();

@@ -137,7 +137,7 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     }
     *stream << "\t"<<"#'ordered' synapse allocation will allocate synapses from the branch node to the end of the branch. 'random' will allocate random positions in each branch\n";
 
-    *stream << neuronPreId<<"_morphology_seed\t\t\t"<<std::to_string(this->seed);//Missing comments
+    *stream << neuronPreId<<"_morphology_seed\t\t\t"<<std::to_string(this->seed)<<"\n";//Missing comments
     /*
     *stream << neuronPreId<<"_morphology_branch_allocation\t\t";
     if (this->randomBranchAllocationB){
@@ -239,7 +239,7 @@ int BranchedMorphology::orderedBranchAllocation()
 
 void BranchedMorphology::randomSynapseAllocation(std::shared_ptr<Branch> branch)
 {
-    std::default_random_engine& generator = this->generator;
+    //std::default_random_engine& generator = this->generator;
     std::vector<int> possibleSlots(branch->spikedSyn.size());
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
    //Now we have our vector from 0 to maxSlots to pull random numbers from
@@ -299,7 +299,7 @@ void BranchedMorphology::setUpBranchings(int remainingBranchingEvents, std::vect
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
     //First call is done with an empty int vector
-    for (int i : {1,2}){
+    for (int i = 0; i < 2;i++) {
         int branchId{this->generateBranchId()};
         this->branches.emplace_back(std::make_shared<Branch>(Branch(this->synapticGap, this->branchLength, anteriorBranches, branchId)));//This vector should be sorted by ID by default (tested).
         //Constructor here

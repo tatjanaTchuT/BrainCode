@@ -53,7 +53,7 @@ public:
 
 	
     void    SaveParameters(std::ofstream * stream);
-    void    LoadParameters(std::vector<std::string> *input);
+    void    LoadParameters(std::vector<std::string> *input) override;
 
 };
 

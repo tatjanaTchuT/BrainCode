@@ -104,7 +104,7 @@ void SynapseSample::SaveSynapseType(std::string name,std::string type,std::vecto
             break;
     }
 
-    if(found == false)
+    if(!found)
         return;
         //throw("SynapseSample: Synapse id not defined");
 

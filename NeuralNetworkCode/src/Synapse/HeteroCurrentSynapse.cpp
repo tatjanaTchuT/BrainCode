@@ -20,14 +20,12 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
     std::vector<double> currents{};
 
     //Get list of spikers
-    std::vector<long> spikers {*neuronsPre->GetSpikers()};
+    const std::vector<long>& spikers = *neuronsPre->GetSpikers();
 
     //Go through all the spikers and add current arising from spikers to waiting_matrix
-    for(auto const& spiker: spikers){
-
-        size_t targetList_size {this->geometry->getSynapticTargets(spiker).size()};
-
-        currents.resize(targetList_size, 0.0);
+    for(const auto& spiker: spikers){
+ 
+        currents.resize(this->geometry->getSynapticTargets(spiker).size(), 0.0);
         //OPTIMIZATION: To further improve speed, at the cost of memory, each neuron's currents matrix should be kept in the connectivity object, indexed per neuron.
         // This would avoid having to resize and clear the currents matrix.
 
