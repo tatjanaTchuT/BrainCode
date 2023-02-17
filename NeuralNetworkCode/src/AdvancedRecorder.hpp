@@ -51,7 +51,7 @@ protected:
 	int raster_t_0 = 0;
     std::valarray<unsigned long>			notrackNeuronPotentials;
     std::valarray<unsigned long>		    noRasterPlotNeurons;
-	std::valarray<long>						noCorrNeurons;
+	//std::valarray<long>						noCorrNeurons;
 	std::valarray<long>						CurrentContributions;
 	std::valarray<std::valarray<double>>	Densimap;      // Number of neurons [of population i][in each pixel]
 	std::valarray<double>					CurrentContrBin;
@@ -79,7 +79,7 @@ protected:
     void Record_SynapseStates();
 	void Record_Heatmap();
 //    void Record_Histogram(std::vector<std::vector<double>> * synaptic_dV);
-    void Record_Correlations(std::vector<std::vector<double>> * synaptic_dV);
+    //void Record_Correlations(std::vector<std::vector<double>> * synaptic_dV);
 	void Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV);
 	void Record_HeteroSynapses();
     void Record_HeteroSynapsesOverall();
@@ -93,7 +93,7 @@ protected:
     void WriteDataHeader_SynapseStates();
     void WriteDataHeader_Potential();
 //    void WriteDataHeader_Histogram();
-    void WriteDataHeader_Correlations();
+    //void WriteDataHeader_Correlations();
 	void WriteDataHeader_Heatmap();
 	void WriteDataHeader_CurrentsContribution();
 	void WriteDataHeader_HeteroSynapses();
@@ -104,7 +104,7 @@ protected:
 
     void SetNoRasterplotNeurons(std::vector<std::string> *values);
     void SetNoTrackNeuronPotentials(std::vector<std::string> *values);
-    void SetNoCorrNeurons(std::vector<std::string> *values);
+    //void SetNoCorrNeurons(std::vector<std::string> *values);
 	void SetNoCurrentContribution(std::vector<std::string> *values);
     void SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values);
 
@@ -124,8 +124,8 @@ public:
     std::string GetPotentialFilename()  {return this->directoryPath + title + "_Potential.dat";}
     std::string GetSynapseStateFilename()  {return this->directoryPath + title + "_Synapses.dat";}
 //    std::string GetHistogramFilename()  {return this->directoryPath + title + "_Histogram.dat";}
-    std::string GetMeanCorrelationsFilename() {return this->directoryPath + title + "_Correlations.dat";}
-    std::string GetPairCorrelationsFilename() {return this->directoryPath + title + "_BinCorrelations" + std::to_string(info->time_step) + ".dat";}
+    //std::string GetMeanCorrelationsFilename() {return this->directoryPath + title + "_Correlations.dat";}
+    //std::string GetPairCorrelationsFilename() {return this->directoryPath + title + "_BinCorrelations" + std::to_string(info->time_step) + ".dat";}
 	std::string GetCurrentCrontributionFilename() { return this->directoryPath + title + "_CurrentContribution.dat"; }
     std::string GetHeteroSynapseStateFilename() { return this->directoryPath + title + "_HeteroSynapses.dat"; }
     std::string GetOverallHeteroSynapseStateFilename() { return this->directoryPath + title + "_OverallHS.dat"; }
@@ -133,7 +133,7 @@ public:
     //std::string GetNeuronOutputFilename(int popId) { return this->directoryPath + title + "_NeuronPop_" + std::to_string(popId) + "_Output.dat"; }
     std::string GetType()   {return str_advancedRecorder;}
 
-    std::vector<std::vector<std::vector<double>>> savecurrents;
+    //std::vector<std::vector<std::vector<double>>> savecurrents;
 
     void SaveParameters(std::ofstream * stream);
     void LoadParameters(std::vector<std::string> *input);

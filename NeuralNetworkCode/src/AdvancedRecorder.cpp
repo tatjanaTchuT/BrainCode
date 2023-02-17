@@ -13,7 +13,7 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 
 	noRasterPlotNeurons.resize(P, 0);
 	notrackNeuronPotentials.resize(P, 0);
-	noCorrNeurons.resize(P, 0);
+	//noCorrNeurons.resize(P, 0);
 	CurrentContributions.resize(P);
     noTrackHeteroSynapsePerTrackedNeuron.resize(P, 0);
 
@@ -36,13 +36,13 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 
 	LoadParameters(input);
 	CurrentContrBin.resize((static_cast<size_t>(P) + 1)* static_cast<size_t>(CurrentContributions.sum()));
-	savecurrents.resize(noCorrNeurons[0]);
-	for (int i = 0; i < noCorrNeurons[0]; i++) {
-		savecurrents[i].resize(averaging_steps);
-		for (int j = 0; j < averaging_steps; j++) {
-			savecurrents[i][j].resize(P);
-		}
-	}
+	//savecurrents.resize(noCorrNeurons[0]);
+	// for (int i = 0; i < noCorrNeurons[0]; i++) {
+	// 	savecurrents[i].resize(averaging_steps);
+	// 	for (int j = 0; j < averaging_steps; j++) {
+	// 		savecurrents[i][j].resize(P);
+	// 	}
+	// }
 	if (Heatmap != 0) {
 		Densimap.resize(P);
 		currentBin.Heatmap.resize(P);
@@ -85,10 +85,10 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
         *stream << std::to_string(notrackNeuronPotentials[i]) << " \t";
     *stream << "\t\t\t#Record currents and potentials at all time steps of the first x_p neurons, p = population index. [column 1: track #neurons in pop1, column 2: track #neurons in pop2, .. ]\n";
 
-    *stream << "recorder_noCorrNeurons             ";
-    for(unsigned i = 0; i < noCorrNeurons.size();i++)
-        *stream << std::to_string(noCorrNeurons[i]) << " \t";
-    *stream << "\t\t\t#Record correlations between first x_p neurons for each bin size. p = population index. [column 1: #neurons in pop1, column 2: track #neurons in pop2, .. ]\n";
+    // *stream << "recorder_noCorrNeurons             ";
+    // for(unsigned i = 0; i < noCorrNeurons.size();i++)
+    //     *stream << std::to_string(noCorrNeurons[i]) << " \t";
+    // *stream << "\t\t\t#Record correlations between first x_p neurons for each bin size. p = population index. [column 1: #neurons in pop1, column 2: track #neurons in pop2, .. ]\n";
 
 	*stream << "recorder_CurrentContributions      ";
 	for (unsigned i = 0; i < CurrentContributions.size();i++)
@@ -131,8 +131,8 @@ void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
 		} else if ((name.find("recorder_notrackNeuronPotentials") != std::string::npos) ||
 			(name.find("recorder_notrackNeuronProfiles") != std::string::npos)) {
 			SetNoTrackNeuronPotentials(&values);
-		} else if (name.find("recorder_noCorrNeurons") != std::string::npos) {
-            SetNoCorrNeurons(&values);
+		// } else if (name.find("recorder_noCorrNeurons") != std::string::npos) {
+        //     SetNoCorrNeurons(&values);
 		} //else if (name.find("recorder_Histogram") != std::string::npos) {
             //	writeHistogram = std::stoi(values.at(0));
 		// }
@@ -195,17 +195,17 @@ void AdvancedRecorder::SetNoRasterplotNeurons(std::vector<std::string> *values){
 	}
 }
 
-void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
-    int P = static_cast<int>(neurons->GetTotalPopulations());
-    for(int i = 0; i < min_(P,(int)values->size());i++){
-        noCorrNeurons[i] = std::stoi(values->at(i));
-        if ((static_cast<unsigned long>(noCorrNeurons[i]) > neurons->GetNeuronsPop(i)) ||
-           (noCorrNeurons[i] < 0)){
-            std::cout << "Correlations: Tracking all neurons of population "<< i << "\n";
-            noCorrNeurons[i]  = neurons->GetNeuronsPop(i);
-        }
-    }
-}
+// void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
+//     int P = static_cast<int>(neurons->GetTotalPopulations());
+//     for(int i = 0; i < min_(P,(int)values->size());i++){
+//         noCorrNeurons[i] = std::stoi(values->at(i));
+//         if ((static_cast<unsigned long>(noCorrNeurons[i]) > neurons->GetNeuronsPop(i)) ||
+//            (noCorrNeurons[i] < 0)){
+//             std::cout << "Correlations: Tracking all neurons of population "<< i << "\n";
+//             noCorrNeurons[i]  = neurons->GetNeuronsPop(i);
+//         }
+//     }
+// }
 
 void AdvancedRecorder::SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values) {
     int P = static_cast<int>(neurons->GetTotalPopulations());
@@ -463,17 +463,17 @@ void AdvancedRecorder::WriteDataHeader_SynapseStates() {
     stream.close();
 }*/
 
-void AdvancedRecorder::WriteDataHeader_Correlations(){
+// void AdvancedRecorder::WriteDataHeader_Correlations(){
 
-    if(noCorrNeurons.sum() == 0)
-        return;
+//     if(noCorrNeurons.sum() == 0)
+//         return;
 
-    this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::trunc);
+//     this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::trunc);
 
-    WriteHeader(&this->FileStreams.meanCorrFileStream);
-    this->FileStreams.meanCorrFileStream << "#1 t (sec) \t #2 CC_EE \t #3 CC_EI \t #4 CC_IE \t #5 CC_II\t\n";
+//     WriteHeader(&this->FileStreams.meanCorrFileStream);
+//     this->FileStreams.meanCorrFileStream << "#1 t (sec) \t #2 CC_EE \t #3 CC_EI \t #4 CC_IE \t #5 CC_II\t\n";
 
-}
+// }
 
 void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
@@ -603,7 +603,7 @@ void AdvancedRecorder::WriteDataHeader(){
     WriteDataHeader_Potential();
     WriteDataHeader_Currents();
     //WriteDataHeader_Histogram();
-    WriteDataHeader_Correlations();
+    //WriteDataHeader_Correlations();
 	WriteDataHeader_Heatmap();
 	WriteDataHeader_CurrentsContribution();
 	WriteDataHeader_HeteroSynapses();
@@ -737,108 +737,108 @@ void AdvancedRecorder::Record_Potential(){
 
 }*/
 
-void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * synaptic_dV){
-    //This function *should* be considered deprecated. The pair part should also be commented out, as the volume of files it creates can crash some file explorer programmes
-    if(noCorrNeurons.sum() == 0)
-        return;
+// void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * synaptic_dV){
+//     //This function *should* be considered deprecated. The pair part should also be commented out, as the volume of files it creates can crash some file explorer programmes
+//     if(noCorrNeurons.sum() == 0)
+//         return;
 
-    double           dt = static_cast<double>(info->dt);
-    double           t = static_cast<double>(info->time_step)*dt;
-    double           fac;
-    long             n_aver = averaging_steps;
-    long             ts = info->time_step;
-    // long             start, end;
-    long             itj;
-    long             P = neurons->GetTotalPopulations();
+//     double           dt = static_cast<double>(info->dt);
+//     double           t = static_cast<double>(info->time_step)*dt;
+//     double           fac;
+//     long             n_aver = averaging_steps;
+//     long             ts = info->time_step;
+//     // long             start, end;
+//     long             itj;
+//     long             P = neurons->GetTotalPopulations();
 
-    std::vector<std::vector<double>> mean(noCorrNeurons[0], std::vector<double>(P));
-    std::vector<std::vector<double>> sigma(noCorrNeurons[0], std::vector<double>(P));
-    std::vector<std::vector<std::vector<std::vector<double>>>> crosscorr(noCorrNeurons[0], std::vector<std::vector<std::vector<double>>> (noCorrNeurons[0], std::vector<std::vector<double>> (P, std::vector<double>(P))));
-    std::vector<std::vector<double>> crosscorr_final(P, std::vector<double> (P));
+//     std::vector<std::vector<double>> mean(noCorrNeurons[0], std::vector<double>(P));
+//     std::vector<std::vector<double>> sigma(noCorrNeurons[0], std::vector<double>(P));
+//     std::vector<std::vector<std::vector<std::vector<double>>>> crosscorr(noCorrNeurons[0], std::vector<std::vector<std::vector<double>>> (noCorrNeurons[0], std::vector<std::vector<double>> (P, std::vector<double>(P))));
+//     std::vector<std::vector<double>> crosscorr_final(P, std::vector<double> (P));
 
-    //Fill current memory
-    for(int m = 0;m<P;m++){
-        for(long i = 0;i<noCorrNeurons[m];i++){
-            savecurrents[i][ts%n_aver][m] = synaptic_dV->at(m).at(i)/static_cast<double>(info->dt);
-        }
-    }
+//     //Fill current memory
+//     for(int m = 0;m<P;m++){
+//         for(long i = 0;i<noCorrNeurons[m];i++){
+//             savecurrents[i][ts%n_aver][m] = synaptic_dV->at(m).at(i)/static_cast<double>(info->dt);
+//         }
+//     }
 
-    if((info->time_step)%this->averaging_steps != 0)
-        return;
+//     if((info->time_step)%this->averaging_steps != 0)
+//         return;
 
-    //Compute current mean and standard deviation
-    for(int m = 0;m<P;m++){
-        for(long i=0;i<noCorrNeurons[m];i++){
-            for(int k=0;k<n_aver;k++)
-                mean[i][m] += savecurrents[i][k][m]/n_aver;
+//     //Compute current mean and standard deviation
+//     for(int m = 0;m<P;m++){
+//         for(long i=0;i<noCorrNeurons[m];i++){
+//             for(int k=0;k<n_aver;k++)
+//                 mean[i][m] += savecurrents[i][k][m]/n_aver;
 
-            for(int k=0;k<n_aver;k++)
-                sigma[i][m] += pow(savecurrents[i][k][m]-mean[i][m],2)/n_aver;
-        }
-    }
+//             for(int k=0;k<n_aver;k++)
+//                 sigma[i][m] += pow(savecurrents[i][k][m]-mean[i][m],2)/n_aver;
+//         }
+//     }
 
-    //Compute pairwise and mean crosscorrelations
-    for(int m = 0;m<P;m++){
-        for(int n=0;n<P;n++){
-            for(long i = 0;i<noCorrNeurons[m];i++){
-                for(long j = 0;j<noCorrNeurons[n];j++){
-                    for(int k=0;k<n_aver;k++){
-                        crosscorr[i][j][m][n] += (savecurrents[i][k][m]*savecurrents[j][k][n]-mean[i][m]*mean[j][n])/(pow(sigma[i][m]*sigma[j][n],0.5)*n_aver);
-                    }
-                }
+//     //Compute pairwise and mean crosscorrelations
+//     for(int m = 0;m<P;m++){
+//         for(int n=0;n<P;n++){
+//             for(long i = 0;i<noCorrNeurons[m];i++){
+//                 for(long j = 0;j<noCorrNeurons[n];j++){
+//                     for(int k=0;k<n_aver;k++){
+//                         crosscorr[i][j][m][n] += (savecurrents[i][k][m]*savecurrents[j][k][n]-mean[i][m]*mean[j][n])/(pow(sigma[i][m]*sigma[j][n],0.5)*n_aver);
+//                     }
+//                 }
 
-                if(n == m){ //same populations m,n
-                    itj = i+1;
-                    fac = 2/static_cast<double>(noCorrNeurons[n]*static_cast<double>(noCorrNeurons[n]-1));
-                }
-                else{       //different populations m,n
-                    itj = 0;
-                    fac = 1/(static_cast<double>(noCorrNeurons[n])*static_cast<double>(noCorrNeurons[m]));
-                }
-                for(long j=itj;j<noCorrNeurons[n];j++){
-                    crosscorr_final[m][n] += fac*crosscorr[i][j][m][n];
-                }
-            }
-        }
-    }
-
-
-    //save mean crosscorrelations
-    SaveDoubleFile(&this->FileStreams.meanCorrFileStream,t,5);
-    this->FileStreams.meanCorrFileStream << "\t";
-    for(int m = 0;m<P;m++){
-        for(int n=0;n<P;n++){
-            SaveDoubleFile(&this->FileStreams.meanCorrFileStream,crosscorr_final[m][n],5);
-            this->FileStreams.meanCorrFileStream << "\t";
-        }
-    }
-    this->FileStreams.meanCorrFileStream << "\n";
+//                 if(n == m){ //same populations m,n
+//                     itj = i+1;
+//                     fac = 2/static_cast<double>(noCorrNeurons[n]*static_cast<double>(noCorrNeurons[n]-1));
+//                 }
+//                 else{       //different populations m,n
+//                     itj = 0;
+//                     fac = 1/(static_cast<double>(noCorrNeurons[n])*static_cast<double>(noCorrNeurons[m]));
+//                 }
+//                 for(long j=itj;j<noCorrNeurons[n];j++){
+//                     crosscorr_final[m][n] += fac*crosscorr[i][j][m][n];
+//                 }
+//             }
+//         }
+//     }
 
 
-    //save pair crosscorrelations.OPTIMIZATION: this generates a ton of files, and is inefficient. Avoid usage.
-    this->FileStreams.pairCorrFileStream.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
+//     //save mean crosscorrelations
+//     SaveDoubleFile(&this->FileStreams.meanCorrFileStream,t,5);
+//     this->FileStreams.meanCorrFileStream << "\t";
+//     for(int m = 0;m<P;m++){
+//         for(int n=0;n<P;n++){
+//             SaveDoubleFile(&this->FileStreams.meanCorrFileStream,crosscorr_final[m][n],5);
+//             this->FileStreams.meanCorrFileStream << "\t";
+//         }
+//     }
+//     this->FileStreams.meanCorrFileStream << "\n";
 
-    WriteHeader(&this->FileStreams.pairCorrFileStream);
-    this->FileStreams.pairCorrFileStream << "#Pairwise correlations averages over t = ["<< t- averaging_steps*dt <<", " << t << "] seconds \n";
-    this->FileStreams.pairCorrFileStream << "#Tracking correlations between first \n";
-    for(int i = 0;i<P;i++)
-        this->FileStreams.pairCorrFileStream << "# " << noCorrNeurons[i] << " neurons of population " << i << " ,\n";
-    this->FileStreams.pairCorrFileStream << "# respectively. \n";
-    //file_pairCorr << " neurons of each population\n";
 
-    for (int m = 0; m<P; m++){
-        for (int i = 0; i < crosscorr.size(); i++){
-            for (int n = 0; n<P; n++){
-                for (int j = 0; j < crosscorr[i].size(); j++){
-                    SaveDoubleFile(&this->FileStreams.pairCorrFileStream,crosscorr[i][j][m][n],5);
-                    this->FileStreams.pairCorrFileStream << "\t";
-                }
-            }
-            this->FileStreams.pairCorrFileStream << "\n";
-        }
-    }
-    this->FileStreams.pairCorrFileStream.close();
-}
+//     //save pair crosscorrelations.OPTIMIZATION: this generates a ton of files, and is inefficient. Avoid usage.
+//     this->FileStreams.pairCorrFileStream.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
+
+//     WriteHeader(&this->FileStreams.pairCorrFileStream);
+//     this->FileStreams.pairCorrFileStream << "#Pairwise correlations averages over t = ["<< t- averaging_steps*dt <<", " << t << "] seconds \n";
+//     this->FileStreams.pairCorrFileStream << "#Tracking correlations between first \n";
+//     for(int i = 0;i<P;i++)
+//         this->FileStreams.pairCorrFileStream << "# " << noCorrNeurons[i] << " neurons of population " << i << " ,\n";
+//     this->FileStreams.pairCorrFileStream << "# respectively. \n";
+//     //file_pairCorr << " neurons of each population\n";
+
+//     for (int m = 0; m<P; m++){
+//         for (int i = 0; i < crosscorr.size(); i++){
+//             for (int n = 0; n<P; n++){
+//                 for (int j = 0; j < crosscorr[i].size(); j++){
+//                     SaveDoubleFile(&this->FileStreams.pairCorrFileStream,crosscorr[i][j][m][n],5);
+//                     this->FileStreams.pairCorrFileStream << "\t";
+//                 }
+//             }
+//             this->FileStreams.pairCorrFileStream << "\n";
+//         }
+//     }
+//     this->FileStreams.pairCorrFileStream.close();
+// }
 
 void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV) {
 
@@ -1205,7 +1205,7 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	Record_Rasterplot();
 	Record_Currents(synaptic_dV);
 	//Record_Histogram(synaptic_dV);
-	Record_Correlations(synaptic_dV);
+	//Record_Correlations(synaptic_dV);
 	Record_Averages();
 	Record_Potential();
 	Record_CurrentContributions(synaptic_dV);
@@ -1232,8 +1232,8 @@ void AdvancedRecorder::CloseStreams()
         FileStreams.cCurrentsFileStream.close();
     } if (trackSynapses){
         FileStreams.synStatesFileStream.close();
-    } if (noCorrNeurons.sum()!=0){
-        FileStreams.meanCorrFileStream.close();
+    // } if (noCorrNeurons.sum()!=0){
+    //     FileStreams.meanCorrFileStream.close();
     } if (noTrackHeteroSynapsePerTrackedNeuron.sum()!=0){
         FileStreams.heteroSynapsesFileStream.close();
         FileStreams.hSOverallFileStream.close();
