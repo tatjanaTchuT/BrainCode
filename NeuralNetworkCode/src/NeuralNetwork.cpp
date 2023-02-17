@@ -279,7 +279,6 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<FileEntry> *pa
         else if(name.find("simulationTime") != std::string::npos){
             info.simulationTime = std::stod(values.at(0));
         }
-
         else if(name.find("globalSeed") != std::string::npos){
             info.globalSeed = static_cast<int> (std::stod(values.at(0)));
             info.globalGenerator  = std::default_random_engine(info.globalSeed);
@@ -446,9 +445,9 @@ int NeuralNetwork::Simulate()
 		}
         this->synapses->advect(&synaptic_dV);
         this->stimulus->Update(&synaptic_dV);
-        this->recorder->Record(&synaptic_dV);
         this->neurons->advect(&synaptic_dV);
 		this->synapses->reset();
+        this->recorder->Record(&synaptic_dV);
 
 
         if(info.time_step%(static_cast<long>(simSteps*0.01)) == 1){
