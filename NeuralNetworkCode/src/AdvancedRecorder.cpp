@@ -431,7 +431,7 @@ void AdvancedRecorder::WriteDataHeader_CurrentsContribution() {
 
 void AdvancedRecorder::WriteDataHeader_SynapseStates() {
     //double dt { info->dt };
-    unsigned    P  {neurons->GetTotalPopulations()};
+    //unsigned    P  {neurons->GetTotalPopulations()};
 
     if(!trackSynapses)
         return;

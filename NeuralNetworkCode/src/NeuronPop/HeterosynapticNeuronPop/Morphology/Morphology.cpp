@@ -134,7 +134,6 @@ void Morphology::softMaxNormalize() {
 }
 
 void Morphology::timeDecay() {
-    const double& expdt {this->expdt};
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
             syn->setWeight(syn->getWeight() * expdt);

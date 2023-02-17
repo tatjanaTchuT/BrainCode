@@ -9,11 +9,11 @@
  * (c) Max-Planck Institute for Brain Research, Frankfurt am Main
  *
  */
-#include <iostream>
-//#include <filesystem>
 #include "./DatafileParser.hpp"
 #include "NeuralNetwork.hpp"
 #include "GlobalFunctions.hpp"
+#include <iostream>
+//#include <filesystem>
 //namespace fs = std::__fs::filesystem;
 
 int main(int argc, char* argv[])

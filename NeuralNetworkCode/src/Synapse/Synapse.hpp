@@ -143,13 +143,13 @@ public:
     std::string GetIdStrWithULine();
 
     // Testing
-    friend std::vector<std::vector<double>> getWaitingMatrix(const Synapse&);
+    //friend std::vector<std::vector<double>> getWaitingMatrix(const Synapse&);
 
     //Removal of dynamic_casting<>
     virtual unsigned long allocateSynapse(unsigned long preId, unsigned long postId) {throw;}
 
 };
 
-std::vector<std::vector<double>> getWaitingMatrix();
+//std::vector<std::vector<double>> getWaitingMatrix();
 
 #endif // SYNAPSE_HPP
