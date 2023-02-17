@@ -5,7 +5,6 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder) //revised
     recorder.CloseStreams();
     parsingEnabled=recorder.parserEnabled;
 
-    totalRecordedRasterNeurons=recorder.noRasterPlotNeurons.sum();
     directoryPath=recorder.directoryPath;
     title=recorder.title;
     for (int i = 0; i < recorder.noRasterPlotNeurons.size(); i++){
@@ -16,7 +15,7 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder) //revised
     if(recorder.noRasterPlotNeurons.sum() != 0){
         for (int neuronPop : neuronPopRasterIds){
             rasterPlotMetadata.emplace_back(recNeuronPopData(recorder.noRasterPlotNeurons[neuronPop],recorder.info->dt,static_cast<int>(recorder.info->time_step), neuronPop, recorder.info->simulationTime));
-        }    
+        }
         fileNamesToParse.emplace_back(recorder.GetRasterplotFilename());
         fileTypes.push_back(RasterPlot);
     }
@@ -71,8 +70,8 @@ std::vector<std::vector<std::pair<std::vector<double>, std::pair<int, int>>>> Da
         throw;
     }
     for (FileEntry& parsedEntry : parsedEntries){
-        int neuronPopIndex = std::distance(neuronPopRasterIds.begin(), std::find(neuronPopRasterIds.begin(),neuronPopRasterIds.end(), parsedEntry.values.at(1))); //How do we do exception management here?
-        if (neuronPopIndex == std::distance(neuronPopRasterIds.begin(), neuronPopRasterIds.end())){
+        int neuronPopIndex = static_cast<int>(std::distance(neuronPopRasterIds.begin(), std::find(neuronPopRasterIds.begin(),neuronPopRasterIds.end(), std::stoi(parsedEntry.values.at(1))))); //How do we do exception management here?
+        if (neuronPopIndex == static_cast<int>(std::distance(neuronPopRasterIds.begin(), neuronPopRasterIds.end()))){
             throw;
             std::cout<<"Indexing error: the neuron population was not found"<<"\n";
         }
@@ -106,7 +105,6 @@ void DatafileParser::writeSpikeTimesFile(std::vector<std::vector<std::pair<std::
             }
             stream<<"\n";
         }
-        stream<<"N_"<<std::to_string(1)<<"=";
     }
     stream.close();
     //Here I will have to first create the ofstream. Then basically iterate over the vector and print each vector with a comma separator and write in desired format:
@@ -127,7 +125,7 @@ void DatafileParser::parse()
                 std::cout << "*************************\n";
                 throw;
             }
-            if(neuronPopRasterIds.size() !=0 && fileTypes.at(index)==RasterPlot){
+            if(neuronPopRasterIds.size() !=0 && (fileTypes.at(index)==RasterPlot)){
                 //Now we assume the file exist
                 writeSpikeTimesFile(parseSpikesToSpikeTimes(fileStream), this->GetParsedSpikeTimesFilePath(), rasterPlotMetadata);
             } else {
