@@ -52,7 +52,7 @@ protected:
 
     bool decayWeights {false};
     double weightDecayConstant {};
-    double expdt {};
+    double wExpdt {};
 
     virtual void reset();
     void normalizeWeights();

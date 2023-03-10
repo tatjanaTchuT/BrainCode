@@ -30,7 +30,7 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
         } else if (name.find("weight_decay") != std::string::npos) {
             this->decayWeights = {values.at(0)=="true"};
             this->weightDecayConstant = std::stod(values.at(1));
-            this->expdt=exp(-this->info->dt/this->weightDecayConstant);
+            this->wExpdt=exp(-this->info->dt/this->weightDecayConstant);
         } else if (name.find("min-max_weights") != std::string::npos) {
             this->minWeight = std::stod(values.at(0));
             this->maxWeight = std::stod(values.at(1));
@@ -136,7 +136,7 @@ void Morphology::softMaxNormalize() {
 void Morphology::timeDecay() {
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
-            syn->setWeight(syn->getWeight() * expdt);
+            syn->setWeight(syn->getWeight() * wExpdt);
         }
     }
 }

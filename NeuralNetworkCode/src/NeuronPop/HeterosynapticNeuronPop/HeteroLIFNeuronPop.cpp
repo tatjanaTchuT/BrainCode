@@ -6,9 +6,6 @@ HeteroLIFNeuronPop::HeteroLIFNeuronPop(GlobalSimInfo * info, int id): HeteroNeur
 
 void HeteroLIFNeuronPop::advect(std::vector<double> * synaptic_dV)
 {
-    double dt           = info->dt;
-    double expdt        = exp(-dt/tau_m);
-
     ClearSpiker();
 
     //#pragma omp parallel for
@@ -19,7 +16,7 @@ void HeteroLIFNeuronPop::advect(std::vector<double> * synaptic_dV)
             continue;
 
         //(b) advect
-        potential[i] = potential[i]*expdt + synaptic_dV->at(i);
+        potential[i] = potential[i]*mExpdt + synaptic_dV->at(i);
 
         //(c) determine if neuron has spiked
         if(potential[i] > v_thresh)
@@ -60,7 +57,7 @@ void HeteroLIFNeuronPop::LoadParameters(std::vector<std::string> *input){
             reset_type = std::stoi(values.at(0));
         }
     }
-
+    mExpdt=exp(-info->dt/tau_m);
 }
 
 void HeteroLIFNeuronPop::SaveParameters(std::ofstream * stream){

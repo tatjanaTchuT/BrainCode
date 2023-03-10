@@ -13,10 +13,11 @@
 
 
 class HeteroLIFNeuronPop : public HeteroNeuronPop {
+    //This class does not inherit LIFNeuronPop too to avoid diamond structure in inheritance, but this class is basically a copy of that class with a couple of extra calls in advect()
 
 protected:
     int reset_type{}; //0: hard reset, 1: transfer overshoot
-
+    double mExpdt{1.0};
 public:
     HeteroLIFNeuronPop(GlobalSimInfo * info, int id);
     ~HeteroLIFNeuronPop() override = default;
