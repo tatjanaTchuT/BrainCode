@@ -21,7 +21,7 @@ protected:
 	std::valarray<std::valarray<double>> ISI_table;
 
 	void advect_spikers(std::vector<double>& currents, long spiker) override;
-	void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {};
+	//void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {};
 
 public:
 	PowerLawSynapse(NeuronPop * postNeurons, NeuronPop * preNeurons, GlobalSimInfo * info);

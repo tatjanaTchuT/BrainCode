@@ -17,7 +17,7 @@ class HeteroLIFNeuronPop : public HeteroNeuronPop {
 
 protected:
     int reset_type{}; //0: hard reset, 1: transfer overshoot
-    double mExpdt{1.0};
+    double membraneExpDecay{1.0};
 public:
     HeteroLIFNeuronPop(GlobalSimInfo * info, int id);
     ~HeteroLIFNeuronPop() override = default;

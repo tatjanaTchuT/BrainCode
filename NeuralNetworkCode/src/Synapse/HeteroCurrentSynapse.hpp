@@ -14,7 +14,7 @@ protected:
     //Branching member variables 
     BranchTargeting synapseTargeting{};
 
-    void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
+    //void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
     void advect_spikers (std::vector<double>& currents, long spiker) override;
 
 public:

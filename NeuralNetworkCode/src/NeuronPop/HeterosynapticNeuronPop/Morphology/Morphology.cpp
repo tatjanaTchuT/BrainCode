@@ -30,7 +30,7 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
         } else if (name.find("weight_decay") != std::string::npos) {
             this->decayWeights = {values.at(0)=="true"};
             this->weightDecayConstant = std::stod(values.at(1));
-            this->wExpdt=exp(-this->info->dt/this->weightDecayConstant);
+            this->weightExpDecay=exp(-this->info->dt/this->weightDecayConstant);
         } else if (name.find("min-max_weights") != std::string::npos) {
             this->minWeight = std::stod(values.at(0));
             this->maxWeight = std::stod(values.at(1));
@@ -87,9 +87,9 @@ void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
 }
 
 
-std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& morph) {
-    return morph.spikedSynapsesId;
-}
+// std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& morph) {
+//     return morph.spikedSynapsesId;
+// }
 
 unsigned long Morphology::getSynapseCount() const {
     return static_cast<unsigned long>(this->synapseData.size());
@@ -136,7 +136,7 @@ void Morphology::softMaxNormalize() {
 void Morphology::timeDecay() {
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
-            syn->setWeight(syn->getWeight() * wExpdt);
+            syn->setWeight(syn->getWeight() * weightExpDecay);
         }
     }
 }
@@ -181,18 +181,18 @@ void Morphology::triggerStatOut(std::string dirPath) {
 
 }*/
 
-void Morphology::printThetasAndWeights() {
-    std::cout << "weights: " << std::endl;
-    for (auto& syn: this->synapseData) {
-        std::cout << syn->getWeight() << ", ";
-    }
-    std::cout << std::endl;
+// void Morphology::printThetasAndWeights() {
+//     std::cout << "weights: " << std::endl;
+//     for (auto& syn: this->synapseData) {
+//         std::cout << syn->getWeight() << ", ";
+//     }
+//     std::cout << std::endl;
 
-    std::cout << "thetas: " << std::endl;
-    for (auto& syn: this->synapseData) {
-        std::cout << syn->getTheta() << ", ";
-    }
-    std::cout << std::endl;
-}
+//     std::cout << "thetas: " << std::endl;
+//     for (auto& syn: this->synapseData) {
+//         std::cout << syn->getTheta() << ", ";
+//     }
+//     std::cout << std::endl;
+// }
 
 

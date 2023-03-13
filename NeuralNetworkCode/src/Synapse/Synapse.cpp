@@ -179,7 +179,7 @@ void Synapse::advect(std::vector<double> * synaptic_dV)
     }
 
 	ReadWaitingMatrixEntry(*synaptic_dV);
-	advect_finalize(&waiting_matrix);// Is it OK for Conductance, Exponential and Graupner Synapse ? Fill Waiting Matrix has already been called
+	//advect_finalize(&waiting_matrix);// Is it OK for Conductance, Exponential and Graupner Synapse ? Fill Waiting Matrix has already been called
 }
 
 void Synapse::FillWaitingMatrix(long spiker, std::vector<double>& currents){

@@ -75,9 +75,9 @@ void HeteroNeuronPop::recordExcitatorySynapticSpike(unsigned long neuronId, unsi
     this->morphology[neuronId]->recordExcitatoryPreSpike(synapseId);
 }
 
-std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop& pop, unsigned long neuronId) {
-    return getSpikedSynapsesFromMorphology(*pop.morphology[neuronId].get());
-}
+// std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop& pop, unsigned long neuronId) {
+//     return getSpikedSynapsesFromMorphology(*pop.morphology[neuronId].get());
+// }
 
 unsigned long HeteroNeuronPop::getSynapseCount(unsigned long neuronId) {
     return this->morphology.at(neuronId)->getSynapseCount();
@@ -95,12 +95,12 @@ std::valarray<double> HeteroNeuronPop::getOverallSynapticProfile(unsigned long n
     return this->morphology.at(neuronId)->getOverallSynapticProfile();
 }
 // STDP Analysis
-void HeteroNeuronPop::triggerStatOut(std::string dirPath) {
-//    this->morphology.at(0)->triggerStatOut(dirPath);
-}
+// void HeteroNeuronPop::triggerStatOut(std::string dirPath) {
+// //    this->morphology.at(0)->triggerStatOut(dirPath);
+// }
 
-void HeteroNeuronPop::printThetasAndWeights() {
-    for (auto& m: this->morphology) {
-        m->printThetasAndWeights();
-    }
-}
+// void HeteroNeuronPop::printThetasAndWeights() {
+//     for (auto& m: this->morphology) {
+//         m->printThetasAndWeights();
+//     }
+// }

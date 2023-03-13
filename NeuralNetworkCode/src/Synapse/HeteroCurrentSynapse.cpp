@@ -38,7 +38,7 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
     }
 
     ReadWaitingMatrixEntry(*synaptic_dV);
-    advect_finalize(&waiting_matrix);
+    //advect_finalize(&waiting_matrix);
 }
 
 void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
@@ -72,8 +72,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
     }
 }
 
-void HeteroCurrentSynapse::advect_finalize(std::vector<std::vector<double>> * waiting_matrix) {
-}
+//void HeteroCurrentSynapse::advect_finalize(std::vector<std::vector<double>> * waiting_matrix) {}
 
 void HeteroCurrentSynapse::LoadParameters(std::vector<std::string> *input){
     std::string              name;

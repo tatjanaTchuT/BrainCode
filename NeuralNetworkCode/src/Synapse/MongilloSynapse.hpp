@@ -35,7 +35,7 @@ protected:
 
 
     void advect_spikers(std::vector<double>& currents, long spiker) override;
-    void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {}
+    //void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {}
     virtual void  TransmitSpike(std::vector<double>& currents, long targetId,long spikerId);
 
     void SetSeed(int s);

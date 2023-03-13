@@ -52,7 +52,7 @@ protected:
 
     bool decayWeights {false};
     double weightDecayConstant {};
-    double wExpdt {};
+    double weightExpDecay {};
 
     virtual void reset();
     void normalizeWeights();
@@ -76,7 +76,7 @@ public:
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0;
     virtual std::valarray<double> getOverallSynapticProfile() const = 0;
 
-    friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&);
+    //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class
     unsigned long getSynapseCount() const;
 
     double getWeight(unsigned long synapseId) const;
@@ -84,13 +84,13 @@ public:
     // STDP Analysis
     //void triggerStatOut(std::string dirPath);
 
-    void printThetasAndWeights();
+    //void printThetasAndWeights();
 
     //Qualifying methods
     virtual bool const isBranchedBool() {return false;}
 
 };
 
-std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&);
+//std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&);
 
 #endif //NEURALNETWORK_MORPHOLOGY_H

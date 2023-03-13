@@ -14,7 +14,7 @@ class LIFNeuronPop : public NeuronPop
 {
 protected:
     int reset_type; //0: hard reset, 1: transfer overshoot
-    double mExpdt{1.0};
+    double membraneExpDecay{1.0};
 public:
     LIFNeuronPop(GlobalSimInfo * info,int id): NeuronPop(info,id) {
         reset_type = 0;

@@ -52,13 +52,13 @@ public:
     void SetBranchedTrue(){isBranched=true;}
 
     // Testing, check the purpose of this
-    friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long neuronId); //currently not in use
+    //friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long neuronId); //currently not in use
 
     //Morphology& getMorphologyRef(int neuronId); //Return a reference to Morpho object
 
     // STDP Analysis
-    void triggerStatOut(std::string dirPath); //currently not in use
-    void printThetasAndWeights();  //currently not in use
+    //void triggerStatOut(std::string dirPath); //currently not in use
+    //void printThetasAndWeights();  //currently not in use
 
 
 

@@ -30,7 +30,7 @@ void SimplePlasticityOnlyBranch::advect()
 {
     Morphology::timeDecay();
     for (auto branch : branches){
-        double deltaW{this->availableBranchResources/std::accumulate(branch->spikedSyn.begin(), branch->spikedSyn.end(),0)};
+        double deltaW{this->availableBranchResources/std::accumulate(branch->spikedSyn.begin(), branch->spikedSyn.end(),0)}; //The sum occurs over a bool vector, so it is basically a count
 
         for (int synapseSlotId : branch->synapseSlotClosedIndex){
             if (branch->spikedSyn.at(synapseSlotId)){

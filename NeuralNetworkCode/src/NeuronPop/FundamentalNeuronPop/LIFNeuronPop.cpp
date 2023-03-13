@@ -14,7 +14,7 @@ void LIFNeuronPop::advect(std::vector<double> * synaptic_dV)
             continue;
 
         //(b) advect
-        potential[i] = potential[i]*mExpdt + synaptic_dV->at(i);
+        potential[i] = potential[i]*membraneExpDecay + synaptic_dV->at(i);
 
         //(c) determine if neuron has spiked
         if(potential[i] > v_thresh)
@@ -47,7 +47,7 @@ void LIFNeuronPop::LoadParameters(std::vector<std::string> *input){
             reset_type = std::stoi(values.at(0));
         }
     }
-    mExpdt=exp(-info->dt/tau_m);
+    membraneExpDecay=exp(-info->dt/tau_m);
 }
 
 
