@@ -47,7 +47,7 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     int getBranchId() const {return branchId;};
     int getBranchPositionId() const {return branchPositionId;};
     int getDistanceFromNode() const {return distanceFromNode;};
-    bool getBranchedBool() const { return isBranchedBool; }
+    bool getBranchedBool() const { return isBranchedBool;}
     //Setters
     //Legacy
     void setPreNeuronId(unsigned long neuronId){preNeuronId=neuronId;};

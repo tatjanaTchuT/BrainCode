@@ -64,7 +64,7 @@ void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) 
 
 
 void Morphology::advect() {
-    this->timeDecay();
+    this->weightDecay();
 }
 
 void Morphology::recordPostSpike() {
@@ -133,7 +133,7 @@ void Morphology::softMaxNormalize() {
     }
 }
 
-void Morphology::timeDecay() {
+void Morphology::weightDecay() {
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
             syn->setWeight(syn->getWeight() * weightExpDecay);

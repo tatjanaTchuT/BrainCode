@@ -57,7 +57,7 @@ void SynapseSample::LoadParameters(std::vector<std::string> *input){
         }
     }
 
-    //Check seeds
+    //Check seeds (SEPARATE FUNCTION for each pop)
     for(int i = 0; i < P; i++){
         for(int j = 0; j < P; j++){
             for(int k = 0; k < P; k++){
