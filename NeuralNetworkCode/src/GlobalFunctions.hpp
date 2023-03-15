@@ -160,8 +160,10 @@ const std::string str_MonoDendriteSTDPBiExponential{"MonoDendriteSTDPBiExponenti
 
 const std::string str_SimplePlasticityOnlyBranches{"SimplePlasticityOnlyBranches"};
 
-void multiply_vector (std::vector<unsigned long> &vector, unsigned long value);
-void multiply_vector (std::vector<double> &vector, double value);
+void MultiplyVector (std::vector<unsigned long> &vector, unsigned long value);
+void MultiplyVector (std::vector<double> &vector, double value);
+
+int ReduceCount(int count);
 
 void TestWritingFile(std::string filename);
 

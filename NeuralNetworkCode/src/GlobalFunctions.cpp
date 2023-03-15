@@ -19,7 +19,7 @@
 
 
 
-void multiply_vector (std::vector<unsigned long> &vector, unsigned long value)
+void MultiplyVector (std::vector<unsigned long> &vector, unsigned long value)
 {
     for(std::vector<unsigned long>::iterator it = vector.begin(); it != vector.end(); ++it)
     {
@@ -28,7 +28,7 @@ void multiply_vector (std::vector<unsigned long> &vector, unsigned long value)
 }
 
 
-void multiply_vector (std::vector<double> &vector, double value)
+void MultiplyVector (std::vector<double> &vector, double value)
 {
     for(std::vector<double>::iterator it = vector.begin(); it != vector.end(); ++it)
     {
@@ -36,6 +36,11 @@ void multiply_vector (std::vector<double> &vector, double value)
     }
 }
 
+int ReduceCount(int count)
+{
+    if (count==0){return 0;}
+    else {return count-1;}
+}
 
 void TestWritingFile(std::string filename)
 {
