@@ -4,7 +4,7 @@
 #include <valarray>
 
 
-class SynapseSpine { //This class is poorly done, yes, but it is my effort to make the legacy part of the code to work with branched code. This is partly self-inflicted, but inheritance is not a good option in this case.
+class SynapseSpineBase { //This class is poorly done, yes, but it is my effort to make the legacy part of the code to work with branched code. This is partly self-inflicted, but inheritance is not a good option in this case.
 //An alternative option would be inheritance with a bool-check to do a static_cast between the parent and child classes in new code.
 //Inheritance was avoided because the required virtualization for pointer usage would be a lot of thankless work
     protected:
@@ -26,9 +26,9 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
 
     public:
     //Constructors
-    SynapseSpine()=default;
-    SynapseSpine(double distToSoma, double lastSpike, double weight);
-    SynapseSpine(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
+    SynapseSpineBase()=default;
+    SynapseSpineBase(double distToSoma, double lastSpike, double weight);
+    SynapseSpineBase(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //Methods
     //Bool checks
     //bool IsBranchedBool() const  {return IsBranched;}
@@ -38,7 +38,7 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     unsigned long getPreNeuronId() const {return preNeuronId;};
     unsigned long getPostNeuronId() const {return postNeuronId;};
     double getDistToSoma() const {return distToSoma;};
-    double getLastSpike() const {return lastSpike;};
+    double getLastSpike() const {return lastSpike;}; //This is only coop
     double getTheta() const {return theta;};
     double getWeight() const {return weight;};
     unsigned long getIdInMorpho() const {return idInMorpho;};
@@ -70,7 +70,7 @@ class SynapseSpine { //This class is poorly done, yes, but it is my effort to ma
     void addToWeight(double change){weight+=change;}
 
     //Recorder functions
-    std::valarray<double> getIndividualSynapticProfileLegacy() const;
+    std::valarray<double> getIndividualSynapticProfileLegacy() const;// This one will be abstract, with same base
     std::valarray<double> getIndividualSynapticProfileBranched() const;
     virtual std::valarray<double> getIndividualSynapticProfile() const;
 };
