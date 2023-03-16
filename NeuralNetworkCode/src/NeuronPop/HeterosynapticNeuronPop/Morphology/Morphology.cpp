@@ -27,16 +27,16 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
                 weightNormalization = SoftMaxNormalization;
                 normalizationFound = true;
             }
-        } else if (name.find("weight_decay") != std::string::npos) {
-            this->decayWeights = {values.at(0)=="true"};
-            this->weightDecayConstant = std::stod(values.at(1));
-            this->weightExpDecay=exp(-this->info->dt/this->weightDecayConstant);
-        } else if (name.find("min-max_weights") != std::string::npos) {
-            this->minWeight = std::stod(values.at(0));
-            this->maxWeight = std::stod(values.at(1));
+        } else if (name.find("seed") != std::string::npos) {
+            this->seed = std::stoi(values.at(0));
+            this->generator=std::default_random_engine(this->seed);
         }
         //include here max and min weights
-
+        if(info->globalSeed != -1){
+        std::uniform_int_distribution<int> distribution(0,INT32_MAX);
+        this->seed = distribution(info->globalGenerator);
+        this->generator = std::default_random_engine(seed);
+    }
     }
     assert(normalizationFound);
 }
@@ -53,39 +53,40 @@ void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) 
     else if (this->weightNormalization == NOPNormalization){
         *stream<<"NOPNormalization\n";
     }
-
-    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<std::noboolalpha<<"\t"<<std::to_string(this->weightDecayConstant);
-    *stream<<"\t"<<"#The first bool activates the weight decay per timestep. The second number is the time constant on an exponential in seconds [exp(-dt/ctt)].\n";
-
-    *stream << neuronPreId<<"_morphology_min-max_weights\t"<<std::to_string(this->minWeight)<<"\t"<<std::to_string(this->maxWeight);
-    *stream<<"\t"<<"#Only relevant for HardNormalization and distribute_weights, the first number is the minimum weight in normalization, the second one the hard cap for weight.\n";
-    //include here max and min weights
-}
-
-
-void Morphology::advect() {
-    this->weightDecay();
 }
 
 void Morphology::recordPostSpike() {
     this->lastPostSpikeTime = this->info->dt * static_cast<double> (this->info->time_step);
     this->totalPostSpikes++;
-    // STDP Analysis
-    //this->postSpikes.push_back(this->lastPostSpikeTime);
+    this->postSpiked = true;
 }
 
 
 void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     //Is there supposed to be a different Inhibitory function?
-    this->synapseData.at(synSpikerId)->setLastSpike(static_cast<double> (this->info->time_step) * this->info->dt);
-    this->spikedSynapsesId.push_back(synSpikerId);
-    this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
     this->totalPreSpikes++;
-
     // STDP Analysis
     //this->preSpikes.emplace_back(synSpikerId, this->synapseData.at(synSpikerId)->lastSpike);
 }
 
+template <typename T> std::valarray<double> Morphology<T>::getOverallSynapticProfile() const
+{
+    /*
+     * returned array organised as follows:
+     * item 1: average synaptic weight
+     * item 2: total post spikes
+     * item 3: total pre spikes
+     * */
+    std::valarray<double> ret(3);
+
+    double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
+                                       [] (const double acc, const std::shared_ptr<T>& syn) { return acc + syn->getWeight(); });
+
+    ret[0] = weightSum / this->synapseData.size();
+    ret[1] = this->totalPostSpikes;
+    ret[2] = this->totalPreSpikes;
+    return ret;
+}
 
 // std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& morph) {
 //     return morph.spikedSynapsesId;
@@ -101,7 +102,7 @@ double Morphology::getWeight(unsigned long synapseId) const {
 
 void Morphology::reset() {
     this->normalizeWeights();
-    std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
+    //std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
     this->spikedSynapsesId.clear();
 }
 
@@ -135,10 +136,23 @@ void Morphology::softMaxNormalize() {
 
 void Morphology::weightDecay() {
     if (this->decayWeights) {
-        for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
+        for (const std::shared_ptr<SynapseSpineBase>& syn: this->synapseData) {
             syn->setWeight(syn->getWeight() * weightExpDecay);
         }
     }
+}
+
+template <typename T> double Morphology<T>::generateSynapticWeight(){
+    double weight{};
+    std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
+            if (this->distributeWeights) {
+                std::default_random_engine& generatorRef = this->generator;
+                weight = distribution(generatorRef);
+            } else {
+                weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
+            }
+        //this->weightsSum += weight;
+        return weight;
 }
 /*
 void Morphology::triggerStatOut(std::string dirPath) {

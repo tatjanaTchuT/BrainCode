@@ -8,7 +8,6 @@ BranchedMorphology::BranchedMorphology(GlobalSimInfo * info): Morphology(info){
 
 void BranchedMorphology::recordPostSpike() {
     Morphology::recordPostSpike();
-    this->postSpiked = true;
 }
 
 void BranchedMorphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
@@ -65,10 +64,7 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             }else if (values.at(0).find("random") != std::string::npos){
                 this->randomSynAllocationB=true;
             }
-        } else if (name.find("seed") != std::string::npos) {
-            this->seed = std::stoi(values.at(0));
-            this->generator=std::default_random_engine(this->seed);
-        }/*else if (name.find("branch_allocation") != std::string::npos){
+        } /*else if (name.find("branch_allocation") != std::string::npos){
             if (values.at(0).find("ordered") != std::string::npos){
                 orderedBranchAllocationB=true;
             } else if (values.at(0).find("set") != std::string::npos){
@@ -82,11 +78,6 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     assertm(dendriteInitialized, "Using heterosynaptic synapses without specifying dendritic_length is not allowed.");
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
-    if(info->globalSeed != -1){
-        std::uniform_int_distribution<int> distribution(0,INT32_MAX);
-        this->seed = distribution(info->globalGenerator);
-        this->generator = std::default_random_engine(seed);
-    }
     if (!orderedSynAllocationB && !randomSynAllocationB){throw;}
     //if (!orderedBranchAllocationB && !randomBranchAllocationB && !setBranchAllocationB){throw;}
     setUpMorphology();
@@ -151,31 +142,17 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
 }
 
 
-double BranchedMorphology::generateSynapticWeight(){
-    double weight{};
-    std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
-            if (this->distributeWeights) {
-                std::default_random_engine& generatorRef = this->generator;
-                weight = distribution(generatorRef);
-            } else {
-                weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
-            }
-        this->weightsSum += weight;
-        return weight;
-}
-
-std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurrentSynapse &synapse)
+std::shared_ptr<SynapseSpineBase> BranchedMorphology::allocateNewSynapse(HeteroCurrentSynapse &synapse)
 {
-    std::shared_ptr<SynapseSpine> newSynapse;
-    newSynapse = std::make_shared<SynapseSpine>();
+    std::shared_ptr<SynapseSpineBranched> newSynapse;
+    newSynapse = std::make_shared<SynapseSpineBranched>();
 
         
-    newSynapse->setLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulation
-    newSynapse->setTheta(0);
+    newSynapse->setLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulations
     //Step weights has been removed fron here
     newSynapse->setWeight(this->generateSynapticWeight());
 
-    this->weightsSum += newSynapse->getWeight();
+    //this->weightsSum += newSynapse->getWeight();
     newSynapse->setIdInMorpho(this->synapseIdGenerator++);
     //Branch
     int branch {allocateBranch(synapse)};
@@ -190,15 +167,14 @@ std::shared_ptr<SynapseSpine> BranchedMorphology::allocateNewSynapse(HeteroCurre
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->getIdInMorpho());
 
-    newSynapse->setBranchedTrue();
     //Storage (other)
     this->synapseData.push_back(newSynapse);
 
-    this->spikedSynapses.push_back(false);
+    //this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);
     //this->integratePreSpike.push_back(false);
 
-    return newSynapse;
+    return static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse);
     }
 
 int BranchedMorphology::allocateBranch(const HeteroCurrentSynapse &synapse)
@@ -270,28 +246,11 @@ std::valarray<double> BranchedMorphology::getIndividualSynapticProfile(unsigned 
     /*
      * returned array organised as follows:
      * item 1: distance of synapse from branch root
-     * item 2: value of the synaptic weight
-     * item 3: last spike time of the synapse
+     * item 2: resources the synaptic spine is using (default is zero or one)
+     * item 3: value of the synaptic weight
+     * item 4: last spike time of the synapse
      * */
     return synapseData.at(synapseId)->getIndividualSynapticProfile();
-}
-
-std::valarray<double> BranchedMorphology::getOverallSynapticProfile() const {
-    /*
-     * returned array organised as follows:
-     * item 1: average synaptic weight
-     * item 2: total post spikes
-     * item 3: total pre spikes
-     * */
-    std::valarray<double> ret(3);
-
-    double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
-                                       [] (const double acc, const std::shared_ptr<SynapseSpine>& syn) { return acc + syn->getWeight(); });
-
-    ret[0] = weightSum / this->synapseData.size();
-    ret[1] = this->totalPostSpikes;
-    ret[2] = this->totalPreSpikes;
-    return ret;
 }
 
 void BranchedMorphology::setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)

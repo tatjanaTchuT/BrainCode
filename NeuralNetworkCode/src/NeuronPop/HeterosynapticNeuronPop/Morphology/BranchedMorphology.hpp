@@ -10,21 +10,17 @@
 #include <random>
 #include "../../../GlobalFunctions.hpp"
 #include "./Morphology.hpp"
-#include "./SynapseSpine.hpp"
+#include "./SynapseSpines/SynapseSpineBase.hpp"
+#include "./SynapseSpines/SynapseSpineBranched.hpp"
 
 class BranchedMorphology : public Morphology {
 
 protected:
 //MonoDendriteSTDP moved
-    int seed{0};
-    std::default_random_engine generator{ std::default_random_engine(seed) };
-
     unsigned long synapseIdGenerator{0}; // variable used to allocate new synapses. type is legacy compatible
     int branchIdGenerator{0}; //Same but in branches. Should be 1 or 0?
-    bool distributeWeights{false};
     //std::vector<bool> integratePostSpike;// Not necessary
     //std::vector<bool> integratePreSpike;//Not necessary
-    bool postSpiked{false};
 
     //Weight normalization vars
     int synapticGap{};
@@ -54,7 +50,6 @@ public:
     virtual void recordPostSpike();//REDO
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //REDO
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
-    virtual std::valarray<double> getOverallSynapticProfile() const;
     virtual void advect()=0;
     void reset() override;
     //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
@@ -69,8 +64,8 @@ public:
     virtual void setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
 
     //Allocation shennanigans
-    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
-    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
+    
+    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
 
     virtual int allocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in allocateNewSynapse
     virtual int randomBranchAllocation();

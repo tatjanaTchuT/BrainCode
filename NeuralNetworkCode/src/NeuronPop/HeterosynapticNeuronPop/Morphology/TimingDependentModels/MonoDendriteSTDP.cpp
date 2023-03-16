@@ -15,6 +15,8 @@ void MonoDendriteSTDP::advect() {
 
     this->thetaDecay();
 
+    //Recording plasticity events here makes no sense, because every time-step all thetas change and all weights change, and the framework is not event-based.
+
     // update cooperativity between spiker and spiker pairs -> avoids double counting when combined with loop that follows
     for (unsigned long i = 0; i < this->spikedSynapsesId.size(); ++i) {
         for (unsigned long j = i+1; j < this->spikedSynapsesId.size(); ++j) {
@@ -52,22 +54,28 @@ void MonoDendriteSTDP::advect() {
     }
 
     this->reset();
+    std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
 }
 
 void MonoDendriteSTDP::thetaDecay() {
-    for (const std::shared_ptr<SynapseSpine>& syn: this->synapseData) {
-        syn->setTheta(syn->getTheta() * exp(-this->info->dt/this->tauTheta));
+    for (const std::shared_ptr<SynapseSpineCoop>& syn: this->synapseData) {
+        syn->setTheta(syn->getTheta() * this->thetaExpDecay);
     }
 }
 
 void MonoDendriteSTDP::recordPostSpike() {
     Morphology::recordPostSpike();
+    this->lastPostSpikeTime = this->info->dt * static_cast<double> (this->info->time_step);
+    // STDP Analysis
+    //this->postSpikes.push_back(this->lastPostSpikeTime);
     std::fill(this->integratePostSpike.begin(), this->integratePostSpike.end(), true);
-    this->postSpiked = true;
 }
 
 void MonoDendriteSTDP::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     Morphology::recordExcitatoryPreSpike(synSpikerId);
+    this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
+    this->spikedSynapsesId.push_back(synSpikerId);
+    this->synapseData.at(synSpikerId)->setLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
     this->integratePreSpike.at(synSpikerId) = true;
 }
 
@@ -106,6 +114,12 @@ void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronP
 
     *stream << neuronPreId<<"_base_ltd\t\t\t\t"<<std::to_string(this->base_ltd);
     *stream << "\t"<<"#Default decrease of weight per LTD check. \"B\" equivalent\n";
+    
+    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<std::noboolalpha<<"\t"<<std::to_string(this->weightDecayConstant);
+    *stream<<"\t"<<"#The first bool activates the weight decay per timestep. The second number is the time constant on an exponential in seconds [exp(-dt/ctt)].\n";
+
+    *stream << neuronPreId<<"_morphology_min-max_weights\t"<<std::to_string(this->minWeight)<<"\t"<<std::to_string(this->maxWeight);
+    *stream<<"\t"<<"#Only relevant for HardNormalization and distribute_weights, the first number is the minimum weight in normalization, the second one the hard cap for weight.\n";
 }
 
 void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
@@ -187,6 +201,13 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
         } else if (name.find("decr_ltd") != std::string::npos) {
             this->decr_ltd = std::stod(values.at(0));
             decr_ltdInitialized = true;
+        }else if (name.find("weight_decay") != std::string::npos) {
+            this->decayWeights = {values.at(0)=="true"};
+            this->weightDecayConstant = std::stod(values.at(1));
+            this->weightExpDecay=exp(-this->info->dt/this->weightDecayConstant);
+        } else if (name.find("min-max_weights") != std::string::npos) {
+            this->minWeight = std::stod(values.at(0));
+            this->maxWeight = std::stod(values.at(1));
         }
 
     }
@@ -207,16 +228,17 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
 //    this->allocateDistal = false;
     this->nextPos =  this->synapticGap;
     this->synapseIdGenerator = 0;
+    this->thetaExpDecay=exp(-this->info->dt/this->tauTheta);
 }
 
-std::shared_ptr<SynapseSpine> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& synapse) {
+std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 
-    std::shared_ptr<SynapseSpine> newSynapse;
+    std::shared_ptr<SynapseSpineCoop> newSynapse;
 
     if (this->nextPos < this->dendriticLength) {
-        newSynapse = std::make_shared<SynapseSpine>();
+        newSynapse = std::make_shared<SynapseSpineCoop>();
 
 //        if (this->allocateDistal) {
 //            newSynapse->distToSoma = this->posHi;
@@ -245,7 +267,7 @@ std::shared_ptr<SynapseSpine> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrent
                 newSynapse->setWeight(this->initialWeights); // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
             }
         }
-        this->weightsSum += newSynapse->getWeight();
+        //this->weightsSum += newSynapse->getWeight();
         newSynapse->setIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
@@ -258,12 +280,12 @@ std::shared_ptr<SynapseSpine> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrent
         this->integratePreSpike.push_back(false);
     }
 
-    return newSynapse;
+    return static_cast<std::shared_ptr<SynapseSpineCoop>>(newSynapse);
 }
 
 void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long neighborId) {
-    SynapseSpine* spiker = this->synapseData.at(spikerId).get();
-    SynapseSpine* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpineCoop* spiker = this->synapseData.at(spikerId).get();
+    SynapseSpineCoop* neighbor = this->synapseData.at(neighborId).get();
 
     double hEffects = getDistanceEffects(spiker, neighbor);
     hEffects *= getTimingEffects(spiker, neighbor);
@@ -277,13 +299,11 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
 //        this->theta_changes.emplace_back(spikerId, hEffects);
 //        this->theta_changes.emplace_back(neighborId, hEffects);
 //    }
-
-
 }
 
 void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId) {
-    SynapseSpine* spiker = this->synapseData.at(synId).get();
-    SynapseSpine* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpineCoop* spiker = this->synapseData.at(synId).get();
+    SynapseSpineCoop* neighbor = this->synapseData.at(neighborId).get();
     std::cout << "id 1: " << synId << ", id 2: " << neighborId << std::endl;
     std::cout << "dist: " << abs(spiker->getDistToSoma() - neighbor->getDistToSoma()) << std::endl;
     std::cout << "time: " << abs(spiker->getLastSpike() - neighbor->getLastSpike()) << std::endl;
@@ -303,26 +323,3 @@ std::valarray<double> MonoDendriteSTDP::getIndividualSynapticProfile(unsigned lo
      * */
     return synapseData.at(synapseId)->getIndividualSynapticProfile();
 }
-
-std::valarray<double> MonoDendriteSTDP::getOverallSynapticProfile() const {
-    /*
-     * returned array organised as follows:
-     * item 1: average synaptic weight
-     * item 2: total post spikes
-     * item 3: total pre spikes
-     * */
-    std::valarray<double> ret(3);
-//    double weightSum = 0;
-//    for (unsigned long i = 0; i < 1000; i++) {
-//        weightSum += synapseData.at(i).get()->weight;
-//    }
-
-    double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
-                                       [] (const double acc, const std::shared_ptr<SynapseSpine>& syn) { return acc + syn->getWeight(); });
-
-    ret[0] = weightSum / this->synapseData.size();
-    ret[1] = this->totalPostSpikes;
-    ret[2] = this->totalPreSpikes;
-    return ret;
-}
-

@@ -65,7 +65,7 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
     }
 }
 
-std::shared_ptr<SynapseSpine> HeteroNeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse &synapse)
+std::shared_ptr<SynapseSpineBase> HeteroNeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse &synapse)
 {
     return this->morphology[neuronId]->allocateNewSynapse(synapse);
 }

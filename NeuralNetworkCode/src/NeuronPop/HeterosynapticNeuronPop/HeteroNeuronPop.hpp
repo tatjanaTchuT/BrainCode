@@ -36,7 +36,7 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     // Heterosynaptic functionality
-    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
+    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId) override;

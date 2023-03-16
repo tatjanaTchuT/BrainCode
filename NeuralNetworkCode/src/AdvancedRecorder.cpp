@@ -484,6 +484,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
     this->FileStreams.heteroSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.heteroSynapsesFileStream);
+    //Code currently only supports having the same type of plastic synaptic spine in the whole simulation, necessary to separate into multiple files for multi-type support.
     this->FileStreams.heteroSynapsesFileStream << "Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n";
     this->FileStreams.heteroSynapsesFileStream << "\n#************************************\n";
 

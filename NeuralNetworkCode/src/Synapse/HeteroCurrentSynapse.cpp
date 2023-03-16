@@ -122,7 +122,7 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 }
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
-    std::shared_ptr<SynapseSpine> SynapseSpinePtr = this->neuronsPost->allocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
+    std::shared_ptr<SynapseSpineBase> SynapseSpinePtr = this->neuronsPost->allocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
 
     if (SynapseSpinePtr != nullptr) {
         SynapseSpinePtr->setPreNeuronId(preId);
@@ -161,8 +161,8 @@ const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(H
     return syn.geometry->getSynapticTargets(preId);
 }
 
-std::vector<SynapseSpine> getSynapseData(HeteroCurrentSynapse& syn) {
-    std::vector<SynapseSpine> synData;
+std::vector<SynapseSpineBase> getSynapseData(HeteroCurrentSynapse& syn) {
+    std::vector<SynapseSpineBase> synData;
     for (const auto& item: syn.synapseData) {
         synData.push_back(*item);
     }

@@ -11,7 +11,7 @@
 #include <string>
 #include <memory>
 #include "../GlobalFunctions.hpp"
-#include "./HeterosynapticNeuronPop/Morphology/SynapseSpine.hpp"
+#include "./HeterosynapticNeuronPop/Morphology/SynapseSpines/SynapseSpineBase.hpp"
 
 class HeteroCurrentSynapse;
 class SynapseSpine;
@@ -90,7 +90,7 @@ public:
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
     virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId);
     virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
-    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
+    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
 
     //Task functions
     //bool const streamingOutput(){return streamingNOutputBool;}//functions

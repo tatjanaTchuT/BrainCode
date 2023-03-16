@@ -10,16 +10,25 @@
 #include <algorithm>
 
 #include "../Morphology.hpp"
+#include "../SynapseSpines/SynapseSpineCoop.hpp"
 
 class HeteroCurrentSynapse;
 
 class MonoDendriteSTDP: public Morphology {
 protected:
 
+    //Moved from Morphology.hpp
+    std::vector<bool> spikedSynapses;
+    std::vector<std::pair<unsigned long, double>> preSpikes;
+    std::vector<double> postSpikes;
+    std::vector<std::pair<unsigned long, double>> theta_changes;
+    std::vector<std::pair<unsigned long, double>> weight_changes;
+    //End
     double tauTheta{}; // decay constant of heterosynaptic effects in spines
     double lambdaDist{}; // decay constant of heterosynaptic effects over distance between synapses
     double tauDelay{}; // decay constant of heterosynaptic effects over inter-synapse spike timing difference
 
+    double thetaExpDecay{1.0};
     double dendriticLength{}; // this would change in case of more complex dendritic geometry (atm it is a single 1D dendrite)
     double synapticGap{}; //  minimum gap between syanpses along dendrite
 
@@ -28,7 +37,6 @@ protected:
 
     long synapseIdGenerator{}; // variable used to allocate new synapses
     double nextPos{};
-    bool distributeWeights{};
     bool stepWeights{};
     std::vector<unsigned long> weightStepBoundary{};
     std::vector<double> weightStepValue{};
@@ -36,7 +44,7 @@ protected:
 
     std::vector<bool> integratePostSpike{};
     std::vector<bool> integratePreSpike{};
-    bool postSpiked{};
+
 
     double initialWeights{1.0};
 
@@ -59,8 +67,8 @@ protected:
     virtual double aLTP(double theta) const = 0;
     virtual double aLTD(double theta) const = 0;
 
-    virtual double getDistanceEffects(const SynapseSpine* synA, const SynapseSpine* synB) const = 0;
-    virtual double getTimingEffects(const SynapseSpine* synA, const SynapseSpine* synB) const = 0;
+    virtual double getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const = 0;
+    virtual double getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const = 0;
 
 public:
     explicit MonoDendriteSTDP(GlobalSimInfo* info);
@@ -73,10 +81,11 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(HeteroCurrentSynapse& synapse) override;
+    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(HeteroCurrentSynapse& synapse) override;
     
     std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
-    std::valarray<double> getOverallSynapticProfile() const override;
+
+    //Revirtualization
 
 };
 
