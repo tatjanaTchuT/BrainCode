@@ -2,7 +2,7 @@
 #define NEURALNETWORK_MORPHOLOGY_H
 
 
-#include "./SynapseSpine.hpp"
+#include "./SynapseSpines/SynapseSpineBase.hpp"
 #include "./../../../GlobalFunctions.hpp"
 #include "../../../Synapse/HeteroCurrentSynapse.hpp"
 #include <vector>
@@ -36,10 +36,15 @@ protected:
 
     GlobalSimInfo * info;
 
-    std::vector<std::shared_ptr<SynapseSpine>> synapseData;
+    std::vector<std::shared_ptr<SynapseSpineBase>> synapseData;
     double weightsSum {};
     double totalPostSpikes {};
     double totalPreSpikes {};
+    bool postSpiked{false};
+
+    bool distributeWeights{false};
+    int seed{0};
+    std::default_random_engine generator{ std::default_random_engine(seed) };
 
     double lastPostSpikeTime;
     std::vector<bool> spikedSynapses;
@@ -51,7 +56,7 @@ protected:
     double maxWeight {2.0};
 
     bool decayWeights {false};
-    double weightDecayConstant {};
+    double weightDecayConstant{1.0};
     double weightExpDecay {};
 
     virtual void reset();
@@ -66,11 +71,11 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual std::shared_ptr<SynapseSpine> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
+    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
 
     virtual const std::string getType() = 0;
 
-    virtual void advect();
+    virtual void advect() = 0;
     virtual void recordPostSpike();
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId);
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0;
@@ -78,7 +83,7 @@ public:
 
     //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class
     unsigned long getSynapseCount() const;
-
+    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
     double getWeight(unsigned long synapseId) const;
 
     // STDP Analysis

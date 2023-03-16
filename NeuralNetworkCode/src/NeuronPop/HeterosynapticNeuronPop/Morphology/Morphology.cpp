@@ -69,7 +69,7 @@ void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
     //this->preSpikes.emplace_back(synSpikerId, this->synapseData.at(synSpikerId)->lastSpike);
 }
 
-template <typename T> std::valarray<double> Morphology<T>::getOverallSynapticProfile() const
+std::valarray<double> Morphology::getOverallSynapticProfile() const
 {
     /*
      * returned array organised as follows:
@@ -80,7 +80,7 @@ template <typename T> std::valarray<double> Morphology<T>::getOverallSynapticPro
     std::valarray<double> ret(3);
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
-                                       [] (const double acc, const std::shared_ptr<T>& syn) { return acc + syn->getWeight(); });
+                                       [] (const double acc, const std::shared_ptr<SynapseSpineBase>& syn) { return acc + syn->getWeight(); });
 
     ret[0] = weightSum / this->synapseData.size();
     ret[1] = this->totalPostSpikes;
@@ -142,7 +142,7 @@ void Morphology::weightDecay() {
     }
 }
 
-template <typename T> double Morphology<T>::generateSynapticWeight(){
+double Morphology::generateSynapticWeight(){
     double weight{};
     std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
             if (this->distributeWeights) {
