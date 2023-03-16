@@ -5,8 +5,11 @@
 
 class SynapseSpineResource : public SynapseSpineBranched {
 
+    protected:
 
-public:
+
+
+    public:
 
 
     //Profile function

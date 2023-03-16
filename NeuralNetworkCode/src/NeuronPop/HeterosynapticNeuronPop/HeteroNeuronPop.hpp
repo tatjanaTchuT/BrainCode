@@ -18,7 +18,6 @@
 #include "Morphology/BranchedSimpleModels/SimplePOnlyB.hpp"
 #include "../../GlobalFunctions.hpp"
 #include "../NeuronPop.hpp"
-#include "./Morphology/SynapseSpine.hpp"
 
 class HeteroCurrentSynapse;
 class SynapseSpine;

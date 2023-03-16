@@ -11,7 +11,7 @@ MonoDendriteSTDP::MonoDendriteSTDP(GlobalSimInfo* info): Morphology(info), integ
 
 void MonoDendriteSTDP::advect() {
 
-    Morphology::advect();
+    this->weightDecay();
 
     this->thetaDecay();
 
@@ -58,7 +58,7 @@ void MonoDendriteSTDP::advect() {
 }
 
 void MonoDendriteSTDP::thetaDecay() {
-    for (const std::shared_ptr<SynapseSpineCoop>& syn: this->synapseData) {
+    for (const std::shared_ptr<SynapseSpineBase>& syn: this->synapseData) {
         syn->setTheta(syn->getTheta() * this->thetaExpDecay);
     }
 }
@@ -284,8 +284,8 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::allocateNewSynapse(HeteroCur
 }
 
 void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long neighborId) {
-    SynapseSpineCoop* spiker = this->synapseData.at(spikerId).get();
-    SynapseSpineCoop* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpineBase* spiker = this->synapseData.at(spikerId).get();
+    SynapseSpineBase* neighbor = this->synapseData.at(neighborId).get();
 
     double hEffects = getDistanceEffects(spiker, neighbor);
     hEffects *= getTimingEffects(spiker, neighbor);
@@ -302,8 +302,8 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
 }
 
 void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId) {
-    SynapseSpineCoop* spiker = this->synapseData.at(synId).get();
-    SynapseSpineCoop* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpineBase* spiker = this->synapseData.at(synId).get();
+    SynapseSpineBase* neighbor = this->synapseData.at(neighborId).get();
     std::cout << "id 1: " << synId << ", id 2: " << neighborId << std::endl;
     std::cout << "dist: " << abs(spiker->getDistToSoma() - neighbor->getDistToSoma()) << std::endl;
     std::cout << "time: " << abs(spiker->getLastSpike() - neighbor->getLastSpike()) << std::endl;

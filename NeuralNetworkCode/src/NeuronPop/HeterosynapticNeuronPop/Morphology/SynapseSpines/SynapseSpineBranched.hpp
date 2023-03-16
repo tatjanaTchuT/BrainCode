@@ -5,6 +5,7 @@
 
 class SynapseSpineBranched : public SynapseSpineBase {
 
+    protected:
     int branchId{}; //This has to be discrete
     int branchPositionId{}; //This has to be discrete
     int distanceFromNode{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
@@ -13,10 +14,10 @@ class SynapseSpineBranched : public SynapseSpineBase {
 
     public:
     SynapseSpineBranched()=default;
-    SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
+    //SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //getters
-    int getBranchId() const {return branchId;};
-    int getBranchPositionId() const {return branchPositionId;};
+    int getBranchId() const override {return branchId;};
+    int getBranchPositionId() const override {return branchPositionId;};
     int getDistanceFromNode() const {return distanceFromNode;};
     bool getBranchedBool() const { return isBranchedBool;}
     //setters

@@ -67,8 +67,8 @@ protected:
     virtual double aLTP(double theta) const = 0;
     virtual double aLTD(double theta) const = 0;
 
-    virtual double getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const = 0;
-    virtual double getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const = 0;
+    virtual double getDistanceEffects(const SynapseSpineBase* synA, const SynapseSpineBase* synB) const = 0;
+    virtual double getTimingEffects(const SynapseSpineBase* synA, const SynapseSpineBase* synB) const = 0;
 
 public:
     explicit MonoDendriteSTDP(GlobalSimInfo* info);

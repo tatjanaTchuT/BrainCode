@@ -1,8 +1,8 @@
 #include "SynapseSpineBranched.hpp"
 
-SynapseSpineBranched::SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId): distanceFromNode{ distanceFromNode }, branchId{ branchId }, branchPositionId {branchPositionId}, SynapseSpineBase(weight, lastSpike)
-{
-}
+// SynapseSpineBranched::SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId): distanceFromNode{ distanceFromNode }, branchId{ branchId }, branchPositionId {branchPositionId}, SynapseSpineBase(weight, lastSpike)
+// {
+// }
 
 std::valarray<double> SynapseSpineBranched::getIndividualSynapticProfile() const
 {

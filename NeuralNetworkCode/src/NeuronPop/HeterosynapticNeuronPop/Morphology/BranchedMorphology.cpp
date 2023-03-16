@@ -147,7 +147,7 @@ std::shared_ptr<SynapseSpineBase> BranchedMorphology::allocateNewSynapse(HeteroC
     std::shared_ptr<SynapseSpineBranched> newSynapse;
     newSynapse = std::make_shared<SynapseSpineBranched>();
 
-        
+    //REFORMAT, REWRITE WITH CONSTRUCTOR    
     newSynapse->setLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulations
     //Step weights has been removed fron here
     newSynapse->setWeight(this->generateSynapticWeight());

@@ -79,7 +79,7 @@ public:
     virtual void recordPostSpike();
     virtual void recordExcitatoryPreSpike(unsigned long synSpikerId);
     virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0;
-    virtual std::valarray<double> getOverallSynapticProfile() const = 0;
+    virtual std::valarray<double> getOverallSynapticProfile() const;
 
     //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class
     unsigned long getSynapseCount() const;

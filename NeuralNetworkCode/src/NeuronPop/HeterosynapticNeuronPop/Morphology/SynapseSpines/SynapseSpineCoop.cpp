@@ -1,7 +1,7 @@
 #include "SynapseSpineCoop.hpp"
 
-SynapseSpineCoop::SynapseSpineCoop(double distToSoma, double lastSpike, double weight):distToSoma{distToSoma}, SynapseSpineBase(weight,lastSpike){
-}
+// SynapseSpineCoop::SynapseSpineCoop(double distToSoma, double lastSpike, double weight):distToSoma{distToSoma}, SynapseSpineBase(weight,lastSpike){
+// }
 
 std::valarray<double> SynapseSpineCoop::getIndividualSynapticProfile() const
 {

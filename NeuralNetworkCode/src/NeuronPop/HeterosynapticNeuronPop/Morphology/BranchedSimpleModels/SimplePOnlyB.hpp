@@ -18,13 +18,13 @@ public:
     explicit SimplePlasticityOnlyBranch(GlobalSimInfo * info);
     ~SimplePlasticityOnlyBranch() = default;
     
-    virtual void LoadParameters(std::vector<std::string> *input) override;    
-    virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
+    void LoadParameters(std::vector<std::string> *input) override;    
+    void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
 
 
-    virtual const std::string getType(){return str_SimplePlasticityOnlyBranches;};
+    const std::string getType() override {return str_SimplePlasticityOnlyBranches;};
     
-    virtual void advect();
+    void advect() override;
 };
 
 #endif

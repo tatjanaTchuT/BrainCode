@@ -4,22 +4,25 @@
 #include "SynapseSpineBase.hpp"
 
 class SynapseSpineCoop : public SynapseSpineBase {
+
+    protected:
     double distToSoma{};
     double theta{}; // heterosynaptic cooperativity
 
     public:
-    SynapseSpineCoop(double distToSoma, double lastSpike, double weight);
+    SynapseSpineCoop()=default;
+    //SynapseSpineCoop(double distToSoma, double lastSpike, double weight);
 
     //getters
-    double getDistToSoma() const {return distToSoma;};
-    double getTheta() const {return theta;};
+    double getDistToSoma() const override {return distToSoma;};
+    double getTheta() const override {return theta;};
 
     //setters
-    void setDistToSoma(double dist){distToSoma=dist;};
-    void setTheta(double thetaIn){theta=thetaIn;};
+    void setDistToSoma(double dist) override {distToSoma=dist;};
+    void setTheta(double thetaIn) override {theta=thetaIn;};
 
     //Misc
-    void addToTheta(double hEffect){theta+=hEffect;}
+    void addToTheta(double hEffect) override {theta+=hEffect;}
 
     //Profile function
     std::valarray<double> getIndividualSynapticProfile() const override;
