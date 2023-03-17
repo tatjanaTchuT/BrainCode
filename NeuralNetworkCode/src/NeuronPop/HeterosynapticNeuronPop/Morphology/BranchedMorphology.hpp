@@ -8,7 +8,7 @@
 #include <deque>
 #include <iterator>
 #include <random>
-#include "../../../GlobalFunctions.hpp"
+#include "BranchedStructs.hpp"
 #include "./Morphology.hpp"
 #include "./SynapseSpines/SynapseSpineBase.hpp"
 #include "./SynapseSpines/SynapseSpineBranched.hpp"
