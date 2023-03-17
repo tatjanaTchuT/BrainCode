@@ -461,7 +461,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.hSOverallFileStream);
-    this->FileStreams.hSOverallFileStream << "Overall Profile -> {<average weight>, <total post spikes>, <total pre spikes>} \n";
+    this->FileStreams.hSOverallFileStream << "Overall Profile -> {<average weight>, <total post spikes>, <total pre spikes>, <average number of plasticity events>} \n";
     this->FileStreams.hSOverallFileStream << "\n#************************************\n";
 
     this->FileStreams.hSOverallFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id \n";
@@ -819,7 +819,7 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-                SaveDoubleFile(&this->FileStreams.hSOverallFileStream, this->neurons->GetPop(p)->GetOverallSynapticProfile(i)[0], 5);
+                SaveTupleOfDoublesFile(&this->FileStreams.hSOverallFileStream, this->neurons->GetPop(p)->GetOverallSynapticProfile(i), 5);
             //Here is selecting only the average weight per neuron, with precision 5 digits.
         }
     }

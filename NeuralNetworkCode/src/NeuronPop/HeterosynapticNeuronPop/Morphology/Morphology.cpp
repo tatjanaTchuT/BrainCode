@@ -76,15 +76,19 @@ std::valarray<double> Morphology::GetOverallSynapticProfile() const
      * item 1: average synaptic weight
      * item 2: total post spikes
      * item 3: total pre spikes
+     * item 4: average plasticity events
      * */
-    std::valarray<double> ret(3);
+    std::valarray<double> ret(4);
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
                                        [] (const double acc, const std::shared_ptr<SynapseSpineBase>& syn) { return acc + syn->GetWeight(); });
+    double plasticityEventSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
+                                       [] (const double acc, const std::shared_ptr<SynapseSpineBase>& syn) { return acc + syn->GetPlasticityEvents(); });
 
     ret[0] = weightSum / this->synapseData.size();
     ret[1] = this->totalPostSpikes;
     ret[2] = this->totalPreSpikes;
+    ret[3] = plasticityEventSum / this->synapseData.size();
     return ret;
 }
 

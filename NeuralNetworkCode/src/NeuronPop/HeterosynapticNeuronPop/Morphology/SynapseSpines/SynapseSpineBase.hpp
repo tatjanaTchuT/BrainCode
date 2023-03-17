@@ -18,6 +18,8 @@ class SynapseSpineBase {
     //Branched variables
     bool isBranchedBool{false};// For now it is not useful
 
+    //Counters
+    long plasticityEvents{};
     public:
     //Constructors
     SynapseSpineBase()=default;
@@ -31,6 +33,7 @@ class SynapseSpineBase {
     unsigned long GetIdInHCS() const {return idInHCS;};
     bool GetBranchedBool() const { return isBranchedBool;}
     double GetLastSpike() const {return lastSpike;};
+    long GetPlasticityEvents() const {return plasticityEvents;}
     //V bad
     virtual double GetTheta() const {throw;return 0.0;};
     virtual int GetBranchId() const {throw;return 0;};
