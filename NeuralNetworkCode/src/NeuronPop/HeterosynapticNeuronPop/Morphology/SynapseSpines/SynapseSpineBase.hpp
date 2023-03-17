@@ -21,11 +21,8 @@ class SynapseSpineBase {
     public:
     //Constructors
     SynapseSpineBase()=default;
-    //SynapseSpineBase(double weight, double lastSpike);
+    //SynapseSpineBase(double weight, double lastSpike);// Not currently in use
     //Methods
-    //Bool checks
-    //bool IsBranchedBool() const  {return IsBranched;}
-    //bool SetBranchedTrue() {IsBranched=true;}
     //Getters
     unsigned long GetPreNeuronId() const {return preNeuronId;};
     unsigned long GetPostNeuronId() const {return postNeuronId;};

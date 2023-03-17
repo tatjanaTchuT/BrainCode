@@ -48,7 +48,7 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
                 morphologyFound = true;
             } else if (values.at(0) == str_SimplePlasticityOnlyBranches) {
                 for (unsigned long i = 0; i < this->noNeurons; i++) {
-                    this->morphology.push_back(std::make_unique<SimplePlasticityOnlyBranch>(this->info));
+                    this->morphology.push_back(std::make_unique<SimplePlasticityOnlyBranch>(this->info)); //Remove, will not  be used
                     this->morphology.back()->LoadParameters(input);
                 }
                 morphologyFound = true;
@@ -96,7 +96,7 @@ std::valarray<double> HeteroNeuronPop::GetOverallSynapticProfile(unsigned long n
 }
 std::string HeteroNeuronPop::GetIndividualSynapticProfileHeaderInfo() const
 {
-    return morphology.at(0)->;
+    return morphology.at(0)->GetIndividualSynapticProfileHeaderInfo();
 }
 // STDP Analysis
 // void HeteroNeuronPop::triggerStatOut(std::string dirPath) {
