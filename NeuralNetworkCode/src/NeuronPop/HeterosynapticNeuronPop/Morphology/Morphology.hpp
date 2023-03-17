@@ -71,20 +71,20 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
-
-    virtual const std::string getType() = 0;
+    virtual std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
+    double GenerateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
+    virtual const std::string GetType() = 0;
 
     virtual void advect() = 0;
-    virtual void recordPostSpike();
-    virtual void recordExcitatoryPreSpike(unsigned long synSpikerId);
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const = 0;
-    virtual std::valarray<double> getOverallSynapticProfile() const;
-
+    virtual void RecordPostSpike();
+    virtual void RecordExcitatoryPreSpike(unsigned long synSpikerId);
+    //Getters
+    virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const = 0;
+    virtual std::valarray<double> GetOverallSynapticProfile() const;
+    std::string GetIndividualSynapticProfileHeaderInfo() const;
     //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class
-    unsigned long getSynapseCount() const;
-    double generateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
-    double getWeight(unsigned long synapseId) const;
+    unsigned long GetSynapseCount() const;
+    double GetWeight(unsigned long synapseId) const;
 
     // STDP Analysis
     //void triggerStatOut(std::string dirPath);
@@ -92,7 +92,7 @@ public:
     //void printThetasAndWeights();
 
     //Qualifying methods
-    virtual bool const isBranchedBool() {return false;}
+    virtual bool const IsBranchedBool() {return false;}
 
 };
 

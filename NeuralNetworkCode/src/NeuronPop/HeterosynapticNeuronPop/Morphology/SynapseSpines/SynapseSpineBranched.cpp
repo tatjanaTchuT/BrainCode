@@ -4,7 +4,7 @@
 // {
 // }
 
-std::valarray<double> SynapseSpineBranched::getIndividualSynapticProfile() const
+std::valarray<double> SynapseSpineBranched::GetIndividualSynapticProfile() const
 {
     std::valarray<double> ret(4);
     ret[0] = this->distanceFromNode;
@@ -14,7 +14,7 @@ std::valarray<double> SynapseSpineBranched::getIndividualSynapticProfile() const
     return ret;
 }
 
-std::string SynapseSpineBranched::getIndividualSynapticProfileHeaderInfo() const
+std::string SynapseSpineBranched::GetIndividualSynapticProfileHeaderInfo() const
 {
     return std::string("Profile -> {<dist to branch node>, <branch ID>, <weight>, <last spike>} \n");
 }

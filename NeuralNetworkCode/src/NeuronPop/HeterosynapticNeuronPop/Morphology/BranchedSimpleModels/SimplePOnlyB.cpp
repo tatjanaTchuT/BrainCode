@@ -34,7 +34,7 @@ void SimplePlasticityOnlyBranch::advect()
 
         for (int synapseSlotId : branch->synapseSlotClosedIndex){
             if (branch->spikedSyn.at(synapseSlotId)){
-                synapseData.at(branch->morphoSynapseIDs.at(synapseSlotId))->addToWeight(deltaW);
+                synapseData.at(branch->morphoSynapseIDs.at(synapseSlotId))->AddToWeight(deltaW);
             }
         }
     }

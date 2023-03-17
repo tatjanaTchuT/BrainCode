@@ -22,7 +22,7 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
 
 
-    const std::string getType() override {return str_SimplePlasticityOnlyBranches;};
+    const std::string GetType() override {return str_SimplePlasticityOnlyBranches;};
     
     void advect() override;
 };

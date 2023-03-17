@@ -58,14 +58,14 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         neuronSynapsePair = targetList.at(i);
         postNeuronId = neuronSynapsePair.first;
         HCSSynapseId = neuronSynapsePair.second;
-        morphoSynapseId = this->synapseData[HCSSynapseId]->getIdInMorpho();
+        morphoSynapseId = this->synapseData[HCSSynapseId]->GetIdInMorpho();
 
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
         if (couplingStrength < 0.0) {//To avoid interaction with inhibitory synapses
             current =  couplingStrength;
         } else {
-            current = couplingStrength * this->synapseData[HCSSynapseId]->getWeight();
-            this->neuronsPost->recordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
+            current = couplingStrength * this->synapseData[HCSSynapseId]->GetWeight();
+            this->neuronsPost->RecordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
         }
         currents[i] += current;
         this->cumulatedDV += current;
@@ -122,16 +122,16 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 }
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
-    std::shared_ptr<SynapseSpineBase> SynapseSpinePtr = this->neuronsPost->allocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
+    std::shared_ptr<SynapseSpineBase> SynapseSpinePtr = this->neuronsPost->AllocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
 
     if (SynapseSpinePtr != nullptr) {
-        SynapseSpinePtr->setPreNeuronId(preId);
-        SynapseSpinePtr->setPostNeuronId(postId);
-        SynapseSpinePtr->setIdInHCS(static_cast<unsigned long>(this->synapseData.size()));
+        SynapseSpinePtr->SetPreNeuronId(preId);
+        SynapseSpinePtr->SetPostNeuronId(postId);
+        SynapseSpinePtr->SetIdInHCS(static_cast<unsigned long>(this->synapseData.size()));
 
         this->synapseData.push_back(SynapseSpinePtr);
 
-        return SynapseSpinePtr->getIdInHCS();
+        return SynapseSpinePtr->GetIdInHCS();
     }
 
     throw noAllocatableSynapseException();

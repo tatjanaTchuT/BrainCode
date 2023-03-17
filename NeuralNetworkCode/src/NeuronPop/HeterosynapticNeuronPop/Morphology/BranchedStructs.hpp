@@ -39,4 +39,8 @@ struct Branch{
     //Branch()=default;
     Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
 };
+
+struct ResourceBranch : public Branch {
+    
+};
 #endif

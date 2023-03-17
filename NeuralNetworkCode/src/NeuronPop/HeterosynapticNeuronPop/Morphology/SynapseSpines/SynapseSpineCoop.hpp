@@ -14,19 +14,19 @@ class SynapseSpineCoop : public SynapseSpineBase {
     //SynapseSpineCoop(double distToSoma, double lastSpike, double weight);
 
     //getters
-    double getDistToSoma() const override {return distToSoma;};
-    double getTheta() const override {return theta;};
+    double GetDistToSoma() const override {return distToSoma;};
+    double GetTheta() const override {return theta;};
 
     //setters
-    void setDistToSoma(double dist) override {distToSoma=dist;};
-    void setTheta(double thetaIn) override {theta=thetaIn;};
+    void SetDistToSoma(double dist) override {distToSoma=dist;};
+    void SetTheta(double thetaIn) override {theta=thetaIn;};
 
     //Misc
-    void addToTheta(double hEffect) override {theta+=hEffect;}
+    void AddToTheta(double hEffect) override {theta+=hEffect;}
 
     //Profile function
-    std::valarray<double> getIndividualSynapticProfile() const override;
-    std::string getIndividualSynapticProfileHeaderInfo() const override;
+    std::valarray<double> GetIndividualSynapticProfile() const override;
+    std::string GetIndividualSynapticProfileHeaderInfo() const override;
 };
 
 

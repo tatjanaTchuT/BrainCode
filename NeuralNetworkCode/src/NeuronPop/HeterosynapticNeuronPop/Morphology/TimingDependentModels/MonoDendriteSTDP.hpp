@@ -75,15 +75,15 @@ public:
     ~MonoDendriteSTDP() override = default;
 
     void advect() override;
-    void recordPostSpike() override;
-    void recordExcitatoryPreSpike(unsigned long synSpikerId) override;
+    void RecordPostSpike() override;
+    void RecordExcitatoryPreSpike(unsigned long synSpikerId) override;
 
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(HeteroCurrentSynapse& synapse) override;
+    virtual std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
     
-    std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
+    std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
 
     //Revirtualization
 

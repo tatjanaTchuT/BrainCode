@@ -16,18 +16,18 @@ class SynapseSpineBranched : public SynapseSpineBase {
     SynapseSpineBranched()=default;
     //SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //getters
-    int getBranchId() const override {return branchId;};
-    int getBranchPositionId() const override {return branchPositionId;};
-    int getDistanceFromNode() const {return distanceFromNode;};
-    bool getBranchedBool() const { return isBranchedBool;}
+    int GetBranchId() const override {return branchId;};
+    int GetBranchPositionId() const override {return branchPositionId;};
+    int GetDistanceFromNode() const {return distanceFromNode;};
+    bool GetBranchedBool() const { return isBranchedBool;}
     //setters
-    void setBranchId(int idIn){branchId=idIn;};
-    void setBranchPositionId(int positionId){branchPositionId=positionId;};
-    void setDistanceFromNode(int distance){distanceFromNode=distance;};
+    void SetBranchId(int idIn){branchId=idIn;};
+    void SetBranchPositionId(int positionId){branchPositionId=positionId;};
+    void SetDistanceFromNode(int distance){distanceFromNode=distance;};
 
     //Profile function
-    std::valarray<double> getIndividualSynapticProfile() const override;
-    std::string getIndividualSynapticProfileHeaderInfo() const override;
+    std::valarray<double> GetIndividualSynapticProfile() const override;
+    std::string GetIndividualSynapticProfileHeaderInfo() const override;
 };
 
 #endif

@@ -190,24 +190,24 @@ void NeuronPop::SaveParameters(std::ofstream * stream){
 
 //From here on 
 
-std::shared_ptr<SynapseSpineBase> NeuronPop::allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse&syn) {
-        assertm(false, "Non-hetero NeuronPop called allocateNewSynapse");
+std::shared_ptr<SynapseSpineBase> NeuronPop::AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse&syn) {
+        assertm(false, "Non-hetero NeuronPop called AllocateNewSynapse");
         throw; 
         std::shared_ptr<SynapseSpineBase> empty{};
         return empty;
 }
 
-void NeuronPop::recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId){
+void NeuronPop::RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId){
     throw;
 }
 
-std::valarray<double> NeuronPop::getOverallSynapticProfile(unsigned long neuronId){
+std::valarray<double> NeuronPop::GetOverallSynapticProfile(unsigned long neuronId){
     throw;
     std::valarray<double> empty{};
     return empty;
 }
 
-std::valarray<double> NeuronPop::getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId){
+std::valarray<double> NeuronPop::GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId){
     throw;
     std::valarray<double> empty{};
     return empty;

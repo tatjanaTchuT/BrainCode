@@ -34,21 +34,27 @@ public:
     void SaveParameters(std::ofstream * stream) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    // Heterosynaptic functionality
-    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
-    virtual void recordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
-    virtual std::valarray<double> getOverallSynapticProfile(unsigned long neuronId) override;
 
-    //Accessing dendritic data
-    unsigned long getSynapseCount(unsigned long neuronId);
-    double getWeight(unsigned long neuronId, unsigned long synapseId);
+    //Getters
+    std::valarray<double> GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
+    std::valarray<double> GetOverallSynapticProfile(unsigned long neuronId) override;
+    std::string GetIndividualSynapticProfileHeaderInfo() const override;
+
+    unsigned long GetSynapseCount(unsigned long neuronId);
+    double GetWeight(unsigned long neuronId, unsigned long synapseId);
+
+    //Setters
+    void SetBranchedTrue(){isBranched=true;}
+
+    // Heterosynaptic functionality
+    std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
+    void RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
+
 
     //Inheritance optimizations
+    bool HasHeterosynapticPlasticity() override {return true;}
+    bool IsBranchedBool() override {return isBranched;}
 
-    virtual bool HasHeterosynapticPlasticity() override {return true;}
-    virtual bool isBranchedBool() override {return isBranched;}
-    void SetBranchedTrue(){isBranched=true;}
 
     // Testing, check the purpose of this
     //friend std::vector<unsigned long> getSpikedSynapses(const HeteroNeuronPop&, unsigned long neuronId); //currently not in use

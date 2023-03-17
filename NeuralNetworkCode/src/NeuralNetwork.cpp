@@ -489,9 +489,9 @@ void NeuralNetwork::outputHeteroEvents(){
             HeteroNeuronPop* pop = dynamic_cast<HeteroNeuronPop*>(neurons->GetPop(popId)); 
             //This dynamic cast happens only twice at runtime.
             for (unsigned long nId{ 0 }; nId < pop->GetNoNeurons(); nId++) {
-                unsigned long synCount{ pop->getSynapseCount(nId) };
+                unsigned long synCount{ pop->GetSynapseCount(nId) };
                 for (unsigned long sId{ 0 }; sId < synCount; ++sId) {
-                    double w{ pop->getWeight(nId, sId) };
+                    double w{ pop->GetWeight(nId, sId) };
                     if (w > 1.8) {
                         potentiationCount++;
                     }else if (w < 0.2) {

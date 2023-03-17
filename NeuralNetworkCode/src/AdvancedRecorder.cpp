@@ -485,6 +485,12 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     WriteHeader(&this->FileStreams.heteroSynapsesFileStream);
     //Code currently only supports having the same type of plastic synaptic spine in the whole simulation, necessary to separate into multiple files for multi-type support.
+    //Instead of multiple files, print the multiple headers, one per pop
+    for(unsigned long p = 0;p<P;p++){
+        if (this->neurons->GetPop(P)->HasHeterosynapticPlasticity()){
+            this->FileStreams.heteroSynapsesFileStream << "Pop. "<< P << " profile -> "<<this->neurons->GetPop(P)-> <<" \n";
+        }
+    }
     this->FileStreams.heteroSynapsesFileStream << "Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n";
     this->FileStreams.heteroSynapsesFileStream << "\n#************************************\n";
 
@@ -496,7 +502,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()  || this->neurons->GetPop(p)->isBranchedBool()) {
+        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()  || this->neurons->GetPop(p)->IsBranchedBool()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -543,7 +549,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
     unsigned long P = neurons->GetTotalPopulations();
     for(unsigned long p = 0;p<P;p++){
-        if (this->neurons->GetPop(p)->isBranchedBool()){
+        if (this->neurons->GetPop(p)->IsBranchedBool()){
             hasBranchedSynapsePop=true;
         }
     }
@@ -566,7 +572,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount == 0 || !this->neurons->GetPop(p)->isBranchedBool()) {
+        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranchedBool()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -1059,7 +1065,7 @@ void AdvancedRecorder::Record_HeteroSynapses() {
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
             for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
-                SaveTupleOfDoublesFile(&this->FileStreams.heteroSynapsesFileStream, this->neurons->GetPop(p)->getIndividualSynapticProfile(i, k), 5);
+                SaveTupleOfDoublesFile(&this->FileStreams.heteroSynapsesFileStream, this->neurons->GetPop(p)->GetIndividualSynapticProfile(i, k), 5);
             }
         }
     }
@@ -1085,7 +1091,7 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-                SaveDoubleFile(&this->FileStreams.hSOverallFileStream, this->neurons->GetPop(p)->getOverallSynapticProfile(i)[0], 5);
+                SaveDoubleFile(&this->FileStreams.hSOverallFileStream, this->neurons->GetPop(p)->GetOverallSynapticProfile(i)[0], 5);
             //Here is selecting only the average weight per neuron, with precision 5 digits.
         }
     }
@@ -1108,12 +1114,12 @@ void AdvancedRecorder::Record_HeteroSynapsesBranched() {
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount == 0 || !this->neurons->GetPop(p)->isBranchedBool()) {
+        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranchedBool()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
             for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
-                SaveTupleOfDoublesFile(&this->FileStreams.heteroBSynapsesFileStream, this->neurons->GetPop(p)->getIndividualSynapticProfile(i, k), 5);
+                SaveTupleOfDoublesFile(&this->FileStreams.heteroBSynapsesFileStream, this->neurons->GetPop(p)->GetIndividualSynapticProfile(i, k), 5);
             }
         }
     }

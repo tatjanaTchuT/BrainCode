@@ -45,11 +45,11 @@ public:
     //Methods derived from the MonoDendriteSTDP and Morphology classes
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     virtual void LoadParameters(std::vector<std::string> *input) override;
-    virtual const std::string getType() = 0;
+    virtual const std::string GetType() = 0;
 
-    virtual void recordPostSpike();//REDO
-    virtual void recordExcitatoryPreSpike(unsigned long synSpikerId); //REDO
-    virtual std::valarray<double> getIndividualSynapticProfile(unsigned long synapseId) const override;
+    virtual void RecordPostSpike();//REDO
+    virtual void RecordExcitatoryPreSpike(unsigned long synSpikerId); //REDO
+    virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
     virtual void advect()=0;
     void reset() override;
     //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
@@ -65,9 +65,9 @@ public:
 
     //Allocation shennanigans
     
-    virtual std::shared_ptr<SynapseSpineBase> allocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
+    virtual std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
 
-    virtual int allocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in allocateNewSynapse
+    virtual int allocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in AllocateNewSynapse
     virtual int randomBranchAllocation();
     virtual int orderedBranchAllocation();
     //setBranchAllocation() is implicit in the function (or has to be) allocate NewSynapse
@@ -76,7 +76,7 @@ public:
     virtual void orderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
     //virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
     //
-    virtual bool const isBranchedBool() override {return true;}
+    virtual bool const IsBranchedBool() override {return true;}
     int generateBranchId(){return branchIdGenerator++;}
 
 };

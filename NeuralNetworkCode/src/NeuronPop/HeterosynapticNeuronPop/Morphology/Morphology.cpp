@@ -42,7 +42,7 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
 }
 void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
     *stream<< "#From here on is all Heterostuff\n";
-    *stream << neuronPreId<<"_morphology_type\t\t\t\t"<<this->getType()<<"\n";
+    *stream << neuronPreId<<"_morphology_type\t\t\t\t"<<this->GetType()<<"\n";
     *stream << neuronPreId<<"_morphology_weight_normalization\t";
     if (this->weightNormalization == HardNormalization){
         *stream<<"HardNormalization\n";
@@ -55,21 +55,21 @@ void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) 
     }
 }
 
-void Morphology::recordPostSpike() {
+void Morphology::RecordPostSpike() {
     this->lastPostSpikeTime = this->info->dt * static_cast<double> (this->info->time_step);
     this->totalPostSpikes++;
     this->postSpiked = true;
 }
 
 
-void Morphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
+void Morphology::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
     //Is there supposed to be a different Inhibitory function?
     this->totalPreSpikes++;
     // STDP Analysis
     //this->preSpikes.emplace_back(synSpikerId, this->synapseData.at(synSpikerId)->lastSpike);
 }
 
-std::valarray<double> Morphology::getOverallSynapticProfile() const
+std::valarray<double> Morphology::GetOverallSynapticProfile() const
 {
     /*
      * returned array organised as follows:
@@ -80,7 +80,7 @@ std::valarray<double> Morphology::getOverallSynapticProfile() const
     std::valarray<double> ret(3);
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
-                                       [] (const double acc, const std::shared_ptr<SynapseSpineBase>& syn) { return acc + syn->getWeight(); });
+                                       [] (const double acc, const std::shared_ptr<SynapseSpineBase>& syn) { return acc + syn->GetWeight(); });
 
     ret[0] = weightSum / this->synapseData.size();
     ret[1] = this->totalPostSpikes;
@@ -88,16 +88,21 @@ std::valarray<double> Morphology::getOverallSynapticProfile() const
     return ret;
 }
 
+std::string Morphology::GetIndividualSynapticProfileHeaderInfo() const
+{
+    return synapseData.at(0)->GetIndividualSynapticProfileHeaderInfo();
+}
+
 // std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& morph) {
 //     return morph.spikedSynapsesId;
 // }
 
-unsigned long Morphology::getSynapseCount() const {
+unsigned long Morphology::GetSynapseCount() const {
     return static_cast<unsigned long>(this->synapseData.size());
 }
 
-double Morphology::getWeight(unsigned long synapseId) const {
-    return this->synapseData.at(synapseId)->getWeight();
+double Morphology::GetWeight(unsigned long synapseId) const {
+    return this->synapseData.at(synapseId)->GetWeight();
 }
 
 void Morphology::reset() {
@@ -116,7 +121,7 @@ void Morphology::normalizeWeights() {
 
 void Morphology::hardNormalize() {
     for (auto& syn: this->synapseData) {
-        syn->setWeight(std::max(minWeight, std::min(maxWeight, syn->getWeight())));
+        syn->SetWeight(std::max(minWeight, std::min(maxWeight, syn->GetWeight())));
     }
 }
 
@@ -125,24 +130,24 @@ void Morphology::softMaxNormalize() {
 
     maxWeights = std::numeric_limits<double>::min();
     for (auto& syn : this->synapseData) {
-        maxWeights = std::max(maxWeights, syn->getWeight());
+        maxWeights = std::max(maxWeights, syn->GetWeight());
     }
 
     sumWeights = 0;
     for (auto& syn : this->synapseData) {
-        sumWeights += std::exp(syn->getWeight() - maxWeights);
+        sumWeights += std::exp(syn->GetWeight() - maxWeights);
     }
 }
 
 void Morphology::weightDecay() {
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseSpineBase>& syn: this->synapseData) {
-            syn->setWeight(syn->getWeight() * weightExpDecay);
+            syn->SetWeight(syn->GetWeight() * weightExpDecay);
         }
     }
 }
 
-double Morphology::generateSynapticWeight(){
+double Morphology::GenerateSynapticWeight(){
     double weight{};
     std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
             if (this->distributeWeights) {
@@ -198,13 +203,13 @@ void Morphology::triggerStatOut(std::string dirPath) {
 // void Morphology::printThetasAndWeights() {
 //     std::cout << "weights: " << std::endl;
 //     for (auto& syn: this->synapseData) {
-//         std::cout << syn->getWeight() << ", ";
+//         std::cout << syn->GetWeight() << ", ";
 //     }
 //     std::cout << std::endl;
 
 //     std::cout << "thetas: " << std::endl;
 //     for (auto& syn: this->synapseData) {
-//         std::cout << syn->getTheta() << ", ";
+//         std::cout << syn->GetTheta() << ", ";
 //     }
 //     std::cout << std::endl;
 // }

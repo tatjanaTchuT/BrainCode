@@ -4,13 +4,13 @@ BranchedMorphology::BranchedMorphology(GlobalSimInfo * info): Morphology(info){
 
 }
 
-void BranchedMorphology::recordPostSpike() {
-    Morphology::recordPostSpike();
+void BranchedMorphology::RecordPostSpike() {
+    Morphology::RecordPostSpike();
 }
 
-void BranchedMorphology::recordExcitatoryPreSpike(unsigned long synSpikerId) {
-    Morphology::recordExcitatoryPreSpike(synSpikerId);
-    this->branches.at(this->synapseData.at(synSpikerId)->getBranchId())->spikedSyn.at(this->synapseData.at(synSpikerId)->getBranchPositionId())=true;
+void BranchedMorphology::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
+    Morphology::RecordExcitatoryPreSpike(synSpikerId);
+    this->branches.at(this->synapseData.at(synSpikerId)->GetBranchId())->spikedSyn.at(this->synapseData.at(synSpikerId)->GetBranchPositionId())=true;
 }
 
 void BranchedMorphology::reset()
@@ -140,18 +140,18 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
 }
 
 
-std::shared_ptr<SynapseSpineBase> BranchedMorphology::allocateNewSynapse(HeteroCurrentSynapse &synapse)
+std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
 {
     std::shared_ptr<SynapseSpineBranched> newSynapse;
     newSynapse = std::make_shared<SynapseSpineBranched>();
 
     //REFORMAT, REWRITE WITH CONSTRUCTOR    
-    newSynapse->setLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulations
+    newSynapse->SetLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulations
     //Step weights has been removed fron here
-    newSynapse->setWeight(this->generateSynapticWeight());
+    newSynapse->SetWeight(this->GenerateSynapticWeight());
 
-    //this->weightsSum += newSynapse->getWeight();
-    newSynapse->setIdInMorpho(this->synapseIdGenerator++);
+    //this->weightsSum += newSynapse->GetWeight();
+    newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
     //Branch
     int branch {allocateBranch(synapse)};
     if (branches.at(branch)->openSynapsesSlots.size()==0){
@@ -160,10 +160,10 @@ std::shared_ptr<SynapseSpineBase> BranchedMorphology::allocateNewSynapse(HeteroC
     //Position
     int position{branches.at(branch)->openSynapsesSlots.front()};
     branches.at(branch)->openSynapsesSlots.pop_front();
-    newSynapse->setBranchPositionId(position);
-    newSynapse->setDistanceFromNode(position*branches.at(branch)->synapticGap);
+    newSynapse->SetBranchPositionId(position);
+    newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
-    branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->getIdInMorpho());
+    branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
 
     //Storage (other)
     this->synapseData.push_back(newSynapse);
@@ -218,7 +218,7 @@ void BranchedMorphology::randomSynapseAllocation(std::shared_ptr<Branch> branch)
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
    //Now we have our vector from 0 to maxSlots to pull random numbers from
     std::sample(possibleSlots.begin(), possibleSlots.end(),std::back_inserter(branch->openSynapsesSlots),branch->spikedSyn.size(),this->info->globalGenerator);
-    //Then I will have to pop_front() in allocateNewSynapse
+    //Then I will have to pop_front() in AllocateNewSynapse
 }
 
 void BranchedMorphology::orderedSynapseAllocation(std::shared_ptr<Branch> branch)
@@ -227,7 +227,7 @@ void BranchedMorphology::orderedSynapseAllocation(std::shared_ptr<Branch> branch
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
     //Now we have our vector from 0 to maxSlots to pull random numbers from
     copy(possibleSlots.begin(), possibleSlots.end(), back_inserter(branch->openSynapsesSlots));
-    //Then I will have to pop_front() in allocateNewSynapse
+    //Then I will have to pop_front() in AllocateNewSynapse
 }
 
 /*void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
@@ -240,7 +240,7 @@ void BranchedMorphology::orderedSynapseAllocation(std::shared_ptr<Branch> branch
         //For now it is the same as ordered, the possibility of alternating synapses will probably be more useful with multiple synapses pre-post neuron.
 }*/
 
-std::valarray<double> BranchedMorphology::getIndividualSynapticProfile(unsigned long synapseId) const {
+std::valarray<double> BranchedMorphology::GetIndividualSynapticProfile(unsigned long synapseId) const {
     /*
      * returned array organised as follows:
      * item 1: distance of synapse from branch root
@@ -248,7 +248,7 @@ std::valarray<double> BranchedMorphology::getIndividualSynapticProfile(unsigned 
      * item 3: value of the synaptic weight
      * item 4: last spike time of the synapse
      * */
-    return synapseData.at(synapseId)->getIndividualSynapticProfile();
+    return synapseData.at(synapseId)->GetIndividualSynapticProfile();
 }
 
 void BranchedMorphology::setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)

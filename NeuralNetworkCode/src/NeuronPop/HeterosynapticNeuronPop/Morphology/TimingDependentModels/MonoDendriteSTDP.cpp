@@ -45,9 +45,9 @@ void MonoDendriteSTDP::advect() {
     // update for pre-post effects for all synapses
     if (this->postSpiked){
         for (const auto& syn: this->synapseData) {
-            if (syn->getLastSpike() > 0 && this->integratePreSpike.at(syn->getIdInMorpho())) {
-                this->updateLTP(syn->getIdInMorpho());
-                this->integratePreSpike.at(syn->getIdInMorpho()) = false;
+            if (syn->GetLastSpike() > 0 && this->integratePreSpike.at(syn->GetIdInMorpho())) {
+                this->updateLTP(syn->GetIdInMorpho());
+                this->integratePreSpike.at(syn->GetIdInMorpho()) = false;
             }
         }
         this->postSpiked=false;
@@ -59,23 +59,23 @@ void MonoDendriteSTDP::advect() {
 
 void MonoDendriteSTDP::thetaDecay() {
     for (const std::shared_ptr<SynapseSpineBase>& syn: this->synapseData) {
-        syn->setTheta(syn->getTheta() * this->thetaExpDecay);
+        syn->SetTheta(syn->GetTheta() * this->thetaExpDecay);
     }
 }
 
-void MonoDendriteSTDP::recordPostSpike() {
-    Morphology::recordPostSpike();
+void MonoDendriteSTDP::RecordPostSpike() {
+    Morphology::RecordPostSpike();
     this->lastPostSpikeTime = this->info->dt * static_cast<double> (this->info->time_step);
     // STDP Analysis
     //this->postSpikes.push_back(this->lastPostSpikeTime);
     std::fill(this->integratePostSpike.begin(), this->integratePostSpike.end(), true);
 }
 
-void MonoDendriteSTDP::recordExcitatoryPreSpike(unsigned long synSpikerId) {
-    Morphology::recordExcitatoryPreSpike(synSpikerId);
+void MonoDendriteSTDP::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
+    Morphology::RecordExcitatoryPreSpike(synSpikerId);
     this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
     this->spikedSynapsesId.push_back(synSpikerId);
-    this->synapseData.at(synSpikerId)->setLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
+    this->synapseData.at(synSpikerId)->SetLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
     this->integratePreSpike.at(synSpikerId) = true;
 }
 
@@ -231,7 +231,7 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     this->thetaExpDecay=exp(-this->info->dt/this->tauTheta);
 }
 
-std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::allocateNewSynapse(HeteroCurrentSynapse& synapse) {
+std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 
@@ -250,25 +250,25 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::allocateNewSynapse(HeteroCur
 //
 //        this->allocateDistal = !this->allocateDistal;
 
-        newSynapse->setDistToSoma( this->nextPos);
-        newSynapse->setLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulation
-        newSynapse->setTheta(0);
+        newSynapse->SetDistToSoma( this->nextPos);
+        newSynapse->SetLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulation
+        newSynapse->SetTheta(0);
         if (stepWeights) {
             if (synapseData.size() > weightStepBoundary.at(currWightStepId)) {
                 currWightStepId++;
             }
-            newSynapse->setWeight(weightStepValue.at(currWightStepId));
+            newSynapse->SetWeight(weightStepValue.at(currWightStepId));
         } else {
             if (distributeWeights) {
                 std::random_device rd;
                 std::default_random_engine generator(rd()); // rd() provides a random seed
-                newSynapse->setWeight(distribution(generator));
+                newSynapse->SetWeight(distribution(generator));
             } else {
-                newSynapse->setWeight(this->initialWeights); // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
+                newSynapse->SetWeight(this->initialWeights); // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1
             }
         }
-        //this->weightsSum += newSynapse->getWeight();
-        newSynapse->setIdInMorpho(this->synapseIdGenerator++);
+        //this->weightsSum += newSynapse->GetWeight();
+        newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
 
@@ -289,9 +289,9 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
 
     double hEffects = getDistanceEffects(spiker, neighbor);
     hEffects *= getTimingEffects(spiker, neighbor);
-    hEffects *= spiker->getWeight() * neighbor->getWeight();
-    spiker->addToTheta(hEffects);
-    neighbor->addToTheta(hEffects);
+    hEffects *= spiker->GetWeight() * neighbor->GetWeight();
+    spiker->AddToTheta(hEffects);
+    neighbor->AddToTheta(hEffects);
 
 //    if (hEffects != 0.0) {//OPTIMIZATION. Problems with heap allocation of the data (causes an OOM error). Needs to be moved to a file if necessary
 ////        pseudoCoop( spikerId, neighborId);
@@ -305,15 +305,15 @@ void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId)
     SynapseSpineBase* spiker = this->synapseData.at(synId).get();
     SynapseSpineBase* neighbor = this->synapseData.at(neighborId).get();
     std::cout << "id 1: " << synId << ", id 2: " << neighborId << std::endl;
-    std::cout << "dist: " << abs(spiker->getDistToSoma() - neighbor->getDistToSoma()) << std::endl;
-    std::cout << "time: " << abs(spiker->getLastSpike() - neighbor->getLastSpike()) << std::endl;
+    std::cout << "dist: " << abs(spiker->GetDistToSoma() - neighbor->GetDistToSoma()) << std::endl;
+    std::cout << "time: " << abs(spiker->GetLastSpike() - neighbor->GetLastSpike()) << std::endl;
     std::cout << "dist effect: " << getDistanceEffects(spiker, neighbor);
     std::cout << "time effect: " << getTimingEffects(spiker, neighbor);
 
 }
 
 
-std::valarray<double> MonoDendriteSTDP::getIndividualSynapticProfile(unsigned long synapseId) const {
+std::valarray<double> MonoDendriteSTDP::GetIndividualSynapticProfile(unsigned long synapseId) const {
     /*
      * returned array organised as follows:
      * item 1: distance of synapse from soma
@@ -321,5 +321,5 @@ std::valarray<double> MonoDendriteSTDP::getIndividualSynapticProfile(unsigned lo
      * item 3: value of the synaptic weight
      * item 4: last spike time of the synapse
      * */
-    return synapseData.at(synapseId)->getIndividualSynapticProfile();
+    return synapseData.at(synapseId)->GetIndividualSynapticProfile();
 }

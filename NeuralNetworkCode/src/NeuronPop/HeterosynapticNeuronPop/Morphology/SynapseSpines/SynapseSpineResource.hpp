@@ -13,8 +13,8 @@ class SynapseSpineResource : public SynapseSpineBranched {
 
 
     //Profile function
-    std::valarray<double> getIndividualSynapticProfile() const override;
-    std::string getIndividualSynapticProfileHeaderInfo() const override;
+    std::valarray<double> GetIndividualSynapticProfile() const override;
+    std::string GetIndividualSynapticProfileHeaderInfo() const override;
 };
 
 #endif

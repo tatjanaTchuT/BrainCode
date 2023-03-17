@@ -3,7 +3,7 @@
 // SynapseSpineCoop::SynapseSpineCoop(double distToSoma, double lastSpike, double weight):distToSoma{distToSoma}, SynapseSpineBase(weight,lastSpike){
 // }
 
-std::valarray<double> SynapseSpineCoop::getIndividualSynapticProfile() const
+std::valarray<double> SynapseSpineCoop::GetIndividualSynapticProfile() const
 {
     std::valarray<double> ret(4);
     ret[0] = this->distToSoma;
@@ -13,7 +13,7 @@ std::valarray<double> SynapseSpineCoop::getIndividualSynapticProfile() const
     return ret;
 }
 
-std::string SynapseSpineCoop::getIndividualSynapticProfileHeaderInfo() const
+std::string SynapseSpineCoop::GetIndividualSynapticProfileHeaderInfo() const
 {
     return std::string("Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n");
 }
