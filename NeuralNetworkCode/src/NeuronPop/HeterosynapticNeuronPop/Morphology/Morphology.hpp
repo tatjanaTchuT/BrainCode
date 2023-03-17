@@ -82,6 +82,7 @@ public:
     virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const = 0;
     virtual std::valarray<double> GetOverallSynapticProfile() const;
     std::string GetIndividualSynapticProfileHeaderInfo() const;
+    virtual unsigned long GetMorphoPlasticityEvents() const {return 0;};
     //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class
     unsigned long GetSynapseCount() const;
     double GetWeight(unsigned long synapseId) const;

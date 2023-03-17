@@ -33,51 +33,49 @@ protected:
     bool randomSynAllocationB{false};
 
     /*bool setBranchAllocationB{false};
-    bool orderedBranchAllocationB{false};// If not properly loaded from LP, exception
-    bool randomBranchAllocationB{false};*/
+    bool OrderedBranchAllocationB{false};// If not properly loaded from LP, exception
+    bool RandomBranchAllocationB{false};*/
 
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
-    //initialize with the pointer, push_back() the pointer
 public:
     explicit BranchedMorphology(GlobalSimInfo * info);
-    virtual ~BranchedMorphology() = default;
+    ~BranchedMorphology() = default;
 
     //Methods derived from the MonoDendriteSTDP and Morphology classes
-    virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
-    virtual void LoadParameters(std::vector<std::string> *input) override;
+    void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
+    void LoadParameters(std::vector<std::string> *input) override;
     virtual const std::string GetType() = 0;
 
-    virtual void RecordPostSpike();//REDO
-    virtual void RecordExcitatoryPreSpike(unsigned long synSpikerId); //REDO
-    virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
+    void RecordPostSpike() override;
+    void RecordExcitatoryPreSpike(unsigned long synSpikerId) override; 
+    std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
+    unsigned long GetMorphoPlasticityEvents() const override;
+    
     virtual void advect()=0;
     void Reset() override;
-    //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
-    //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 
     //Branched specific methods
-    //There is also a need for a wrapper called at the end of LP
-    void setUpMorphology();
-    virtual void setUpSynapseSlots(std::shared_ptr<Branch> branch); //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
+    void SetUpMorphology();
+    void SetUpSynapseSlots(std::shared_ptr<Branch> branch); //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
     //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
     //The overriding function calls functions of BMorpho. 
-    virtual void setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
+    void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
 
     //Allocation shennanigans
     
-    virtual std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
+    std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
 
-    virtual int allocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in AllocateNewSynapse
-    virtual int randomBranchAllocation();
-    virtual int orderedBranchAllocation();
+    int AllocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in AllocateNewSynapse
+    int RandomBranchAllocation();
+    int OrderedBranchAllocation();
     //setBranchAllocation() is implicit in the function (or has to be) allocate NewSynapse
     //virtual int orderedGuidedBranchAllocation(const char subregionID);
-    virtual void randomSynapseAllocation(std::shared_ptr<Branch> branch);
-    virtual void orderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the setUpSynapseSlots already, called depending on a bool. 
+    void RandomSynapseAllocation(std::shared_ptr<Branch> branch);
+    void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the SetUpSynapseSlots already, called depending on a bool. 
     //virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
     //
-    virtual bool const IsBranchedBool() override {return true;}
-    int generateBranchId(){return branchIdGenerator++;}
+    bool const IsBranchedBool() override {return true;}
+    int GenerateBranchId(){return branchIdGenerator++;}
 
 };
 

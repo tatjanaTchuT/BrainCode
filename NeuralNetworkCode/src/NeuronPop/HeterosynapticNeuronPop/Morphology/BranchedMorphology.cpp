@@ -1,4 +1,5 @@
 #include "./BranchedMorphology.hpp"
+#include "BranchedMorphology.hpp"
 
 BranchedMorphology::BranchedMorphology(GlobalSimInfo * info): Morphology(info){
 
@@ -64,11 +65,11 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             }
         } /*else if (name.find("branch_allocation") != std::string::npos){
             if (values.at(0).find("ordered") != std::string::npos){
-                orderedBranchAllocationB=true;
+                OrderedBranchAllocationB=true;
             } else if (values.at(0).find("set") != std::string::npos){
                 setBranchAllocationB=true;
             } else if (values.at(0).find("random") != std::string::npos){
-                randomBranchAllocationB=true;
+                RandomBranchAllocationB=true;
             }
         }*/
     }
@@ -77,24 +78,24 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     assertm(synapticGapInitialized, "Using heterosynaptic synapses without specifying synaptic_gap is not allowed.");
     assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
     if (!orderedSynAllocationB && !randomSynAllocationB){throw;}
-    //if (!orderedBranchAllocationB && !randomBranchAllocationB && !setBranchAllocationB){throw;}
-    setUpMorphology();
+    //if (!OrderedBranchAllocationB && !RandomBranchAllocationB && !setBranchAllocationB){throw;}
+    SetUpMorphology();
 }
 
-void BranchedMorphology::setUpMorphology()
+void BranchedMorphology::SetUpMorphology()
 {
-    setUpBranchings(this->branchings);
+    SetUpBranchings(this->branchings);
     for (auto& branch : this->branches){
-        setUpSynapseSlots(branch);
+        SetUpSynapseSlots(branch);
     }
 }
 
-void BranchedMorphology::setUpSynapseSlots(std::shared_ptr<Branch> branch)
+void BranchedMorphology::SetUpSynapseSlots(std::shared_ptr<Branch> branch)
 {
     if (this->orderedSynAllocationB){
-        this->orderedSynapseAllocation(branch);
+        this->OrderedSynapseAllocation(branch);
     } else if (this->randomSynAllocationB){
-        this->randomSynapseAllocation(branch);
+        this->RandomSynapseAllocation(branch);
     }
 }
 
@@ -129,9 +130,9 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     *stream << neuronPreId<<"_morphology_seed\t\t\t"<<std::to_string(this->seed)<<"\n";//Missing comments
     /*
     *stream << neuronPreId<<"_morphology_branch_allocation\t\t";
-    if (this->randomBranchAllocationB){
+    if (this->RandomBranchAllocationB){
         *stream << "random\t";
-    }else if (this->orderedBranchAllocationB){
+    }else if (this->OrderedBranchAllocationB){
         *stream<<"ordered\t";
     }else if (this->setBranchAllocationB){
         *stream<<"set\t";
@@ -153,7 +154,7 @@ std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroC
     //this->weightsSum += newSynapse->GetWeight();
     newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
     //Branch
-    int branch {allocateBranch(synapse)};
+    int branch {AllocateBranch(synapse)};
     if (branches.at(branch)->openSynapsesSlots.size()==0){
         throw noAllocatableSynapseException();
     }
@@ -175,21 +176,21 @@ std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroC
     return static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse);
     }
 
-int BranchedMorphology::allocateBranch(const HeteroCurrentSynapse &synapse)
+int BranchedMorphology::AllocateBranch(const HeteroCurrentSynapse &synapse)
 {
         const BranchTargeting& target= synapse.getBranchTarget();
         if (target.setTargetBranch && !(target.targetBranch>this->branches.size())){
             return target.targetBranch;
         } else if (target.randomTargetBranch){
-            return randomBranchAllocation();
+            return RandomBranchAllocation();
         } else if (target.orderedTargetBranch){
-            return orderedBranchAllocation();
+            return OrderedBranchAllocation();
         } else {
             throw noAllocatableSynapseException();
         }
 }
 
-int BranchedMorphology::randomBranchAllocation()
+int BranchedMorphology::RandomBranchAllocation()
 {
         std::default_random_engine& generator = this->generator;
         //For now, the distribution will be uniform
@@ -198,7 +199,7 @@ int BranchedMorphology::randomBranchAllocation()
         return branchID;
 }
 
-int BranchedMorphology::orderedBranchAllocation()
+int BranchedMorphology::OrderedBranchAllocation()
 {
     int branchId{};
     for (auto& branch:branches){
@@ -211,7 +212,7 @@ int BranchedMorphology::orderedBranchAllocation()
     return branchId;
 }
 
-void BranchedMorphology::randomSynapseAllocation(std::shared_ptr<Branch> branch)
+void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)
 {
     //std::default_random_engine& generator = this->generator;
     std::vector<int> possibleSlots(branch->spikedSyn.size());
@@ -221,7 +222,7 @@ void BranchedMorphology::randomSynapseAllocation(std::shared_ptr<Branch> branch)
     //Then I will have to pop_front() in AllocateNewSynapse
 }
 
-void BranchedMorphology::orderedSynapseAllocation(std::shared_ptr<Branch> branch)
+void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
     std::deque<int> possibleSlots(branch->spikedSyn.size());
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
@@ -250,20 +251,25 @@ std::valarray<double> BranchedMorphology::GetIndividualSynapticProfile(unsigned 
      * */
     return synapseData.at(synapseId)->GetIndividualSynapticProfile();
 }
+unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const
+{
+    return std::accumulate(this->branches.begin(), this->branches.end(), 0,
+                                       [] (const double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEvents; });;
+}
 
-void BranchedMorphology::setUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
+void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
 {
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
     //First call is done with an empty int vector
     for (int i = 0; i < 2;i++) {
-        int branchId{this->generateBranchId()};
+        int branchId{this->GenerateBranchId()};
         this->branches.emplace_back(std::make_shared<Branch>(Branch(this->synapticGap, this->branchLength, anteriorBranches, branchId)));//This vector should be sorted by ID by default (tested).
         //Constructor here
         if(remainingBranchingEvents>0){
             std::vector<int> anteriorBranchesCopy(anteriorBranches);
             anteriorBranchesCopy.push_back(branchId);
-            this->setUpBranchings(remainingBranchingEvents, anteriorBranchesCopy);
+            this->SetUpBranchings(remainingBranchingEvents, anteriorBranchesCopy);
         }
     }
 }
