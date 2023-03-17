@@ -36,7 +36,7 @@ struct Branch{
     std::vector<int> synapseSlotClosedIndex{}; // Here we store the used indexes in the vector, to check for stuff faster and only go to indexes
     std::vector<int> morphoSynapseIDs{};// REMEMBER TO PUT IN CONSTRUCTOR Unique ID for the poisition in the dendritic tree. Probably going to be for allocation only
     //Maybe more vectors will be needed. Not in use commented out. 
-    Branch()=default;
+    //Branch()=default;
     Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
 };
 #endif

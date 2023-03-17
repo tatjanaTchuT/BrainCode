@@ -6,7 +6,7 @@
 #include "Synapse.hpp"
 //#include "../NeuronPop/HeterosynapticNeuronPop/HeteroLIFNeuronPop.hpp"// And removing this include avoids a second include loop
 #include "../Connectivity/HeteroDerivedConnectivity/HeteroRandomConnectivity.hpp"
-
+#include "../NeuronPop/HeterosynapticNeuronPop/Morphology/BranchedStructs.hpp"
 class HeteroCurrentSynapse : public Synapse {
 protected:
 

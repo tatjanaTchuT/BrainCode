@@ -1,7 +1,5 @@
 #include "./BranchedMorphology.hpp"
 
-
-
 BranchedMorphology::BranchedMorphology(GlobalSimInfo * info): Morphology(info){
 
 }
