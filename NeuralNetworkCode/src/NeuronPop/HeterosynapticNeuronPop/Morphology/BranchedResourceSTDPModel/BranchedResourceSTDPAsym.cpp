@@ -1,10 +1,10 @@
-#include "SimplePOnlyB.hpp"
+#include "./BranchedResourceSTDPAsym.hpp"
 
-SimplePlasticityOnlyBranch::SimplePlasticityOnlyBranch(GlobalSimInfo *info):BranchedMorphology(info)
+BranchedResourceSTDPAsymmetric::BranchedResourceSTDPAsymmetric(GlobalSimInfo *info):BranchedMorphology(info)
 {
 }
 
-void SimplePlasticityOnlyBranch::LoadParameters(std::vector<std::string> *input)
+void BranchedResourceSTDPAsymmetric::LoadParameters(std::vector<std::string> *input)
 {
     std::string name;
     std::vector<std::string> values;
@@ -19,14 +19,14 @@ void SimplePlasticityOnlyBranch::LoadParameters(std::vector<std::string> *input)
     }
 
 }
-void SimplePlasticityOnlyBranch::SaveParameters(std::ofstream *stream, std::string neuronPreId)
+void BranchedResourceSTDPAsymmetric::SaveParameters(std::ofstream *stream, std::string neuronPreId)
 {
     BranchedMorphology::SaveParameters(stream, neuronPreId);
     *stream << neuronPreId<<"_morphology_available_weight\t\t"<<std::to_string(this->availableBranchResources);
     *stream << "\t"<<"#Total weight available to be distributed among synapses per time-step.\n";
 }
 
-void SimplePlasticityOnlyBranch::advect()
+void BranchedResourceSTDPAsymmetric::advect()
 {
     Morphology::WeightDecay();
     for (auto branch : branches){

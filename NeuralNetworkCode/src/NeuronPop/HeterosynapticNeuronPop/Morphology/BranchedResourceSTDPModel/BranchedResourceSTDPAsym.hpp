@@ -6,17 +6,22 @@
 
 class BranchedMorphology;
 
-class SimplePlasticityOnlyBranch : public BranchedMorphology {
+class BranchedResourceSTDPAsymmetric : public BranchedMorphology {
 
 protected:
 
+    //Resource model.
     double availableBranchResources{};
+
+    //Counters
+    int STDPDepressionCount{};
+    int maxCount{100}; //dependent on dt?, default 10 ms assuming dt=1e-4
 
 public:
 
-    SimplePlasticityOnlyBranch()=default;
-    explicit SimplePlasticityOnlyBranch(GlobalSimInfo * info);
-    ~SimplePlasticityOnlyBranch() = default;
+    BranchedResourceSTDPAsymmetric()=default;
+    explicit BranchedResourceSTDPAsymmetric(GlobalSimInfo * info);
+    ~BranchedResourceSTDPAsymmetric() = default;
     
     void LoadParameters(std::vector<std::string> *input) override;    
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
