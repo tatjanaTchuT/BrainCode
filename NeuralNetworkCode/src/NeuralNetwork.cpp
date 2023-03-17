@@ -446,7 +446,7 @@ int NeuralNetwork::Simulate()
         this->synapses->advect(&synaptic_dV);
         this->stimulus->Update(&synaptic_dV);
         this->neurons->advect(&synaptic_dV);
-		this->synapses->reset();
+		this->synapses->Reset();
         this->recorder->Record(&synaptic_dV);
 
 

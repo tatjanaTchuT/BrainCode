@@ -11,7 +11,7 @@ MonoDendriteSTDP::MonoDendriteSTDP(GlobalSimInfo* info): Morphology(info), integ
 
 void MonoDendriteSTDP::advect() {
 
-    this->weightDecay();
+    this->WeightDecay();
 
     this->thetaDecay();
 
@@ -53,7 +53,7 @@ void MonoDendriteSTDP::advect() {
         this->postSpiked=false;
     }
 
-    this->reset();
+    this->Reset();
     std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
 }
 
@@ -115,7 +115,7 @@ void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronP
     *stream << neuronPreId<<"_base_ltd\t\t\t\t"<<std::to_string(this->base_ltd);
     *stream << "\t"<<"#Default decrease of weight per LTD check. \"B\" equivalent\n";
     
-    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<std::noboolalpha<<"\t"<<std::to_string(this->weightDecayConstant);
+    *stream << neuronPreId<<"_morphology_weight_decay\t"<<std::boolalpha<<this->decayWeights<<std::noboolalpha<<"\t"<<std::to_string(this->WeightDecayConstant);
     *stream<<"\t"<<"#The first bool activates the weight decay per timestep. The second number is the time constant on an exponential in seconds [exp(-dt/ctt)].\n";
 
     *stream << neuronPreId<<"_morphology_min-max_weights\t"<<std::to_string(this->minWeight)<<"\t"<<std::to_string(this->maxWeight);
@@ -203,8 +203,8 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
             decr_ltdInitialized = true;
         }else if (name.find("weight_decay") != std::string::npos) {
             this->decayWeights = {values.at(0)=="true"};
-            this->weightDecayConstant = std::stod(values.at(1));
-            this->weightExpDecay=exp(-this->info->dt/this->weightDecayConstant);
+            this->WeightDecayConstant = std::stod(values.at(1));
+            this->weightExpDecay=exp(-this->info->dt/this->WeightDecayConstant);
         } else if (name.find("min-max_weights") != std::string::npos) {
             this->minWeight = std::stod(values.at(0));
             this->maxWeight = std::stod(values.at(1));

@@ -56,13 +56,13 @@ protected:
     double maxWeight {2.0};
 
     bool decayWeights {false};
-    double weightDecayConstant{1.0};
+    double WeightDecayConstant{1.0};
     double weightExpDecay {};
 
-    virtual void reset();
-    void normalizeWeights();
+    virtual void Reset();
+    void NormalizeWeights();
 
-    virtual void weightDecay();
+    virtual void WeightDecay();
 
 public:
     explicit Morphology(GlobalSimInfo * info);

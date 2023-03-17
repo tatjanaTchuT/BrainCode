@@ -5,7 +5,6 @@
 AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stimulus *sti, std::string baseDir, std::vector<std::string> *input, std::string str_t, GlobalSimInfo * info) :Recorder(ns, syn, sti, baseDir, input, str_t, info)
 {
 	trackSynapses = false;
-//	writeHistogram = false;
 
 	Heatmap = 0;
 
@@ -13,7 +12,6 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 
 	noRasterPlotNeurons.resize(P, 0);
 	notrackNeuronPotentials.resize(P, 0);
-	//noCorrNeurons.resize(P, 0);
 	CurrentContributions.resize(P);
     noTrackHeteroSynapsePerTrackedNeuron.resize(P, 0);
 
@@ -36,13 +34,6 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 
 	LoadParameters(input);
 	CurrentContrBin.resize((static_cast<size_t>(P) + 1)* static_cast<size_t>(CurrentContributions.sum()));
-	//savecurrents.resize(noCorrNeurons[0]);
-	// for (int i = 0; i < noCorrNeurons[0]; i++) {
-	// 	savecurrents[i].resize(averaging_steps);
-	// 	for (int j = 0; j < averaging_steps; j++) {
-	// 		savecurrents[i][j].resize(P);
-	// 	}
-	// }
 	if (Heatmap != 0) {
 		Densimap.resize(P);
 		currentBin.Heatmap.resize(P);
@@ -85,11 +76,6 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
         *stream << std::to_string(notrackNeuronPotentials[i]) << " \t";
     *stream << "\t\t\t#Record currents and potentials at all time steps of the first x_p neurons, p = population index. [column 1: track #neurons in pop1, column 2: track #neurons in pop2, .. ]\n";
 
-    // *stream << "recorder_noCorrNeurons             ";
-    // for(unsigned i = 0; i < noCorrNeurons.size();i++)
-    //     *stream << std::to_string(noCorrNeurons[i]) << " \t";
-    // *stream << "\t\t\t#Record correlations between first x_p neurons for each bin size. p = population index. [column 1: #neurons in pop1, column 2: track #neurons in pop2, .. ]\n";
-
 	*stream << "recorder_CurrentContributions      ";
 	for (unsigned i = 0; i < CurrentContributions.size();i++)
 		*stream << std::to_string(CurrentContributions[i])<<"\t";
@@ -97,7 +83,6 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
 	*stream << "#Record the sources of input current to x neurons. (i-th column is x for the i-th population). The i+1-th column sets the initial recording time\n";
 
     *stream <<  "recorder_trackSynapses             " << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
-    // *stream <<  "recorder_Histogram                 " << std::to_string(writeHistogram) << "\t\t\t\t\t#Set = 0 to ignore. Option under construction.\n";
 	*stream <<  "recorder_Heatmap                   " << std::to_string(Heatmap) << "\t\t\t\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
     
     *stream <<  "recorder_notrackHeteroSynapseProfiles  ";
@@ -131,12 +116,7 @@ void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
 		} else if ((name.find("recorder_notrackNeuronPotentials") != std::string::npos) ||
 			(name.find("recorder_notrackNeuronProfiles") != std::string::npos)) {
 			SetNoTrackNeuronPotentials(&values);
-		// } else if (name.find("recorder_noCorrNeurons") != std::string::npos) {
-        //     SetNoCorrNeurons(&values);
-		} //else if (name.find("recorder_Histogram") != std::string::npos) {
-            //	writeHistogram = std::stoi(values.at(0));
-		// }
-		else if (name.find("recorder_Heatmap") != std::string::npos) {
+		} else if (name.find("recorder_Heatmap") != std::string::npos) {
             Heatmap = std::stoi(values.at(0));
 		} else if (name.find("recorder_CurrentContributions") != std::string::npos) {
             SetNoCurrentContribution(&values);
@@ -195,21 +175,9 @@ void AdvancedRecorder::SetNoRasterplotNeurons(std::vector<std::string> *values){
 	}
 }
 
-// void AdvancedRecorder::SetNoCorrNeurons(std::vector<std::string> *values){
-//     int P = static_cast<int>(neurons->GetTotalPopulations());
-//     for(int i = 0; i < min_(P,(int)values->size());i++){
-//         noCorrNeurons[i] = std::stoi(values->at(i));
-//         if ((static_cast<unsigned long>(noCorrNeurons[i]) > neurons->GetNeuronsPop(i)) ||
-//            (noCorrNeurons[i] < 0)){
-//             std::cout << "Correlations: Tracking all neurons of population "<< i << "\n";
-//             noCorrNeurons[i]  = neurons->GetNeuronsPop(i);
-//         }
-//     }
-// }
 
 void AdvancedRecorder::SetNoTrackHeteroSynapseProfilesPerTrackedNeuronPerPop(std::vector<std::string> *values) {
     int P = static_cast<int>(neurons->GetTotalPopulations());
-    //RemoveCommentInString(values);//This has been removed, as now every values vector should lack comments
     for(int i = 0; i < min_(P,static_cast<int>(values->size()));i++){//min() only makes sense if you remove the hash
         noTrackHeteroSynapsePerTrackedNeuron[i] = std::stoi(values->at(i));
     }
@@ -430,9 +398,6 @@ void AdvancedRecorder::WriteDataHeader_CurrentsContribution() {
 
 
 void AdvancedRecorder::WriteDataHeader_SynapseStates() {
-    //double dt { info->dt };
-    //unsigned    P  {neurons->GetTotalPopulations()};
-
     if(!trackSynapses)
         return;
 
@@ -449,31 +414,6 @@ void AdvancedRecorder::WriteDataHeader_SynapseStates() {
 
 }
 
-/*void AdvancedRecorder::WriteDataHeader_Histogram(){
-
-    if(!writeHistogram)
-        return;
-
-    std::ofstream     stream;
-    stream.open(GetHistogramFilename(), std::ofstream::out | std::ofstream::app);
-
-    WriteHeader(&stream);
-    stream << "#1 neuron_id \t #2 current (dmV/sec) \t #3 firingrate (Hz)\t\n";
-
-    stream.close();
-}*/
-
-// void AdvancedRecorder::WriteDataHeader_Correlations(){
-
-//     if(noCorrNeurons.sum() == 0)
-//         return;
-
-//     this->FileStreams.meanCorrFileStream.open(GetMeanCorrelationsFilename(), std::ofstream::out | std::ofstream::trunc);
-
-//     WriteHeader(&this->FileStreams.meanCorrFileStream);
-//     this->FileStreams.meanCorrFileStream << "#1 t (sec) \t #2 CC_EE \t #3 CC_EI \t #4 CC_IE \t #5 CC_II\t\n";
-
-// }
 
 void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
@@ -481,28 +421,25 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
         return;
 
     unsigned long P = neurons->GetTotalPopulations();
-    this->FileStreams.heteroSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
-
-    WriteHeader(&this->FileStreams.heteroSynapsesFileStream);
-    //Code currently only supports having the same type of plastic synaptic spine in the whole simulation, necessary to separate into multiple files for multi-type support.
-    //Instead of multiple files, print the multiple headers, one per pop
-    for(unsigned long p = 0;p<P;p++){
-        if (this->neurons->GetPop(P)->HasHeterosynapticPlasticity()){
-            this->FileStreams.heteroSynapsesFileStream << "Pop. "<< P << " profile -> "<<this->neurons->GetPop(P)-> <<" \n";
-        }
-    }
-    this->FileStreams.heteroSynapsesFileStream << "Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n";
-    this->FileStreams.heteroSynapsesFileStream << "\n#************************************\n";
-
-    this->FileStreams.heteroSynapsesFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id_synapse_id \n";
-
-    this->FileStreams.heteroSynapsesFileStream << "t\t";
-
     unsigned long synTrackCount;
+
+    this->FileStreams.heteroSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
+    WriteHeader(&this->FileStreams.heteroSynapsesFileStream);
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()  || this->neurons->GetPop(p)->IsBranchedBool()) {
+        if (synTrackCount != 0 && this->neurons->GetPop(P)->HasHeterosynapticPlasticity()){
+            this->FileStreams.heteroSynapsesFileStream << "Pop. "<< P << " profile -> "<<this->neurons->GetPop(P)->GetIndividualSynapticProfileHeaderInfo() <<" \n";
+        }
+    }
+
+    this->FileStreams.heteroSynapsesFileStream << "\n#************************************\n";
+    this->FileStreams.heteroSynapsesFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id_synapse_id \n";
+    this->FileStreams.heteroSynapsesFileStream << "t\t";
+
+    for(unsigned long p = 0;p<P;p++){
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -546,77 +483,17 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     this->FileStreams.hSOverallFileStream << "\n#************************************\n";
 }
 
-void AdvancedRecorder::WriteDataHeader_HeteroSynapsesBranched(){
-    unsigned long P = neurons->GetTotalPopulations();
-    for(unsigned long p = 0;p<P;p++){
-        if (this->neurons->GetPop(p)->IsBranchedBool()){
-            hasBranchedSynapsePop=true;
-        }
-    }
 
-    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0 || !hasBranchedSynapsePop)
-        return;
-
-
-    this->FileStreams.heteroBSynapsesFileStream.open(GetHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::app);
-
-    WriteHeader(&this->FileStreams.heteroBSynapsesFileStream);
-    this->FileStreams.heteroBSynapsesFileStream << "Profile -> {<dist to branch node>, <weight>, <last spike>} \n";
-    this->FileStreams.heteroBSynapsesFileStream << "\n#************************************\n";
-
-    this->FileStreams.heteroBSynapsesFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id_synapse_id \n";
-
-    this->FileStreams.heteroBSynapsesFileStream << "t\t";
-
-    unsigned long synTrackCount;
-
-    for(unsigned long p = 0;p<P;p++){
-        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranchedBool()) {
-            continue;
-        }
-        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
-                this->FileStreams.heteroBSynapsesFileStream << "Profile_" << p << "_" << i << "_" << (k) <<  "\t";
-            }
-        }
-    }
-    this->FileStreams.heteroBSynapsesFileStream << "\n#************************************\n";
-}
-
-// void AdvancedRecorder::WriteDataHeader_AllNeuronsOutput()
-// {
-//     unsigned long P = neurons->GetTotalPopulations();
-//     for(unsigned long p = 0;p<P;p++){
-//         if (this->neurons->GetPop(p)->streamingOutput()){
-//             streamingNOutputBool=true;
-//             streamingNeuronPops.push_back(p);
-//         }
-//     }
-//     if (!streamingNOutputBool){
-//         return;
-//     }
-//     for(int neuronPop : streamingNeuronPops){
-//         this->FileStreams.neuronOuputFileStreams.emplace_back(std::ofstream(GetNeuronOutputFilename(neuronPop), std::ofstream::out | std::ofstream::app));
-//         this->FileStreams.neuronOuputFileStreams.back()<<"#Metadata="<<std::to_string(this->neurons->GetPop(neuronPop)->GetNoNeurons())<<","<<std::to_string(this->info->dt)<<","<<std::to_string(static_cast<int>(this->info->simulationTime/this->info->dt))<<","<<std::to_string(neuronPop);
-//     }
-// }
-
-//void AdvancedRecorder::InitializeRecorder(std::string filename){
 void AdvancedRecorder::WriteDataHeader(){
     WriteDataHeader_Rasterplot();
     WriteDataHeader_Averages();
     WriteDataHeader_SynapseStates();
     WriteDataHeader_Potential();
     WriteDataHeader_Currents();
-    //WriteDataHeader_Histogram();
-    //WriteDataHeader_Correlations();
 	WriteDataHeader_Heatmap();
 	WriteDataHeader_CurrentsContribution();
 	WriteDataHeader_HeteroSynapses();
 	WriteDataHeader_HeteroSynapsesOverall();
-    WriteDataHeader_HeteroSynapsesBranched();
-    //WriteDataHeader_AllNeuronsOutput();
     reset_statistics();
 }
 
@@ -703,150 +580,6 @@ void AdvancedRecorder::Record_Potential(){
     this->FileStreams.potentialFileStream << "\n";
 }
 
-/*void AdvancedRecorder::Record_Histogram(std::vector<std::vector<double>> * synaptic_dV){
-
-    if(!writeHistogram)
-        return;
-
-    double n_aver     = double(averaging_steps);
-    int pops          = neurons->GetTotalPopulations();
-    double value;
-    std::vector<long> *spiker;
-
-    std::ofstream file;
-    file.open(GetHistogramFilename(), std::ofstream::out | std::ofstream::app);
-
-    for(int pop = 0; pop < pops; pop++){
-            spiker = neurons->GetSpikers(pop);
-            for(auto const &spiker_id : (*spiker) ){
-                SaveDoubleFile(&file,static_cast<double>(info->time_step)*(info->dt),5);
-                SaveDoubleFile(&file,spiker_id,0);
-                //SaveDoubleFile(&file,pop,0);
-                file << "\n";
-            }
-
-    }
-
-    if((info->time_step)%this->averaging_steps == 0)
-    {
-        for(int pop = 0; pop < pops; pop++){
-            for(int i = 0;i<neurons->GetNeuronsPop(pop);i++){
-                SaveDoubleFile(&file,i+1,0);
-                value = currentBin.totalCurrent_mean_N.at(pop).at(i)/n_aver;
-                SaveDoubleFile(&file,value,5);
-                file << "\n";
-            }
-        }
-        file << "\n";
-        file.close();
-
-    }
-
-}*/
-
-// void AdvancedRecorder::Record_Correlations(std::vector<std::vector<double>> * synaptic_dV){
-//     //This function *should* be considered deprecated. The pair part should also be commented out, as the volume of files it creates can crash some file explorer programmes
-//     if(noCorrNeurons.sum() == 0)
-//         return;
-
-//     double           dt = static_cast<double>(info->dt);
-//     double           t = static_cast<double>(info->time_step)*dt;
-//     double           fac;
-//     long             n_aver = averaging_steps;
-//     long             ts = info->time_step;
-//     // long             start, end;
-//     long             itj;
-//     long             P = neurons->GetTotalPopulations();
-
-//     std::vector<std::vector<double>> mean(noCorrNeurons[0], std::vector<double>(P));
-//     std::vector<std::vector<double>> sigma(noCorrNeurons[0], std::vector<double>(P));
-//     std::vector<std::vector<std::vector<std::vector<double>>>> crosscorr(noCorrNeurons[0], std::vector<std::vector<std::vector<double>>> (noCorrNeurons[0], std::vector<std::vector<double>> (P, std::vector<double>(P))));
-//     std::vector<std::vector<double>> crosscorr_final(P, std::vector<double> (P));
-
-//     //Fill current memory
-//     for(int m = 0;m<P;m++){
-//         for(long i = 0;i<noCorrNeurons[m];i++){
-//             savecurrents[i][ts%n_aver][m] = synaptic_dV->at(m).at(i)/static_cast<double>(info->dt);
-//         }
-//     }
-
-//     if((info->time_step)%this->averaging_steps != 0)
-//         return;
-
-//     //Compute current mean and standard deviation
-//     for(int m = 0;m<P;m++){
-//         for(long i=0;i<noCorrNeurons[m];i++){
-//             for(int k=0;k<n_aver;k++)
-//                 mean[i][m] += savecurrents[i][k][m]/n_aver;
-
-//             for(int k=0;k<n_aver;k++)
-//                 sigma[i][m] += pow(savecurrents[i][k][m]-mean[i][m],2)/n_aver;
-//         }
-//     }
-
-//     //Compute pairwise and mean crosscorrelations
-//     for(int m = 0;m<P;m++){
-//         for(int n=0;n<P;n++){
-//             for(long i = 0;i<noCorrNeurons[m];i++){
-//                 for(long j = 0;j<noCorrNeurons[n];j++){
-//                     for(int k=0;k<n_aver;k++){
-//                         crosscorr[i][j][m][n] += (savecurrents[i][k][m]*savecurrents[j][k][n]-mean[i][m]*mean[j][n])/(pow(sigma[i][m]*sigma[j][n],0.5)*n_aver);
-//                     }
-//                 }
-
-//                 if(n == m){ //same populations m,n
-//                     itj = i+1;
-//                     fac = 2/static_cast<double>(noCorrNeurons[n]*static_cast<double>(noCorrNeurons[n]-1));
-//                 }
-//                 else{       //different populations m,n
-//                     itj = 0;
-//                     fac = 1/(static_cast<double>(noCorrNeurons[n])*static_cast<double>(noCorrNeurons[m]));
-//                 }
-//                 for(long j=itj;j<noCorrNeurons[n];j++){
-//                     crosscorr_final[m][n] += fac*crosscorr[i][j][m][n];
-//                 }
-//             }
-//         }
-//     }
-
-
-//     //save mean crosscorrelations
-//     SaveDoubleFile(&this->FileStreams.meanCorrFileStream,t,5);
-//     this->FileStreams.meanCorrFileStream << "\t";
-//     for(int m = 0;m<P;m++){
-//         for(int n=0;n<P;n++){
-//             SaveDoubleFile(&this->FileStreams.meanCorrFileStream,crosscorr_final[m][n],5);
-//             this->FileStreams.meanCorrFileStream << "\t";
-//         }
-//     }
-//     this->FileStreams.meanCorrFileStream << "\n";
-
-
-//     //save pair crosscorrelations.OPTIMIZATION: this generates a ton of files, and is inefficient. Avoid usage.
-//     this->FileStreams.pairCorrFileStream.open(GetPairCorrelationsFilename(), std::ofstream::out | std::ofstream::app);
-
-//     WriteHeader(&this->FileStreams.pairCorrFileStream);
-//     this->FileStreams.pairCorrFileStream << "#Pairwise correlations averages over t = ["<< t- averaging_steps*dt <<", " << t << "] seconds \n";
-//     this->FileStreams.pairCorrFileStream << "#Tracking correlations between first \n";
-//     for(int i = 0;i<P;i++)
-//         this->FileStreams.pairCorrFileStream << "# " << noCorrNeurons[i] << " neurons of population " << i << " ,\n";
-//     this->FileStreams.pairCorrFileStream << "# respectively. \n";
-//     //file_pairCorr << " neurons of each population\n";
-
-//     for (int m = 0; m<P; m++){
-//         for (int i = 0; i < crosscorr.size(); i++){
-//             for (int n = 0; n<P; n++){
-//                 for (int j = 0; j < crosscorr[i].size(); j++){
-//                     SaveDoubleFile(&this->FileStreams.pairCorrFileStream,crosscorr[i][j][m][n],5);
-//                     this->FileStreams.pairCorrFileStream << "\t";
-//                 }
-//             }
-//             this->FileStreams.pairCorrFileStream << "\n";
-//         }
-//     }
-//     this->FileStreams.pairCorrFileStream.close();
-// }
-
 void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV) {
 
 	if (CurrentContributions.sum() == 0 || info->time_step < current_t_0)
@@ -906,11 +639,7 @@ void AdvancedRecorder::Record_SynapseStates(){
                 {
                     for(unsigned data_length = 0; data_length < currentBin.synapticState[post_population][pre_population].size(); data_length++)
                     {
-                        //std::cout << "synapse " << std::to_string(pre_population) << " to " << std::to_string(post_population) << ": ";
-                        //std::cout << std::to_string(currentBin.synapticState[post_population][pre_population][data_length]) << " ";
-                        //std::cout << std::to_string(double(currentBin.no_recordedSynapses[post_population][pre_population])) << " ";
                         value = currentBin.synapticState[post_population][pre_population][data_length] /static_cast<double>(currentBin.no_recordedSynapses[post_population][pre_population]);
-                        //std::cout << std::to_string(value) << "\n";
                         SaveDoubleFile(&this->FileStreams.synStatesFileStream,value,6);
                     }
                 }
@@ -920,7 +649,6 @@ void AdvancedRecorder::Record_SynapseStates(){
                     {
                         value = NAN;
                         SaveDoubleFile(&this->FileStreams.synStatesFileStream,value,6);
-                        //file << "\t";
                     }
                 }
             }
@@ -1097,57 +825,6 @@ void AdvancedRecorder::Record_HeteroSynapsesOverall() {
     }
     this->FileStreams.hSOverallFileStream << "\n";
 }
-void AdvancedRecorder::Record_HeteroSynapsesBranched() {
-
-    if(!hasBranchedSynapsePop) {
-        return;
-    }
-
-    double           dt {info->dt};
-    double           t {static_cast<double>(info->time_step)*dt};
-    unsigned long             P {neurons->GetTotalPopulations()};
-
-    SaveDoubleFile(&this->FileStreams.heteroBSynapsesFileStream,t,5);
-
-
-    unsigned long synTrackCount;
-
-    for(unsigned long p = 0;p<P;p++){
-        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount == 0 || !this->neurons->GetPop(p)->IsBranchedBool()) {
-            continue;
-        }
-        for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
-            for (unsigned long k = 0; k < noTrackHeteroSynapsePerTrackedNeuron[p]; ++k) {
-                SaveTupleOfDoublesFile(&this->FileStreams.heteroBSynapsesFileStream, this->neurons->GetPop(p)->GetIndividualSynapticProfile(i, k), 5);
-            }
-        }
-    }
-    this->FileStreams.heteroBSynapsesFileStream << "\n";
-}
-
-// void AdvancedRecorder::Record_AllNeuronsOutput()
-// {
-//     //I need to change this if I change how the output is written
-//     if (!streamingNOutputBool){
-//         return;
-//     }
-//     double time_t {static_cast<double>(info->time_step*info->dt)};
-
-//     for (int index = 0; index<streamingNeuronPops.size(); index++){
-//         NeuronPop& population = *this->neurons->GetPop(streamingNeuronPops.at(index));
-//         std::ofstream& stream = this->FileStreams.neuronOuputFileStreams.at(index);
-//         std::stringstream inputString;
-
-//         SaveDoubleFile(&stream,time_t,5);//In this format fileEntry.name would be the timestep
-
-//         for (long neuronId : *population.GetSpikers()){
-//             inputString<<std::to_string(neuronId)<<"\t";
-//         }
-//         stream<<inputString.str()<<"\n";
-//     }
-
-// }
 
 void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 {
@@ -1212,7 +889,6 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 	Record_Rasterplot();
 	Record_Currents(synaptic_dV);
 	//Record_Histogram(synaptic_dV);
-	//Record_Correlations(synaptic_dV);
 	Record_Averages();
 	Record_Potential();
 	Record_CurrentContributions(synaptic_dV);
@@ -1222,7 +898,6 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
         Record_HeteroSynapses();
     	Record_HeteroSynapsesOverall();
     }
-    //Record_AllNeuronsOutput();
 }
 
 void AdvancedRecorder::CloseStreams()
@@ -1239,13 +914,9 @@ void AdvancedRecorder::CloseStreams()
         FileStreams.cCurrentsFileStream.close();
     } if (trackSynapses){
         FileStreams.synStatesFileStream.close();
-    // } if (noCorrNeurons.sum()!=0){
-    //     FileStreams.meanCorrFileStream.close();
     } if (noTrackHeteroSynapsePerTrackedNeuron.sum()!=0){
         FileStreams.heteroSynapsesFileStream.close();
         FileStreams.hSOverallFileStream.close();
-    } if (hasBranchedSynapsePop){
-        FileStreams.heteroBSynapsesFileStream.close();
     // } if (streamingNOutputBool){
     //     for (std::ofstream& stream : FileStreams.neuronOuputFileStreams){
     //         stream.close();

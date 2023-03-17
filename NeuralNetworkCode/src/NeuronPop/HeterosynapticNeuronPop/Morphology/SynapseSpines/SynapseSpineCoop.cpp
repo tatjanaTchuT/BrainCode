@@ -15,5 +15,5 @@ std::valarray<double> SynapseSpineCoop::GetIndividualSynapticProfile() const
 
 std::string SynapseSpineCoop::GetIndividualSynapticProfileHeaderInfo() const
 {
-    return std::string("Profile -> {<dist to soma>, <hetero cooperativity>, <weight>, <last spike>} \n");
+    return std::string("{<dist to soma>, <hetero cooperativity>, <weight>, <last spike>}");
 }

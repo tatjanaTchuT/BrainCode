@@ -16,5 +16,5 @@ std::valarray<double> SynapseSpineBranched::GetIndividualSynapticProfile() const
 
 std::string SynapseSpineBranched::GetIndividualSynapticProfileHeaderInfo() const
 {
-    return std::string("Profile -> {<dist to branch node>, <branch ID>, <weight>, <last spike>} \n");
+    return std::string("{<dist to branch node>, <branch ID>, <weight>, <last spike>}");
 }

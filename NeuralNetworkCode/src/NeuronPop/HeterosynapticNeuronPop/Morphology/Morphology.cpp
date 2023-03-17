@@ -105,13 +105,13 @@ double Morphology::GetWeight(unsigned long synapseId) const {
     return this->synapseData.at(synapseId)->GetWeight();
 }
 
-void Morphology::reset() {
-    this->normalizeWeights();
+void Morphology::Reset() {
+    this->NormalizeWeights();
     //std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
     this->spikedSynapsesId.clear();
 }
 
-void Morphology::normalizeWeights() {
+void Morphology::NormalizeWeights() {
     if (this->weightNormalization == HardNormalization) {
         this->hardNormalize();
     } else if (this->weightNormalization == SoftMaxNormalization) {
@@ -139,7 +139,7 @@ void Morphology::softMaxNormalize() {
     }
 }
 
-void Morphology::weightDecay() {
+void Morphology::WeightDecay() {
     if (this->decayWeights) {
         for (const std::shared_ptr<SynapseSpineBase>& syn: this->synapseData) {
             syn->SetWeight(syn->GetWeight() * weightExpDecay);

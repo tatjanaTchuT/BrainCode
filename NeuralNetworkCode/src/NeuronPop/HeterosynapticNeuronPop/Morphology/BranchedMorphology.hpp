@@ -51,7 +51,7 @@ public:
     virtual void RecordExcitatoryPreSpike(unsigned long synSpikerId); //REDO
     virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
     virtual void advect()=0;
-    void reset() override;
+    void Reset() override;
     //This has to come from STDP, how they do it. I think that all the base things a dendrite can do, they have to be done by  this abstract class.
     //Other methods like allocateSynapse, or allocateBranch, can be specified by each derived class.
 

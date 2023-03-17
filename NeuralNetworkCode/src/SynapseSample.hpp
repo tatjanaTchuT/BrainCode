@@ -65,7 +65,7 @@ public:
     //**************************************
     //void advect(std::vector<std::vector<double>> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix);
 	void advect(std::vector<std::vector<double>> *  synaptic_dV);
-	void reset();
+	void Reset();
     void SaveParameters(std::ofstream * stream);
 
     void Test();

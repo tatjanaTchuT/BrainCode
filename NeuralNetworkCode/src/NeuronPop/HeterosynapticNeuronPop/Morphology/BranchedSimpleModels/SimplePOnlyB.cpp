@@ -28,7 +28,7 @@ void SimplePlasticityOnlyBranch::SaveParameters(std::ofstream *stream, std::stri
 
 void SimplePlasticityOnlyBranch::advect()
 {
-    Morphology::weightDecay();
+    Morphology::WeightDecay();
     for (auto branch : branches){
         double deltaW{this->availableBranchResources/std::accumulate(branch->spikedSyn.begin(), branch->spikedSyn.end(),0)}; //The sum occurs over a bool vector, so it is basically a count
 

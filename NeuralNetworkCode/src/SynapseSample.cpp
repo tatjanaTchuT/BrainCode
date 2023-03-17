@@ -203,7 +203,7 @@ void SynapseSample::advect(std::vector<std::vector<double>> * synaptic_dV){
     }
 }
 
-void SynapseSample::reset() {
+void SynapseSample::Reset() {
 	int P = this->neurons->GetTotalPopulations();
 
 	for (int source_pop = 0; source_pop < P; source_pop++) {
