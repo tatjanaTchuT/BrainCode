@@ -37,6 +37,7 @@ protected:
     bool RandomBranchAllocationB{false};*/
 
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
+    std::vector<std::shared_ptr<SynapseSpineBranched>> synapseDataBranched;//They are just pointers, what is the worst that can happen by having multiple copies?
 public:
     explicit BranchedMorphology(GlobalSimInfo * info);
     ~BranchedMorphology() = default;
@@ -55,7 +56,7 @@ public:
     void Reset() override;
 
     //Branched specific methods
-    void SetUpMorphology();
+    void SetUpBranchedMorphology();
     void SetUpSynapseSlots(std::shared_ptr<Branch> branch); //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
     //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
     //The overriding function calls functions of BMorpho. 

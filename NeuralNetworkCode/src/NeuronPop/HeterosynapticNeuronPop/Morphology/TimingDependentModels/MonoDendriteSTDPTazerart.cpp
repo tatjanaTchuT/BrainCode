@@ -76,17 +76,17 @@ void MonoDendriteSTDPTazerart::LoadParameters(std::vector<std::string> *input) {
 }
 
 void MonoDendriteSTDPTazerart::updateLTP(unsigned long synId) {
-    SynapseSpineBase* syn = this->synapseData[synId].get();
-//    this->weightsSum -= this->synapseData[synId]->weight;
+    SynapseSpineCoop* syn = this->synapseDataCoop[synId].get();
+//    this->weightsSum -= this->synapseDataCoop[synId]->weight;
     double change = this->preFactorLTP * this->aLTP(syn->GetTheta()) * this->gLTP(this->lastPostSpikeTime - syn->GetLastSpike());
 //    std::cout << synId << " : "  << change << std::endl;
-    this->synapseData[synId]->AddToWeight(change);
+    this->synapseDataCoop[synId]->AddToWeight(change);
 
 //    if (synId == 0) {
 //        std::cout << synId << " -- "<< this->lastPostSpikeTime << ", " << syn->lastSpike << " : "  << change << std::endl;
 //    }
-//    this->synapseData[synId]->weight = std::min(2.0, this->synapseData[synId]->weight);
-//    this->weightsSum += this->synapseData[synId]->weight;
+//    this->synapseDataCoop[synId]->weight = std::min(2.0, this->synapseDataCoop[synId]->weight);
+//    this->weightsSum += this->synapseDataCoop[synId]->weight;
 //    this->ltpList.push_back(change);
 //    for (unsigned long i = 0; i < this->ltpList.size(); i++) {
 //        std::cout << this->ltpList.at(i) << ", ";
@@ -96,17 +96,17 @@ void MonoDendriteSTDPTazerart::updateLTP(unsigned long synId) {
 
 
 void MonoDendriteSTDPTazerart::updateLTD(unsigned long synId) {
-    SynapseSpineBase* syn = this->synapseData[synId].get();
-//    this->weightsSum -= this->synapseData[synId]->weight;
+    SynapseSpineCoop* syn = this->synapseDataCoop[synId].get();
+//    this->weightsSum -= this->synapseDataCoop[synId]->weight;
     double change = this->preFactorLTD * this->aLTD(syn->GetTheta()) * this->gLTD(syn->GetLastSpike() - this->lastPostSpikeTime);
 //    std::cout << synId << " : "  << change << std::endl;
-    this->synapseData[synId]->AddToWeight(change);
+    this->synapseDataCoop[synId]->AddToWeight(change);
 
 //    if (synId == 0) {
 //        std::cout << synId << " -- " << syn->lastSpike << " , " << this->lastPostSpikeTime << " : "  << change << std::endl;
 //    }
-//    this->synapseData[synId]->weight = std::max(0.0, this->synapseData[synId]->weight);
-//    this->weightsSum += this->synapseData[synId]->weight;
+//    this->synapseDataCoop[synId]->weight = std::max(0.0, this->synapseDataCoop[synId]->weight);
+//    this->weightsSum += this->synapseDataCoop[synId]->weight;
 //    this->ltdList.push_back(change);
 //    for (unsigned long i = 0; i < this->ltdList.size(); i++) {
 //        std::cout << this->ltdList.at(i) << ", ";
@@ -146,7 +146,7 @@ const std::string MonoDendriteSTDPTazerart::GetType() {
     return str_MonoDendriteSTDPTazerart;
 }
 
-double MonoDendriteSTDPTazerart::getTimingEffects(const SynapseSpineBase* synA, const SynapseSpineBase* synB) const {
+double MonoDendriteSTDPTazerart::getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const {
     if (synA == synB) {
         return 0.0;
     }
@@ -156,7 +156,7 @@ double MonoDendriteSTDPTazerart::getTimingEffects(const SynapseSpineBase* synA, 
     return exp(-std::abs(synA->GetLastSpike() - synB->GetLastSpike()) / this->tauDelay);
 }
 
-double MonoDendriteSTDPTazerart::getDistanceEffects(const SynapseSpineBase* synA, const SynapseSpineBase* synB) const {
+double MonoDendriteSTDPTazerart::getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const {
     if (synA == synB) {
         return 0;
     }

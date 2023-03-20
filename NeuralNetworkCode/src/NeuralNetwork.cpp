@@ -243,9 +243,6 @@ void NeuralNetwork::SaveParameterOptions(){// This function should have stuff mo
 
     stream <<  "#*************  Branched dendrites **************************************************************\n";
 
-    SimplePlasticityOnlyBranch simple(&mockInfo);
-    simple.SaveParameters(&stream,"neurons_0");
-
 //Instead of LIF, heteroLIF, put morphology options from Tazerart and HCS and HCP
 
     stream << std::endl;

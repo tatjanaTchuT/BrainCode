@@ -36,10 +36,9 @@ void MultiplyVector (std::vector<double> &vector, double value)
     }
 }
 
-int ReduceCount(int count)
+int ReduceCountStopAtZero(int count)
 {
-    if (count==0){return 0;}
-    else {return count-1;}
+    return (count>0) ? count-1 : 0;
 }
 
 void TestWritingFile(std::string filename)

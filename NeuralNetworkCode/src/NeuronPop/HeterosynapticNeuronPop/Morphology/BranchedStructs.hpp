@@ -32,10 +32,18 @@ struct Branch{
     //The idea is to .pop_front() ids that have been ordered inside here
     //For the actual checks
     std::vector<bool> spikedSyn{};//Here, with the size of the branch discrete positions, we will store the bool indicating if the preneuron fired in the timestep
-    //Because of how the kernelized version of plasticity works, I will  use the branch ID and relative position ID from the SynapseExtBranched, so the next two vectors are unnecessary
+    //Because of how the kernelized version of plasticity works, I will  use the branch ID and relative position ID from the SynapseExtBranched.
     std::vector<int> synapseSlotClosedIndex{}; // Here we store the used indexes in the vector, to check for stuff faster and only go to indexes
     std::vector<int> morphoSynapseIDs{};// REMEMBER TO PUT IN CONSTRUCTOR Unique ID for the poisition in the dendritic tree. Probably going to be for allocation only
-    //Maybe more vectors will be needed. Not in use commented out. 
+
+    //Resource paradigm variables
+    unsigned long plasticityBranchEvents{};
+
+    std::vector<int> triggerCount{};
+    std::vector<int> triggerCount{};
+    std::vector<int> triggerCount{};
+    std::vector<int> triggerCount{};
+    //Methods
     //Branch()=default;
     Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
 };

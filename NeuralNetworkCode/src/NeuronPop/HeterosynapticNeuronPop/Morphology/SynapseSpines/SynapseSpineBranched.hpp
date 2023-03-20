@@ -16,8 +16,8 @@ class SynapseSpineBranched : public SynapseSpineBase {
     SynapseSpineBranched()=default;
     //SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //getters
-    int GetBranchId() const override {return branchId;};
-    int GetBranchPositionId() const override {return branchPositionId;};
+    int GetBranchId() const {return branchId;};
+    int GetBranchPositionId() const {return branchPositionId;};
     int GetDistanceFromNode() const {return distanceFromNode;};
     bool GetBranchedBool() const { return isBranchedBool;}
     //setters

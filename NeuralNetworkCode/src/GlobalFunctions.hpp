@@ -123,12 +123,12 @@ const std::string str_MonoDendriteSTDPTazerartRelative{"MonoDendriteSTDPTazerart
 const std::string str_MonoDendriteSTDPBiWindow{"MonoDendriteSTDPBiWindow"};
 const std::string str_MonoDendriteSTDPBiExponential{"MonoDendriteSTDPBiExponential"};
 
-const std::string str_SimplePlasticityOnlyBranches{"SimplePlasticityOnlyBranches"};
+const std::string str_BranchedResourceSTDPAsymmetric{"BranchedResourceSTDPAsymmetric"};
 
 void MultiplyVector (std::vector<unsigned long> &vector, unsigned long value);
 void MultiplyVector (std::vector<double> &vector, double value);
 
-int ReduceCount(int count);
+int ReduceCountStopAtZero(int count);
 
 void TestWritingFile(std::string filename);
 

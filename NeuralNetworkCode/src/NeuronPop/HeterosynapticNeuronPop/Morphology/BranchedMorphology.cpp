@@ -11,7 +11,7 @@ void BranchedMorphology::RecordPostSpike() {
 
 void BranchedMorphology::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
     Morphology::RecordExcitatoryPreSpike(synSpikerId);
-    this->branches.at(this->synapseData.at(synSpikerId)->GetBranchId())->spikedSyn.at(this->synapseData.at(synSpikerId)->GetBranchPositionId())=true;
+    this->branches.at(this->synapseDataBranched.at(synSpikerId)->GetBranchId())->spikedSyn.at(this->synapseDataBranched.at(synSpikerId)->GetBranchPositionId())=true;
 }
 
 void BranchedMorphology::Reset()
@@ -79,10 +79,10 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
     assertm(branchingsInitialized, "Using branched morphology with no branchings specified.");
     if (!orderedSynAllocationB && !randomSynAllocationB){throw;}
     //if (!OrderedBranchAllocationB && !RandomBranchAllocationB && !setBranchAllocationB){throw;}
-    SetUpMorphology();
+    SetUpBranchedMorphology();
 }
 
-void BranchedMorphology::SetUpMorphology()
+void BranchedMorphology::SetUpBranchedMorphology()
 {
     SetUpBranchings(this->branchings);
     for (auto& branch : this->branches){
@@ -141,7 +141,7 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
 }
 
 
-std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
+std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)//This should not work
 {
     std::shared_ptr<SynapseSpineBranched> newSynapse;
     newSynapse = std::make_shared<SynapseSpineBranched>();
@@ -167,7 +167,8 @@ std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroC
     branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
 
     //Storage (other)
-    this->synapseData.push_back(newSynapse);
+    this->synapseData.push_back(static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse));
+    this->synapseDataBranched.push_back(newSynapse);
 
     //this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);

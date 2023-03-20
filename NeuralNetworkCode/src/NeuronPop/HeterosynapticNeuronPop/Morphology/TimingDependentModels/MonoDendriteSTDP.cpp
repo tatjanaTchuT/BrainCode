@@ -26,7 +26,7 @@ void MonoDendriteSTDP::advect() {
 
     // update cooperativity between spiker and non-spiker pairs
     for (const auto& synSpikerId : this->spikedSynapsesId) {
-        for (unsigned long j = 0; j < this->synapseData.size(); ++j) {
+        for (unsigned long j = 0; j < this->synapseDataCoop.size(); ++j) {
             if (!this->spikedSynapses[j] && synSpikerId != j) {
                 this->updateCooperativity(synSpikerId, j);
             }
@@ -44,7 +44,7 @@ void MonoDendriteSTDP::advect() {
 
     // update for pre-post effects for all synapses
     if (this->postSpiked){
-        for (const auto& syn: this->synapseData) {
+        for (const auto& syn: this->synapseDataCoop) {
             if (syn->GetLastSpike() > 0 && this->integratePreSpike.at(syn->GetIdInMorpho())) {
                 this->updateLTP(syn->GetIdInMorpho());
                 this->integratePreSpike.at(syn->GetIdInMorpho()) = false;
@@ -58,7 +58,7 @@ void MonoDendriteSTDP::advect() {
 }
 
 void MonoDendriteSTDP::thetaDecay() {
-    for (const std::shared_ptr<SynapseSpineBase>& syn: this->synapseData) {
+    for (const std::shared_ptr<SynapseSpineCoop>& syn: this->synapseDataCoop) {
         syn->SetTheta(syn->GetTheta() * this->thetaExpDecay);
     }
 }
@@ -75,7 +75,7 @@ void MonoDendriteSTDP::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
     Morphology::RecordExcitatoryPreSpike(synSpikerId);
     this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
     this->spikedSynapsesId.push_back(synSpikerId);
-    this->synapseData.at(synSpikerId)->SetLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
+    this->synapseDataCoop.at(synSpikerId)->SetLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
     this->integratePreSpike.at(synSpikerId) = true;
 }
 
@@ -254,7 +254,7 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         newSynapse->SetLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulation
         newSynapse->SetTheta(0);
         if (stepWeights) {
-            if (synapseData.size() > weightStepBoundary.at(currWightStepId)) {
+            if (synapseDataCoop.size() > weightStepBoundary.at(currWightStepId)) {
                 currWightStepId++;
             }
             newSynapse->SetWeight(weightStepValue.at(currWightStepId));
@@ -271,8 +271,8 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
-
-        this->synapseData.push_back(newSynapse);
+        this->synapseData.push_back(static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse));
+        this->synapseDataCoop.push_back(newSynapse);
         this->nextPos += this->synapticGap;
 
         this->spikedSynapses.push_back(false);
@@ -280,12 +280,12 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         this->integratePreSpike.push_back(false);
     }
 
-    return static_cast<std::shared_ptr<SynapseSpineCoop>>(newSynapse);
+    return static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse);
 }
 
 void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long neighborId) {
-    SynapseSpineBase* spiker = this->synapseData.at(spikerId).get();
-    SynapseSpineBase* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpineCoop* spiker = this->synapseDataCoop.at(spikerId).get();
+    SynapseSpineCoop* neighbor = this->synapseDataCoop.at(neighborId).get();
 
     double hEffects = getDistanceEffects(spiker, neighbor);
     hEffects *= getTimingEffects(spiker, neighbor);
@@ -302,8 +302,8 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
 }
 
 void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId) {
-    SynapseSpineBase* spiker = this->synapseData.at(synId).get();
-    SynapseSpineBase* neighbor = this->synapseData.at(neighborId).get();
+    SynapseSpineCoop* spiker = this->synapseDataCoop.at(synId).get();
+    SynapseSpineCoop* neighbor = this->synapseDataCoop.at(neighborId).get();
     std::cout << "id 1: " << synId << ", id 2: " << neighborId << std::endl;
     std::cout << "dist: " << abs(spiker->GetDistToSoma() - neighbor->GetDistToSoma()) << std::endl;
     std::cout << "time: " << abs(spiker->GetLastSpike() - neighbor->GetLastSpike()) << std::endl;
@@ -321,5 +321,5 @@ std::valarray<double> MonoDendriteSTDP::GetIndividualSynapticProfile(unsigned lo
      * item 3: value of the synaptic weight
      * item 4: last spike time of the synapse
      * */
-    return synapseData.at(synapseId)->GetIndividualSynapticProfile();
+    return synapseDataCoop.at(synapseId)->GetIndividualSynapticProfile();
 }

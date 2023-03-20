@@ -17,7 +17,7 @@ void BranchedResourceSTDPAsymmetric::LoadParameters(std::vector<std::string> *in
             this->availableBranchResources = std::stod(values.at(0));
         }
     }
-
+    decayWeights=false;
 }
 void BranchedResourceSTDPAsymmetric::SaveParameters(std::ofstream *stream, std::string neuronPreId)
 {

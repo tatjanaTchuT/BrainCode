@@ -34,11 +34,6 @@ class SynapseSpineBase {
     bool GetBranchedBool() const { return isBranchedBool;}
     double GetLastSpike() const {return lastSpike;};
     long GetPlasticityEvents() const {return plasticityEvents;}
-    //V bad
-    virtual double GetTheta() const {throw;return 0.0;};
-    virtual int GetBranchId() const {throw;return 0;};
-    virtual int GetBranchPositionId() const {throw;return 0;};
-    virtual double GetDistToSoma() const {throw;return 0;};
     //Setters
     void SetPreNeuronId(unsigned long neuronId){preNeuronId=neuronId;};
     void SetPostNeuronId(unsigned long neuronId){postNeuronId=neuronId;};
@@ -46,12 +41,8 @@ class SynapseSpineBase {
     void SetIdInMorpho(unsigned long idIn){idInMorpho=idIn;};
     void SetIdInHCS(unsigned long idIn){idInHCS=idIn;};
     void SetLastSpike(double time){lastSpike=time;};
-    //V bad
-    virtual void SetDistToSoma(double dist){throw;};
-    virtual void SetTheta(double thetaIn){throw;};
     //Misc
     void AddToWeight(double change){weight+=change;}
-    virtual void AddToTheta(double hEffect){throw;}
 
     //Recorder functions
     virtual std::valarray<double> GetIndividualSynapticProfile() const = 0;
