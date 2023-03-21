@@ -2,7 +2,7 @@
 #define NEURALNETWORK_MORPHOLOGY_H
 
 
-#include "./SynapseSpines/SynapseSpineBase.hpp"
+#include "./SynapseSpines/BaseSynapseSpine.hpp"
 #include "./../../../GlobalFunctions.hpp"
 #include "../../../Synapse/HeteroCurrentSynapse.hpp"
 #include <vector>
@@ -36,7 +36,7 @@ protected:
 
     GlobalSimInfo * info;
 
-    std::vector<std::shared_ptr<SynapseSpineBase>> synapseData;
+    std::vector<std::shared_ptr<BaseSynapseSpine>> synapseData;
     double weightsSum {};
     double totalPostSpikes {};
     double totalPreSpikes {};
@@ -60,7 +60,7 @@ protected:
     double weightExpDecay {};
 
     virtual void Reset();
-    void NormalizeWeights();
+    virtual void NormalizeWeights();
 
     virtual void WeightDecay();
 
@@ -71,7 +71,7 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
+    virtual std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
     double GenerateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
     virtual const std::string GetType() = 0;
 

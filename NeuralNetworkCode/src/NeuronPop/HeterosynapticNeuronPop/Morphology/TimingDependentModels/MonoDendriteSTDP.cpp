@@ -58,7 +58,7 @@ void MonoDendriteSTDP::advect() {
 }
 
 void MonoDendriteSTDP::thetaDecay() {
-    for (const std::shared_ptr<SynapseSpineCoop>& syn: this->synapseDataCoop) {
+    for (const std::shared_ptr<CoopSynapseSpine>& syn: this->synapseDataCoop) {
         syn->SetTheta(syn->GetTheta() * this->thetaExpDecay);
     }
 }
@@ -231,14 +231,14 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     this->thetaExpDecay=exp(-this->info->dt/this->tauTheta);
 }
 
-std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
+std::shared_ptr<BaseSynapseSpine> MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 
-    std::shared_ptr<SynapseSpineCoop> newSynapse;
+    std::shared_ptr<CoopSynapseSpine> newSynapse;
 
     if (this->nextPos < this->dendriticLength) {
-        newSynapse = std::make_shared<SynapseSpineCoop>();
+        newSynapse = std::make_shared<CoopSynapseSpine>();
 
 //        if (this->allocateDistal) {
 //            newSynapse->distToSoma = this->posHi;
@@ -271,7 +271,7 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
-        this->synapseData.push_back(static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse));
+        this->synapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
         this->synapseDataCoop.push_back(newSynapse);
         this->nextPos += this->synapticGap;
 
@@ -280,12 +280,12 @@ std::shared_ptr<SynapseSpineBase> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         this->integratePreSpike.push_back(false);
     }
 
-    return static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse);
+    return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
 }
 
 void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long neighborId) {
-    SynapseSpineCoop* spiker = this->synapseDataCoop.at(spikerId).get();
-    SynapseSpineCoop* neighbor = this->synapseDataCoop.at(neighborId).get();
+    CoopSynapseSpine* spiker = this->synapseDataCoop.at(spikerId).get();
+    CoopSynapseSpine* neighbor = this->synapseDataCoop.at(neighborId).get();
 
     double hEffects = getDistanceEffects(spiker, neighbor);
     hEffects *= getTimingEffects(spiker, neighbor);
@@ -302,8 +302,8 @@ void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long
 }
 
 void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId) {
-    SynapseSpineCoop* spiker = this->synapseDataCoop.at(synId).get();
-    SynapseSpineCoop* neighbor = this->synapseDataCoop.at(neighborId).get();
+    CoopSynapseSpine* spiker = this->synapseDataCoop.at(synId).get();
+    CoopSynapseSpine* neighbor = this->synapseDataCoop.at(neighborId).get();
     std::cout << "id 1: " << synId << ", id 2: " << neighborId << std::endl;
     std::cout << "dist: " << abs(spiker->GetDistToSoma() - neighbor->GetDistToSoma()) << std::endl;
     std::cout << "time: " << abs(spiker->GetLastSpike() - neighbor->GetLastSpike()) << std::endl;

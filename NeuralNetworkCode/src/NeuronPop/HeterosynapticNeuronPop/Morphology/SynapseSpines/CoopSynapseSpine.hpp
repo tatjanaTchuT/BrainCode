@@ -1,17 +1,17 @@
 #ifndef _SYNAPSE_SPINE_COOP_CLASS_HEADER_
 #define _SYNAPSE_SPINE_COOP_CLASS_HEADER_
 
-#include "SynapseSpineBase.hpp"
+#include "BaseSynapseSpine.hpp"
 
-class SynapseSpineCoop : public SynapseSpineBase {
+class CoopSynapseSpine : public BaseSynapseSpine {
 
     protected:
     double distToSoma{};
     double theta{}; // heterosynaptic cooperativity
 
     public:
-    SynapseSpineCoop()=default;
-    //SynapseSpineCoop(double distToSoma, double lastSpike, double weight);
+    CoopSynapseSpine()=default;
+    //CoopSynapseSpine(double distToSoma, double lastSpike, double weight);
 
     //getters
     double GetDistToSoma() const {return distToSoma;};

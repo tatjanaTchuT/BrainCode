@@ -19,8 +19,8 @@ protected:
     double aLTP(double theta) const override;
     double aLTD(double theta) const override;
 
-    double getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const override;
-    double getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const override;
+    double getDistanceEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const override;
+    double getTimingEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const override;
 
     double tauLTP{};
     double alpha{};

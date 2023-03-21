@@ -141,10 +141,10 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
 }
 
 
-std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)//This should not work
+std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)//This should not work
 {
-    std::shared_ptr<SynapseSpineBranched> newSynapse;
-    newSynapse = std::make_shared<SynapseSpineBranched>();
+    std::shared_ptr<BranchedSynapseSpine> newSynapse;
+    newSynapse = std::make_shared<BranchedSynapseSpine>();
 
     //REFORMAT, REWRITE WITH CONSTRUCTOR    
     newSynapse->SetLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulations
@@ -167,14 +167,14 @@ std::shared_ptr<SynapseSpineBase> BranchedMorphology::AllocateNewSynapse(HeteroC
     branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
 
     //Storage (other)
-    this->synapseData.push_back(static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse));
+    this->synapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
     this->synapseDataBranched.push_back(newSynapse);
 
     //this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);
     //this->integratePreSpike.push_back(false);
 
-    return static_cast<std::shared_ptr<SynapseSpineBase>>(newSynapse);
+    return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
     }
 
 int BranchedMorphology::AllocateBranch(const HeteroCurrentSynapse &synapse)

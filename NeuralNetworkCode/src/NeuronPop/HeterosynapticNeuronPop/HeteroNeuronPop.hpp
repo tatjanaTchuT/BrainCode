@@ -47,7 +47,7 @@ public:
     void SetBranchedTrue(){isBranched=true;}
 
     // Heterosynaptic functionality
-    std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
+    std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
     void RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
 
 

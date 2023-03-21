@@ -1,4 +1,5 @@
 #include "./BranchedStructs.hpp"
+#include "BranchedStructs.hpp"
 
 Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):spikedSyn(static_cast<size_t>(branchLength/gap), false),morphoSynapseIDs(static_cast<size_t>(branchLength/gap), -1), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,branchSynapseIDs(static_cast<size_t>(branchLength/gap), -1)
 {
@@ -8,4 +9,8 @@ Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int
 SubRegion::SubRegion(char regionID, std::vector<int> branchesInRegion): regionID{regionID}, branchesInRegion{branchesInRegion}
 {
 
+}
+
+ResourceBranch::ResourceBranch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId): Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(static_cast<size_t>(branchLength/gap), 10), STDPPotentiationCount(static_cast<size_t>(branchLength/gap), 10)
+{
 }

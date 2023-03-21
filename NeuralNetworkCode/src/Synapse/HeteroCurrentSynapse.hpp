@@ -10,7 +10,7 @@
 class HeteroCurrentSynapse : public Synapse {
 protected:
 
-    std::vector<std::shared_ptr<SynapseSpineBase>> synapseData{};
+    std::vector<std::shared_ptr<BaseSynapseSpine>> synapseData{};
     //Branching member variables 
     BranchTargeting synapseTargeting{};
 
@@ -38,10 +38,10 @@ public:
 
     // Testing. Commented out because they are not used in the code
     //friend const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, const unsigned long&);
-    //friend std::vector<SynapseSpineBase> getSynapseData(HeteroCurrentSynapse&);
+    //friend std::vector<BaseSynapseSpine> getSynapseData(HeteroCurrentSynapse&);
 };
 
 //const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(HeteroCurrentSynapse&, unsigned long);
-//std::vector<SynapseSpineBase> getSynapseData(HeteroCurrentSynapse&); 
+//std::vector<BaseSynapseSpine> getSynapseData(HeteroCurrentSynapse&); 
 
 #endif

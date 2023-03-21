@@ -59,7 +59,7 @@ void MonoDendriteSTDPTazerartRelative::LoadParameters(std::vector<std::string> *
 }
 
 void MonoDendriteSTDPTazerartRelative::updateLTP(unsigned long synId) {
-    SynapseSpineCoop* syn = this->synapseDataCoop[synId].get();
+    CoopSynapseSpine* syn = this->synapseDataCoop[synId].get();
 //    this->weightsSum -= this->synapseDataCoop[synId]->weight;
     this->synapseDataCoop[synId]->AddToWeight(this->synapseDataCoop[synId]->GetWeight() * this->preFactorLTP * this->aLTP(syn->GetTheta()) * this->gLTP(this->lastPostSpikeTime - syn->GetLastSpike()));
 //    this->synapseDataCoop[synId]->weight = std::min(2.0, this->synapseDataCoop[synId]->weight);
@@ -67,7 +67,7 @@ void MonoDendriteSTDPTazerartRelative::updateLTP(unsigned long synId) {
 }
 
 void MonoDendriteSTDPTazerartRelative::updateLTD(unsigned long synId) {
-    SynapseSpineCoop* syn = this->synapseDataCoop[synId].get();
+    CoopSynapseSpine* syn = this->synapseDataCoop[synId].get();
 //    this->weightsSum -= this->synapseDataCoop[synId]->weight;
     this->synapseDataCoop[synId]->AddToWeight(this->synapseDataCoop[synId]->GetWeight() * this->preFactorLTD * this->aLTD(syn->GetTheta()) * this->gLTD(syn->GetLastSpike() - this->lastPostSpikeTime));
 //    this->synapseDataCoop[synId]->weight = std::max(0.0, this->synapseDataCoop[synId]->weight);
@@ -100,7 +100,7 @@ const std::string MonoDendriteSTDPTazerartRelative::GetType() {
     return str_MonoDendriteSTDPTazerartRelative;
 }
 
-double MonoDendriteSTDPTazerartRelative::getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const {
+double MonoDendriteSTDPTazerartRelative::getTimingEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const {
     if (synA == synB) {
         return 0.0;
     }
@@ -110,7 +110,7 @@ double MonoDendriteSTDPTazerartRelative::getTimingEffects(const SynapseSpineCoop
     return exp(-abs(synA->GetLastSpike() - synB->GetLastSpike()) / this->tauDelay);
 }
 
-double MonoDendriteSTDPTazerartRelative::getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const {
+double MonoDendriteSTDPTazerartRelative::getDistanceEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const {
     if (synA == synB) {
         return 0;
     }

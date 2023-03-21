@@ -55,7 +55,7 @@ void MonoDendriteSTDPBiWindow::LoadParameters(std::vector<std::string> *input) {
 }
 
 void MonoDendriteSTDPBiWindow::updateLTP(unsigned long synId) {
-    SynapseSpineCoop* syn = this->synapseDataCoop[synId].get();
+    CoopSynapseSpine* syn = this->synapseDataCoop[synId].get();
 //    this->weightsSum -= this->synapseDataCoop[synId]->weight;
 //    double time = this->lastPostSpikeTime - syn->GetLastSpike();
     double change = this->preFactorLTP * this->aLTP(syn->GetTheta()) * this->gLTP(this->lastPostSpikeTime - syn->GetLastSpike());
@@ -73,7 +73,7 @@ void MonoDendriteSTDPBiWindow::updateLTP(unsigned long synId) {
 }
 
 void MonoDendriteSTDPBiWindow::updateLTD(unsigned long synId) {
-    SynapseSpineCoop* syn = this->synapseData[synId].get();
+    CoopSynapseSpine* syn = this->synapseDataCoop[synId].get();
 //    this->weightsSum -= this->synapseDataCoop[synId]->weight;
 
 //    double time = this->lastPostSpikeTime - syn->lastSpike;
@@ -111,7 +111,7 @@ const std::string MonoDendriteSTDPBiWindow::GetType() {
     return str_MonoDendriteSTDPBiWindow;
 }
 
-double MonoDendriteSTDPBiWindow::getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const {
+double MonoDendriteSTDPBiWindow::getTimingEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const {
     if (synA == synB) {
         return 0.0;
     }
@@ -121,7 +121,7 @@ double MonoDendriteSTDPBiWindow::getTimingEffects(const SynapseSpineCoop* synA, 
     return exp(-std::abs(synA->GetLastSpike() - synB->GetLastSpike()) / this->tauDelay);
 }
 
-double MonoDendriteSTDPBiWindow::getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const {
+double MonoDendriteSTDPBiWindow::getDistanceEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const {
     if (synA == synB) {
         return 0;
     }

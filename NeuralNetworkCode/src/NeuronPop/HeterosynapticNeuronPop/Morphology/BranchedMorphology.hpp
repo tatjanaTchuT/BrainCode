@@ -10,8 +10,8 @@
 #include <random>
 #include "./BranchedStructs.hpp"
 #include "./Morphology.hpp"
-#include "./SynapseSpines/SynapseSpineBase.hpp"
-#include "./SynapseSpines/SynapseSpineBranched.hpp"
+#include "./SynapseSpines/BaseSynapseSpine.hpp"
+#include "./SynapseSpines/BranchedSynapseSpine.hpp"
 
 class BranchedMorphology : public Morphology {
 
@@ -37,7 +37,7 @@ protected:
     bool RandomBranchAllocationB{false};*/
 
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
-    std::vector<std::shared_ptr<SynapseSpineBranched>> synapseDataBranched;//They are just pointers, what is the worst that can happen by having multiple copies?
+    std::vector<std::shared_ptr<BranchedSynapseSpine>> synapseDataBranched;//They are just pointers, what is the worst that can happen by having multiple copies?
 public:
     explicit BranchedMorphology(GlobalSimInfo * info);
     ~BranchedMorphology() = default;
@@ -64,7 +64,7 @@ public:
 
     //Allocation shennanigans
     
-    std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
+    std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
 
     int AllocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in AllocateNewSynapse
     int RandomBranchAllocation();

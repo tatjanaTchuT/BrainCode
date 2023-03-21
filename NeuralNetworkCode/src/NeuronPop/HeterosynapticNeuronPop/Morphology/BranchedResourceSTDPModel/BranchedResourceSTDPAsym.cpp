@@ -1,4 +1,5 @@
 #include "./BranchedResourceSTDPAsym.hpp"
+#include "BranchedResourceSTDPAsym.hpp"
 
 BranchedResourceSTDPAsymmetric::BranchedResourceSTDPAsymmetric(GlobalSimInfo *info):BranchedMorphology(info)
 {
@@ -38,4 +39,13 @@ void BranchedResourceSTDPAsymmetric::advect()
             }
         }
     }
+}
+
+void BranchedResourceSTDPAsymmetric::DeleteEffects()
+{
+//     std::sort(removelist.begin(), removelist.end());  // Make sure the container is sorted
+// for (auto &i = removelist.rbegin(); i != removelist.rend(); ++ i)
+// {
+//     a.erase(a.begin() + *i);
+// }
 }

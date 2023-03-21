@@ -5,13 +5,13 @@
 #include <string>
 
 
-class SynapseSpineBase {
+class BaseSynapseSpine {
 
     protected:
     //Legacy variables
     unsigned long preNeuronId{};
     unsigned long postNeuronId{};
-    double weight{}; //The negative weight comes from J, weight is just a factor to multiply
+    double weight{}; //The negative weight comes from J, weight is just a factor to multiply (for now)
     double lastSpike{};
     unsigned long idInMorpho{}; // id for synapse within its population
     unsigned long idInHCS{}; // id for synapse within its a synapse collection
@@ -22,8 +22,8 @@ class SynapseSpineBase {
     long plasticityEvents{};
     public:
     //Constructors
-    SynapseSpineBase()=default;
-    //SynapseSpineBase(double weight, double lastSpike);// Not currently in use
+    BaseSynapseSpine()=default;
+    //BaseSynapseSpine(double weight, double lastSpike);// Not currently in use
     //Methods
     //Getters
     unsigned long GetPreNeuronId() const {return preNeuronId;};

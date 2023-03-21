@@ -1,9 +1,9 @@
 #ifndef _SYNAPSE_SPINE_BRANCHED_CLASS_HEADER_
 #define _SYNAPSE_SPINE_BRANCHED_CLASS_HEADER_
 
-#include "SynapseSpineBase.hpp"
+#include "BaseSynapseSpine.hpp"
 
-class SynapseSpineBranched : public SynapseSpineBase {
+class BranchedSynapseSpine : public BaseSynapseSpine {
 
     protected:
     int branchId{}; //This has to be discrete
@@ -13,8 +13,8 @@ class SynapseSpineBranched : public SynapseSpineBase {
     bool isBranchedBool{true};
 
     public:
-    SynapseSpineBranched()=default;
-    //SynapseSpineBranched(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
+    BranchedSynapseSpine()=default;
+    //BranchedSynapseSpine(int distanceFromNode, double lastSpike, double weight, int branchId, int branchPositionId);
     //getters
     int GetBranchId() const {return branchId;};
     int GetBranchPositionId() const {return branchPositionId;};

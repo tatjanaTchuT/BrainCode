@@ -10,7 +10,7 @@
 #include <algorithm>
 
 #include "../Morphology.hpp"
-#include "../SynapseSpines/SynapseSpineCoop.hpp"
+#include "../SynapseSpines/CoopSynapseSpine.hpp"
 
 class HeteroCurrentSynapse;
 
@@ -45,7 +45,7 @@ protected:
     std::vector<bool> integratePostSpike{};
     std::vector<bool> integratePreSpike{};
 
-    std::vector<std::shared_ptr<SynapseSpineCoop>> synapseDataCoop;
+    std::vector<std::shared_ptr<CoopSynapseSpine>> synapseDataCoop;
 
     double initialWeights{1.0};
 
@@ -68,8 +68,8 @@ protected:
     virtual double aLTP(double theta) const = 0;
     virtual double aLTD(double theta) const = 0;
 
-    virtual double getDistanceEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const = 0;
-    virtual double getTimingEffects(const SynapseSpineCoop* synA, const SynapseSpineCoop* synB) const = 0;
+    virtual double getDistanceEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const = 0;
+    virtual double getTimingEffects(const CoopSynapseSpine* synA, const CoopSynapseSpine* synB) const = 0;
 
 public:
     explicit MonoDendriteSTDP(GlobalSimInfo* info);
@@ -82,7 +82,7 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual std::shared_ptr<SynapseSpineBase> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
+    virtual std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
     
     std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
 
