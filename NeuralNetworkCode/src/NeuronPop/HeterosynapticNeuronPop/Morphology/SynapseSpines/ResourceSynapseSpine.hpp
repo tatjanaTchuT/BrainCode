@@ -23,18 +23,23 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     std::vector<double> nStimmulusTempEffect{};
     std::vector<int> stimmulusEffectCount{};
 
+    int maxCount{100};
 
     public:
-
+    //Getters
+    //int GetMaxCount(){return maxCount;}//Not necessary for now
+    //Setters
+    void SetMaxCount(int maxCountnew) {maxCount=maxCountnew;}
+    //Alpha methods
     void RecalculateAlphaResources();//Should be recalced at least once in the Spine Setup
     void DecayAlphaResources();
-
+    //Temp effets methods
     void AddTempResourcesToSpine(double kS, double nS);
     void ApplyAllTempEffects(bool potentiation);
-
+    //Stimmulus vector methods
     void TickStimmulusCounts();
     void CullStimmulusVectors();
-    //Profile function
+    //Profile methods
     std::valarray<double> GetIndividualSynapticProfile() const override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
 };

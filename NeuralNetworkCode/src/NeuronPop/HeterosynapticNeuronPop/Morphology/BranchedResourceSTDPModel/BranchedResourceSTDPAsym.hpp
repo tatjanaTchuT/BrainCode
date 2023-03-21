@@ -11,7 +11,8 @@ class BranchedMorphology;
 class BranchedResourceSTDPAsymmetric : public BranchedMorphology {
 //This class models a behaviour based on wi=beta*(alfai/(omega+sum(alfai))), where alfai represents the spine's resources as (Ks*expdt+Kbasal)/(Ns*expdt+Nbasal) with bumps on Ks and Ns
 protected:
-
+    //Branch variables
+    size_t timestepWindowSize{};
     //Space-time kernel
     double timeKernelConstant{};//Strong decay needs small constants
     double spaceKernelConstant{};
@@ -23,9 +24,11 @@ protected:
     //Counters
     int STDPDepressionCount{};
     int maxCount{100}; //dependent on dt?, default 10 ms assuming dt=1e-4
-
+    int& maxCountSTDPPotentiation = maxCount;
+    int& maxCountTrigger = maxCount;
+    int& maxCountSTDPDepression = maxCount;
     std::vector<std::shared_ptr<ResourceSynapseSpine>> synapseDataResource;
-    std::vector<std::shared_ptr<ResourceBranch>> resourceBranches{};
+    std::vector<std::shared_ptr<ResourceBranch>> resourceBranches;
 public:
 
     //main Methods
@@ -35,6 +38,8 @@ public:
     
     void LoadParameters(std::vector<std::string> *input) override;//Remember to set all counts to maxCount    
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
+
+    void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>()) override;// Here we set up the vector with the branches
 
     const std::string GetType() override {return str_BranchedResourceSTDPAsymmetric;};
 
@@ -56,10 +61,11 @@ public:
     void ApplyEffects();//Here we increase the plasticity count of synapse and branch
     void DeleteEffects();//Here, if counter==countMax, erase in that index the element of every vector (first store index, then REVERSE remove the removelist indexes with .rbegin and .rend instead of .begin and .end)
         //Container should be ordered by definition, but std::sort(array.begin(), array.end()) would ensure so.
-    void Reset() override; //Wrapper, or clearing some of the vectors. Last Reset method to run in chronological order
-
-    void RecalcAlphas();//Run in LP
-    void RecalcWeights();//Run in LP
+    void Reset() override; //Wrapper plus clearing some of the vectors. Last Reset method to run in chronological order, where we call the ticks and the general upkeep
+    //These methods have to be done per branch
+    void UpdateAlphaSum(std::shared_ptr<ResourceBranch> branch);//Run in LP
+    void RecalcAlphas(std::shared_ptr<ResourceBranch> branch);//Run in LP
+    void RecalcWeights(std::shared_ptr<ResourceBranch> branch);//Run in LP
     //Record methods
     void RecordPostSpike() override;
     void RecordExcitatoryPreSpike(unsigned long synSpikerId) override;//Here set the trigger count to 0

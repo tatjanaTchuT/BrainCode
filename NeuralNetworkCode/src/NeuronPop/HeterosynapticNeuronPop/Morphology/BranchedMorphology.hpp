@@ -60,7 +60,7 @@ public:
     void SetUpSynapseSlots(std::shared_ptr<Branch> branch); //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
     //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
     //The overriding function calls functions of BMorpho. 
-    void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
+    virtual void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
 
     //Allocation shennanigans
     
