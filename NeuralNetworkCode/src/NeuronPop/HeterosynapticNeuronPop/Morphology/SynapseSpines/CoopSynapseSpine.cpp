@@ -5,12 +5,12 @@
 
 std::valarray<double> CoopSynapseSpine::GetIndividualSynapticProfile() const
 {
-    std::valarray<double> ret(4);
-    ret[0] = this->distToSoma;
-    ret[1] = this->theta;
-    ret[2] = this->weight;
-    ret[3] = this->lastSpike;
-    return ret;
+    std::valarray<double> dataArray(4);
+    dataArray[0] = this->distToSoma;
+    dataArray[1] = this->theta;
+    dataArray[2] = this->weight;
+    dataArray[3] = this->lastSpike;
+    return dataArray;
 }
 
 std::string CoopSynapseSpine::GetIndividualSynapticProfileHeaderInfo() const

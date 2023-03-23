@@ -40,7 +40,7 @@ struct Branch{
     //Branch()=default;
     Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
 
-
+    virtual void IncreasePlasticityCounter(){plasticityBranchEventsTotal++;}
 };
 
 struct ResourceBranch : public Branch {
@@ -48,6 +48,7 @@ struct ResourceBranch : public Branch {
     std::set<int> updatedSynapseSpines{};//IDs are branch slots, to index the vector above to index proper. Cleared every timestep, used for depression only
 
     int plasticityEventsPerTimestepThreshold{};
+    int sumPlasticityEvents{};
 
     double betaResourcePool{1.0};
     double betaUpTick{0.05};
@@ -74,5 +75,6 @@ struct ResourceBranch : public Branch {
     void TickCounts(std::vector<int>& countVector);
     void CheckIncreaseInBetaResources(); //Here I have to add current, delete last, sum and check against threshold. Called in Reset()
     //void UpdateAlphaSum(); //This dunction cannot be implemented in this struct as the struct has no access to the spine pointers
+    void IncreasePlasticityCounter() override {plasticityBranchEventsThisTimestep++;plasticityBranchEventsTotal++;}
 };
 #endif

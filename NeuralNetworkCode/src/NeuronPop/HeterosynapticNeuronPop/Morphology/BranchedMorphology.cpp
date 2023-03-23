@@ -254,8 +254,8 @@ std::valarray<double> BranchedMorphology::GetIndividualSynapticProfile(unsigned 
 }
 unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const
 {
-    return std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (const double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEventsTotal; });
+    return std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
+                                       [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEventsTotal; });
 }
 
 void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)

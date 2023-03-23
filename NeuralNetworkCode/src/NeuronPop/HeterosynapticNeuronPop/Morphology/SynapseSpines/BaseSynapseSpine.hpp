@@ -1,5 +1,5 @@
-#ifndef _SYNAPSE_SPINE_CLASS_HEADER
-#define _SYNAPSE_SPINE_CLASS_HEADER
+#ifndef _BASE_SYNAPSE_SPINE_CLASS_HEADER_
+#define _BASE_SYNAPSE_SPINE_CLASS_HEADER_
 
 #include <valarray>
 #include <string>

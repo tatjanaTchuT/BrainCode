@@ -34,10 +34,9 @@ void ResourceBranch::CheckIncreaseInBetaResources()
     //Assuming the plasticityEventsInThisTimestep is tracked properly:
     plasticityEventsPerTimestepWindow.pop_front();
     plasticityEventsPerTimestepWindow.push_back(plasticityBranchEventsThisTimestep);
-    if (plasticityBranchEventsThisTimestep>0){
+    if (plasticityBranchEventsThisTimestep>0){//This requirement is a logically coherent efficiency, as potentiation should not happen if there are no plasticity events.
         plasticityBranchEventsTotal+=plasticityBranchEventsThisTimestep;
-        int sumPlasticityEvents =std::accumulate(this->plasticityEventsPerTimestepWindow.begin(), this->plasticityEventsPerTimestepWindow.end(), 0,
-                                       [] (const int totalEvents, const int events) { return totalEvents + events; });
+        sumPlasticityEvents =std::accumulate(this->plasticityEventsPerTimestepWindow.begin(), this->plasticityEventsPerTimestepWindow.end(), 0);
         if (sumPlasticityEvents>=plasticityEventsPerTimestepThreshold){
             betaResourcePool += betaUpTick;
             //here, do we reset the deque, or do we set a refractory period?
