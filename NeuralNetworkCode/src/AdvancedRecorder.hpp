@@ -61,7 +61,7 @@ protected:
     RecorderOpenStreams FileStreams;
 
     unsigned long stepCount;
-    unsigned long heteroRecordingPerSteps;
+    unsigned long heteroRecordingPerSteps{1};
 
 
 

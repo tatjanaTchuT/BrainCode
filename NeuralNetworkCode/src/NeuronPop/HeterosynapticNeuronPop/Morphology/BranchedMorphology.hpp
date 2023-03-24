@@ -50,6 +50,7 @@ public:
     void RecordPostSpike() override;
     void RecordExcitatoryPreSpike(unsigned long synSpikerId) override; 
     std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
+    virtual std::valarray<double> GetOverallSynapticProfile() const;
     unsigned long GetMorphoPlasticityEvents() const override;
     
     virtual void advect()=0;

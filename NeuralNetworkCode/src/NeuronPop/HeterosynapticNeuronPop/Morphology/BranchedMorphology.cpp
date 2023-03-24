@@ -243,13 +243,6 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
 }*/
 
 std::valarray<double> BranchedMorphology::GetIndividualSynapticProfile(unsigned long synapseId) const {
-    /*
-     * returned array organised as follows:
-     * item 1: distance of synapse from branch root
-     * item 2: resources the synaptic spine is using (default is zero or one)
-     * item 3: value of the synaptic weight
-     * item 4: last spike time of the synapse
-     * */
     return synapseData.at(synapseId)->GetIndividualSynapticProfile();
 }
 unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const

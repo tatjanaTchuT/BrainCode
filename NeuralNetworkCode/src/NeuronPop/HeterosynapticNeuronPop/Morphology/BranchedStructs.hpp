@@ -48,7 +48,7 @@ struct ResourceBranch : public Branch {
     std::set<int> updatedSynapseSpines{};//IDs are branch slots, to index the vector above to index proper. Cleared every timestep, used for depression only
 
     int plasticityEventsPerTimestepThreshold{};
-    int sumPlasticityEvents{};
+    int sumPlasticityEvents{};//Theoretically temporary
 
     double betaResourcePool{1.0};
     double betaUpTick{0.05};

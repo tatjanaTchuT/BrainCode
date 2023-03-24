@@ -88,7 +88,7 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
     *stream <<  "recorder_notrackHeteroSynapseProfiles  ";
     for (unsigned i = 0; i < noTrackHeteroSynapsePerTrackedNeuron.size();i++)
         *stream << std::to_string(noTrackHeteroSynapsePerTrackedNeuron[i])<< "\t";
-    *stream <<std::to_string(heteroRecordingPerSteps)<< "\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
+    *stream <<std::to_string(heteroRecordingPerSteps)<< "\t\t#Number of synapses per neuron in recorder_notrackNeuronProfiles to record (per pop) and last number is the timesteps for each record call\n";
 
     *stream <<  "recorder_parsing                   ";
     if (parserEnabled){

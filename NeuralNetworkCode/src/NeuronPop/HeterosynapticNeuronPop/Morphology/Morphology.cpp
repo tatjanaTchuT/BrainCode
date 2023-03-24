@@ -78,7 +78,7 @@ std::valarray<double> Morphology::GetOverallSynapticProfile() const
      * item 3: total pre spikes
      * item 4: average plasticity events
      * */
-    std::valarray<double>dataArray(4);
+    std::valarray<double> dataArray(4);
 
     double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
                                        [] (double acc, const std::shared_ptr<BaseSynapseSpine>& syn) { return acc + syn->GetWeight(); });
@@ -87,17 +87,13 @@ std::valarray<double> Morphology::GetOverallSynapticProfile() const
    dataArray[1] = this->totalPostSpikes;
    dataArray[2] = this->totalPreSpikes;
    dataArray[3] = static_cast<double>(GetMorphoPlasticityEvents()) / this->synapseData.size();
-    returndataArray;
+    return dataArray;
 }
 
 std::string Morphology::GetIndividualSynapticProfileHeaderInfo() const
 {
     return synapseData.at(0)->GetIndividualSynapticProfileHeaderInfo();
 }
-
-// std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology& morph) {
-//     return morph.spikedSynapsesId;
-// }
 
 unsigned long Morphology::GetSynapseCount() const {
     return static_cast<unsigned long>(this->synapseData.size());
