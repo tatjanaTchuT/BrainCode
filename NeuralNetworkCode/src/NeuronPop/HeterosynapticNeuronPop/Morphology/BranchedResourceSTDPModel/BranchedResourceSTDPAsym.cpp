@@ -56,6 +56,7 @@ void BranchedResourceSTDPAsymmetric::advect()
         //If first precount is bigger than twice the STDP depression count, depression. Otherwise potentiation.
     //When iterating over the synapse vector (whichever it might be inside a branch), always compare to .begin() or .end(). 
     //If begin(), call kernel and then break the for loop. If end() break the loop
+    //USE BIDIRECTIONAL ACCESS ITERATOR!!!!
 }
 
 void BranchedResourceSTDPAsymmetric::STDPPotentiation()
