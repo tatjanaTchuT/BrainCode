@@ -16,8 +16,7 @@ void PoissonNeuronPop::advect(std::vector<double> * synaptic_dV)
     {
         // set target rate
         if (inputDependant){
-            r_target = synaptic_dV->at(i);
-            lambda = r_target;
+            lambda = synaptic_dV->at(i);
         }
 
         //check spiking
@@ -71,5 +70,6 @@ void PoissonNeuronPop::SaveParameters(std::ofstream * stream){
         *stream <<  id + "_r_target                   " << std::to_string(r_target)  << "\n";
     }
     *stream <<  "#\t\tPoisson neuron: produces Poisson spiking with rate r_target (defined under stimulus). ZERO DOES NOT REMOVE THE FEATURE, YOU MUST REMOVE THE ENTIRE LINE \n";
+    *stream <<  "#\t\tIf r_target not set in parameters, the neurons will fire with probability equal to the membrane potential. If Vm > 1mV, p=1 \n";
 
 }
