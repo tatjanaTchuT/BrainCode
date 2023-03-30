@@ -25,19 +25,19 @@ void MonoDendriteSTDP::advect() {
     }
 
     // update cooperativity between spiker and non-spiker pairs
-    for (const auto& synSpikerId : this->spikedSynapsesId) {
+    for (const auto& spikedSynapseId : this->spikedSynapsesId) {
         for (unsigned long j = 0; j < this->synapseDataCoop.size(); ++j) {
-            if (!this->spikedSynapses[j] && synSpikerId != j) {
-                this->updateCooperativity(synSpikerId, j);
+            if (!this->spikedSynapses[j] && spikedSynapseId != j) {
+                this->updateCooperativity(spikedSynapseId, j);
             }
         }
     }
 
     // update for post-pre effects for spiker synapses
-    for (const auto& synSpikerId: this->spikedSynapsesId) {
-        if (this->lastPostSpikeTime > 0 && this->integratePostSpike.at(synSpikerId)) {
-            this->updateLTD(synSpikerId);
-            this->integratePostSpike.at(synSpikerId) = false;
+    for (const auto& spikedSynapseId: this->spikedSynapsesId) {
+        if (this->lastPostSpikeTime > 0 && this->integratePostSpike.at(spikedSynapseId)) {
+            this->updateLTD(spikedSynapseId);
+            this->integratePostSpike.at(spikedSynapseId) = false;
 
         }
     }
@@ -71,12 +71,12 @@ void MonoDendriteSTDP::RecordPostSpike() {
     std::fill(this->integratePostSpike.begin(), this->integratePostSpike.end(), true);
 }
 
-void MonoDendriteSTDP::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
-    Morphology::RecordExcitatoryPreSpike(synSpikerId);
-    this->spikedSynapses.at(synSpikerId) = true;//This does not seem to be correctly implemented
-    this->spikedSynapsesId.push_back(synSpikerId);
-    this->synapseDataCoop.at(synSpikerId)->SetLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
-    this->integratePreSpike.at(synSpikerId) = true;
+void MonoDendriteSTDP::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
+    Morphology::RecordExcitatoryPreSpike(spikedSynapseId);
+    this->spikedSynapses.at(spikedSynapseId) = true;//This does not seem to be correctly implemented
+    this->spikedSynapsesId.push_back(spikedSynapseId);
+    this->synapseDataCoop.at(spikedSynapseId)->SetLastSpike(static_cast<double> (this->info->time_step) * this->info->dt); //only coop
+    this->integratePreSpike.at(spikedSynapseId) = true;
 }
 
 void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronPreId) {

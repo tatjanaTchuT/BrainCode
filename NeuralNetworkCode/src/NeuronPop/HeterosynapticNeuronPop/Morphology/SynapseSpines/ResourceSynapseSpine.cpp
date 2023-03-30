@@ -30,6 +30,11 @@ void ResourceSynapseSpine::DecayAlphaResources()
     alphaStimmulus *= alphaStimmulusExpDecay;
 }
 
+void ResourceSynapseSpine::RecalcWeight(double weightResourceFactor)
+{
+    this->weight=this->alphaResources*weightResourceFactor;
+}
+
 void ResourceSynapseSpine::AddTempResourcesToSpine(double alphaStimmulusInput)
 {
     // kStimmulusTempEffect.push_back(kStimmulusInput);
@@ -38,14 +43,17 @@ void ResourceSynapseSpine::AddTempResourcesToSpine(double alphaStimmulusInput)
     alphaTempAndCount.emplace_back(std::pair<double, int>(alphaStimmulusInput, 0));
 }
 
-void ResourceSynapseSpine::ApplyAllTempEffects(int STDPmultiplier)
+void ResourceSynapseSpine::ApplyAllTempEffects(int STDPmultiplier, DHashMap& STDPdecayMap)
 {
     // kStimmulus=std::accumulate(kStimmulusTempEffect.begin(), kStimmulusTempEffect.end(), kStimmulus, [STDPmultiplier](double accumulator, double kStemp){return accumulator + kStemp*STDPmultiplier;});
     // nStimmulus=std::accumulate(nStimmulusTempEffect.begin(), nStimmulusTempEffect.end(), nStimmulus, [STDPmultiplier](double accumulator, double nStemp){return accumulator + nStemp*STDPmultiplier;});
     // kStimmulusTempEffect.clear();
     // nStimmulusTempEffect.clear();
     //stimmulusEffectCount.clear();
-    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [STDPmultiplier](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*STDPmultiplier;});
+    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [STDPmultiplier, STDPdecayMap](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*STDPmultiplier*STDPdecayMap.at(alphaStemp.second);});
+    if (alphaStimmulus+alphaBasal<0.0){
+        alphaStimmulus= (-alphaBasal);
+    }
 }
 
 void ResourceSynapseSpine::TickStimmulusCounts()

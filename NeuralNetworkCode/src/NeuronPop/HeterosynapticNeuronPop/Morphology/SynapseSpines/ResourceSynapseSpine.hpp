@@ -6,6 +6,10 @@
 #include <algorithm>
 #include <iterator>
 #include <numeric>
+#include <unordered_map>
+
+typedef std::unordered_map<int, double> DHashMap;
+typedef std::unordered_map<int, DHashMap> SuperHashMap;
 
 class ResourceSynapseSpine : public BranchedSynapseSpine {
 
@@ -34,6 +38,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
 
     public:
     //Getters
+    double GetAlphaResources(){return alphaResources;}
     //int GetMaxCount(){return maxCount;}//Not necessary for now
     //Setters
 
@@ -45,9 +50,10 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     //Alpha methods
     void RecalculateAlphaResources();//Should be recalced at least once in the Spine Setup
     void DecayAlphaResources();
+    void RecalcWeight(double weightResourceFactor);
     //Temp effets methods
     void AddTempResourcesToSpine(double alphaStimmulusInput);
-    void ApplyAllTempEffects(int STDPmultiplier);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    void ApplyAllTempEffects(int STDPmultiplier, DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     //Stimmulus vector methods
     void TickStimmulusCounts();//Called in Reset(), but both should be mutually exclusive with AATE above
     void CullStimmulusVectors();//Called in Reset()

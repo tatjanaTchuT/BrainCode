@@ -1,8 +1,9 @@
 #include "./BranchedStructs.hpp"
+#include "BranchedStructs.hpp"
 
-Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):spikedSyn(static_cast<size_t>(branchLength/gap), false),morphoSynapseIDs(static_cast<size_t>(branchLength/gap), -1), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,branchSynapseIDs(static_cast<size_t>(branchLength/gap), -1)
+Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):branchSlots{static_cast<size_t>(branchLength/gap)}, spikedSyn(branchSlots, false), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,morphoSynapseIDs(static_cast<size_t>(branchSlots), -1),branchSynapseIDs(static_cast<size_t>(branchSlots), -1)
 {
-    //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchLength/gap));
+    //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchSlots));
 }
 
 SubRegion::SubRegion(char regionID, std::vector<int> branchesInRegion): regionID{regionID}, branchesInRegion{branchesInRegion}
@@ -10,17 +11,27 @@ SubRegion::SubRegion(char regionID, std::vector<int> branchesInRegion): regionID
 
 }
 
-ResourceBranch::ResourceBranch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId, size_t timestepWindowSize, int maxCount): Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(static_cast<size_t>(branchLength/gap), 10), STDPPotentiationCount(static_cast<size_t>(branchLength/gap), 10), plasticityEventsPerTimestepWindow(timestepWindowSize), maxCount{maxCount}
+ResourceBranch::ResourceBranch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId, int branchMaxCountSTDPPotentiation, int branchMaxCountTrigger, std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData): 
+Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, 10), STDPPotentiationCount(branchSlots, 10), maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
 {
+    SetUpSynapseData(branchSynapseData);
+}
+void ResourceBranch::SetUpSynapseData(std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData)
+{
+    for (std::shared_ptr<ResourceSynapseSpine> synapse :branchSynapseData){
+        if (synapse->GetBranchId()==branchId){
+            branchSynapseData.push_back(synapse);
+        }
+    }
 }
 
 void ResourceBranch::TickAllCounts()
 {
-    TickCounts(this->STDPPotentiationCount);
-    TickCounts(this->triggerCount);
+    TickCounts(this->STDPPotentiationCount, maxCountSTDPPotentiation);
+    TickCounts(this->triggerCount, maxCountTrigger);
 }
 
-void ResourceBranch::TickCounts(std::vector<int> &countVector)
+void ResourceBranch::TickCounts(std::vector<int> &countVector, int maxCount)
 {
     for (int& count:countVector){
         if (count<maxCount){
@@ -29,18 +40,18 @@ void ResourceBranch::TickCounts(std::vector<int> &countVector)
     }
 }
 
-void ResourceBranch::CheckIncreaseInBetaResources()
-{
-    //Assuming the plasticityEventsInThisTimestep is tracked properly:
-    plasticityEventsPerTimestepWindow.pop_front();
-    plasticityEventsPerTimestepWindow.push_back(plasticityBranchEventsThisTimestep);
-    if (plasticityBranchEventsThisTimestep>0){//This requirement is a logically coherent efficiency, as potentiation should not happen if there are no plasticity events.
-        plasticityBranchEventsTotal+=plasticityBranchEventsThisTimestep;
-        sumPlasticityEvents =std::accumulate(this->plasticityEventsPerTimestepWindow.begin(), this->plasticityEventsPerTimestepWindow.end(), 0);
-        if (sumPlasticityEvents>=plasticityEventsPerTimestepThreshold){
-            betaResourcePool += betaUpTick;
-            //here, do we reset the deque, or do we set a refractory period?
-        }
-        plasticityBranchEventsThisTimestep=0;
-    }
-}
+// void ResourceBranch::CheckIncreaseInBetaResources()
+// {
+//     //Assuming the plasticityEventsInThisTimestep is tracked properly:
+//     plasticityEventsPerTimestepWindow.pop_front();
+//     plasticityEventsPerTimestepWindow.push_back(plasticityBranchEventsThisTimestep);
+//     if (plasticityBranchEventsThisTimestep>0){//This requirement is a logically coherent efficiency, as potentiation should not happen if there are no plasticity events.
+//         plasticityBranchEventsTotal+=plasticityBranchEventsThisTimestep;
+//         sumPlasticityEvents =std::accumulate(this->plasticityEventsPerTimestepWindow.begin(), this->plasticityEventsPerTimestepWindow.end(), 0);
+//         if (sumPlasticityEvents>=plasticityEventsPerTimestepThreshold){
+//             betaResourcePool += betaUpTick;
+//             //here, do we reset the deque, or do we set a refractory period?
+//         }
+//         plasticityBranchEventsThisTimestep=0;
+//     }
+// }

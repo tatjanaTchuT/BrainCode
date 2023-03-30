@@ -62,11 +62,11 @@ void Morphology::RecordPostSpike() {
 }
 
 
-void Morphology::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
+void Morphology::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
     //Is there supposed to be a different Inhibitory function?
     this->totalPreSpikes++;
     // STDP Analysis
-    //this->preSpikes.emplace_back(synSpikerId, this->synapseData.at(synSpikerId)->lastSpike);
+    //this->preSpikes.emplace_back(spikedSynapseId, this->synapseData.at(spikedSynapseId)->lastSpike);
 }
 
 std::valarray<double> Morphology::GetOverallSynapticProfile() const

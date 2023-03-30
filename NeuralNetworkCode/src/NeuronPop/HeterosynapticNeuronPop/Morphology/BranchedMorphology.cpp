@@ -9,9 +9,9 @@ void BranchedMorphology::RecordPostSpike() {
     Morphology::RecordPostSpike();
 }
 
-void BranchedMorphology::RecordExcitatoryPreSpike(unsigned long synSpikerId) {
-    Morphology::RecordExcitatoryPreSpike(synSpikerId);
-    this->branches.at(this->synapseDataBranched.at(synSpikerId)->GetBranchId())->spikedSyn.at(this->synapseDataBranched.at(synSpikerId)->GetBranchPositionId())=true;
+void BranchedMorphology::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
+    Morphology::RecordExcitatoryPreSpike(spikedSynapseId);
+    this->branches.at(this->synapseDataBranched.at(spikedSynapseId)->GetBranchId())->spikedSyn.at(this->synapseDataBranched.at(spikedSynapseId)->GetBranchPositionId())=true;
 }
 
 void BranchedMorphology::Reset()
@@ -164,8 +164,8 @@ std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroC
     newSynapse->SetBranchPositionId(position);
     newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
-    branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
-
+    //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
+    branches.at(branch)->synapseSlotToMorphoIDMap.at(position)=newSynapse->GetIdInMorpho();
     //Storage (other)
     this->synapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
     this->synapseDataBranched.push_back(newSynapse);
@@ -247,7 +247,7 @@ std::valarray<double> BranchedMorphology::GetIndividualSynapticProfile(unsigned 
 }
 unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const
 {
-    return std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
+    return std::accumulate(this->branches.begin(), this->branches.end(), 0.0,//UNRESOLVED, does this give intended output?
                                        [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEventsTotal; });
 }
 

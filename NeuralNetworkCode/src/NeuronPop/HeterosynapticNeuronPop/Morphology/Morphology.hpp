@@ -77,7 +77,7 @@ public:
 
     virtual void advect() = 0;
     virtual void RecordPostSpike();
-    virtual void RecordExcitatoryPreSpike(unsigned long synSpikerId);
+    virtual void RecordExcitatoryPreSpike(unsigned long spikedSynapseId);
     //Getters
     virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const = 0;
     virtual std::valarray<double> GetOverallSynapticProfile() const;

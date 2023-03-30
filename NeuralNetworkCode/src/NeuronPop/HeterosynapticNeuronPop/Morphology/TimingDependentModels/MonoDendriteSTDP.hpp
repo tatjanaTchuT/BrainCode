@@ -77,7 +77,7 @@ public:
 
     void advect() override;
     void RecordPostSpike() override;
-    void RecordExcitatoryPreSpike(unsigned long synSpikerId) override;
+    void RecordExcitatoryPreSpike(unsigned long spikedSynapseId) override;
 
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;

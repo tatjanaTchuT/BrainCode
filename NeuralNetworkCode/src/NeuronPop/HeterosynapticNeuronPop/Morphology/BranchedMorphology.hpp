@@ -48,7 +48,7 @@ public:
     virtual const std::string GetType() = 0;
 
     void RecordPostSpike() override;
-    void RecordExcitatoryPreSpike(unsigned long synSpikerId) override; 
+    void RecordExcitatoryPreSpike(unsigned long spikedSynapseId) override; 
     std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
     virtual std::valarray<double> GetOverallSynapticProfile() const;
     unsigned long GetMorphoPlasticityEvents() const override;

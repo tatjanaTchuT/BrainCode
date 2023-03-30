@@ -9,7 +9,6 @@
 #ifndef GlobalFunctions_h
 #define GlobalFunctions_h
 
-
 #include <random>
 #include <fstream>
 #include <assert.h>
@@ -69,7 +68,6 @@ struct RecorderOpenStreams {
     std::ofstream hSOverallFileStream;
     //std::vector<std::ofstream> neuronOuputFileStreams;
 };
-
 
 
 const std::string str_adjacencyMatrixConnectivity {"AdjacencyMatrixConnectivity"};
