@@ -1,7 +1,7 @@
 #include "./BranchedStructs.hpp"
 #include "BranchedStructs.hpp"
 
-Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):branchSlots{static_cast<size_t>(branchLength/gap)}, spikedSyn(branchSlots, false), synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,morphoSynapseIDs(static_cast<size_t>(branchSlots), -1),branchSynapseIDs(static_cast<size_t>(branchSlots), -1)
+Branch::Branch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId):branchSlots{static_cast<size_t>(branchLength/gap)}, synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,morphoSynapseIDs(static_cast<size_t>(branchSlots), -1),branchSynapseIDs(static_cast<size_t>(branchSlots), -1), , spikedSyn(branchSlots, false)
 {
     //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchSlots));
 }
@@ -12,7 +12,7 @@ SubRegion::SubRegion(char regionID, std::vector<int> branchesInRegion): regionID
 }
 
 ResourceBranch::ResourceBranch(int gap, int branchLength, std::vector<int> anteriorBranches, int branchId, int branchMaxCountSTDPPotentiation, int branchMaxCountTrigger, std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData): 
-Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, 10), STDPPotentiationCount(branchSlots, 10), maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
+Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, 10), potentiationCountSTDP(branchSlots, 10)//, maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}//, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
 {
     SetUpSynapseData(branchSynapseData);
 }
@@ -27,16 +27,16 @@ void ResourceBranch::SetUpSynapseData(std::vector<std::shared_ptr<ResourceSynaps
 
 void ResourceBranch::TickAllCounts()
 {
-    TickCounts(this->STDPPotentiationCount, maxCountSTDPPotentiation);
-    TickCounts(this->triggerCount, maxCountTrigger);
+    TickCounts(this->potentiationCountSTDP);
+    TickCounts(this->triggerCount);
 }
 
-void ResourceBranch::TickCounts(std::vector<int> &countVector, int maxCount)
+void ResourceBranch::TickCounts(std::vector<int> &countVector)
 {
     for (int& count:countVector){
-        if (count<maxCount){
+        //if (count<maxCount){
             count++;
-        }
+        //}
     }
 }
 

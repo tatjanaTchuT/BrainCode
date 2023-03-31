@@ -15,12 +15,17 @@ typedef std::unordered_map<int, DHashMap> SuperHashMap;
 class BranchedResourceSTDPAsymmetric : public BranchedMorphology {
 //This class models a behaviour based on wi=beta*(alfai/(omega+sum(alfai))), where alfai represents the spine's resources as (Ks*expdt+Kbasal)/(Ns*expdt+Nbasal) with bumps on Ks and Ns
 protected:
+    //Synapse variables
+    double alphaBasal{1.0};//LP and SP 
+    double alphaStimmulusRest{1.0}; //This is delta alpha //LP and SP
+    double alphaStimmulusExpTau{1.0};//LP and SP store the tau
+    double alphaStimmulusExpDecay{1.0}; //LP and SP has to already be calculated
     //Branch variables
     // size_t betaEventsWindowSize{};
     // int betaEventsPerTimestepThreshold{};
-    double betaResourcePool{1.0};
+    double betaResourcePool{1.0}; //LP and SP
     // double betaUpTick{0.05};
-    double omegaPassiveResourceOffset{1.0};
+    double omegaPassiveResourceOffset{1.0}; //LP and SP
     //Space-time kernel
     int kernelGapNumber{};//Obtained by dividing LP param by synGap and rounded to int
     int timeKernelLength{};//Obtained by dividing LP param by dt and rounded to int
@@ -29,10 +34,10 @@ protected:
 
     double timeKernelDecayConstant{1.0};//Strong decay needs small constants//LP and SP
     double spaceKernelDecayConstant{1.0};//LP and SP
-    double STDPDecayConstant{1.0};//LP and SP
+    double DecayConstantSTDP{1.0};//LP and SP
 
     SuperHashMap kernelHashTable;//This is more efficient than the map, but we need a hash function. TEST whether this is faster than vector<vector> or map<>
-    DHashMap STDPDecayHashTable;//??Should STDP not decay? unordered_map? looks like vector is more ideal
+    DHashMap DecayHashTableSTDP;//??Should STDP not decay? unordered_map? looks like vector is more ideal
 
     // double baseKStimmulusBump{1.0};//LP and SP
     // double baseNStimmulusBump{1.0};//LP and SP
@@ -49,8 +54,9 @@ protected:
     //Counting
     int STDPDepressionCount{};//In relation to maxCountSTDP
     //Class object pointer vectors (virtual access)
-    std::vector<std::shared_ptr<ResourceSynapseSpine>> synapseDataResources;
+    std::vector<std::shared_ptr<ResourceSynapseSpine>> resourceSynapseData;
     std::vector<std::shared_ptr<ResourceBranch>> resourceBranches;
+    
 public:
 
     //main Methods
@@ -69,28 +75,28 @@ public:
     
     //Advect methods
     void advect() override;
-    void STDPPotentiation();
-    void STDPDepression();
-    void DetectPairing(std::vector<int> synapseIndexesToUpdate);
-    void SetEffects(int synapseSpineIDinMorpho);//Here we calculate and store the effects of pairing (no matter the post state)
+    //Pairing functions
+    void DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch);
+    bool CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch);
     void SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho);
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
-    void TickCounts();
+    //Plasticity events functions
     void ApplyEffects();//Here we increase the plasticity count of synapse and branch
+    void STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse);
+    void STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse);
+    //Reset methods
+    void Reset() override; //Wrapper plus clearing some of the vectors. Last Reset method to run in chronological order, where we call the ticks and the general upkeep
     void DeleteEffects();//Here, if counter==countMax, erase in that index the element of every vector (first store index, then REVERSE remove the removelist indexes with .rbegin and .rend instead of .begin and .end)
         //Container should be ordered by definition, but std::sort(array.begin(), array.end()) would ensure so.
-    void Reset() override; //Wrapper plus clearing some of the vectors. Last Reset method to run in chronological order, where we call the ticks and the general upkeep
-    //These methods have to be done per branch
-    void UpdateAlphaSum(std::shared_ptr<ResourceBranch> branch);//Run in LP
+    void TickAllCounts();//Last method called in Reset()
+    void ClearSynapseSets();
+    //Recalc methods. These methods have to be done per branch
     void RecalcAlphas(std::shared_ptr<ResourceBranch> branch);//Run in LP
     void RecalcWeights(std::shared_ptr<ResourceBranch> branch);//Run in LP
     void RecalcAlphaSums(std::shared_ptr<ResourceBranch> branch);//Called inside recalc weights
     //Record methods
     void RecordPostSpike() override;
-    void RecordExcitatoryPreSpike(unsigned long spikedSynapseId) override;//Here set the trigger count to 0
-
-    //Getters
-    std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;//Remember plasticity events per synapse and something else
+    void RecordExcitatoryPreSpike(int spikedSynapseId) override;//Here set the trigger count to 0
 
     //Allocation methods
     std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters

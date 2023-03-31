@@ -54,7 +54,6 @@ void MonoDendriteSTDP::advect() {
     }
 
     this->Reset();
-    std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
 }
 
 void MonoDendriteSTDP::thetaDecay() {
@@ -71,7 +70,7 @@ void MonoDendriteSTDP::RecordPostSpike() {
     std::fill(this->integratePostSpike.begin(), this->integratePostSpike.end(), true);
 }
 
-void MonoDendriteSTDP::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
+void MonoDendriteSTDP::RecordExcitatoryPreSpike(int spikedSynapseId) {
     Morphology::RecordExcitatoryPreSpike(spikedSynapseId);
     this->spikedSynapses.at(spikedSynapseId) = true;//This does not seem to be correctly implemented
     this->spikedSynapsesId.push_back(spikedSynapseId);
@@ -231,6 +230,14 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     this->thetaExpDecay=exp(-this->info->dt/this->tauTheta);
 }
 
+void MonoDendriteSTDP::Reset()
+{
+    this->NormalizeWeights();
+    //std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
+    std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
+    this->spikedSynapsesId.clear();
+}
+
 std::shared_ptr<BaseSynapseSpine> MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
@@ -271,7 +278,7 @@ std::shared_ptr<BaseSynapseSpine> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
-        this->synapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
+        this->baseSynapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
         this->synapseDataCoop.push_back(newSynapse);
         this->nextPos += this->synapticGap;
 

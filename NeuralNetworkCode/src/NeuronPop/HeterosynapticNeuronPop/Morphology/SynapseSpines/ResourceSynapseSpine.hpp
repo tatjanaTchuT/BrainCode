@@ -2,7 +2,7 @@
 #define _RESOURCE_SYNAPSE_SPINE_CLASS_HEADER_
 
 #include "BranchedSynapseSpine.hpp"
-#include <vector>
+#include <list>
 #include <algorithm>
 #include <iterator>
 #include <numeric>
@@ -14,39 +14,52 @@ typedef std::unordered_map<int, DHashMap> SuperHashMap;
 class ResourceSynapseSpine : public BranchedSynapseSpine {
 
     protected:
-    //Resource model.
+    //Resource model N and K.
     // double kBasal{1.0};
     // double nBasal{1.0};
-    double alphaBasal{1.0};
 
     // double kStimmulus{0.0};
     // double nStimmulus{0.0};
-    double alphaStimmulus{1.0}; //This is delta alpha
+
 
     // double kStimmulusExpDecay{1.0};//This is of stimmulus variable
     // double nStimmulusExpDecay{1.0};//This is of stimmulus variable
-    double alphaStimmulusExpDecay{1.0}; //This is delta alpha
 
+    //Resource model alpha
+    double alphaBasal{1.0};
+    double alphaStimmulus{1.0}; //This is delta alpha
+    double alphaStimmulusExpDecay{1.0};
+
+    //Central vars
     double alphaResources{};
 
-    // std::vector<double> kStimmulusTempEffect{};//These need to be here for non-matrix management.
+// If I have to go back here, an unordered_map<index, pair<count<pair<double, double>>>>, and find how to delete or vector
+    // std::vector<double> kStimmulusTempEffect{};//These need to be here for non-matrix management. 
     // std::vector<double> nStimmulusTempEffect{};
     // std::vector<int> stimmulusEffectCount{};
-    std::vector<std::pair<double, int>> alphaTempAndCount;
+    std::list<std::pair<double, int>> alphaTempAndCount;
 
     int maxCount{100};
 
+    bool depressionFlagSTDP{false};
+    bool potentiationFlagSTDP{false};
     public:
     //Getters
     double GetAlphaResources(){return alphaResources;}
+    bool GetDepressionFlagSTDP(){return depressionFlagSTDP;}
+    bool GetPotentiationFlagSTDP(){return potentiationFlagSTDP;}
     //int GetMaxCount(){return maxCount;}//Not necessary for now
     //Setters
-
+    void SetAlphaBasal(double alphaBasalInput){alphaBasal=alphaBasalInput;}
+    void SetAlphaStimmulusRest(double alphaStimmulusRest){alphaStimmulus=alphaStimmulusRest;}
+    void SetAlphaExpDecay(double alphaStimExpDecay){alphaStimmulusExpDecay=alphaStimExpDecay;}
     // void SetNBasal(int nBasalInput){nBasal=nBasalInput;}
     // void SetKBasal(int kBasalInput){kBasal=kBasalInput;}
     // void SetKExponentialDecay(int kStimmulusExpDecayCalc){kStimmulusExpDecay=kStimmulusExpDecayCalc;}//Input is supposed to be exp(-dt/tau)
     // void SetNExponentialDecay(int nStimmulusExpDecayCalc){nStimmulusExpDecay=nStimmulusExpDecayCalc;}
     void SetMaxCount(int maxCountnew) {maxCount=maxCountnew;} //UNRESOLVED  Call in AllocateNewSynapse
+    void SetDepressionFlag(bool booleanFlag) {depressionFlagSTDP=booleanFlag;}
+    void SetPotentiationFlag(bool booleanFlag) {potentiationFlagSTDP=booleanFlag;}
     //Alpha methods
     void RecalculateAlphaResources();//Should be recalced at least once in the Spine Setup
     void DecayAlphaResources();

@@ -9,16 +9,17 @@ void BranchedMorphology::RecordPostSpike() {
     Morphology::RecordPostSpike();
 }
 
-void BranchedMorphology::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
+void BranchedMorphology::RecordExcitatoryPreSpike(int spikedSynapseId) {
     Morphology::RecordExcitatoryPreSpike(spikedSynapseId);
-    this->branches.at(this->synapseDataBranched.at(spikedSynapseId)->GetBranchId())->spikedSyn.at(this->synapseDataBranched.at(spikedSynapseId)->GetBranchPositionId())=true;
+    // this->branches.at(this->branchedSynapseData.at(spikedSynapseId)->GetBranchId())->spikedSyn.at(this->branchedSynapseData.at(spikedSynapseId)->GetBranchPositionId())=true;
+    this->branches.at(this->branchedSynapseData.at(spikedSynapseId)->GetBranchId())->spikedSynapsesInTheBranch.push_back(this->branchedSynapseData.at(spikedSynapseId)->GetBranchPositionId());
 }
 
 void BranchedMorphology::Reset()
 {
-    Morphology::Reset();
     for (std::shared_ptr<Branch> branch : branches){
-        std::fill(branch->spikedSyn.begin(), branch->spikedSyn.end(), false);
+        // std::fill(branch->spikedSyn.begin(), branch->spikedSyn.end(), false);
+        branch->spikedSynapsesInTheBranch.clear();
     }
     this->postSpiked=false;
 }
@@ -147,7 +148,6 @@ std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroC
     newSynapse = std::make_shared<BranchedSynapseSpine>();
 
     //REFORMAT, REWRITE WITH CONSTRUCTOR    
-    newSynapse->SetLastSpike(-200.0); // large negative value indicates no spikes of synapse during simulations
     //Step weights has been removed fron here
     newSynapse->SetWeight(this->GenerateSynapticWeight());
 
@@ -162,20 +162,20 @@ std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroC
     int position{branches.at(branch)->openSynapsesSlots.front()};
     branches.at(branch)->openSynapsesSlots.pop_front();
     newSynapse->SetBranchPositionId(position);
-    newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);
+    //newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
     branches.at(branch)->synapseSlotToMorphoIDMap.at(position)=newSynapse->GetIdInMorpho();
     //Storage (other)
-    this->synapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
-    this->synapseDataBranched.push_back(newSynapse);
+    this->baseSynapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
+    this->branchedSynapseData.push_back(newSynapse);
 
     //this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);
     //this->integratePreSpike.push_back(false);
 
     return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
-    }
+}
 
 int BranchedMorphology::AllocateBranch(const HeteroCurrentSynapse &synapse)
 {
@@ -216,16 +216,16 @@ int BranchedMorphology::OrderedBranchAllocation()
 void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)
 {
     //std::default_random_engine& generator = this->generator;
-    std::vector<int> possibleSlots(branch->spikedSyn.size());
+    std::vector<int> possibleSlots(branch->branchSlots);
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
    //Now we have our vector from 0 to maxSlots to pull random numbers from
-    std::sample(possibleSlots.begin(), possibleSlots.end(),std::back_inserter(branch->openSynapsesSlots),branch->spikedSyn.size(),this->info->globalGenerator);
+    std::sample(possibleSlots.begin(), possibleSlots.end(),std::back_inserter(branch->openSynapsesSlots),branch->branchSlots,this->info->globalGenerator);
     //Then I will have to pop_front() in AllocateNewSynapse
 }
 
 void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
-    std::deque<int> possibleSlots(branch->spikedSyn.size());
+    std::deque<int> possibleSlots(branch->branchSlots);
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
     //Now we have our vector from 0 to maxSlots to pull random numbers from
     copy(possibleSlots.begin(), possibleSlots.end(), back_inserter(branch->openSynapsesSlots));
@@ -235,7 +235,7 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
 /*void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
 {
         for (auto& branch:branches){
-        std::deque<int> possibleSlots(branch->spikedSyn.size());
+        std::deque<int> possibleSlots(branch->branchSlots);
         std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
         copy(possibleSlots.begin(), possibleSlots.end(), back_inserter(branch->openSynapsesSlots));
         }

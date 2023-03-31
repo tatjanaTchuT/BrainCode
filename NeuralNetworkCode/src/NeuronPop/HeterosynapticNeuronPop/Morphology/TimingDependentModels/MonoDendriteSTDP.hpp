@@ -76,8 +76,9 @@ public:
     ~MonoDendriteSTDP() override = default;
 
     void advect() override;
+    void Reset() override;
     void RecordPostSpike() override;
-    void RecordExcitatoryPreSpike(unsigned long spikedSynapseId) override;
+    void RecordExcitatoryPreSpike(int spikedSynapseId) override;
 
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;

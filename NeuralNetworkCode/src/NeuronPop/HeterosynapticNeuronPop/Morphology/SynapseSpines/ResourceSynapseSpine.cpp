@@ -2,18 +2,16 @@
 
 std::valarray<double> ResourceSynapseSpine::GetIndividualSynapticProfile() const
 {
-    std::valarray<double> dataArray(5);
-    dataArray[0] = this->distanceFromNode;
-    dataArray[1] = this->branchId;
-    dataArray[2] = this->weight;
-    dataArray[3] = this->lastSpike;
-    dataArray[4] = this->alphaResources;
+    std::valarray<double> dataArray(3);
+    dataArray[0] = this->branchId;
+    dataArray[1] = this->weight;
+    dataArray[2] = this->alphaResources;
     return dataArray;
 }
 
 std::string ResourceSynapseSpine::GetIndividualSynapticProfileHeaderInfo() const
 {
-    return std::string("{<dist to branch node>, <branch ID>, <weight>, <last spike>, <alpha resources>}");
+    return std::string("{<branch ID>, <weight>, <alpha resources>}");
 }
 
 void ResourceSynapseSpine::RecalculateAlphaResources()
@@ -71,10 +69,11 @@ void ResourceSynapseSpine::CullStimmulusVectors()
     //     }
     // }
 
-    for (std::vector<std::pair<double,int>>::reverse_iterator reverseIterator = alphaTempAndCount.rbegin(); reverseIterator != alphaTempAndCount.rend(); reverseIterator++)
+    for (std::list<std::pair<double,int>>::reverse_iterator reverseIterator = alphaTempAndCount.rbegin(); reverseIterator != alphaTempAndCount.rend(); reverseIterator++)
     {
         if (reverseIterator->second>=maxCount){
             alphaTempAndCount.erase(alphaTempAndCount.begin(), std::next(reverseIterator).base());
+            break;
         }
 
     }

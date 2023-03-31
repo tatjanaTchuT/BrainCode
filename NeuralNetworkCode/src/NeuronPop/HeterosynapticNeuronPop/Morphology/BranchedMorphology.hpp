@@ -37,7 +37,7 @@ protected:
     bool RandomBranchAllocationB{false};*/
 
     std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
-    std::vector<std::shared_ptr<BranchedSynapseSpine>> synapseDataBranched;//They are just pointers, what is the worst that can happen by having multiple copies?
+    std::vector<std::shared_ptr<BranchedSynapseSpine>> branchedSynapseData;//They are just pointers, what is the worst that can happen by having multiple copies?
 public:
     explicit BranchedMorphology(GlobalSimInfo * info);
     ~BranchedMorphology() = default;
@@ -48,7 +48,7 @@ public:
     virtual const std::string GetType() = 0;
 
     void RecordPostSpike() override;
-    void RecordExcitatoryPreSpike(unsigned long spikedSynapseId) override; 
+    void RecordExcitatoryPreSpike(int spikedSynapseId) override; 
     //virtual std::vector<double> GetOverallSynapticProfile() const;
     unsigned long GetMorphoPlasticityEvents() const override;
     

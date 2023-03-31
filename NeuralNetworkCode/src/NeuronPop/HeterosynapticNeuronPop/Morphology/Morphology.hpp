@@ -36,7 +36,7 @@ protected:
 
     GlobalSimInfo * info;
 
-    std::vector<std::shared_ptr<BaseSynapseSpine>> synapseData;
+    std::vector<std::shared_ptr<BaseSynapseSpine>> baseSynapseData;
     double weightsSum {};
     double totalPostSpikes {};
     double totalPreSpikes {};
@@ -48,7 +48,7 @@ protected:
 
     double lastPostSpikeTime;
     std::vector<bool> spikedSynapses;
-    std::vector<unsigned long> spikedSynapsesId;
+    std::vector<int> spikedSynapsesId;
 
     WeightNormalization weightNormalization {NOPNormalization};
     double minWeight {0.0};
@@ -59,7 +59,7 @@ protected:
     double WeightDecayConstant{1.0};
     double weightExpDecay {};
 
-    virtual void Reset();
+    virtual void Reset()=0;
     virtual void NormalizeWeights();
 
     virtual void WeightDecay();
@@ -77,7 +77,7 @@ public:
 
     virtual void advect() = 0;
     virtual void RecordPostSpike();
-    virtual void RecordExcitatoryPreSpike(unsigned long spikedSynapseId);
+    virtual void RecordExcitatoryPreSpike(int spikedSynapseId);
     //Getters
     std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const;
     std::valarray<double> GetOverallSynapticProfile() const;

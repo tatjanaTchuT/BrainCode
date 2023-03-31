@@ -12,9 +12,9 @@ class BaseSynapseSpine {
     unsigned long preNeuronId{};
     unsigned long postNeuronId{};
     double weight{}; //The negative weight comes from J, weight is just a factor to multiply (for now)
-    double lastSpike{};
+    //double lastSpike{};
     unsigned long idInMorpho{}; // id for synapse within its population
-    unsigned long idInHCS{}; // id for synapse within its a synapse collection
+    unsigned long idInHCS{};  // id for synapse within its a synapse collection
     //Branched variables
     bool isBranchedBool{false};// For now it is not useful
 
@@ -32,7 +32,6 @@ class BaseSynapseSpine {
     unsigned long GetIdInMorpho() const {return idInMorpho;};
     unsigned long GetIdInHCS() const {return idInHCS;};
     bool GetBranchedBool() const { return isBranchedBool;}
-    double GetLastSpike() const {return lastSpike;};
     long GetPlasticityEvents() const {return plasticityEvents;}
     //Setters
     void SetPreNeuronId(unsigned long neuronId){preNeuronId=neuronId;};
@@ -40,7 +39,6 @@ class BaseSynapseSpine {
     void SetWeight(double weightIn){weight=weightIn;};
     void SetIdInMorpho(unsigned long idIn){idInMorpho=idIn;};
     void SetIdInHCS(unsigned long idIn){idInHCS=idIn;};
-    void SetLastSpike(double time){lastSpike=time;};
     //Misc
     void AddToWeight(double change){weight+=change;}
 

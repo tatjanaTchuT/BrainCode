@@ -62,16 +62,16 @@ void Morphology::RecordPostSpike() {
 }
 
 
-void Morphology::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
+void Morphology::RecordExcitatoryPreSpike(int spikedSynapseId) {
     //Is there supposed to be a different Inhibitory function?
     this->totalPreSpikes++;
     // STDP Analysis
-    //this->preSpikes.emplace_back(spikedSynapseId, this->synapseData.at(spikedSynapseId)->lastSpike);
+    //this->preSpikes.emplace_back(spikedSynapseId, this->baseSynapseData.at(spikedSynapseId)->lastSpike);
 }
 
 std::valarray<double> Morphology::GetIndividualSynapticProfile(unsigned long synapseId) const
 {
-    return synapseData.at(synapseId)->GetIndividualSynapticProfile();
+    return baseSynapseData.at(synapseId)->GetIndividualSynapticProfile();
 }
 
 std::valarray<double> Morphology::GetOverallSynapticProfile() const
@@ -85,33 +85,27 @@ std::valarray<double> Morphology::GetOverallSynapticProfile() const
      * */
     std::valarray<double> dataArray(4);
 
-    double weightSum = std::accumulate(this->synapseData.begin(), this->synapseData.end(), 0.0,
+    double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
                                        [] (double acc, const std::shared_ptr<BaseSynapseSpine>& syn) { return acc + syn->GetWeight(); });
 
-   dataArray[0] = weightSum / this->synapseData.size();
+   dataArray[0] = weightSum / this->baseSynapseData.size();
    dataArray[1] = this->totalPostSpikes;
    dataArray[2] = this->totalPreSpikes;
-   dataArray[3] = static_cast<double>(GetMorphoPlasticityEvents()) / this->synapseData.size();
+   dataArray[3] = static_cast<double>(GetMorphoPlasticityEvents()) / this->baseSynapseData.size();
     return dataArray;
 }
 
 std::string Morphology::GetIndividualSynapticProfileHeaderInfo() const
 {
-    return synapseData.at(0)->GetIndividualSynapticProfileHeaderInfo();
+    return baseSynapseData.at(0)->GetIndividualSynapticProfileHeaderInfo();
 }
 
 unsigned long Morphology::GetSynapseCount() const {
-    return static_cast<unsigned long>(this->synapseData.size());
+    return static_cast<unsigned long>(this->baseSynapseData.size());
 }
 
 double Morphology::GetWeight(unsigned long synapseId) const {
-    return this->synapseData.at(synapseId)->GetWeight();
-}
-
-void Morphology::Reset() {
-    this->NormalizeWeights();
-    //std::fill(this->spikedSynapses.begin(),this->spikedSynapses.end(), false);
-    this->spikedSynapsesId.clear();
+    return this->baseSynapseData.at(synapseId)->GetWeight();
 }
 
 void Morphology::NormalizeWeights() {
@@ -123,7 +117,7 @@ void Morphology::NormalizeWeights() {
 }
 
 void Morphology::hardNormalize() {
-    for (auto& syn: this->synapseData) {
+    for (auto& syn: this->baseSynapseData) {
         syn->SetWeight(std::max(minWeight, std::min(maxWeight, syn->GetWeight())));
     }
 }
@@ -132,19 +126,19 @@ void Morphology::softMaxNormalize() {
     double maxWeights, sumWeights;
 
     maxWeights = std::numeric_limits<double>::min();
-    for (auto& syn : this->synapseData) {
+    for (auto& syn : this->baseSynapseData) {
         maxWeights = std::max(maxWeights, syn->GetWeight());
     }
 
     sumWeights = 0;
-    for (auto& syn : this->synapseData) {
+    for (auto& syn : this->baseSynapseData) {
         sumWeights += std::exp(syn->GetWeight() - maxWeights);
     }
 }
 
 void Morphology::WeightDecay() {
     if (this->decayWeights) {
-        for (const std::shared_ptr<BaseSynapseSpine>& syn: this->synapseData) {
+        for (const std::shared_ptr<BaseSynapseSpine>& syn: this->baseSynapseData) {
             syn->SetWeight(syn->GetWeight() * weightExpDecay);
         }
     }
@@ -205,13 +199,13 @@ void Morphology::triggerStatOut(std::string dirPath) {
 
 // void Morphology::printThetasAndWeights() {
 //     std::cout << "weights: " << std::endl;
-//     for (auto& syn: this->synapseData) {
+//     for (auto& syn: this->baseSynapseData) {
 //         std::cout << syn->GetWeight() << ", ";
 //     }
 //     std::cout << std::endl;
 
 //     std::cout << "thetas: " << std::endl;
-//     for (auto& syn: this->synapseData) {
+//     for (auto& syn: this->baseSynapseData) {
 //         std::cout << syn->GetTheta() << ", ";
 //     }
 //     std::cout << std::endl;

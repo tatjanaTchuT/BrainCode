@@ -8,7 +8,7 @@ class BranchedSynapseSpine : public BaseSynapseSpine {
     protected:
     int branchId{}; //This has to be discrete
     int branchPositionId{}; //This has to be discrete
-    int distanceFromNode{}; //This will probably be discrete too, as the distance is id*gap, and gap will be 1 um.
+    //int distanceFromNode{};//as the distance is id*gap, unnecessary
     //int uniqueTreeId{}; Useful only in the indexing of the triangular matrix if implemented
     bool isBranchedBool{true};
 
@@ -18,12 +18,12 @@ class BranchedSynapseSpine : public BaseSynapseSpine {
     //getters
     int GetBranchId() const {return branchId;};
     int GetBranchPositionId() const {return branchPositionId;};
-    int GetDistanceFromNode() const {return distanceFromNode;};
+    //int GetDistanceFromNode() const {return distanceFromNode;};
     bool GetBranchedBool() const { return isBranchedBool;}
     //setters
     void SetBranchId(int idIn){branchId=idIn;};
     void SetBranchPositionId(int positionId){branchPositionId=positionId;};
-    void SetDistanceFromNode(int distance){distanceFromNode=distance;};
+    //void SetDistanceFromNode(int distance){distanceFromNode=distance;};
 
     //Profile function
     std::valarray<double> GetIndividualSynapticProfile() const override;

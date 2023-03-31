@@ -10,7 +10,7 @@
 class HeteroCurrentSynapse : public Synapse {
 protected:
 
-    std::vector<std::shared_ptr<BaseSynapseSpine>> synapseData{};
+    std::vector<std::shared_ptr<BaseSynapseSpine>> baseSynapseData{};
     //Branching member variables 
     BranchTargeting synapseTargeting{};
 

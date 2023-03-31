@@ -58,13 +58,13 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         neuronSynapsePair = targetList.at(i);
         postNeuronId = neuronSynapsePair.first;
         HCSSynapseId = neuronSynapsePair.second;
-        morphoSynapseId = this->synapseData[HCSSynapseId]->GetIdInMorpho();
+        morphoSynapseId = this->baseSynapseData[HCSSynapseId]->GetIdInMorpho();
 
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
         if (couplingStrength < 0.0) {//To avoid interaction with inhibitory synapses
             current =  couplingStrength;
         } else {
-            current = couplingStrength * this->synapseData[HCSSynapseId]->GetWeight();
+            current = couplingStrength * this->baseSynapseData[HCSSynapseId]->GetWeight();
             this->neuronsPost->RecordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
         }
         currents[i] += current;
@@ -127,9 +127,9 @@ unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigne
     if (SynapseSpinePtr != nullptr) {
         SynapseSpinePtr->SetPreNeuronId(preId);
         SynapseSpinePtr->SetPostNeuronId(postId);
-        SynapseSpinePtr->SetIdInHCS(static_cast<unsigned long>(this->synapseData.size()));
+        SynapseSpinePtr->SetIdInHCS(static_cast<unsigned long>(this->baseSynapseData.size()));
 
-        this->synapseData.push_back(SynapseSpinePtr);
+        this->baseSynapseData.push_back(SynapseSpinePtr);
 
         return SynapseSpinePtr->GetIdInHCS();
     }
@@ -163,7 +163,7 @@ const std::vector<std::pair<unsigned long, unsigned long>>& getSynapticTargets(H
 
 std::vector<BaseSynapseSpine> getSynapseData(HeteroCurrentSynapse& syn) {
     std::vector<BaseSynapseSpine> synData;
-    for (const auto& item: syn.synapseData) {
+    for (const auto& item: syn.baseSynapseData) {
         synData.push_back(*item);
     }
     return synData;
