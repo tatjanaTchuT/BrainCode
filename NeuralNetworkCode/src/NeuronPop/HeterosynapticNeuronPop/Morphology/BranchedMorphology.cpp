@@ -241,10 +241,6 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
         }
         //For now it is the same as ordered, the possibility of alternating synapses will probably be more useful with multiple synapses pre-post neuron.
 }*/
-
-std::valarray<double> BranchedMorphology::GetIndividualSynapticProfile(unsigned long synapseId) const {
-    return synapseData.at(synapseId)->GetIndividualSynapticProfile();
-}
 unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const
 {
     return std::accumulate(this->branches.begin(), this->branches.end(), 0.0,//UNRESOLVED, does this give intended output?

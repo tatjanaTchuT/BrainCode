@@ -311,15 +311,3 @@ void MonoDendriteSTDP::pseudoCoop(unsigned long synId, unsigned long neighborId)
     std::cout << "time effect: " << getTimingEffects(spiker, neighbor);
 
 }
-
-
-std::valarray<double> MonoDendriteSTDP::GetIndividualSynapticProfile(unsigned long synapseId) const {
-    /*
-     * returned array organised as follows:
-     * item 1: distance of synapse from soma
-     * item 2: value of heterosynaptic cooperativity
-     * item 3: value of the synaptic weight
-     * item 4: last spike time of the synapse
-     * */
-    return synapseDataCoop.at(synapseId)->GetIndividualSynapticProfile();
-}

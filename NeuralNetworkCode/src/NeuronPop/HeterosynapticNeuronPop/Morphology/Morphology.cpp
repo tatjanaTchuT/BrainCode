@@ -69,6 +69,11 @@ void Morphology::RecordExcitatoryPreSpike(unsigned long spikedSynapseId) {
     //this->preSpikes.emplace_back(spikedSynapseId, this->synapseData.at(spikedSynapseId)->lastSpike);
 }
 
+std::valarray<double> Morphology::GetIndividualSynapticProfile(unsigned long synapseId) const
+{
+    return synapseData.at(synapseId)->GetIndividualSynapticProfile();
+}
+
 std::valarray<double> Morphology::GetOverallSynapticProfile() const
 {
     /*

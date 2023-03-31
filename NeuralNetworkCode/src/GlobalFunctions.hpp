@@ -140,6 +140,7 @@ std::string getPathToInputFile(std::string* inputFile, bool Windows);
 
 void SaveDoubleFile(std::ofstream *file,double val,int precision);
 void SaveTupleOfDoublesFile(std::ofstream *file, std::valarray<double>, int precision);
+void SaveTupleOfDoublesFile(std::ofstream *file, std::vector<double>, int precision);
 
 bool is_double(const std::string& s);
 

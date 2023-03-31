@@ -55,10 +55,10 @@ struct ResourceBranch : public Branch {
     //Synapse access
     std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData;//CAREFUL! THIS VECTOR IS NOT SORTED WITH BRANCH IDS, BUT MORPHO IDS
 
-    std::set<int> updatedSynapseSpines{};//IDs are branch slots, to index the vector above to index proper. Cleared every timestep, used for depression only
+    std::set<int> updatedSynapseSpines{};//IDs are branch slots, to index the vector above to index proper. Cleared every timestep, used to avoid double effect when paired in same timestep
     std::set<int> updatedAlphaEffects{};//IDs are branch slots, Used in depression, cleared every timestep
     // int plasticityEventsPerTimestepThreshold{};
-    int sumPlasticityEvents{};//Theoretically temporary
+    //int sumPlasticityEvents{};//Theoretically temporary
 
     //double betaResourcePool{1.0}; //We use the one in the Morpho object
     // double betaUpTick{0.05};

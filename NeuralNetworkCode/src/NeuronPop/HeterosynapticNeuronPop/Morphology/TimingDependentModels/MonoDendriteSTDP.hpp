@@ -83,8 +83,7 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     virtual std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
-    
-    std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const override;
+
 
     //Revirtualization
 

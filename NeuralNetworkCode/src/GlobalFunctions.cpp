@@ -174,6 +174,17 @@ void SaveTupleOfDoublesFile(std::ofstream *file, std::valarray<double> tuple, in
     stream << std::fixed << std::setprecision(precision) << tuple[i] << "}";
     *file  << stream.str() << "\t";
 }
+void SaveTupleOfDoublesFile(std::ofstream * file, std::vector<double> tuple, int precision)
+{
+    std::stringstream stream;
+    unsigned long i;
+    stream << "{";
+    for (i = 0; i < tuple.size()-1; ++i) {
+        stream << std::fixed << std::setprecision(precision) << tuple[i] << ",";
+    }
+    stream << std::fixed << std::setprecision(precision) << tuple[i] << "}";
+    *file  << stream.str() << "\t";
+}
 
 bool is_double(const std::string& s)
 {
