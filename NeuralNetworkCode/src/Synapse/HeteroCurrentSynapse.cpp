@@ -55,6 +55,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
     std::pair<unsigned long, unsigned long> neuronSynapsePair;
 
     for (int i = 0; i < targetList.size(); i++) {//i here is a postNeuronId
+    //This bunch of code seems compatible with multiple synapses. You just get a new pair, with new IDs, and the RESS call goes to the new synapse.
         neuronSynapsePair = targetList.at(i);
         postNeuronId = neuronSynapsePair.first;
         HCSSynapseId = neuronSynapsePair.second;

@@ -60,13 +60,13 @@ void BranchedResourceSTDPAsymmetric::SetUpHashTables()
     kernelRadius=timeKernelLength+spaceTimeStepRelation;
     for (int spaceIndex=1; spaceIndex<=kernelGapNumber; spaceIndex++){//at least there is one gap
         for (int timeIndex=0; timeIndex<=timeKernelLength-(spaceTimeStepRelation*(spaceIndex-1)); timeIndex++){ 
-            kernelHashTable[timeIndex][spaceIndex]=std::exp(-(synapticGap*spaceIndex)/spaceKernelDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelDecayConstant);
+            kernelHashTable.at(timeIndex).at(spaceIndex)=std::exp(-(synapticGap*spaceIndex)/spaceKernelDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelDecayConstant);
             //Always access time, space later (always will be more times than gaps)
         }
     }
 
     for (int STDPindex=1; STDPindex<=MaxCountSTDP; STDPindex++){
-        DecayHashTableSTDP[STDPindex]=std::exp(-(STDPindex*info->dt)/DecayConstantSTDP);
+        DecayHashTableSTDP.at(STDPindex)=std::exp(-(STDPindex*info->dt)/DecayConstantSTDP);
     }
     return;
 }
@@ -110,19 +110,24 @@ void BranchedResourceSTDPAsymmetric::ApplyEffects() //Called after pairings
 
 void BranchedResourceSTDPAsymmetric::STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse)
 {
-    //If post spike, apply all stimms on positive mode (remember the coded function in spines)
+    //If post spike, apply all stimms on positive mode (remember the coded function in spines) with the decay from STDP pot count. 
     //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
-    //WITH DECAY
-    return;
+    //WITH DECAY (of alpha, STDP-like)
+    if (this->postSpiked){
+        synapse->ApplyAllTempEffectsOnPostspike(PotentiationDepressionRatio, DecayHashTableSTDP);
+    } else {
+        synapse->ApplyAllTempEffectsOnConflictPotentiation(PotentiationDepressionRatio);
+    }
 }
 
 void BranchedResourceSTDPAsymmetric::STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse)
 {
-     //If count <10, apply stimms in negative mode. Basically input -1/STDPratio to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
+     //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
      //And also pass the STDP map by reference to the function call
      //Use STDPcount in the morpho for STDP decay
      //Iterate over set of updatedAlphas
-     return;
+     //Decay STDP but expressed as a negative number
+     synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount);
 }
 
 void BranchedResourceSTDPAsymmetric::DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch)//These are the spiked neurons on synapseDataIndexes
@@ -134,7 +139,6 @@ void BranchedResourceSTDPAsymmetric::DetectPossiblePairing(std::shared_ptr<Resou
             branch->updatedAlphaEffects.insert(synapseIDinBranch);
         }
     }
-    return;
 }
 
 bool BranchedResourceSTDPAsymmetric::CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch)
@@ -153,28 +157,32 @@ void BranchedResourceSTDPAsymmetric::SpaceTimeKernel(int branchSynapseID, int br
     //Only call this function if synapse itself has spiked this timestep
     for (int gapIndex = -kernelGapNumber; gapIndex<=kernelGapNumber;gapIndex++){ //And then use branchSynapseID+gapindex
         synapsePositionIndexInBranch = branchSynapseID+gapIndex;
-        if (synapsePositionIndexInBranch<0){
+        alphaStimmulusEffect = baseAlphaStimmulusBump;
+        if (synapsePositionIndexInBranch<0){//Condition to aboid illegal indexing (correct me if you dare)
             continue;
-        } else if (synapsePositionIndexInBranch>branchSlots){
+        } else if (synapsePositionIndexInBranch>branchSlots){//Condition to aboid illegal indexing (correct me if you dare)
             break;
         } else {
             std::shared_ptr<ResourceSynapseSpine>& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap.at(synapsePositionIndexInBranch));
             absDistance = std::abs(gapIndex);
             timeStepDifference=resourceBranches.at(branchID)->triggerCount.at(synapsePositionIndexInBranch);
-            if (timeStepDifference<STDPDepressionCount){//Indicates depression region with no conflict
+            if (timeStepDifference<=STDPDepressionCount){//Indicates depression region with no conflict. If the spike is far away, but too far for depression, nothing will happen. If a postspike happens, these flags are ignored.
+                //The boolean is <= to classify the pairing where the postspike and first prespike are on the same timestep as depression.
                 centralSynapseSpine->SetDepressionFlag(true);
                 lateralSynapseSpine->SetDepressionFlag(true);
             } else { //Knowing depression region, indicates conflict that is skewed towards potentiation according to STDP kernel
-                if (timeStepDifference<2*STDPDepressionCount){
+                if (timeStepDifference<=2*STDPDepressionCount){//We set the boolean to equal too to solve the conflict in favor of potentiation, as depression has the other fringe case
                     centralSynapseSpine->SetPotentiationFlag(true);
                     lateralSynapseSpine->SetPotentiationFlag(true);
+                    alphaStimmulusEffect *= DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike
                 } else {
                     centralSynapseSpine->SetDepressionFlag(true);
                     lateralSynapseSpine->SetDepressionFlag(true);
-                }
+                }//These flags are only here to solve 
             }
-            if(timeStepDifference+synapticGap*absDistance<=kernelRadius && (kernelizedSynapses.find(synapsePositionIndexInBranch) != kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
-                alphaStimmulusEffect = baseAlphaStimmulusBump*CallKernelHashTable(absDistance, timeStepDifference);
+            if(!this->postSpiked &&timeStepDifference+synapticGap*absDistance<=kernelRadius && (kernelizedSynapses.find(synapsePositionIndexInBranch) != kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
+                //The postspiked condition is because the STDP kernel is discretized, in the case the postspike happens at the same time as the pairing of a synapse, the pairing does not happen (as the potentiation and depression would counteract themselves)
+                alphaStimmulusEffect *= CallKernelHashTable(absDistance, timeStepDifference);
                 centralSynapseSpine->AddTempResourcesToSpine(alphaStimmulusEffect);
                 lateralSynapseSpine->AddTempResourcesToSpine(alphaStimmulusEffect);
                 updatedAlphaEffects.insert(synapsePositionIndexInBranch);
@@ -185,7 +193,6 @@ void BranchedResourceSTDPAsymmetric::SpaceTimeKernel(int branchSynapseID, int br
     kernelizedSynapses.insert(branchSynapseID);//Used to avoid double potentiation in same timestep
     //Here for every synapse inside the synapse's kernel that has an active counter (count!=countMax) we get the time kernel and then apply the space kernel
     //Take unto account the synaptic GAP and DT!!! This should be done elsewhere
-    return;
 }
 double BranchedResourceSTDPAsymmetric::CallKernelHashTable(int distanceToCenterInGaps, int timeDifference)
 {
@@ -209,7 +216,6 @@ void BranchedResourceSTDPAsymmetric::Reset()
     }
     DeleteEffects();
     TickAllCounts();
-    return;
 }
 
 void BranchedResourceSTDPAsymmetric::RecalcAlphas(std::shared_ptr<ResourceBranch> branch)
@@ -280,6 +286,7 @@ void BranchedResourceSTDPAsymmetric::RecordPostSpike()
 
 void BranchedResourceSTDPAsymmetric::RecordExcitatoryPreSpike(int spikedSynapseId)
 {
+    //This function is NOT DELAY COMPATIBLE (careful with the delays in synapse objects)
     //Here only record, afterwards we do the checks
     BranchedMorphology::RecordExcitatoryPreSpike(spikedSynapseId);
     this->resourceBranches.at(resourceSynapseData.at(spikedSynapseId)->GetBranchId())->triggerCount.at(resourceSynapseData.at(spikedSynapseId)->GetBranchPositionId())=0;

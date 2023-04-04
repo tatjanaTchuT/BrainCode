@@ -73,6 +73,7 @@ std::shared_ptr<BaseSynapseSpine> HeteroNeuronPop::AllocateNewSynapse(unsigned l
 
 void HeteroNeuronPop::RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId)
 {
+        //This function is NOT DELAY COMPATIBLE
     this->morphology[neuronId]->RecordExcitatoryPreSpike(synapseId);
 }
 

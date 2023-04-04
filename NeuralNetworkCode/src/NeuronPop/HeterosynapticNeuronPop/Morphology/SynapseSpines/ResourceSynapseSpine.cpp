@@ -41,14 +41,33 @@ void ResourceSynapseSpine::AddTempResourcesToSpine(double alphaStimmulusInput)
     alphaTempAndCount.emplace_back(std::pair<double, int>(alphaStimmulusInput, 0));
 }
 
-void ResourceSynapseSpine::ApplyAllTempEffects(int STDPmultiplier, DHashMap& STDPdecayMap)
+void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double STDPmultiplier, DHashMap& STDPdecayMap)
 {
     // kStimmulus=std::accumulate(kStimmulusTempEffect.begin(), kStimmulusTempEffect.end(), kStimmulus, [STDPmultiplier](double accumulator, double kStemp){return accumulator + kStemp*STDPmultiplier;});
     // nStimmulus=std::accumulate(nStimmulusTempEffect.begin(), nStimmulusTempEffect.end(), nStimmulus, [STDPmultiplier](double accumulator, double nStemp){return accumulator + nStemp*STDPmultiplier;});
     // kStimmulusTempEffect.clear();
     // nStimmulusTempEffect.clear();
     //stimmulusEffectCount.clear();
+    //STDPmultiplier is to boost potentiation compared to depression, but also to input the current decay
     alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [STDPmultiplier, STDPdecayMap](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*STDPmultiplier*STDPdecayMap.at(alphaStemp.second);});
+    // if (alphaStimmulus+alphaBasal<0.0){
+    //     alphaStimmulus= (-alphaBasal);
+    // }
+}
+
+void ResourceSynapseSpine::ApplyAllTempEffectsOnConflictPotentiation(double STDPmultiplier)
+{
+    //CUrrently I have no way of properly calculating the decay of potentiation proper by calculating the area under the graph.
+    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [STDPmultiplier](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*STDPmultiplier;});
+    // if (alphaStimmulus+alphaBasal<0.0){
+    //     alphaStimmulus= (-alphaBasal);
+    // }
+}
+
+void ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(DHashMap &STDPdecayMap, int STDPcount)
+{
+    //This is because depression updates instantly
+    alphaStimmulus-= (alphaTempAndCount.back().first*STDPdecayMap.at(STDPcount));
     if (alphaStimmulus+alphaBasal<0.0){
         alphaStimmulus= (-alphaBasal);
     }

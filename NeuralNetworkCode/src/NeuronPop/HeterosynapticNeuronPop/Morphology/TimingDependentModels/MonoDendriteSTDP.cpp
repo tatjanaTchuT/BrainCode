@@ -71,6 +71,7 @@ void MonoDendriteSTDP::RecordPostSpike() {
 }
 
 void MonoDendriteSTDP::RecordExcitatoryPreSpike(int spikedSynapseId) {
+//This function is NOT DELAY COMPATIBLE (careful with the delays in synapse objects)
     Morphology::RecordExcitatoryPreSpike(spikedSynapseId);
     this->spikedSynapses.at(spikedSynapseId) = true;//This does not seem to be correctly implemented
     this->spikedSynapsesId.push_back(spikedSynapseId);
