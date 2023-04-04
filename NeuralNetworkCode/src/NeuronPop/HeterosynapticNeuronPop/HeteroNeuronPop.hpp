@@ -15,7 +15,7 @@
 #include "Morphology/TimingDependentModels/MonoDendriteSTDPTazerart.hpp"
 #include "Morphology/TimingDependentModels/MonoDendriteSTDPTazerartRelative.hpp"
 #include "Morphology/TimingDependentModels/MonoDendriteSTDPBiWindow.hpp"
-#include "Morphology/BranchedResourceSTDPModel/BranchedResourceSTDPAsym.hpp"
+#include "Morphology/BranchedResourceSTDPModel/BranchedResourceHeteroSTDP.hpp"
 #include "../../GlobalFunctions.hpp"
 #include "../NeuronPop.hpp"
 

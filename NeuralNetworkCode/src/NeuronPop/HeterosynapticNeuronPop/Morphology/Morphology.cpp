@@ -9,25 +9,11 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
     std::vector<std::string> values;
 
     // checks for correct initialization
-    bool normalizationFound {false};
 
     for (auto& it : *input) {
         SplitString(&it, &name, &values);
 
-        if (name.find("weight_normalization") != std::string::npos) {
-            if (values.at(0) == str_NOPNormalization) {
-                weightNormalization = NOPNormalization;
-                normalizationFound = true;
-            }
-            else if (values.at(0) == str_HardNormalization) {
-                weightNormalization = HardNormalization;
-                normalizationFound = true;
-            }
-            else if (values.at(0) == str_SoftMaxNormalization) {
-                weightNormalization = SoftMaxNormalization;
-                normalizationFound = true;
-            }
-        } else if (name.find("seed") != std::string::npos) {
+        if (name.find("seed") != std::string::npos) {
             this->seed = std::stoi(values.at(0));
             this->generator=std::default_random_engine(this->seed);
         }
@@ -38,21 +24,13 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
         this->generator = std::default_random_engine(seed);
     }
     }
-    assert(normalizationFound);
 }
 void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
-    *stream<< "#From here on is all Heterostuff\n";
+    *stream<< "#########From here on is all Heterostuff###########\n";
+
     *stream << neuronPreId<<"_morphology_type\t\t\t\t"<<this->GetType()<<"\n";
-    *stream << neuronPreId<<"_morphology_weight_normalization\t";
-    if (this->weightNormalization == HardNormalization){
-        *stream<<"HardNormalization\n";
-    }
-    else if (this->weightNormalization == SoftMaxNormalization){
-        *stream<<"SoftMaxNormalization\n";
-    }
-    else if (this->weightNormalization == NOPNormalization){
-        *stream<<"NOPNormalization\n";
-    }
+
+    *stream << neuronPreId<<"_morphology_seed\t\t\t\t"<<this->seed<<"\n";
 }
 
 void Morphology::RecordPostSpike() {

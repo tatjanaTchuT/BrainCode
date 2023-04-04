@@ -121,7 +121,7 @@ const std::string str_MonoDendriteSTDPTazerartRelative{"MonoDendriteSTDPTazerart
 const std::string str_MonoDendriteSTDPBiWindow{"MonoDendriteSTDPBiWindow"};
 const std::string str_MonoDendriteSTDPBiExponential{"MonoDendriteSTDPBiExponential"};
 
-const std::string str_BranchedResourceSTDPAsymmetric{"BranchedResourceSTDPAsymmetric"};
+const std::string str_BranchedResourceHeteroSTDP{"BranchedResourceHeteroSTDP"};
 
 void MultiplyVector (std::vector<unsigned long> &vector, unsigned long value);
 void MultiplyVector (std::vector<double> &vector, double value);

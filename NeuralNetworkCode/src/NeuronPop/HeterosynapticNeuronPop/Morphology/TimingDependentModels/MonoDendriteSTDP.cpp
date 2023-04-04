@@ -82,6 +82,17 @@ void MonoDendriteSTDP::RecordExcitatoryPreSpike(int spikedSynapseId) {
 void MonoDendriteSTDP::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
     Morphology::SaveParameters(stream, neuronPreId);
 
+    *stream << neuronPreId<<"_morphology_weight_normalization\t";
+    if (this->weightNormalization == HardNormalization){
+        *stream<<"HardNormalization\n";
+    }
+    else if (this->weightNormalization == SoftMaxNormalization){
+        *stream<<"SoftMaxNormalization\n";
+    }
+    else if (this->weightNormalization == NOPNormalization){
+        *stream<<"NOPNormalization\n";
+    }
+    
     *stream << neuronPreId<<"_dendritic_length\t\t\t"<<std::to_string(this->dendriticLength);
     *stream << "\t"<<"#Length of the dendritic arm (μm).\n";
 
@@ -128,15 +139,16 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
     std::string name;
     std::vector<std::string> values;
 
-    bool dendriteInitialized = false,
-         synapticGapInitialized = false,
-         tauThetaInitialized = false,
-         lambdaDistInitialized = false,
-         tauDelayInitialized = false,
-         base_ltpInitialized = false,
-         incr_ltpInitialized = false,
-         base_ltdInitialized = false,
-         decr_ltdInitialized = false;
+    bool dendriteInitialized {false},
+         synapticGapInitialized {false},
+         tauThetaInitialized {false},
+         lambdaDistInitialized {false},
+         tauDelayInitialized {false},
+         base_ltpInitialized {false},
+         incr_ltpInitialized {false},
+         base_ltdInitialized {false},
+         decr_ltdInitialized {false},
+         normalizationFound {false};
 
 
     this->preFactorLTP = 1.0;
@@ -160,7 +172,20 @@ void MonoDendriteSTDP::LoadParameters(std::vector<std::string> *input) {
         } else if (name.find("intersynapse_spike_timing_decay") != std::string::npos) {
             this->tauDelay = std::stod(values.at(0));
             tauDelayInitialized = true;
-        } else if (name.find("distribute_weights") != std::string::npos) {
+        } else if (name.find("weight_normalization") != std::string::npos) {
+            if (values.at(0) == str_NOPNormalization) {
+                weightNormalization = NOPNormalization;
+                normalizationFound = true;
+            }
+            else if (values.at(0) == str_HardNormalization) {
+                weightNormalization = HardNormalization;
+                normalizationFound = true;
+            }
+            else if (values.at(0) == str_SoftMaxNormalization) {
+                weightNormalization = SoftMaxNormalization;
+                normalizationFound = true;
+            }
+         }else if (name.find("distribute_weights") != std::string::npos) {
             //This whole part is experimental, it seems it was not completely tested
             //As such, this is deprecated from publication
             if (values.at(0) == "true") {

@@ -12,7 +12,7 @@ class BranchedMorphology;
 typedef std::unordered_map<int, double> DHashMap;
 typedef std::unordered_map<int, DHashMap> SuperHashMap;
 
-class BranchedResourceSTDPAsymmetric : public BranchedMorphology {
+class BranchedResourceHeteroSTDP : public BranchedMorphology {
 //This class models a behaviour based on wi=beta*(alfai/(omega+sum(alfai))), where alfai represents the spine's resources as (Ks*expdt+Kbasal)/(Ns*expdt+Nbasal) with bumps on Ks and Ns
 protected:
     //Synapse variables
@@ -60,9 +60,9 @@ protected:
 public:
 
     //main Methods
-    BranchedResourceSTDPAsymmetric()=default;
-    explicit BranchedResourceSTDPAsymmetric(GlobalSimInfo * info);
-    ~BranchedResourceSTDPAsymmetric() = default;
+    BranchedResourceHeteroSTDP()=default;
+    explicit BranchedResourceHeteroSTDP(GlobalSimInfo * info);
+    ~BranchedResourceHeteroSTDP() = default;
     
     void LoadParameters(std::vector<std::string> *input) override;//Remember to set all counts to maxCount    
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
@@ -70,7 +70,7 @@ public:
     void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>()) override;// Here we set up the vector with the branches
     void SetUpHashTables(); //Has to set up both time and space from the exp constants. Call in LP
 
-    const std::string GetType() override {return str_BranchedResourceSTDPAsymmetric;};
+    const std::string GetType() override {return str_BranchedResourceHeteroSTDP;};
 
     
     //Advect methods

@@ -1,11 +1,11 @@
-#include "./BranchedResourceSTDPAsym.hpp"
-#include "BranchedResourceSTDPAsym.hpp"
+#include "./BranchedResourceHeteroSTDP.hpp"
+#include "BranchedResourceHeteroSTDP.hpp"
 
-BranchedResourceSTDPAsymmetric::BranchedResourceSTDPAsymmetric(GlobalSimInfo *info):BranchedMorphology(info)
+BranchedResourceHeteroSTDP::BranchedResourceHeteroSTDP(GlobalSimInfo *info):BranchedMorphology(info)
 {
 }
 
-void BranchedResourceSTDPAsymmetric::LoadParameters(std::vector<std::string> *input)
+void BranchedResourceHeteroSTDP::LoadParameters(std::vector<std::string> *input)
 {
     std::string name;
     std::vector<std::string> values;
@@ -22,7 +22,7 @@ void BranchedResourceSTDPAsymmetric::LoadParameters(std::vector<std::string> *in
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::SaveParameters(std::ofstream *stream, std::string neuronPreId)
+void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::string neuronPreId)
 {
     BranchedMorphology::SaveParameters(stream, neuronPreId);
     *stream << neuronPreId<<"_morphology_available_weight\t\t"<<std::to_string(this->branchings);//CHANGE
@@ -30,7 +30,7 @@ void BranchedResourceSTDPAsymmetric::SaveParameters(std::ofstream *stream, std::
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
+void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
 {
     //This is a recursive function that sets up the branched dendritic tree and is generalized for 0 branchings (1 branch). This function has been unit tested by Antoni.
     remainingBranchingEvents-=1;
@@ -49,7 +49,7 @@ void BranchedResourceSTDPAsymmetric::SetUpBranchings(int remainingBranchingEvent
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::SetUpHashTables()
+void BranchedResourceHeteroSTDP::SetUpHashTables()
 {
 //Statement 2 of second for loop is done thinking about time steps being in the order of magnitude of 0.1 ms, while the gap is 1 um. 
 //If we make the kernel triangular, every "step" is one gap in space and in time it can be any amount of timesteps. To calculate the step relationship, we do:
@@ -71,7 +71,7 @@ void BranchedResourceSTDPAsymmetric::SetUpHashTables()
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::advect()
+void BranchedResourceHeteroSTDP::advect()
 {
         //If STDPDEpression count is not 10, immediately trigger STDP on spine trigger (while also flagging)
     for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
@@ -83,7 +83,7 @@ void BranchedResourceSTDPAsymmetric::advect()
 }
 
 
-void BranchedResourceSTDPAsymmetric::ApplyEffects() //Called after pairings
+void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
 {
     //If first precount is bigger than twice the STDP depression count, depression. Otherwise potentiation.
     if (this->postSpiked){
@@ -108,7 +108,7 @@ void BranchedResourceSTDPAsymmetric::ApplyEffects() //Called after pairings
     //if this postSpike bool
 }
 
-void BranchedResourceSTDPAsymmetric::STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse)
+void BranchedResourceHeteroSTDP::STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse)
 {
     //If post spike, apply all stimms on positive mode (remember the coded function in spines) with the decay from STDP pot count. 
     //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
@@ -120,7 +120,7 @@ void BranchedResourceSTDPAsymmetric::STDPPotentiation(std::shared_ptr<ResourceSy
     }
 }
 
-void BranchedResourceSTDPAsymmetric::STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse)
+void BranchedResourceHeteroSTDP::STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse)
 {
      //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
      //And also pass the STDP map by reference to the function call
@@ -130,7 +130,7 @@ void BranchedResourceSTDPAsymmetric::STDPDepression(std::shared_ptr<ResourceSyna
      synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount);
 }
 
-void BranchedResourceSTDPAsymmetric::DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch)//These are the spiked neurons on synapseDataIndexes
+void BranchedResourceHeteroSTDP::DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch)//These are the spiked neurons on synapseDataIndexes
 {
     //Here we call SetTempEffects if __it__ happens
     for (int synapseIDinBranch : branch->spikedSynapsesInTheBranch){
@@ -141,12 +141,12 @@ void BranchedResourceSTDPAsymmetric::DetectPossiblePairing(std::shared_ptr<Resou
     }
 }
 
-bool BranchedResourceSTDPAsymmetric::CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch)
+bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch)
 {
     return std::count(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
 }
 
-void BranchedResourceSTDPAsymmetric::SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho)
+void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho)
 {
     int synapsePositionIndexInBranch,absDistance,timeStepDifference;
     double alphaStimmulusEffect;
@@ -194,7 +194,7 @@ void BranchedResourceSTDPAsymmetric::SpaceTimeKernel(int branchSynapseID, int br
     //Here for every synapse inside the synapse's kernel that has an active counter (count!=countMax) we get the time kernel and then apply the space kernel
     //Take unto account the synaptic GAP and DT!!! This should be done elsewhere
 }
-double BranchedResourceSTDPAsymmetric::CallKernelHashTable(int distanceToCenterInGaps, int timeDifference)
+double BranchedResourceHeteroSTDP::CallKernelHashTable(int distanceToCenterInGaps, int timeDifference)
 {
     //Matrix is symmetric!! Only have to do half!
     //Here we tabulate for every distance from center a equivalency between counts and effects (reverse as counts go up to maxCount)
@@ -203,7 +203,7 @@ double BranchedResourceSTDPAsymmetric::CallKernelHashTable(int distanceToCenterI
     return kernelHashTable.at(timeDifference).at(distanceToCenterInGaps);
 }
 
-void BranchedResourceSTDPAsymmetric::Reset()
+void BranchedResourceHeteroSTDP::Reset()
 {
     BranchedMorphology::Reset();
     //Wrapper plus clearing some of the vectors. Last method to run in chronological order, where we call the ticks and the general upkeep
@@ -218,7 +218,7 @@ void BranchedResourceSTDPAsymmetric::Reset()
     TickAllCounts();
 }
 
-void BranchedResourceSTDPAsymmetric::RecalcAlphas(std::shared_ptr<ResourceBranch> branch)
+void BranchedResourceHeteroSTDP::RecalcAlphas(std::shared_ptr<ResourceBranch> branch)
 {
     //Here we just need to apply all delta alphas, decay them (before makes more sense, the bump has delta t zero.), sum the result to stationary alpha, then update alpha sums? Yes
     for (std::shared_ptr<ResourceSynapseSpine> synapse : branch->branchSynapseData){
@@ -227,7 +227,7 @@ void BranchedResourceSTDPAsymmetric::RecalcAlphas(std::shared_ptr<ResourceBranch
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::RecalcWeights(std::shared_ptr<ResourceBranch> branch) //This one is the one we call for every branch
+void BranchedResourceHeteroSTDP::RecalcWeights(std::shared_ptr<ResourceBranch> branch) //This one is the one we call for every branch
 {
     RecalcAlphaSums(branch);
     branch->weightResourceFactor=betaResourcePool/(omegaPassiveResourceOffset+branch->alphaTotalSum);//IMPORTANT, if we make beta non-constant, beta must be referenced from the branch
@@ -237,14 +237,14 @@ void BranchedResourceSTDPAsymmetric::RecalcWeights(std::shared_ptr<ResourceBranc
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::RecalcAlphaSums(std::shared_ptr<ResourceBranch> branch)
+void BranchedResourceHeteroSTDP::RecalcAlphaSums(std::shared_ptr<ResourceBranch> branch)
 {
     RecalcAlphas(branch);
     branch->alphaTotalSum=std::accumulate(branch->branchSynapseData.begin(), branch->branchSynapseData.end(), 0.0,//UNRESOLVED, does this give intended output?
                                        [] (double acc, const std::shared_ptr<ResourceSynapseSpine>& synapse) {return acc + synapse->GetAlphaResources();});
     return;
 }
-void BranchedResourceSTDPAsymmetric::DeleteEffects()
+void BranchedResourceHeteroSTDP::DeleteEffects()
 {
     for (std::shared_ptr<ResourceSynapseSpine>& synapse : resourceSynapseData){
         synapse->CullStimmulusVectors();
@@ -253,7 +253,7 @@ void BranchedResourceSTDPAsymmetric::DeleteEffects()
     }
     return;
 }
-void BranchedResourceSTDPAsymmetric::TickAllCounts()
+void BranchedResourceHeteroSTDP::TickAllCounts()
 {
     for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
         branch->TickAllCounts();
@@ -268,7 +268,7 @@ void BranchedResourceSTDPAsymmetric::TickAllCounts()
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::ClearSynapseSets()
+void BranchedResourceHeteroSTDP::ClearSynapseSets()
 {
     for (std::shared_ptr<ResourceBranch>& branch: resourceBranches){
         branch->updatedAlphaEffects.clear();
@@ -277,14 +277,14 @@ void BranchedResourceSTDPAsymmetric::ClearSynapseSets()
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::RecordPostSpike()
+void BranchedResourceHeteroSTDP::RecordPostSpike()
 {
     BranchedMorphology::RecordPostSpike();
     STDPDepressionCount=0;
     return;
 }
 
-void BranchedResourceSTDPAsymmetric::RecordExcitatoryPreSpike(int spikedSynapseId)
+void BranchedResourceHeteroSTDP::RecordExcitatoryPreSpike(int spikedSynapseId)
 {
     //This function is NOT DELAY COMPATIBLE (careful with the delays in synapse objects)
     //Here only record, afterwards we do the checks
@@ -293,7 +293,7 @@ void BranchedResourceSTDPAsymmetric::RecordExcitatoryPreSpike(int spikedSynapseI
     return;
 }
 
-std::shared_ptr<BaseSynapseSpine> BranchedResourceSTDPAsymmetric::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
+std::shared_ptr<BaseSynapseSpine> BranchedResourceHeteroSTDP::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
 {
     //here I have to set the maxcount of the spine to maxCount too 
     //Here sum over the branches.????
