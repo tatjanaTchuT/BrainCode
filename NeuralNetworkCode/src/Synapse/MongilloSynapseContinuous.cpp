@@ -15,7 +15,7 @@ MongilloSynapseContinuous::MongilloSynapseContinuous(NeuronPop * postNeurons,Neu
 }
 
 
-void MongilloSynapseContinuous::advect_spikers (std::vector<double>& currents, long spiker)
+void MongilloSynapseContinuous::advectSpikers (std::vector<double>& currents, long spiker)
 {
     double dt_lastSpike    = neuronsPre->GetTimeSinceLastSpike(spiker); //double(info->time_step - neuronsPre->get_previous_spike_step(spiker))*dt;
     double exptf           = exp(-dt_lastSpike/tau_f);

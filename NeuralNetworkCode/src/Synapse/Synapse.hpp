@@ -53,7 +53,7 @@ protected:
     //virtual void advect_finalize(std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix) = 0;
     void ReadWaitingMatrixEntry(std::vector<double>& synaptic_dV);
 	//virtual void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) = 0;
-    virtual void advect_spikers (std::vector<double>& currents, long spiker) = 0;
+    virtual void advectSpikers (std::vector<double>& currents, long spiker) = 0;
 
     virtual void FillWaitingMatrix(long spiker, std::vector<double>& currents);
 	virtual void resetcumulatedDV();

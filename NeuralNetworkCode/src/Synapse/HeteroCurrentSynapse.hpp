@@ -14,9 +14,10 @@ protected:
     //Branching member variables 
     BranchTargeting synapseTargeting{};
 
+    bool ignoreCouplingStrengthBool{false};
     //void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override;
-    void advect_spikers (std::vector<double>& currents, long spiker) override;
-
+    void advectSpikers (std::vector<double>& currents, long spiker) override;
+    void advectSpikersSpineCouplingStrength (std::vector<double>& currents, long spiker);
 public:
 
     HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* preNeurons, GlobalSimInfo * info);
@@ -33,6 +34,8 @@ public:
     void LoadParameters(std::vector<std::string> *input) override;
 
     void advect(std::vector<double> *synaptic_dV) override;
+    void advectDefinedCouplingStrength(std::vector<double> *synaptic_dV);
+    void advectSpineCouplingStrength(std::vector<double> *synaptic_dV);
 
     const BranchTargeting& getBranchTarget() const {return synapseTargeting;}// return by const reference for now
 

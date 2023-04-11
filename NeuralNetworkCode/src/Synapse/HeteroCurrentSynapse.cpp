@@ -15,6 +15,15 @@ HeteroCurrentSynapse::HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* pr
 
 void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
 
+    if (ignoreCouplingStrengthBool){
+        advectSpineCouplingStrength(synaptic_dV);
+    } else {
+        advectDefinedCouplingStrength(synaptic_dV);
+    }
+}
+
+void HeteroCurrentSynapse::advectDefinedCouplingStrength(std::vector<double> *synaptic_dV)
+{
     resetcumulatedDV();
 
     std::vector<double> currents{};
@@ -30,7 +39,7 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
         // This would avoid having to resize and clear the currents matrix.
 
 
-        advect_spikers(currents, spiker);
+        advectSpikers(currents, spiker);
         //std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
         
         FillWaitingMatrix(spiker, currents);
@@ -41,7 +50,35 @@ void HeteroCurrentSynapse::advect(std::vector<double> * synaptic_dV) {
     //advect_finalize(&waiting_matrix);
 }
 
-void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long spiker) {
+void HeteroCurrentSynapse::advectSpineCouplingStrength(std::vector<double> *synaptic_dV)
+{
+    resetcumulatedDV();
+
+    std::vector<double> currents{};
+
+    //Get list of spikers
+    const std::vector<long>& spikers = *neuronsPre->GetSpikers();
+
+    //Go through all the spikers and add current arising from spikers to waiting_matrix
+    for(const auto& spiker: spikers){
+ 
+        currents.resize(this->geometry->getSynapticTargets(spiker).size(), 0.0);
+        //OPTIMIZATION: To further improve speed, at the cost of memory, each neuron's currents matrix should be kept in the connectivity object, indexed per neuron.
+        // This would avoid having to resize and clear the currents matrix.
+
+
+        advectSpikersSpineCouplingStrength(currents, spiker);
+        //std::fill(currents.begin(), currents.end(), 0);//initializes vector containing the Current to each target
+        
+        FillWaitingMatrix(spiker, currents);
+        currents.clear();//Remove this line if the std::fill() is uncommented
+    }
+
+    ReadWaitingMatrixEntry(*synaptic_dV);
+    //advect_finalize(&waiting_matrix);
+}
+
+void HeteroCurrentSynapse::advectSpikers(std::vector<double>& currents, long spiker) {
     const std::vector<std::pair<unsigned long, unsigned long>>& targetList{this->geometry->getSynapticTargets(spiker)}; 
     //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
     //Overloaded function? Not necessary in others, as others use pointer. We cannot because the targetList is built differently (for now)
@@ -60,7 +97,7 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
         postNeuronId = neuronSynapsePair.first;
         HCSSynapseId = neuronSynapsePair.second;
         morphoSynapseId = this->baseSynapseData[HCSSynapseId]->GetIdInMorpho();
-
+        
         couplingStrength = GetCouplingStrength(spiker, i); // i is used as "postId" because of how SetDistributionJ is implemented in Connectivity.cpp
         if (couplingStrength < 0.0) {//To avoid interaction with inhibitory synapses
             current =  couplingStrength;
@@ -68,6 +105,35 @@ void HeteroCurrentSynapse::advect_spikers(std::vector<double>& currents, long sp
             current = couplingStrength * this->baseSynapseData[HCSSynapseId]->GetWeight();
             this->neuronsPost->RecordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
         }
+        currents[i] += current;
+        this->cumulatedDV += current;
+    }
+}
+
+void HeteroCurrentSynapse::advectSpikersSpineCouplingStrength(std::vector<double> &currents, long spiker)
+{
+    const std::vector<std::pair<unsigned long, unsigned long>>& targetList{this->geometry->getSynapticTargets(spiker)}; 
+    //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
+    //Overloaded function? Not necessary in others, as others use pointer. We cannot because the targetList is built differently (for now)
+
+    double couplingStrength;
+    double current;
+    unsigned long postNeuronId;
+    unsigned long HCSSynapseId;
+    unsigned long morphoSynapseId;
+
+    std::pair<unsigned long, unsigned long> neuronSynapsePair;
+
+    for (int i = 0; i < targetList.size(); i++) {//i here is a postNeuronId
+    //This bunch of code seems compatible with multiple synapses. You just get a new pair, with new IDs, and the RESS call goes to the new synapse.
+        neuronSynapsePair = targetList.at(i);
+        postNeuronId = neuronSynapsePair.first;
+        HCSSynapseId = neuronSynapsePair.second;
+        morphoSynapseId = this->baseSynapseData[HCSSynapseId]->GetIdInMorpho();
+        
+        current =  this->baseSynapseData[HCSSynapseId]->GetWeight();
+        this->neuronsPost->RecordExcitatorySynapticSpike(postNeuronId, morphoSynapseId);
+
         currents[i] += current;
         this->cumulatedDV += current;
     }
@@ -95,8 +161,8 @@ void HeteroCurrentSynapse::LoadParameters(std::vector<std::string> *input){
             //Missing exception management for when the input is not an integer.
             }
         } else if(name.find("subregion") != std::string::npos){
-            this->synapseTargeting.subRegion = values[0][0];
-        }
+            this->synapseTargeting.DendriticSubRegion = values[0][0];
+        } 
     }
 
     Synapse::LoadParameters(input);
@@ -116,8 +182,8 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
     }
     *stream << "#\t\tYou can target branches in an 'ordered' manner (0,1,2...), 'random', or set (if you input a number). Put none if the HS does not used branched morphology\n";
     
-    *stream << id_str << "subregion\t\t\t\t\t\t" << (this->synapseTargeting.subRegion) << "\n";
-    *stream << "#\t\tThis is currently under development, but will allow you to determine subregions and target subregions of the dendritic tree.\n";
+    *stream << id_str << "subregion\t\t\t\t\t\t" << (this->synapseTargeting.DendriticSubRegion) << "\n";
+    *stream << "#\t\tThis is currently under development, but will allow you to determine DendriticSubRegions and target DendriticSubRegions of the dendritic tree.\n";
     //Missing comments on what this is supposed to do and check if char goes out properly
     Synapse::SaveParameters(stream,id_str);
 }
@@ -126,6 +192,9 @@ unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigne
     std::shared_ptr<BaseSynapseSpine> SynapseSpinePtr = this->neuronsPost->AllocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
 
     if (SynapseSpinePtr != nullptr) {
+        if (SynapseSpinePtr->IgnoreCouplingStrength()){
+            this->ignoreCouplingStrengthBool=true;
+        }
         SynapseSpinePtr->SetPreNeuronId(preId);
         SynapseSpinePtr->SetPostNeuronId(postId);
         SynapseSpinePtr->SetIdInHCS(static_cast<unsigned long>(this->baseSynapseData.size()));

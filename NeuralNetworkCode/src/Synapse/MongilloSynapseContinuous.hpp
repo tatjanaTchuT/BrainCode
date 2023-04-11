@@ -25,7 +25,7 @@ protected:
     std::default_random_engine generator;
     std::uniform_real_distribution<double> uni_distribution;
 
-    void advect_spikers(std::vector<double>& currents, long spiker) override;
+    void advectSpikers(std::vector<double>& currents, long spiker) override;
     //void advect_finalize (std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix){}
     //void advect_finalize(std::vector<std::vector<double>> * waiting_matrix) override {}
 
