@@ -6,11 +6,11 @@
 
 std::valarray<double> BranchedSynapseSpine::GetIndividualSynapticProfile() const
 {
-    std::valarray<double> dataArray(4);
+    std::valarray<double> dataArray(3);
     dataArray[0] = this->distanceFromNode;
     dataArray[1] = this->branchId;
     dataArray[2] = this->weight;
-    dataArray[3] = this->lastSpike;
+//    dataArray[3] = this->lastSpike;
     return dataArray;
 }
 

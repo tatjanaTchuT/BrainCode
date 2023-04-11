@@ -45,6 +45,9 @@ class BaseSynapseSpine {
     //Recorder functions
     virtual std::valarray<double> GetIndividualSynapticProfile() const = 0;
     virtual std::string GetIndividualSynapticProfileHeaderInfo() const = 0;
+
+    //Virtual bools
+    virtual bool IgnoreCouplingStrength(){return false;}
 };
 
 #endif

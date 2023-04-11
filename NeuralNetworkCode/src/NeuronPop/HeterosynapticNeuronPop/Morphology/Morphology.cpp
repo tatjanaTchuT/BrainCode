@@ -26,7 +26,7 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
     }
 }
 void Morphology::SaveParameters(std::ofstream *stream, std::string neuronPreId) {
-    *stream<< "#########From here on is all Heterostuff###########\n";
+    *stream<< "#########From here on is all Heterosynaptic plasticity###########\n";
 
     *stream << neuronPreId<<"_morphology_type\t\t\t\t"<<this->GetType()<<"\n";
 

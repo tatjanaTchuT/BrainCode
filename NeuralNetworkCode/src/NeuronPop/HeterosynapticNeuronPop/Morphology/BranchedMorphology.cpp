@@ -42,7 +42,7 @@ void BranchedMorphology::LoadParameters(std::vector<std::string> *input) {
             this->branchLength = std::stoi(values.at(0));
             dendriteInitialized = true;
         } else if (name.find("synaptic_gap") != std::string::npos) {
-            this->synapticGap = std::stoi(values.at(0));
+            this->synapticGap = std::stod(values.at(0));
             synapticGapInitialized = true;
         } else if (name.find("distribute_weights") != std::string::npos) {
             //This whole part is experimental, it seems it was not completely tested
@@ -108,15 +108,15 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     *stream << "\t"<<"#Length of each branch.\n";
 
     *stream << neuronPreId<<"_morphology_synaptic_gap\t\t\t"<<std::to_string(this->synapticGap)<<" #μm";
-    *stream << "\t"<<"#Unitary distance between synapse slots.\n";
+    *stream << "\t"<<"#Distance between synapse spines.\n";
 
-    *stream << neuronPreId<<"_morphology_distribute_weights\t\t";
-    if (this->distributeWeights){
-        *stream << "true\t";
-    }else{
-        *stream<<"false\t"<<std::to_string(this->initialWeights);
-    }
-    *stream << "\t"<<"#The bool corresponds to distributing weight between min and max uniformally. The number will be the weight assigned to all synapses if bool is false (do not confuse with implementation in MonoDendriteSTDP).\n";
+    // *stream << neuronPreId<<"_morphology_distribute_weights\t\t";
+    // if (this->distributeWeights){
+    //     *stream << "true\t";
+    // }else{
+    //     *stream<<"false\t"<<std::to_string(this->initialWeights);
+    // }
+    // *stream << "\t"<<"#The bool corresponds to distributing weight between min and max uniformally. The number will be the weight assigned to all synapses if bool is false (do not confuse with implementation in MonoDendriteSTDP).\n";
     
     *stream << neuronPreId<<"_morphology_dendrite_branchings\t\t"<<std::to_string(this->branchings);
     *stream << "\t"<<"#This specifies the number of branchings in the dendritic tree FOR EVERY EXISTING BRANCH. Total isolated branches are 2^n. More than 28 will cause integer overflow\n";
@@ -163,7 +163,7 @@ std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroC
     int position{branches.at(branch)->openSynapsesSlots.front()};
     branches.at(branch)->openSynapsesSlots.pop_front();
     newSynapse->SetBranchPositionId(position);
-    //newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);
+    newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
     branches.at(branch)->synapseSlotToMorphoIDMap.at(position)=newSynapse->GetIdInMorpho();
@@ -244,8 +244,8 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
 }*/
 unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const
 {
-    return std::accumulate(this->branches.begin(), this->branches.end(), 0.0,//UNRESOLVED, does this give intended output?
-                                       [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEventsTotal; });
+    return std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
+                                       [] (unsigned long acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEventsTotal; });
 }
 
 void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)

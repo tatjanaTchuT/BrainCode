@@ -8,12 +8,12 @@
 #include <numeric>
 #include <memory>
 
-typedef std::unordered_map<int, int> IDHashMap;
+typedef std::unordered_map<int, int> IHashMap;
 
-struct SubRegion{
+struct DendriticSubRegion{
     const char regionID;
-    const std::vector<int> branchesInRegion; //I will have to read this from the morphology LP, every subregion is a line, first input is ID, rest is branchIDs. Then in Synapse you put the subregion where the synapse goes. 
-    SubRegion(char regionID, std::vector<int> branchesInRegion);
+    const std::vector<int> branchesInRegion; //I will have to read this from the morphology LP, every DendriticSubRegion is a line, first input is ID, rest is branchIDs. Then in Synapse you put the DendriticSubRegion where the synapse goes. 
+    DendriticSubRegion(char regionID, std::vector<int> branchesInRegion);
 };
 
 struct BranchTargeting{
@@ -21,7 +21,7 @@ struct BranchTargeting{
     bool setTargetBranch{false};
     bool randomTargetBranch{false};
     bool orderedTargetBranch{false};
-    char subRegion{'0'};
+    char DendriticSubRegion{'0'};
 };
 
 struct Branch{
@@ -30,8 +30,8 @@ struct Branch{
     //Branched vars
     const std::vector<int> anteriorBranches{}; 
 
-    const int synapticGap{};    //For now these are identical to the morphology ones, but we will see in the future
-    const int branchLength{};
+    const double synapticGap{};    //For now these are identical to the morphology ones, but we will see in the future
+    const double branchLength{};
 
     size_t branchSlots{};
 
@@ -41,12 +41,12 @@ struct Branch{
     std::vector<int> spikedSynapsesInTheBranch{};
     std::vector<int> synapseSlotClosedIndex{};
     //std::vector<int> morphoSynapseIDs{};//This data variable is no longer relevant
-    IDHashMap synapseSlotToMorphoIDMap;
+    IHashMap synapseSlotToMorphoIDMap;
     //Resource paradigm variables
     int plasticityBranchEventsTotal{};
     //Methods
     //Branch()=default;
-    Branch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId);
+    Branch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId);
 
     virtual void IncreasePlasticityCounter(){plasticityBranchEventsTotal++;}
 };
@@ -70,14 +70,14 @@ struct ResourceBranch : public Branch {
     //int maxCountSTDPPotentiation{};
     //int maxCountTrigger{};
     std::vector<int> triggerCount{};//Here is where we look for counts under 10
-    std::vector<int> potentiationCountSTDP{};//Size of these has to be the amount of synapses in the branch (equal to triggerCount, length divided by gaps)
+    //std::vector<int> potentiationCountSTDP{};//Size of these has to be the amount of synapses in the branch (equal to triggerCount, length divided by gaps) //REMOVED due to redundancy
     //Misc
     // int plasticityBranchEventsThisTimestep{};//Has to be set to zero
     // std::deque<int> plasticityEventsPerTimestepWindow{};//Every timestep I push_front the events in the timestep and delete the last element with pop or erase. Then sum and check if over the threshold.
         //Do we clear() after a trigger or not? Most of the function would be the same, or put some refractory period UNRESOLVED
         //Here we could create a false history of plasticity events
     //Methods
-    ResourceBranch(int gap, int branchLength, std::vector<int>anteriorBranches, int branchId, int branchMaxCountSTDPPotentiation, int branchMaxmaxCountTrigger, std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData);
+    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId, std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData);
     void SetUpSynapseData(std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData);
         //Count related functions
     void TickAllCounts();//Use ternary operator. Called in Reset()

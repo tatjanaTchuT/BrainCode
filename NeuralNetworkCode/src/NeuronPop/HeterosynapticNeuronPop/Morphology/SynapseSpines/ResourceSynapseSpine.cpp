@@ -41,24 +41,24 @@ void ResourceSynapseSpine::AddTempResourcesToSpine(double alphaStimmulusInput)
     alphaTempAndCount.emplace_back(std::pair<double, int>(alphaStimmulusInput, 0));
 }
 
-void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double STDPmultiplier, DHashMap& STDPdecayMap)
+void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double PotentiationDepressionRatio, DHashMap& STDPdecayMap)
 {
-    // kStimmulus=std::accumulate(kStimmulusTempEffect.begin(), kStimmulusTempEffect.end(), kStimmulus, [STDPmultiplier](double accumulator, double kStemp){return accumulator + kStemp*STDPmultiplier;});
-    // nStimmulus=std::accumulate(nStimmulusTempEffect.begin(), nStimmulusTempEffect.end(), nStimmulus, [STDPmultiplier](double accumulator, double nStemp){return accumulator + nStemp*STDPmultiplier;});
+    // kStimmulus=std::accumulate(kStimmulusTempEffect.begin(), kStimmulusTempEffect.end(), kStimmulus, [PotentiationDepressionRatio](double accumulator, double kStemp){return accumulator + kStemp*PotentiationDepressionRatio;});
+    // nStimmulus=std::accumulate(nStimmulusTempEffect.begin(), nStimmulusTempEffect.end(), nStimmulus, [PotentiationDepressionRatio](double accumulator, double nStemp){return accumulator + nStemp*PotentiationDepressionRatio;});
     // kStimmulusTempEffect.clear();
     // nStimmulusTempEffect.clear();
     //stimmulusEffectCount.clear();
-    //STDPmultiplier is to boost potentiation compared to depression, but also to input the current decay
-    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [STDPmultiplier, STDPdecayMap](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*STDPmultiplier*STDPdecayMap.at(alphaStemp.second);});
+    //PotentiationDepressionRatio is to boost potentiation compared to depression, but also to input the current decay
+    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [PotentiationDepressionRatio, STDPdecayMap](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*PotentiationDepressionRatio*STDPdecayMap.at(alphaStemp.second);});
     // if (alphaStimmulus+alphaBasal<0.0){
     //     alphaStimmulus= (-alphaBasal);
     // }
 }
 
-void ResourceSynapseSpine::ApplyAllTempEffectsOnConflictPotentiation(double STDPmultiplier)
+void ResourceSynapseSpine::ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio)
 {
     //CUrrently I have no way of properly calculating the decay of potentiation proper by calculating the area under the graph.
-    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [STDPmultiplier](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*STDPmultiplier;});
+    alphaStimmulus=std::accumulate(alphaTempAndCount.begin(), alphaTempAndCount.end(), alphaStimmulus, [PotentiationDepressionRatio](double accumulator, std::pair<double, int>& alphaStemp){return accumulator + alphaStemp.first*PotentiationDepressionRatio;});
     // if (alphaStimmulus+alphaBasal<0.0){
     //     alphaStimmulus= (-alphaBasal);
     // }
@@ -90,6 +90,8 @@ void ResourceSynapseSpine::CullStimmulusVectors()
 
     for (std::list<std::pair<double,int>>::reverse_iterator reverseIterator = alphaTempAndCount.rbegin(); reverseIterator != alphaTempAndCount.rend(); reverseIterator++)
     {
+        //Here we iterate over the alpha temporary effects on reverse. That way the first time we find a time-obsolete effect, we delete everything before it.
+        //This is because everything before the last (first in reverse) count that reached max is older, so they must have reached the max count too
         if (reverseIterator->second>=maxCount){
             alphaTempAndCount.erase(alphaTempAndCount.begin(), std::next(reverseIterator).base());
             break;

@@ -23,8 +23,8 @@ protected:
     //std::vector<bool> integratePreSpike;//Not necessary
 
     //Weight normalization vars
-    int synapticGap{};
-    int branchLength{};
+    double synapticGap{};
+    double branchLength{};
 
 //Branched specific
     int branchings{1};
@@ -70,7 +70,7 @@ public:
     int RandomBranchAllocation();
     int OrderedBranchAllocation();
     //setBranchAllocation() is implicit in the function (or has to be) allocate NewSynapse
-    //virtual int orderedGuidedBranchAllocation(const char subregionID);
+    //virtual int orderedGuidedBranchAllocation(const char DendriticSubRegionID);
     void RandomSynapseAllocation(std::shared_ptr<Branch> branch);
     void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the SetUpSynapseSlots already, called depending on a bool. 
     //virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);

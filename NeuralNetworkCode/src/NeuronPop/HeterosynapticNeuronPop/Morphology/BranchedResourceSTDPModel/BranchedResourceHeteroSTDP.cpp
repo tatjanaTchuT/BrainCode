@@ -14,20 +14,81 @@ void BranchedResourceHeteroSTDP::LoadParameters(std::vector<std::string> *input)
 
     for (auto & it : *input) {
         SplitString(&it,&name,&values);
-        if(name.find("available_weight") != std::string::npos){
-            this->branchings = std::stod(values.at(0));//CHANGEs
+        if (name.find("basal_alpha") != std::string::npos){
+            this->alphaBasal = std::stod(values.at(0));
+        } else if (name.find("alpha_decay_constant") != std::string::npos){
+            this->alphaStimmulusExpTau = std::stod(values.at(0));
+            this->alphaStimmulusExpDecay = std::exp(-this->info->dt/this->alphaStimmulusExpTau);
+        } else if (name.find("base_alpha_increase") != std::string::npos){
+            this->baseAlphaStimmulusBump = std::stod(values.at(0));
+        } else if (name.find("omega_offset") != std::string::npos){
+            this->omegaPassiveResourceOffset = std::stod(values.at(0));
+        } else if(name.find("beta_resource_pool") != std::string::npos){
+            this->betaResourcePool = std::stod(values.at(0));
+        } else if (name.find("kernel_spatial_length") != std::string::npos){
+            this->kernelGapNumber = static_cast<int>(std::stod(values.at(0))/this->synapticGap);
+        } else if (name.find("kernel_temporal_length") != std::string::npos){
+            this->timeKernelLength = static_cast<int>(std::stod(values.at(0))/this->info->dt);
+        } else if (name.find("kernel_tau") != std::string::npos){
+            this->timeKernelExpDecayConstant = std::stod(values.at(0));
+        } else if (name.find("kernel_lambda") != std::string::npos){
+            this->spaceKernelExpDecayConstant = std::stod(values.at(0));
+        } else if (name.find("STDP_tau") != std::string::npos){
+            this->ExpDecayConstantSTDP = std::stod(values.at(0));
+        } else if (name.find("potentiation_depression_ratio") != std::string::npos){
+            this->PotentiationDepressionRatio = std::stod(values.at(0));
+        } else if (name.find("pairing_time_window") != std::string::npos){
+            this->branchMaxCountTrigger = static_cast<int>(std::stod(values.at(0))/this->info->dt);
+        } else if (name.find("STDP_time_window") != std::string::npos){
+            this->MaxCountSTDP = static_cast<int>(std::stod(values.at(0))/this->info->dt);
         }
     }
-    decayWeights=false;
-    return;
+    SetUpHashTables();
 }
 
 void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::string neuronPreId)
 {
     BranchedMorphology::SaveParameters(stream, neuronPreId);
-    *stream << neuronPreId<<"_morphology_available_weight\t\t"<<std::to_string(this->branchings);//CHANGE
-    *stream << "\t"<<"#Total weight available to be distributed among synapses per time-step.\n";
-    return;
+    *stream << neuronPreId<<"_morphology_basal_alpha\t\t"<<std::to_string(this->alphaBasal);
+    *stream << "\t"<<"#Alpha at rest, where alpha decays towards\n";
+
+    *stream << neuronPreId<<"_morphology_alpha_decay_constant\t\t"<<std::to_string(this->alphaStimmulusExpTau);
+    *stream << "\t"<<"#Decay constant of Alpha_stimmulus\n";
+
+    *stream << neuronPreId<<"_morphology_base_alpha_increase\t\t"<<std::to_string(this->baseAlphaStimmulusBump);
+    *stream << "\t"<<"#Default alphaStimmulus increase before applying spatial and temporal decays\n";
+
+    *stream << neuronPreId<<"_morphology_omega_offset\t\t"<<std::to_string(this->omegaPassiveResourceOffset);
+    *stream << "\t"<<"#Offset factor in the weight definition.\n";
+
+    *stream << neuronPreId<<"_morphology_beta_resource_pool\t\t"<<std::to_string(this->betaResourcePool);
+    *stream << "\t"<<"#Multiplication factor of the definition of weight, representing the available 'total resources'.\n";
+
+    *stream << neuronPreId<<"_morphology_kernel_spatial_length\t\t"<<std::to_string(this->kernelGapNumber*this->synapticGap);
+    *stream << "\t"<<"#Limit distance between two spines to be considered for synaptic spine pairing.\n";
+
+    *stream << neuronPreId<<"_morphology_kernel_temporal_length\t\t"<<std::to_string(this->timeKernelLength*this->info->dt);//CHANGE
+    *stream << "\t"<<"#Maximum time length between two spikes in contiguous spines to be considered for synaptic spine pairing\n";
+
+    *stream << neuronPreId<<"_morphology_kernel_tau\t\t"<<std::to_string(this->timeKernelExpDecayConstant);//CHANGE
+    *stream << "\t"<<"#Time decay constant for the alpha stimmulus increase in the pairing kernel\n";
+
+    *stream << neuronPreId<<"_morphology_kernel_lambda\t\t"<<std::to_string(this->spaceKernelExpDecayConstant);//CHANGE
+    *stream << "\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
+
+    *stream << neuronPreId<<"_morphology_STDP_tau\t\t"<<std::to_string(this->ExpDecayConstantSTDP);//CHANGE
+    *stream << "\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
+
+    *stream << neuronPreId<<"_morphology_potentiation_depression_ratio\t"<<std::to_string(this->PotentiationDepressionRatio);//CHANGE
+    *stream << "\t"<<"#Factor that multiplies potentiation\n";
+
+    *stream << neuronPreId<<"_morphology_pairing_time_window\t\t"<<std::to_string(this->branchMaxCountTrigger*this->info->dt);//CHANGE
+    *stream << "\t"<<"#Max time where synaptic spine pairing can happen\n";
+
+    *stream << neuronPreId<<"_morphology_STDP_time_window\t\t"<<std::to_string(this->MaxCountSTDP*this->info->dt);//CHANGE
+    *stream << "\t"<<"#Max time where STDP potentiation/depression can happen\n";
+
+    *stream <<"##### The weight of this model is defined as wI=beta*alphaI/(omega+branch-sum(alpha)), where alphaI= alphaBasal + alphaStimmulus*exp(-dt/alphaStimTau) \n";
 }
 
 void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
@@ -37,7 +98,7 @@ void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, s
     //First call is done with an empty int vector
     for (int i = 0; i < 2;i++) {
         int branchId{this->GenerateBranchId()};
-        this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId, MaxCountSTDP, branchMaxCountTrigger, this->resourceSynapseData)));//This vector should be sorted by ID by default (tested).
+        this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId, this->resourceSynapseData)));//This vector should be sorted by ID by default (tested).
         this->branches.push_back(static_cast<std::shared_ptr<Branch>>(this->resourceBranches.back()));
         //Constructor here
         if(remainingBranchingEvents>0){
@@ -46,7 +107,6 @@ void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, s
             this->SetUpBranchings(remainingBranchingEvents, anteriorBranchesCopy);
         }
     }
-    return;
 }
 
 void BranchedResourceHeteroSTDP::SetUpHashTables()
@@ -60,15 +120,14 @@ void BranchedResourceHeteroSTDP::SetUpHashTables()
     kernelRadius=timeKernelLength+spaceTimeStepRelation;
     for (int spaceIndex=1; spaceIndex<=kernelGapNumber; spaceIndex++){//at least there is one gap
         for (int timeIndex=0; timeIndex<=timeKernelLength-(spaceTimeStepRelation*(spaceIndex-1)); timeIndex++){ 
-            kernelHashTable.at(timeIndex).at(spaceIndex)=std::exp(-(synapticGap*spaceIndex)/spaceKernelDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelDecayConstant);
+            kernelHashTable.at(timeIndex).at(spaceIndex)=std::exp(-(synapticGap*spaceIndex)/spaceKernelExpDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelExpDecayConstant);
             //Always access time, space later (always will be more times than gaps)
         }
     }
 
     for (int STDPindex=1; STDPindex<=MaxCountSTDP; STDPindex++){
-        DecayHashTableSTDP.at(STDPindex)=std::exp(-(STDPindex*info->dt)/DecayConstantSTDP);
+        DecayHashTableSTDP.at(STDPindex)=std::exp(-(STDPindex*info->dt)/ExpDecayConstantSTDP);
     }
-    return;
 }
 
 void BranchedResourceHeteroSTDP::advect()
@@ -143,7 +202,7 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(std::shared_ptr<ResourceB
 
 bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch)
 {
-    return std::count(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
+    return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
 }
 
 void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho)
@@ -314,10 +373,9 @@ std::shared_ptr<BaseSynapseSpine> BranchedResourceHeteroSTDP::AllocateNewSynapse
     int position{branches.at(branch)->openSynapsesSlots.front()};
     branches.at(branch)->openSynapsesSlots.pop_front();
     newSynapse->SetBranchPositionId(position);
-    //newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);//This has to be updated if we switch to double 
+    newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);//This has to be updated if we switch to double 
     newSynapse->SetMaxCount(MaxCountSTDP);
     newSynapse->SetAlphaBasal(alphaBasal);
-    newSynapse->SetAlphaStimmulusRest(alphaStimmulusRest);
     newSynapse->SetAlphaExpDecay(alphaStimmulusExpDecay);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());

@@ -1,5 +1,5 @@
-#ifndef _SIMPLE_PLASTICITY_ONLY_BRANCHES_
-#define _SIMPLE_PLASTICITY_ONLY_BRANCHES_
+#ifndef _RESOURCE_HETERO_SYNAPTIC_PLASTICITY_STDP_BASED_HEADER_
+#define _RESOURCE_HETERO_SYNAPTIC_PLASTICITY_STDP_BASED_HEADER_
 
 #include "../BranchedMorphology.hpp"
 #include "../SynapseSpines/ResourceSynapseSpine.hpp"
@@ -10,14 +10,13 @@
 class BranchedMorphology;
 
 typedef std::unordered_map<int, double> DHashMap;
-typedef std::unordered_map<int, DHashMap> SuperHashMap;
+typedef std::unordered_map<int, DHashMap> NestedDHashMap;
 
 class BranchedResourceHeteroSTDP : public BranchedMorphology {
 //This class models a behaviour based on wi=beta*(alfai/(omega+sum(alfai))), where alfai represents the spine's resources as (Ks*expdt+Kbasal)/(Ns*expdt+Nbasal) with bumps on Ks and Ns
 protected:
     //Synapse variables
     double alphaBasal{1.0};//LP and SP 
-    double alphaStimmulusRest{1.0}; //This is delta alpha //LP and SP
     double alphaStimmulusExpTau{1.0};//LP and SP store the tau
     double alphaStimmulusExpDecay{1.0}; //LP and SP has to already be calculated
     //Branch variables
@@ -32,11 +31,11 @@ protected:
     int spaceTimeStepRelation{};
     int kernelRadius{};
 
-    double timeKernelDecayConstant{1.0};//Strong decay needs small constants//LP and SP
-    double spaceKernelDecayConstant{1.0};//LP and SP
-    double DecayConstantSTDP{1.0};//LP and SP
+    double timeKernelExpDecayConstant{1.0};//Strong decay needs small constants//LP and SP
+    double spaceKernelExpDecayConstant{1.0};//LP and SP
+    double ExpDecayConstantSTDP{1.0};//LP and SP
 
-    SuperHashMap kernelHashTable;//This is more efficient than the map, but we need a hash function. TEST whether this is faster than vector<vector> or map<>
+    NestedDHashMap kernelHashTable;//This is more efficient than the map, but we need a hash function. TEST whether this is faster than vector<vector> or map<>
     DHashMap DecayHashTableSTDP;//??Should STDP not decay? unordered_map? looks like vector is more ideal
 
     // double baseKStimmulusBump{1.0};//LP and SP
@@ -44,12 +43,11 @@ protected:
     double baseAlphaStimmulusBump{1.0};//LP and SP
 
     //STDP and STDD parameters (MAKE SURE TO TUNE STDD, AS NEGATIVE WEIGHTS MUST BE AVOIDED)
-    double PotentiationDepressionRatio{1.00};//Diagnose later negative weights //LP and SP (for now it can be ignored)
+    double PotentiationDepressionRatio{1.0};//Diagnose later negative weights //LP and SP (for now it can be ignored)
 
     //Max counters
-    int maxCount{100}; //dependent on dt?, default 10 ms assuming dt=1e-4 //LP and SP, this problem is centralized to this class now
-    int& MaxCountSTDP = maxCount;//This one is the lasting count for th spines //LP and SP?
-    int& branchMaxCountTrigger = maxCount;//LP and SP?
+    int MaxCountSTDP{};//This one is the lasting count for th spines //LP and SP?//dependent on dt?, default 10 ms assuming dt=1e-4
+    int branchMaxCountTrigger{};//LP and SP?//dependent on dt?, default 10 ms assuming dt=1e-4
 
     //Counting
     int STDPDepressionCount{};//In relation to maxCountSTDP

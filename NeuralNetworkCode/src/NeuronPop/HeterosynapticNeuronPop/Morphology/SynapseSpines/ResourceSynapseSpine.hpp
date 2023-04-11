@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 typedef std::unordered_map<int, double> DHashMap;
-typedef std::unordered_map<int, DHashMap> SuperHashMap;
+typedef std::unordered_map<int, DHashMap> NestedDHashMap;
 
 class ResourceSynapseSpine : public BranchedSynapseSpine {
 
@@ -43,6 +43,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
 
     bool depressionFlagSTDP{false};
     bool potentiationFlagSTDP{false};
+    
     public:
     //Getters
     double GetAlphaResources(){return alphaResources;}
@@ -51,7 +52,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     //int GetMaxCount(){return maxCount;}//Not necessary for now
     //Setters
     void SetAlphaBasal(double alphaBasalInput){alphaBasal=alphaBasalInput;}
-    void SetAlphaStimmulusRest(double alphaStimmulusRest){alphaStimmulus=alphaStimmulusRest;}
+    //void SetAlphaStimmulusRest(double alphaStimmulusRest){alphaStimmulus=alphaStimmulusRest;}
     void SetAlphaExpDecay(double alphaStimExpDecay){alphaStimmulusExpDecay=alphaStimExpDecay;}
     // void SetNBasal(int nBasalInput){nBasal=nBasalInput;}
     // void SetKBasal(int kBasalInput){kBasal=kBasalInput;}
@@ -66,8 +67,8 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void RecalcWeight(double weightResourceFactor);
     //Temp effets methods
     void AddTempResourcesToSpine(double alphaStimmulusInput);
-    void ApplyAllTempEffectsOnPostspike(double STDPmultiplier, DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
-    void ApplyAllTempEffectsOnConflictPotentiation(double STDPmultiplier);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    void ApplyAllTempEffectsOnPostspike(double PotentiationDepressionRatio, DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     void ApplyAllTempEffectsOnDepression(DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
 
     //Stimmulus vector methods
@@ -76,6 +77,8 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     //Profile methods
     std::valarray<double> GetIndividualSynapticProfile() const override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
+    //Virtual bools
+    bool IgnoreCouplingStrength() override {return true;}
 };
 
 #endif
