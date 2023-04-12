@@ -146,17 +146,25 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
 {
     //If first precount is bigger than twice the STDP depression count, depression. Otherwise potentiation.
     if (this->postSpiked){
+         //If post spike, apply all stimms on positive mode (remember the coded function in spines) with the decay from STDP pot count. 
+        //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
+        //WITH DECAY (of alpha, STDP-like)
         for (std::shared_ptr<ResourceSynapseSpine>& synapse : resourceSynapseData){
-        STDPPotentiation(synapse);
+        synapse->ApplyAllTempEffectsOnPostspike(PotentiationDepressionRatio, DecayHashTableSTDP);
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
         for (std::shared_ptr<ResourceBranch>& branch: resourceBranches){
             for (int synapseID : branch->updatedAlphaEffects){
                 std::shared_ptr<ResourceSynapseSpine>& synapse = resourceSynapseData.at(branch->synapseSlotToMorphoIDMap.at(synapseID));
                 if (synapse->GetDepressionFlagSTDP()){
-                    STDPDepression(synapse);
+                    //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
+                    //And also pass the STDP map by reference to the function call
+                    //Use STDPcount in the morpho for STDP decay
+                    //Iterate over set of updatedAlphas
+                    //Decay STDP but expressed as a negative number
+                    synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount);
                 } else if (synapse->GetPotentiationFlagSTDP()){
-                    STDPPotentiation(synapse);
+                    synapse->ApplyAllTempEffectsOnConflictPotentiation(PotentiationDepressionRatio);
                 }
             }
         }
@@ -165,28 +173,6 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
         }
     //Remember to call the branch plasticity counter for every event!!!
     //if this postSpike bool
-}
-
-void BranchedResourceHeteroSTDP::STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse)
-{
-    //If post spike, apply all stimms on positive mode (remember the coded function in spines) with the decay from STDP pot count. 
-    //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
-    //WITH DECAY (of alpha, STDP-like)
-    if (this->postSpiked){
-        synapse->ApplyAllTempEffectsOnPostspike(PotentiationDepressionRatio, DecayHashTableSTDP);
-    } else {
-        synapse->ApplyAllTempEffectsOnConflictPotentiation(PotentiationDepressionRatio);
-    }
-}
-
-void BranchedResourceHeteroSTDP::STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse)
-{
-     //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
-     //And also pass the STDP map by reference to the function call
-     //Use STDPcount in the morpho for STDP decay
-     //Iterate over set of updatedAlphas
-     //Decay STDP but expressed as a negative number
-     synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount);
 }
 
 void BranchedResourceHeteroSTDP::DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch)//These are the spiked neurons on synapseDataIndexes
@@ -225,10 +211,12 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
             std::shared_ptr<ResourceSynapseSpine>& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap.at(synapsePositionIndexInBranch));
             absDistance = std::abs(gapIndex);
             timeStepDifference=resourceBranches.at(branchID)->triggerCount.at(synapsePositionIndexInBranch);
+            //timeStepDifference == triggerCount of first spine
             if (timeStepDifference<=STDPDepressionCount){//Indicates depression region with no conflict. If the spike is far away, but too far for depression, nothing will happen. If a postspike happens, these flags are ignored.
                 //The boolean is <= to classify the pairing where the postspike and first prespike are on the same timestep as depression.
                 centralSynapseSpine->SetDepressionFlag(true);
                 lateralSynapseSpine->SetDepressionFlag(true);
+                //alphaStimmulusEffect *= -DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the second pre-spike with depression (*-1)
             } else { //Knowing depression region, indicates conflict that is skewed towards potentiation according to STDP kernel
                 if (timeStepDifference<=2*STDPDepressionCount){//We set the boolean to equal too to solve the conflict in favor of potentiation, as depression has the other fringe case
                     centralSynapseSpine->SetPotentiationFlag(true);
