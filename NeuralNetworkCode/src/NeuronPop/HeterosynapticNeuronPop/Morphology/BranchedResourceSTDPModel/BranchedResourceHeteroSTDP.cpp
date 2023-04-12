@@ -118,7 +118,7 @@ void BranchedResourceHeteroSTDP::SetUpHashTables()
     }
     spaceTimeStepRelation = timeKernelLength/kernelGapNumber;
     kernelRadius=timeKernelLength+spaceTimeStepRelation;
-    for (int spaceIndex=1; spaceIndex<=kernelGapNumber; spaceIndex++){//at least there is one gap
+    for (int spaceIndex=0; spaceIndex<=kernelGapNumber; spaceIndex++){//at least there is one gap
         for (int timeIndex=0; timeIndex<=timeKernelLength-(spaceTimeStepRelation*(spaceIndex-1)); timeIndex++){ 
             kernelHashTable.at(timeIndex).at(spaceIndex)=std::exp(-(synapticGap*spaceIndex)/spaceKernelExpDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelExpDecayConstant);
             //Always access time, space later (always will be more times than gaps)
@@ -133,8 +133,10 @@ void BranchedResourceHeteroSTDP::SetUpHashTables()
 void BranchedResourceHeteroSTDP::advect()
 {
         //If STDPDEpression count is not 10, immediately trigger STDP on spine trigger (while also flagging)
-    for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
+    if (!this->postSpiked){
+        for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
         DetectPossiblePairing(branch);
+        }
     }
     ApplyEffects();
     Reset();
@@ -216,18 +218,18 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
                 //The boolean is <= to classify the pairing where the postspike and first prespike are on the same timestep as depression.
                 centralSynapseSpine->SetDepressionFlag(true);
                 lateralSynapseSpine->SetDepressionFlag(true);
-                //alphaStimmulusEffect *= -DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the second pre-spike with depression (*-1)
+                //alphaStimmulusEffect *= -DecayHashTableSTDP.at(STDPDepressionCount-timeStepDifference);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike with depression (*-1) (calcium accumulation oriented)
             } else { //Knowing depression region, indicates conflict that is skewed towards potentiation according to STDP kernel
                 if (timeStepDifference<=2*STDPDepressionCount){//We set the boolean to equal too to solve the conflict in favor of potentiation, as depression has the other fringe case
                     centralSynapseSpine->SetPotentiationFlag(true);
                     lateralSynapseSpine->SetPotentiationFlag(true);
-                    alphaStimmulusEffect *= DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike
+                    alphaStimmulusEffect *= DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike  (calcium accumulation oriented)
                 } else {
                     centralSynapseSpine->SetDepressionFlag(true);
                     lateralSynapseSpine->SetDepressionFlag(true);
                 }//These flags are only here to solve 
             }
-            if(!this->postSpiked &&timeStepDifference+synapticGap*absDistance<=kernelRadius && (kernelizedSynapses.find(synapsePositionIndexInBranch) != kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
+            if(timeStepDifference+synapticGap*absDistance<=kernelRadius && (kernelizedSynapses.find(synapsePositionIndexInBranch) != kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
                 //The postspiked condition is because the STDP kernel is discretized, in the case the postspike happens at the same time as the pairing of a synapse, the pairing does not happen (as the potentiation and depression would counteract themselves)
                 alphaStimmulusEffect *= CallKernelHashTable(absDistance, timeStepDifference);
                 centralSynapseSpine->AddTempResourcesToSpine(alphaStimmulusEffect);
