@@ -134,7 +134,7 @@ void BranchedResourceHeteroSTDP::advect()
 {
         //If STDPDEpression count is not 10, immediately trigger STDP on spine trigger (while also flagging)
     if (!this->postSpiked){
-        for (RBranch& branch : resourceBranches){
+        for (RBranchPtr& branch : resourceBranches){
         DetectPossiblePairing(branch);
         }
     }
@@ -156,7 +156,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
         branches.at(synapse->GetBranchId())->IncreasePotentiationCount();
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
-        for (RBranch& branch: resourceBranches){
+        for (RBranchPtr& branch: resourceBranches){
             for (int synapseID : branch->updatedAlphaEffects){
                 ResourceSpinePtr& synapse = resourceSynapseData.at(branch->synapseSlotToMorphoIDMap.at(synapseID));
                 //if (synapse->GetDepressionFlagSTDP()){
@@ -179,7 +179,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
     //if this postSpike bool
 }
 
-void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranch branch)//These are the spiked neurons on synapseDataIndexes
+void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr branch)//These are the spiked neurons on synapseDataIndexes
 {
     //Here we call SetTempEffects if __it__ happens
     for (int synapseIDinBranch : branch->spikedSynapsesInTheBranch){
@@ -190,7 +190,7 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranch branch)//These ar
     }
 }
 
-bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranch branch, int synapseIDinBranch)
+bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranchPtr branch, int synapseIDinBranch)
 {
     return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
 }
@@ -265,14 +265,14 @@ void BranchedResourceHeteroSTDP::Reset()
     //Clear both sets in every branch DONE
     //REVIEW if there are any remaining things to put in this function
     ClearSynapseSets();
-    for (RBranch& branch : resourceBranches){
+    for (RBranchPtr& branch : resourceBranches){
         RecalcWeights(branch);
     }
     DeleteEffects();
     TickAllCounts();
 }
 
-void BranchedResourceHeteroSTDP::RecalcAlphas(RBranch branch)
+void BranchedResourceHeteroSTDP::RecalcAlphas(RBranchPtr branch)
 {
     //Here we just need to apply all delta alphas, decay them (before makes more sense, the bump has delta t zero.), sum the result to stationary alpha, then update alpha sums? Yes
     for (ResourceSpinePtr synapse : branch->branchSynapseData){
@@ -281,7 +281,7 @@ void BranchedResourceHeteroSTDP::RecalcAlphas(RBranch branch)
     return;
 }
 
-void BranchedResourceHeteroSTDP::RecalcWeights(RBranch branch) //This one is the one we call for every branch
+void BranchedResourceHeteroSTDP::RecalcWeights(RBranchPtr branch) //This one is the one we call for every branch
 {
     RecalcAlphaSums(branch);
     branch->weightResourceFactor=betaResourcePool/(omegaPassiveResourceOffset+branch->alphaTotalSum);//IMPORTANT, if we make beta non-constant, beta must be referenced from the branch
@@ -291,7 +291,7 @@ void BranchedResourceHeteroSTDP::RecalcWeights(RBranch branch) //This one is the
     return;
 }
 
-void BranchedResourceHeteroSTDP::RecalcAlphaSums(RBranch branch)
+void BranchedResourceHeteroSTDP::RecalcAlphaSums(RBranchPtr branch)
 {
     RecalcAlphas(branch);
     branch->alphaTotalSum=std::accumulate(branch->branchSynapseData.begin(), branch->branchSynapseData.end(), 0.0,//UNRESOLVED, does this give intended output?
@@ -309,7 +309,7 @@ void BranchedResourceHeteroSTDP::DeleteEffects()
 }
 void BranchedResourceHeteroSTDP::TickAllCounts()
 {
-    for (RBranch& branch : resourceBranches){
+    for (RBranchPtr& branch : resourceBranches){
         branch->TickAllCounts();
     }
     for (ResourceSpinePtr& synapse: resourceSynapseData){
@@ -324,7 +324,7 @@ void BranchedResourceHeteroSTDP::TickAllCounts()
 
 void BranchedResourceHeteroSTDP::ClearSynapseSets()
 {
-    for (RBranch& branch: resourceBranches){
+    for (RBranchPtr& branch: resourceBranches){
         branch->updatedAlphaEffects.clear();
         branch->updatedSynapseSpines.clear();
     }

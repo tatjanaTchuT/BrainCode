@@ -10,7 +10,7 @@
 class BranchedMorphology;
 
 typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
-typedef std::shared_ptr<ResourceBranch> RBranch;
+typedef std::shared_ptr<ResourceBranch> RBranchPtr;
 typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
 typedef std::unordered_map<int, double> DHashMap;
 typedef std::unordered_map<int, DHashMap> NestedDHashMap;
@@ -56,7 +56,7 @@ protected:
     int STDPDepressionCount{};//In relation to maxCountSTDP
     //Class object pointer vectors (virtual access)
     std::vector<ResourceSpinePtr> resourceSynapseData;
-    std::vector<RBranch> resourceBranches;
+    std::vector<RBranchPtr> resourceBranches;
 
     //Record variables
     int totalLTPEvents{};
@@ -81,8 +81,8 @@ public:
     //Advect methods
     void advect() override;
     //Pairing functions
-    void DetectPossiblePairing(RBranch branch);
-    bool CheckIfThereIsPairing(RBranch branch, int synapseIDinBranch);
+    void DetectPossiblePairing(RBranchPtr branch);
+    bool CheckIfThereIsPairing(RBranchPtr branch, int synapseIDinBranch);
     void SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho);
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
     //Plasticity events functions
@@ -96,9 +96,9 @@ public:
     void TickAllCounts();//Last method called in Reset()
     void ClearSynapseSets();
     //Recalc methods. These methods have to be done per branch
-    void RecalcAlphas(RBranch branch);//Run in LP
-    void RecalcWeights(RBranch branch);//Run in LP
-    void RecalcAlphaSums(RBranch branch);//Called inside recalc weights
+    void RecalcAlphas(RBranchPtr branch);//Run in LP
+    void RecalcWeights(RBranchPtr branch);//Run in LP
+    void RecalcAlphaSums(RBranchPtr branch);//Called inside recalc weights
     //Record methods
     void RecordPostSpike() override;
     void RecordExcitatoryPreSpike(int spikedSynapseId) override;//Here set the trigger count to 0
