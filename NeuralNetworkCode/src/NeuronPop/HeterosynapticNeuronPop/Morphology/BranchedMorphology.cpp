@@ -242,10 +242,10 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
         }
         //For now it is the same as ordered, the possibility of alternating synapses will probably be more useful with multiple synapses pre-post neuron.
 }*/
-unsigned long BranchedMorphology::GetMorphoPlasticityEvents() const
+void BranchedMorphology::CalcMorphoPlasticityEvents()
 {
-    return std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
-                                       [] (unsigned long acc, const std::shared_ptr<Branch>& branch) { return acc + branch->plasticityBranchEventsTotal; });
+    totalPlasticityEvents=std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
+                                       [] (unsigned long acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTPevents + branch->LTDevents; });
 }
 
 void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)

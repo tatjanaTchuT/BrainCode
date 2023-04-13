@@ -41,14 +41,18 @@ struct Branch{
     std::vector<int> spikedSynapsesInTheBranch{};
     std::vector<int> synapseSlotClosedIndex{};
     //std::vector<int> morphoSynapseIDs{};//This data variable is no longer relevant
-    IHashMap synapseSlotToMorphoIDMap;
+    IHashMap synapseSlotToMorphoIDMap{};
     //Resource paradigm variables
-    int plasticityBranchEventsTotal{};
+    //int plasticityBranchEventsTotal{};
+    int LTDevents{};
+    int LTPevents{};
     //Methods
     //Branch()=default;
     Branch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId);
 
-    virtual void IncreasePlasticityCounter(){plasticityBranchEventsTotal++;}
+    //virtual void IncreasePlasticityCounter(){plasticityBranchEventsTotal++;}
+    void IncreasePotentiationCount(){LTPevents++;}
+    void IncreaseDepressionCount(){LTDevents++;}
 };
 
 struct ResourceBranch : public Branch {
@@ -81,7 +85,7 @@ struct ResourceBranch : public Branch {
     void SetUpSynapseData(std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData);
         //Count related functions
     void TickAllCounts();//Use ternary operator. Called in Reset()
-    void TickCounts(std::vector<int>& countVector);
+    //void TickCounts(std::vector<int>& countVector);
     //void CheckIncreaseInBetaResources(); //Here I have to add current, delete last, sum and check against threshold. Called in Reset()
     //void UpdateAlphaSum(); //This dunction cannot be implemented in this struct as the struct has no access to the spine pointers
     //void IncreasePlasticityCounter() override {plasticityBranchEventsThisTimestep++;plasticityBranchEventsTotal++;}

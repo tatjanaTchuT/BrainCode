@@ -153,21 +153,23 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
         //WITH DECAY (of alpha, STDP-like)
         for (std::shared_ptr<ResourceSynapseSpine>& synapse : resourceSynapseData){
         synapse->ApplyAllTempEffectsOnPostspike(PotentiationDepressionRatio, DecayHashTableSTDP);
+        branches.at(synapse->GetBranchId())->IncreasePotentiationCount();
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
         for (std::shared_ptr<ResourceBranch>& branch: resourceBranches){
             for (int synapseID : branch->updatedAlphaEffects){
                 std::shared_ptr<ResourceSynapseSpine>& synapse = resourceSynapseData.at(branch->synapseSlotToMorphoIDMap.at(synapseID));
-                if (synapse->GetDepressionFlagSTDP()){
+                //if (synapse->GetDepressionFlagSTDP()){
                     //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
                     //And also pass the STDP map by reference to the function call
                     //Use STDPcount in the morpho for STDP decay
                     //Iterate over set of updatedAlphas
                     //Decay STDP but expressed as a negative number
-                    synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount);
-                } else if (synapse->GetPotentiationFlagSTDP()){
-                    synapse->ApplyAllTempEffectsOnConflictPotentiation(PotentiationDepressionRatio);
-                }
+                synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount);
+                //} else if (synapse->GetPotentiationFlagSTDP()){
+                //    synapse->ApplyAllTempEffectsOnConflictPotentiation(PotentiationDepressionRatio);
+                //}
+                branch->IncreaseDepressionCount();
             }
         }
     } else {
@@ -214,21 +216,24 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
             absDistance = std::abs(gapIndex);
             timeStepDifference=resourceBranches.at(branchID)->triggerCount.at(synapsePositionIndexInBranch);
             //timeStepDifference == triggerCount of first spine
-            if (timeStepDifference<=STDPDepressionCount){//Indicates depression region with no conflict. If the spike is far away, but too far for depression, nothing will happen. If a postspike happens, these flags are ignored.
-                //The boolean is <= to classify the pairing where the postspike and first prespike are on the same timestep as depression.
-                centralSynapseSpine->SetDepressionFlag(true);
-                lateralSynapseSpine->SetDepressionFlag(true);
-                //alphaStimmulusEffect *= -DecayHashTableSTDP.at(STDPDepressionCount-timeStepDifference);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike with depression (*-1) (calcium accumulation oriented)
-            } else { //Knowing depression region, indicates conflict that is skewed towards potentiation according to STDP kernel
-                if (timeStepDifference<=2*STDPDepressionCount){//We set the boolean to equal too to solve the conflict in favor of potentiation, as depression has the other fringe case
-                    centralSynapseSpine->SetPotentiationFlag(true);
-                    lateralSynapseSpine->SetPotentiationFlag(true);
-                    alphaStimmulusEffect *= DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike  (calcium accumulation oriented)
-                } else {
-                    centralSynapseSpine->SetDepressionFlag(true);
-                    lateralSynapseSpine->SetDepressionFlag(true);
-                }//These flags are only here to solve 
-            }
+            // if (timeStepDifference<=STDPDepressionCount){//Indicates depression region with no conflict. If the spike is far away, but too far for depression, nothing will happen. If a postspike happens, these flags are ignored.
+            //     //The boolean is <= to classify the pairing where the postspike and first prespike are on the same timestep as depression.
+            //     // centralSynapseSpine->SetDepressionFlag(true);
+            //     // lateralSynapseSpine->SetDepressionFlag(true);
+            //     //alphaStimmulusEffect *= -DecayHashTableSTDP.at(STDPDepressionCount-timeStepDifference);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike with depression (*-1) (calcium accumulation oriented)
+            // } else { //Knowing depression region, indicates conflict that is skewed towards potentiation according to STDP kernel
+            //     if (timeStepDifference<=2*STDPDepressionCount){//We set the boolean to equal too to solve the conflict in favor of potentiation, as depression has the other fringe case
+            //         centralSynapseSpine->SetPotentiationFlag(true);
+            //         lateralSynapseSpine->SetPotentiationFlag(true);
+            //         alphaStimmulusEffect *= DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike  (calcium accumulation oriented)
+            //     } else {
+            //         centralSynapseSpine->SetDepressionFlag(true);
+            //         lateralSynapseSpine->SetDepressionFlag(true);
+            //     }//These flags are only here to solve 
+            //}
+            // if (STDPDepressionCount<MaxCountSTDP){
+            //     alphaStimmulusEffect=(-alphaStimmulusEffect);
+            // }
             if(timeStepDifference+synapticGap*absDistance<=kernelRadius && (kernelizedSynapses.find(synapsePositionIndexInBranch) != kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
                 //The postspiked condition is because the STDP kernel is discretized, in the case the postspike happens at the same time as the pairing of a synapse, the pairing does not happen (as the potentiation and depression would counteract themselves)
                 alphaStimmulusEffect *= CallKernelHashTable(absDistance, timeStepDifference);
@@ -297,8 +302,8 @@ void BranchedResourceHeteroSTDP::DeleteEffects()
 {
     for (std::shared_ptr<ResourceSynapseSpine>& synapse : resourceSynapseData){
         synapse->CullStimmulusVectors();
-        synapse->SetDepressionFlag(false);
-        synapse->SetPotentiationFlag(false);
+        // synapse->SetDepressionFlag(false);
+        // synapse->SetPotentiationFlag(false);
     }
     return;
 }
@@ -376,4 +381,40 @@ std::shared_ptr<BaseSynapseSpine> BranchedResourceHeteroSTDP::AllocateNewSynapse
     this->resourceSynapseData.push_back(newSynapse);
 
     return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
+}
+
+std::valarray<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
+{
+    /*
+     * returned array organised as follows:
+     * item 1: average synaptic weight
+     * item 2: totalLTD Events
+     * item 3: totalLTP Events
+     * item 4: average plasticity events
+     * */
+    std::valarray<double> dataArray(4);
+    size_t sizeOfSynapseData {this->baseSynapseData.size()};
+    double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
+                                       [] (double acc, const std::shared_ptr<BaseSynapseSpine>& syn) { return acc + syn->GetWeight(); });
+    CalcMorphoPlasticityEvents();
+
+   dataArray[0] = weightSum / sizeOfSynapseData;
+   dataArray[1] = this->totalLTDEvents;
+   dataArray[2] = this->totalLTPEvents;
+   dataArray[3] = static_cast<double>(totalPlasticityEvents) / sizeOfSynapseData;
+   return dataArray;
+}
+
+std::string BranchedResourceHeteroSTDP::GetOverallSynapticProfileHeaderInfo() const
+{
+    return std::string("{<average weight>, <total post spikes>, <total pre spikes>, <average number of plasticity events>}");
+}
+
+void BranchedResourceHeteroSTDP::CalcMorphoPlasticityEvents()
+{
+    totalLTDEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
+                                       [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTDevents; });
+    totalLTPEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
+                                       [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTPevents; });
+    totalPlasticityEvents = totalLTDEvents + totalLTPEvents;
 }

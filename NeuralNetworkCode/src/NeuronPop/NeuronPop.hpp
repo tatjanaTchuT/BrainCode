@@ -93,7 +93,7 @@ public:
     virtual void RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
     virtual std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
     virtual std::string GetIndividualSynapticProfileHeaderInfo() const {return "{Something went wrong}";};
-
+    virtual std::string GetOverallSynapticProfileHeaderInfo() const {return "{Something went wrong}";};
     //Task functions
     //bool const streamingOutput(){return streamingNOutputBool;}//functions
     bool const TaskOutput(){return TaskOutputBool;}

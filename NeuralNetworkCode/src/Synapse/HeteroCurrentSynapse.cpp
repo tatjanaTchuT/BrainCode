@@ -116,7 +116,6 @@ void HeteroCurrentSynapse::advectSpikersSpineCouplingStrength(std::vector<double
     //OPTIMIZATION, targetList could be passed as a const reference to the previous copy (not doable currently, as this function overrides a virtual function with set arguments)
     //Overloaded function? Not necessary in others, as others use pointer. We cannot because the targetList is built differently (for now)
 
-    double couplingStrength;
     double current;
     unsigned long postNeuronId;
     unsigned long HCSSynapseId;

@@ -458,10 +458,17 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 
     std::cout << "The file has been properly created!!!!\n";
     unsigned long P = neurons->GetTotalPopulations();
+    unsigned long synTrackCount;
     this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.hSOverallFileStream);
-    this->FileStreams.hSOverallFileStream << "Overall Profile -> {<average weight>, <total post spikes>, <total pre spikes>, <average number of plasticity events>} \n";
+    for(unsigned long p = 0;p<P;p++){
+        synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
+        if (synTrackCount != 0 && this->neurons->GetPop(P)->HasHeterosynapticPlasticity()){
+            this->FileStreams.heteroSynapsesFileStream << "Pop. "<< P << " Overall Profile -> "<<this->neurons->GetPop(P)->GetOverallSynapticProfileHeaderInfo() <<" \n";
+        }
+    }
+    this->FileStreams.hSOverallFileStream << "Overall Profile ->  \n";
     this->FileStreams.hSOverallFileStream << "\n#************************************\n";
 
     this->FileStreams.hSOverallFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id \n";

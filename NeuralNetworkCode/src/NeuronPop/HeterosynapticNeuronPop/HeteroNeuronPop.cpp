@@ -99,6 +99,10 @@ std::string HeteroNeuronPop::GetIndividualSynapticProfileHeaderInfo() const
 {
     return morphology.at(0)->GetIndividualSynapticProfileHeaderInfo();
 }
+std::string HeteroNeuronPop::GetOverallSynapticProfileHeaderInfo() const
+{
+    return morphology.at(0)->GetOverallSynapticProfileHeaderInfo();
+}
 // STDP Analysis
 // void HeteroNeuronPop::triggerStatOut(std::string dirPath) {
 // //    this->morphology.at(0)->triggerStatOut(dirPath);

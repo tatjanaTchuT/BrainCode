@@ -54,6 +54,10 @@ protected:
     //Class object pointer vectors (virtual access)
     std::vector<std::shared_ptr<ResourceSynapseSpine>> resourceSynapseData;
     std::vector<std::shared_ptr<ResourceBranch>> resourceBranches;
+
+    //Record variables
+    int totalLTPEvents{};
+    int totalLTDEvents{};
     
 public:
 
@@ -80,8 +84,8 @@ public:
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
     //Plasticity events functions
     void ApplyEffects();//Here we increase the plasticity count of synapse and branch
-    void STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse);
-    void STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse);
+    // void STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse);
+    // void STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse);
     //Reset methods
     void Reset() override; //Wrapper plus clearing some of the vectors. Last Reset method to run in chronological order, where we call the ticks and the general upkeep
     void DeleteEffects();//Here, if counter==countMax, erase in that index the element of every vector (first store index, then REVERSE remove the removelist indexes with .rbegin and .rend instead of .begin and .end)
@@ -99,6 +103,10 @@ public:
     //Allocation methods
     std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters
         //Remember to set all counts to maxCount    
+    //Record functions
+    std::valarray<double> GetOverallSynapticProfile() override;
+    std::string GetOverallSynapticProfileHeaderInfo() const override;
+    void CalcMorphoPlasticityEvents() override;
     //For debugging purposes
     void WeightDecay() override {throw;};//This function should never be called 
     void NormalizeWeights() override {return;};

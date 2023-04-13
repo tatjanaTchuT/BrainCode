@@ -10,6 +10,7 @@
 
 typedef std::unordered_map<int, double> DHashMap;
 typedef std::unordered_map<int, DHashMap> NestedDHashMap;
+typedef std::pair<double, int> PairDI;
 
 class ResourceSynapseSpine : public BranchedSynapseSpine {
 
@@ -37,18 +38,19 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     // std::vector<double> kStimmulusTempEffect{};//These need to be here for non-matrix management. 
     // std::vector<double> nStimmulusTempEffect{};
     // std::vector<int> stimmulusEffectCount{};
-    std::list<std::pair<double, int>> alphaTempAndCount;
+    std::list<PairDI> potentiationAlphaTempAndCount;
+    std::list<PairDI> depressionAlphaTempAndCount;
 
     int maxCount{100};
 
-    bool depressionFlagSTDP{false};
-    bool potentiationFlagSTDP{false};
+    // bool depressionFlagSTDP{false};
+    // bool potentiationFlagSTDP{false};
     
     public:
     //Getters
     double GetAlphaResources(){return alphaResources;}
-    bool GetDepressionFlagSTDP(){return depressionFlagSTDP;}
-    bool GetPotentiationFlagSTDP(){return potentiationFlagSTDP;}
+    // bool GetDepressionFlagSTDP(){return depressionFlagSTDP;}
+    // bool GetPotentiationFlagSTDP(){return potentiationFlagSTDP;}
     //int GetMaxCount(){return maxCount;}//Not necessary for now
     //Setters
     void SetAlphaBasal(double alphaBasalInput){alphaBasal=alphaBasalInput;}
@@ -59,8 +61,8 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     // void SetKExponentialDecay(int kStimmulusExpDecayCalc){kStimmulusExpDecay=kStimmulusExpDecayCalc;}//Input is supposed to be exp(-dt/tau)
     // void SetNExponentialDecay(int nStimmulusExpDecayCalc){nStimmulusExpDecay=nStimmulusExpDecayCalc;}
     void SetMaxCount(int maxCountnew) {maxCount=maxCountnew;} //UNRESOLVED  Call in AllocateNewSynapse
-    void SetDepressionFlag(bool booleanFlag) {depressionFlagSTDP=booleanFlag;}
-    void SetPotentiationFlag(bool booleanFlag) {potentiationFlagSTDP=booleanFlag;}
+    // void SetDepressionFlag(bool booleanFlag) {depressionFlagSTDP=booleanFlag;}
+    // void SetPotentiationFlag(bool booleanFlag) {potentiationFlagSTDP=booleanFlag;}
     //Alpha methods
     void RecalculateAlphaResources();//Should be recalced at least once in the Spine Setup
     void DecayAlphaResources();
@@ -68,7 +70,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     //Temp effets methods
     void AddTempResourcesToSpine(double alphaStimmulusInput);
     void ApplyAllTempEffectsOnPostspike(double PotentiationDepressionRatio, DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
-    void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    //void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     void ApplyAllTempEffectsOnDepression(DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
 
     //Stimmulus vector methods
