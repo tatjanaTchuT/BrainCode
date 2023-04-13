@@ -77,7 +77,7 @@ void ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(DHashMap &STDPdecayMa
 
 void ResourceSynapseSpine::TickStimmulusCounts()
 {
-    std::for_each(potentiationAlphaTempAndCount.begin(), potentiationAlphaTempAndCount.end(), [](std::pair<double,int>& element) {element.second+=1;});
+    std::for_each(potentiationAlphaTempAndCount.begin(), potentiationAlphaTempAndCount.end(), [](PairDI& element) {element.second+=1;});
 }
 
 void ResourceSynapseSpine::CullStimmulusVectors()
@@ -90,7 +90,7 @@ void ResourceSynapseSpine::CullStimmulusVectors()
     //     }
     // }
 
-    for (std::list<std::pair<double,int>>::reverse_iterator reverseIterator = potentiationAlphaTempAndCount.rbegin(); reverseIterator != potentiationAlphaTempAndCount.rend(); reverseIterator++)
+    for (std::list<PairDI>::reverse_iterator reverseIterator = potentiationAlphaTempAndCount.rbegin(); reverseIterator != potentiationAlphaTempAndCount.rend(); reverseIterator++)
     {
         //Here we iterate over the alpha temporary effects on reverse. That way the first time we find a time-obsolete effect, we delete everything before it.
         //This is because everything before the last (first in reverse) count that reached max is older, so they must have reached the max count too
@@ -98,7 +98,6 @@ void ResourceSynapseSpine::CullStimmulusVectors()
             potentiationAlphaTempAndCount.erase(potentiationAlphaTempAndCount.begin(), std::next(reverseIterator).base());
             break;
         }
-
     }
     depressionAlphaTempAndCount.clear();
 }

@@ -413,8 +413,8 @@ std::string BranchedResourceHeteroSTDP::GetOverallSynapticProfileHeaderInfo() co
 void BranchedResourceHeteroSTDP::CalcMorphoPlasticityEvents()
 {
     totalLTDEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTDevents; });
+                                       [] (int acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTDevents; });
     totalLTPEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (double acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTPevents; });
+                                       [] (int acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTPevents; });
     totalPlasticityEvents = totalLTDEvents + totalLTPEvents;
 }

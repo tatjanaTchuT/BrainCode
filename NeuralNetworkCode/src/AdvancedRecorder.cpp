@@ -475,8 +475,6 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 
     this->FileStreams.hSOverallFileStream << "t\t";
 
-    unsigned long synTrackCount;
-
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
