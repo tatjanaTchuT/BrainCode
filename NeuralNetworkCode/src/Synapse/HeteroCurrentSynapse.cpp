@@ -188,7 +188,7 @@ void HeteroCurrentSynapse::SaveParameters(std::ofstream * stream, std::string id
 }
 
 unsigned long HeteroCurrentSynapse::allocateSynapse(unsigned long preId, unsigned long postId) {
-    std::shared_ptr<BaseSynapseSpine> SynapseSpinePtr = this->neuronsPost->AllocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
+    BaseSpinePtr SynapseSpinePtr = this->neuronsPost->AllocateNewSynapse(postId, *this);//everything except first var can be moved to syn ref
 
     if (SynapseSpinePtr != nullptr) {
         if (SynapseSpinePtr->IgnoreCouplingStrength()){

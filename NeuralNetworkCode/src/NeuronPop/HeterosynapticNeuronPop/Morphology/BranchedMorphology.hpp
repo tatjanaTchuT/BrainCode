@@ -13,6 +13,8 @@
 #include "./SynapseSpines/BaseSynapseSpine.hpp"
 #include "./SynapseSpines/BranchedSynapseSpine.hpp"
 
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+
 class BranchedMorphology : public Morphology {
 
 protected:
@@ -64,7 +66,7 @@ public:
 
     //Allocation shennanigans
     
-    std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
+    BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
 
     int AllocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in AllocateNewSynapse
     int RandomBranchAllocation();

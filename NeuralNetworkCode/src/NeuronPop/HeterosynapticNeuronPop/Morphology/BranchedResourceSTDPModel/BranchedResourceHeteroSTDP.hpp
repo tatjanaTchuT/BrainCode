@@ -9,6 +9,9 @@
 
 class BranchedMorphology;
 
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+typedef std::shared_ptr<ResourceBranch> RBranch;
+typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
 typedef std::unordered_map<int, double> DHashMap;
 typedef std::unordered_map<int, DHashMap> NestedDHashMap;
 
@@ -52,8 +55,8 @@ protected:
     //Counting
     int STDPDepressionCount{};//In relation to maxCountSTDP
     //Class object pointer vectors (virtual access)
-    std::vector<std::shared_ptr<ResourceSynapseSpine>> resourceSynapseData;
-    std::vector<std::shared_ptr<ResourceBranch>> resourceBranches;
+    std::vector<ResourceSpinePtr> resourceSynapseData;
+    std::vector<RBranch> resourceBranches;
 
     //Record variables
     int totalLTPEvents{};
@@ -78,14 +81,14 @@ public:
     //Advect methods
     void advect() override;
     //Pairing functions
-    void DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch);
-    bool CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch);
+    void DetectPossiblePairing(RBranch branch);
+    bool CheckIfThereIsPairing(RBranch branch, int synapseIDinBranch);
     void SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho);
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
     //Plasticity events functions
     void ApplyEffects();//Here we increase the plasticity count of synapse and branch
-    // void STDPPotentiation(std::shared_ptr<ResourceSynapseSpine>& synapse);
-    // void STDPDepression(std::shared_ptr<ResourceSynapseSpine>& synapse);
+    // void STDPPotentiation(ResourceSpinePtr& synapse);
+    // void STDPDepression(ResourceSpinePtr& synapse);
     //Reset methods
     void Reset() override; //Wrapper plus clearing some of the vectors. Last Reset method to run in chronological order, where we call the ticks and the general upkeep
     void DeleteEffects();//Here, if counter==countMax, erase in that index the element of every vector (first store index, then REVERSE remove the removelist indexes with .rbegin and .rend instead of .begin and .end)
@@ -93,15 +96,15 @@ public:
     void TickAllCounts();//Last method called in Reset()
     void ClearSynapseSets();
     //Recalc methods. These methods have to be done per branch
-    void RecalcAlphas(std::shared_ptr<ResourceBranch> branch);//Run in LP
-    void RecalcWeights(std::shared_ptr<ResourceBranch> branch);//Run in LP
-    void RecalcAlphaSums(std::shared_ptr<ResourceBranch> branch);//Called inside recalc weights
+    void RecalcAlphas(RBranch branch);//Run in LP
+    void RecalcWeights(RBranch branch);//Run in LP
+    void RecalcAlphaSums(RBranch branch);//Called inside recalc weights
     //Record methods
     void RecordPostSpike() override;
     void RecordExcitatoryPreSpike(int spikedSynapseId) override;//Here set the trigger count to 0
 
     //Allocation methods
-    std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters
+    BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters
         //Remember to set all counts to maxCount    
     //Record functions
     std::valarray<double> GetOverallSynapticProfile() override;

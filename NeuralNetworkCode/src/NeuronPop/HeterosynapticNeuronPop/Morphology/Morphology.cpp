@@ -65,7 +65,7 @@ std::valarray<double> Morphology::GetOverallSynapticProfile()
     std::valarray<double> dataArray(4);
     size_t sizeOfSynapseData {this->baseSynapseData.size()};
     double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
-                                       [] (double acc, const std::shared_ptr<BaseSynapseSpine>& syn) { return acc + syn->GetWeight(); });
+                                       [] (double acc, const BaseSpinePtr& syn) { return acc + syn->GetWeight(); });
     CalcMorphoPlasticityEvents();
 
    dataArray[0] = weightSum / sizeOfSynapseData;
@@ -123,7 +123,7 @@ void Morphology::softMaxNormalize() {
 
 void Morphology::WeightDecay() {
     if (this->decayWeights) {
-        for (const std::shared_ptr<BaseSynapseSpine>& syn: this->baseSynapseData) {
+        for (const BaseSpinePtr& syn: this->baseSynapseData) {
             syn->SetWeight(syn->GetWeight() * weightExpDecay);
         }
     }

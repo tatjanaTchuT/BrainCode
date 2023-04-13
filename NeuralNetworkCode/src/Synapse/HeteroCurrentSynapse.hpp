@@ -7,10 +7,14 @@
 //#include "../NeuronPop/HeterosynapticNeuronPop/HeteroLIFNeuronPop.hpp"// And removing this include avoids a second include loop
 #include "../Connectivity/HeteroDerivedConnectivity/HeteroRandomConnectivity.hpp"
 #include "../NeuronPop/HeterosynapticNeuronPop/Morphology/BranchedStructs.hpp"
+
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+
 class HeteroCurrentSynapse : public Synapse {
+
 protected:
 
-    std::vector<std::shared_ptr<BaseSynapseSpine>> baseSynapseData{};
+    std::vector<BaseSpinePtr> baseSynapseData{};
     //Branching member variables 
     BranchTargeting synapseTargeting{};
 

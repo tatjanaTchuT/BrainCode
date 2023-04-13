@@ -264,7 +264,7 @@ void MonoDendriteSTDP::Reset()
     this->spikedSynapsesId.clear();
 }
 
-std::shared_ptr<BaseSynapseSpine> MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
+BaseSpinePtr MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 
@@ -304,7 +304,7 @@ std::shared_ptr<BaseSynapseSpine> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
         // newSynapse->postNeuronId = ? // set in the Synapse object that calls for a new synapse
         // newSynapse->preNeuronId = ? // set in the Synapse object that calls for a new synapse
-        this->baseSynapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
+        this->baseSynapseData.push_back(static_cast<BaseSpinePtr>(newSynapse));
         this->synapseDataCoop.push_back(newSynapse);
         this->nextPos += this->synapticGap;
 
@@ -313,7 +313,7 @@ std::shared_ptr<BaseSynapseSpine> MonoDendriteSTDP::AllocateNewSynapse(HeteroCur
         this->integratePreSpike.push_back(false);
     }
 
-    return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
+    return static_cast<BaseSpinePtr>(newSynapse);
 }
 
 void MonoDendriteSTDP::updateCooperativity(unsigned long spikerId, unsigned long neighborId) {

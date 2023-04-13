@@ -11,14 +11,14 @@ DendriticSubRegion::DendriticSubRegion(char regionID, std::vector<int> branchesI
 
 }
 
-ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId, std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData): 
+ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId, std::vector<ResourceSpinePtr> branchSynapseData): 
 Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, 10)//, potentiationCountSTDP(branchSlots, 10)//, maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}//, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
 {
     SetUpSynapseData(branchSynapseData);
 }
-void ResourceBranch::SetUpSynapseData(std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData)
+void ResourceBranch::SetUpSynapseData(std::vector<ResourceSpinePtr> branchSynapseData)
 {
-    for (std::shared_ptr<ResourceSynapseSpine> synapse :branchSynapseData){
+    for (ResourceSpinePtr synapse :branchSynapseData){
         if (synapse->GetBranchId()==branchId){
             branchSynapseData.push_back(synapse);
         }

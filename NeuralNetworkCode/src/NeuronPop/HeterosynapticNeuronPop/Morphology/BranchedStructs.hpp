@@ -9,6 +9,7 @@
 #include <memory>
 
 typedef std::unordered_map<int, int> IHashMap;
+typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
 
 struct DendriticSubRegion{
     const char regionID;
@@ -48,7 +49,7 @@ struct Branch{
     int LTPevents{};
     //Methods
     //Branch()=default;
-    Branch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId);
+    Branch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId);
 
     //virtual void IncreasePlasticityCounter(){plasticityBranchEventsTotal++;}
     void IncreasePotentiationCount(){LTPevents++;}
@@ -58,7 +59,7 @@ struct Branch{
 struct ResourceBranch : public Branch {
 
     //Synapse access
-    std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData;//CAREFUL! THIS VECTOR IS NOT SORTED AT ANY POINT by SynapseBranchID
+    std::vector<ResourceSpinePtr> branchSynapseData;//CAREFUL! THIS VECTOR IS NOT SORTED AT ANY POINT by SynapseBranchID
 
     std::set<int> updatedSynapseSpines{};//IDs are branch slots, to index the vector above to index proper. Cleared every timestep, used to avoid double effect when paired in same timestep
     std::set<int> updatedAlphaEffects{};//IDs are branch slots, Used in depression, cleared every timestep
@@ -81,8 +82,8 @@ struct ResourceBranch : public Branch {
         //Do we clear() after a trigger or not? Most of the function would be the same, or put some refractory period UNRESOLVED
         //Here we could create a false history of plasticity events
     //Methods
-    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId, std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData);
-    void SetUpSynapseData(std::vector<std::shared_ptr<ResourceSynapseSpine>> branchSynapseData);
+    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId, std::vector<ResourceSpinePtr> branchSynapseData);
+    void SetUpSynapseData(std::vector<ResourceSpinePtr> branchSynapseData);
         //Count related functions
     void TickAllCounts();//Use ternary operator. Called in Reset()
     //void TickCounts(std::vector<int>& countVector);

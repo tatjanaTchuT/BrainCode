@@ -134,7 +134,7 @@ void BranchedResourceHeteroSTDP::advect()
 {
         //If STDPDEpression count is not 10, immediately trigger STDP on spine trigger (while also flagging)
     if (!this->postSpiked){
-        for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
+        for (RBranch& branch : resourceBranches){
         DetectPossiblePairing(branch);
         }
     }
@@ -151,14 +151,14 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
          //If post spike, apply all stimms on positive mode (remember the coded function in spines) with the decay from STDP pot count. 
         //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
         //WITH DECAY (of alpha, STDP-like)
-        for (std::shared_ptr<ResourceSynapseSpine>& synapse : resourceSynapseData){
+        for (ResourceSpinePtr& synapse : resourceSynapseData){
         synapse->ApplyAllTempEffectsOnPostspike(PotentiationDepressionRatio, DecayHashTableSTDP);
         branches.at(synapse->GetBranchId())->IncreasePotentiationCount();
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
-        for (std::shared_ptr<ResourceBranch>& branch: resourceBranches){
+        for (RBranch& branch: resourceBranches){
             for (int synapseID : branch->updatedAlphaEffects){
-                std::shared_ptr<ResourceSynapseSpine>& synapse = resourceSynapseData.at(branch->synapseSlotToMorphoIDMap.at(synapseID));
+                ResourceSpinePtr& synapse = resourceSynapseData.at(branch->synapseSlotToMorphoIDMap.at(synapseID));
                 //if (synapse->GetDepressionFlagSTDP()){
                     //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
                     //And also pass the STDP map by reference to the function call
@@ -179,7 +179,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
     //if this postSpike bool
 }
 
-void BranchedResourceHeteroSTDP::DetectPossiblePairing(std::shared_ptr<ResourceBranch> branch)//These are the spiked neurons on synapseDataIndexes
+void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranch branch)//These are the spiked neurons on synapseDataIndexes
 {
     //Here we call SetTempEffects if __it__ happens
     for (int synapseIDinBranch : branch->spikedSynapsesInTheBranch){
@@ -190,7 +190,7 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(std::shared_ptr<ResourceB
     }
 }
 
-bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(std::shared_ptr<ResourceBranch> branch, int synapseIDinBranch)
+bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranch branch, int synapseIDinBranch)
 {
     return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
 }
@@ -202,7 +202,7 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
     std::set<int>& kernelizedSynapses = resourceBranches.at(branchID)->updatedSynapseSpines;
     std::set<int>& updatedAlphaEffects = resourceBranches.at(branchID)->updatedAlphaEffects;
     size_t& branchSlots{branches.at(branchID)->branchSlots};
-    std::shared_ptr<ResourceSynapseSpine>& centralSynapseSpine = resourceSynapseData.at(synapseSpineIDinMorpho);
+    ResourceSpinePtr& centralSynapseSpine = resourceSynapseData.at(synapseSpineIDinMorpho);
     //Only call this function if synapse itself has spiked this timestep
     for (int gapIndex = -kernelGapNumber; gapIndex<=kernelGapNumber;gapIndex++){ //And then use branchSynapseID+gapindex
         synapsePositionIndexInBranch = branchSynapseID+gapIndex;
@@ -212,7 +212,7 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
         } else if (synapsePositionIndexInBranch>branchSlots){//Condition to aboid illegal indexing (correct me if you dare)
             break;
         } else {
-            std::shared_ptr<ResourceSynapseSpine>& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap.at(synapsePositionIndexInBranch));
+            ResourceSpinePtr& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap.at(synapsePositionIndexInBranch));
             absDistance = std::abs(gapIndex);
             timeStepDifference=resourceBranches.at(branchID)->triggerCount.at(synapsePositionIndexInBranch);
             //timeStepDifference == triggerCount of first spine
@@ -265,42 +265,42 @@ void BranchedResourceHeteroSTDP::Reset()
     //Clear both sets in every branch DONE
     //REVIEW if there are any remaining things to put in this function
     ClearSynapseSets();
-    for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
+    for (RBranch& branch : resourceBranches){
         RecalcWeights(branch);
     }
     DeleteEffects();
     TickAllCounts();
 }
 
-void BranchedResourceHeteroSTDP::RecalcAlphas(std::shared_ptr<ResourceBranch> branch)
+void BranchedResourceHeteroSTDP::RecalcAlphas(RBranch branch)
 {
     //Here we just need to apply all delta alphas, decay them (before makes more sense, the bump has delta t zero.), sum the result to stationary alpha, then update alpha sums? Yes
-    for (std::shared_ptr<ResourceSynapseSpine> synapse : branch->branchSynapseData){
+    for (ResourceSpinePtr synapse : branch->branchSynapseData){
         synapse->RecalculateAlphaResources();
     }
     return;
 }
 
-void BranchedResourceHeteroSTDP::RecalcWeights(std::shared_ptr<ResourceBranch> branch) //This one is the one we call for every branch
+void BranchedResourceHeteroSTDP::RecalcWeights(RBranch branch) //This one is the one we call for every branch
 {
     RecalcAlphaSums(branch);
     branch->weightResourceFactor=betaResourcePool/(omegaPassiveResourceOffset+branch->alphaTotalSum);//IMPORTANT, if we make beta non-constant, beta must be referenced from the branch
-    for (std::shared_ptr<ResourceSynapseSpine>& synapse : branch->branchSynapseData){
+    for (ResourceSpinePtr& synapse : branch->branchSynapseData){
         synapse->RecalcWeight(branch->weightResourceFactor);
     }
     return;
 }
 
-void BranchedResourceHeteroSTDP::RecalcAlphaSums(std::shared_ptr<ResourceBranch> branch)
+void BranchedResourceHeteroSTDP::RecalcAlphaSums(RBranch branch)
 {
     RecalcAlphas(branch);
     branch->alphaTotalSum=std::accumulate(branch->branchSynapseData.begin(), branch->branchSynapseData.end(), 0.0,//UNRESOLVED, does this give intended output?
-                                       [] (double acc, const std::shared_ptr<ResourceSynapseSpine>& synapse) {return acc + synapse->GetAlphaResources();});
+                                       [] (double acc, const ResourceSpinePtr& synapse) {return acc + synapse->GetAlphaResources();});
     return;
 }
 void BranchedResourceHeteroSTDP::DeleteEffects()
 {
-    for (std::shared_ptr<ResourceSynapseSpine>& synapse : resourceSynapseData){
+    for (ResourceSpinePtr& synapse : resourceSynapseData){
         synapse->CullStimmulusVectors();
         // synapse->SetDepressionFlag(false);
         // synapse->SetPotentiationFlag(false);
@@ -309,10 +309,10 @@ void BranchedResourceHeteroSTDP::DeleteEffects()
 }
 void BranchedResourceHeteroSTDP::TickAllCounts()
 {
-    for (std::shared_ptr<ResourceBranch>& branch : resourceBranches){
+    for (RBranch& branch : resourceBranches){
         branch->TickAllCounts();
     }
-    for (std::shared_ptr<ResourceSynapseSpine>& synapse: resourceSynapseData){
+    for (ResourceSpinePtr& synapse: resourceSynapseData){
      synapse->TickStimmulusCounts();   
     }
     STDPDepressionCount++;//If it is unbound, no bool checks 
@@ -324,7 +324,7 @@ void BranchedResourceHeteroSTDP::TickAllCounts()
 
 void BranchedResourceHeteroSTDP::ClearSynapseSets()
 {
-    for (std::shared_ptr<ResourceBranch>& branch: resourceBranches){
+    for (RBranch& branch: resourceBranches){
         branch->updatedAlphaEffects.clear();
         branch->updatedSynapseSpines.clear();
     }
@@ -347,12 +347,12 @@ void BranchedResourceHeteroSTDP::RecordExcitatoryPreSpike(int spikedSynapseId)
     return;
 }
 
-std::shared_ptr<BaseSynapseSpine> BranchedResourceHeteroSTDP::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
+BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
 {
     //here I have to set the maxcount of the spine to maxCount too 
     //Here sum over the branches.????
     //And cast the proper pointers to the proper baseSynapseData vectors.
-    std::shared_ptr<ResourceSynapseSpine> newSynapse;
+    ResourceSpinePtr newSynapse;
     newSynapse = std::make_shared<ResourceSynapseSpine>();
     //Step weights has been removed fron here
     newSynapse->SetWeight(this->GenerateSynapticWeight());
@@ -376,11 +376,11 @@ std::shared_ptr<BaseSynapseSpine> BranchedResourceHeteroSTDP::AllocateNewSynapse
     //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
     branches.at(branch)->synapseSlotToMorphoIDMap.at(position)=newSynapse->GetIdInMorpho();
     //Storage (other)
-    this->baseSynapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
+    this->baseSynapseData.push_back(static_cast<BaseSpinePtr>(newSynapse));
     this->branchedSynapseData.push_back(static_cast<std::shared_ptr<BranchedSynapseSpine>>(newSynapse));
     this->resourceSynapseData.push_back(newSynapse);
 
-    return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
+    return static_cast<BaseSpinePtr>(newSynapse);
 }
 
 std::valarray<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
@@ -395,7 +395,7 @@ std::valarray<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
     std::valarray<double> dataArray(4);
     size_t sizeOfSynapseData {this->baseSynapseData.size()};
     double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
-                                       [] (double acc, const std::shared_ptr<BaseSynapseSpine>& syn) { return acc + syn->GetWeight(); });
+                                       [] (double acc, const BaseSpinePtr& syn) { return acc + syn->GetWeight(); });
     CalcMorphoPlasticityEvents();
 
    dataArray[0] = weightSum / sizeOfSynapseData;

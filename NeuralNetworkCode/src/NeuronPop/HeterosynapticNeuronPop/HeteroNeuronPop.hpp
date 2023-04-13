@@ -19,6 +19,8 @@
 #include "../../GlobalFunctions.hpp"
 #include "../NeuronPop.hpp"
 
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+
 class HeteroCurrentSynapse;
 class SynapseSpine;
 class HeteroNeuronPop: public NeuronPop {
@@ -47,7 +49,7 @@ public:
     void SetBranchedTrue(){isBranched=true;}
 
     // Heterosynaptic functionality
-    std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
+    BaseSpinePtr AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn) override;
     void RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId) override;
 
 

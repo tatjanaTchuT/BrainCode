@@ -13,6 +13,8 @@
 #include "../GlobalFunctions.hpp"
 #include "./HeterosynapticNeuronPop/Morphology/SynapseSpines/BaseSynapseSpine.hpp"
 
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+
 class HeteroCurrentSynapse;
 class SynapseSpine;
 
@@ -91,7 +93,7 @@ public:
     //All of the following functions throw to ease the virtualization, but it is a bad coding practice
 
     virtual void RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned long synapseId);
-    virtual std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
+    virtual BaseSpinePtr AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
     virtual std::string GetIndividualSynapticProfileHeaderInfo() const {return "{Something went wrong}";};
     virtual std::string GetOverallSynapticProfileHeaderInfo() const {return "{Something went wrong}";};
     //Task functions

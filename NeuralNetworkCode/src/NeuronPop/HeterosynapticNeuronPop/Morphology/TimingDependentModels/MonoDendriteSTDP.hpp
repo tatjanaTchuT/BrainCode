@@ -12,6 +12,8 @@
 #include "../Morphology.hpp"
 #include "../SynapseSpines/CoopSynapseSpine.hpp"
 
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+
 class HeteroCurrentSynapse;
 
 class MonoDendriteSTDP: public Morphology {
@@ -83,7 +85,7 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual std::shared_ptr<BaseSynapseSpine> AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
+    virtual BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
 
 
     //Revirtualization

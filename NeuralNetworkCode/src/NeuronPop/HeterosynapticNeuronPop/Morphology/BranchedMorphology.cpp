@@ -143,7 +143,7 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
 }
 
 
-std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)//This should not work
+BaseSpinePtr BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)//This should not work
 {
     std::shared_ptr<BranchedSynapseSpine> newSynapse;
     newSynapse = std::make_shared<BranchedSynapseSpine>();
@@ -168,14 +168,14 @@ std::shared_ptr<BaseSynapseSpine> BranchedMorphology::AllocateNewSynapse(HeteroC
     //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
     branches.at(branch)->synapseSlotToMorphoIDMap.at(position)=newSynapse->GetIdInMorpho();
     //Storage (other)
-    this->baseSynapseData.push_back(static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse));
+    this->baseSynapseData.push_back(static_cast<BaseSpinePtr>(newSynapse));
     this->branchedSynapseData.push_back(newSynapse);
 
     //this->spikedSynapses.push_back(false);
     //this->integratePostSpike.push_back(false);
     //this->integratePreSpike.push_back(false);
 
-    return static_cast<std::shared_ptr<BaseSynapseSpine>>(newSynapse);
+    return static_cast<BaseSpinePtr>(newSynapse);
 }
 
 int BranchedMorphology::AllocateBranch(const HeteroCurrentSynapse &synapse)
