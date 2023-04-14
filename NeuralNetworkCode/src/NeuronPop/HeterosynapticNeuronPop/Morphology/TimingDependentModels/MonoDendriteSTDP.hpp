@@ -85,7 +85,7 @@ public:
     void SaveParameters(std::ofstream * stream, std::string neuronPreId) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-    virtual BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse) override;
+    virtual BaseSpinePtr AllocateNewSynapse(const HeteroCurrentSynapse& synapse) override;
 
 
     //Revirtualization

@@ -99,7 +99,7 @@ void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, s
     for (int i = 0; i < 2;i++) {
         int branchId{this->GenerateBranchId()};
         this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId, this->resourceSynapseData)));//This vector should be sorted by ID by default (tested).
-        this->branches.push_back(static_cast<std::shared_ptr<Branch>>(this->resourceBranches.back()));
+        this->branches.push_back(static_cast<BranchPtr>(this->resourceBranches.back()));
         //Constructor here
         if(remainingBranchingEvents>0){
             std::vector<int> anteriorBranchesCopy(anteriorBranches);
@@ -179,7 +179,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
     //if this postSpike bool
 }
 
-void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr branch)//These are the spiked neurons on synapseDataIndexes
+void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr& branch)//These are the spiked neurons on synapseDataIndexes
 {
     //Here we call SetTempEffects if __it__ happens
     for (int synapseIDinBranch : branch->spikedSynapsesInTheBranch){
@@ -190,7 +190,7 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr branch)//These
     }
 }
 
-bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranchPtr branch, int synapseIDinBranch)
+bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch)
 {
     return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
 }
@@ -272,7 +272,7 @@ void BranchedResourceHeteroSTDP::Reset()
     TickAllCounts();
 }
 
-void BranchedResourceHeteroSTDP::RecalcAlphas(RBranchPtr branch)
+void BranchedResourceHeteroSTDP::RecalcAlphas(RBranchPtr& branch)
 {
     //Here we just need to apply all delta alphas, decay them (before makes more sense, the bump has delta t zero.), sum the result to stationary alpha, then update alpha sums? Yes
     for (ResourceSpinePtr synapse : branch->branchSynapseData){
@@ -281,7 +281,7 @@ void BranchedResourceHeteroSTDP::RecalcAlphas(RBranchPtr branch)
     return;
 }
 
-void BranchedResourceHeteroSTDP::RecalcWeights(RBranchPtr branch) //This one is the one we call for every branch
+void BranchedResourceHeteroSTDP::RecalcWeights(RBranchPtr& branch) //This one is the one we call for every branch
 {
     RecalcAlphaSums(branch);
     branch->weightResourceFactor=betaResourcePool/(omegaPassiveResourceOffset+branch->alphaTotalSum);//IMPORTANT, if we make beta non-constant, beta must be referenced from the branch
@@ -291,7 +291,7 @@ void BranchedResourceHeteroSTDP::RecalcWeights(RBranchPtr branch) //This one is 
     return;
 }
 
-void BranchedResourceHeteroSTDP::RecalcAlphaSums(RBranchPtr branch)
+void BranchedResourceHeteroSTDP::RecalcAlphaSums(RBranchPtr& branch)
 {
     RecalcAlphas(branch);
     branch->alphaTotalSum=std::accumulate(branch->branchSynapseData.begin(), branch->branchSynapseData.end(), 0.0,//UNRESOLVED, does this give intended output?
@@ -347,13 +347,12 @@ void BranchedResourceHeteroSTDP::RecordExcitatoryPreSpike(int spikedSynapseId)
     return;
 }
 
-BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(HeteroCurrentSynapse &synapse)
+BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentSynapse& synapse)
 {
     //here I have to set the maxcount of the spine to maxCount too 
     //Here sum over the branches.????
     //And cast the proper pointers to the proper baseSynapseData vectors.
-    ResourceSpinePtr newSynapse;
-    newSynapse = std::make_shared<ResourceSynapseSpine>();
+    ResourceSpinePtr newSynapse = std::make_shared<ResourceSynapseSpine>();
     //Step weights has been removed fron here
     newSynapse->SetWeight(this->GenerateSynapticWeight());
 
@@ -413,8 +412,8 @@ std::string BranchedResourceHeteroSTDP::GetOverallSynapticProfileHeaderInfo() co
 void BranchedResourceHeteroSTDP::CalcMorphoPlasticityEvents()
 {
     totalLTDEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (int acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTDevents; });
+                                       [] (int acc, const BranchPtr& branch) { return acc + branch->LTDevents; });
     totalLTPEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (int acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTPevents; });
+                                       [] (int acc, const BranchPtr& branch) { return acc + branch->LTPevents; });
     totalPlasticityEvents = totalLTDEvents + totalLTPEvents;
 }

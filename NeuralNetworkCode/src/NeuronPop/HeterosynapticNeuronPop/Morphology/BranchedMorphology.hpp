@@ -13,7 +13,8 @@
 #include "./SynapseSpines/BaseSynapseSpine.hpp"
 #include "./SynapseSpines/BranchedSynapseSpine.hpp"
 
-typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+typedef std::shared_ptr<Branch> BranchPtr;
+typedef std::shared_ptr<BranchedSynapseSpine> BranchedSpinePtr;
 
 class BranchedMorphology : public Morphology {
 
@@ -38,8 +39,8 @@ protected:
     bool OrderedBranchAllocationB{false};// If not properly loaded from LP, exception
     bool RandomBranchAllocationB{false};*/
 
-    std::vector<std::shared_ptr<Branch>> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
-    std::vector<std::shared_ptr<BranchedSynapseSpine>> branchedSynapseData;//They are just pointers, what is the worst that can happen by having multiple copies?
+    std::vector<BranchPtr> branches{};//unique_ptr's constructor is explicit, so you either need to use emplace_back or stuff.push_back(std::unique_ptr<int>(new int(i)));. Between the two, emplace_back is much cleaner.
+    std::vector<BranchedSpinePtr> branchedSynapseData;//They are just pointers, what is the worst that can happen by having multiple copies?
 public:
     explicit BranchedMorphology(GlobalSimInfo * info);
     ~BranchedMorphology() = default;
@@ -59,23 +60,23 @@ public:
 
     //Branched specific methods
     void SetUpBranchedMorphology();
-    void SetUpSynapseSlots(std::shared_ptr<Branch> branch); //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
+    void SetUpSynapseSlots(BranchPtr branch); //This function will set up the open synapse slots of a branch object with its id.This one I have to define in the parallel synaptic connectivity masks or the derived classes
     //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
     //The overriding function calls functions of BMorpho. 
     virtual void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
 
     //Allocation shennanigans
     
-    BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
+    BaseSpinePtr AllocateNewSynapse(const HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget
 
     int AllocateBranch(const HeteroCurrentSynapse &synapse);//The selected branch allocation is simple. This function is called in AllocateNewSynapse
     int RandomBranchAllocation();
     int OrderedBranchAllocation();
     //setBranchAllocation() is implicit in the function (or has to be) allocate NewSynapse
     //virtual int orderedGuidedBranchAllocation(const char DendriticSubRegionID);
-    void RandomSynapseAllocation(std::shared_ptr<Branch> branch);
-    void OrderedSynapseAllocation(std::shared_ptr<Branch> branch);//These two are coming from the SetUpSynapseSlots already, called depending on a bool. 
-    //virtual void AlternatedSynapseAllocation(std::shared_ptr<Branch> branch);
+    void RandomSynapseAllocation(BranchPtr& branch);
+    void OrderedSynapseAllocation(BranchPtr& branch);//These two are coming from the SetUpSynapseSlots already, called depending on a bool. 
+    //virtual void AlternatedSynapseAllocation(BranchPtr branch);
     //
     bool const IsBranchedBool() override {return true;}
     int GenerateBranchId(){return branchIdGenerator++;}

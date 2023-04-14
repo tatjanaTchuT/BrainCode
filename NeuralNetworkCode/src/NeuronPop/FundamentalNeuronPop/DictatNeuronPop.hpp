@@ -42,7 +42,7 @@ class DictatNeuronPop: public NeuronPop {
     void GenerateSpikersFromInstructions();
     void ReadSpikersFromFile();
 
-    std::string GetType() override {return str_InputNeuron;}
+    std::string GetType() override {return str_DictatNeuron;}
 }; 
 
 #endif

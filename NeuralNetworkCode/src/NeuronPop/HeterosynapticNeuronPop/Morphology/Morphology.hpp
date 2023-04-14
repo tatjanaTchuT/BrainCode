@@ -14,6 +14,7 @@
 #include <string>
 
 typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
+typedef std::shared_ptr<Branch> BranchPtr;
 
 enum WeightNormalization {
     NOPNormalization, HardNormalization, SoftMaxNormalization
@@ -38,6 +39,7 @@ protected:
     GlobalSimInfo * info;
 
     std::vector<BaseSpinePtr> baseSynapseData;
+
     double weightsSum {};
     double totalPostSpikes {};
     double totalPreSpikes {};
@@ -74,7 +76,7 @@ public:
     virtual void SaveParameters(std::ofstream * stream, std::string neuronPreId);
     virtual void LoadParameters(std::vector<std::string> *input);
 
-    virtual BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse)=0;
+    virtual BaseSpinePtr AllocateNewSynapse(const HeteroCurrentSynapse& synapse)=0;
     double GenerateSynapticWeight();// Here we generate the synaptic weight to be allocated when a synapse is allocated
     virtual const std::string GetType() = 0;
 

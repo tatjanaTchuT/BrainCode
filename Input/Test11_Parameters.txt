@@ -23,7 +23,7 @@ scaling_C_N                 0				# Set = 0 to scale with number of presynaptic n
 neurons_noPopulations                 2
 #***********************************************
 neurons_0_noNeurons                   10
-neurons_0_type                        InputNeuron
+neurons_0_type                        DictatNeuron
 neurons_0_inputFile		  instruction
 neurons_0_tauM                        0.010000 seconds
 neurons_0_vReset                      0.000000 mV 

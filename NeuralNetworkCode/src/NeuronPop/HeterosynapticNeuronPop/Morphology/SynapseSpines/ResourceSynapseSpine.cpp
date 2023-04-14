@@ -42,7 +42,7 @@ void ResourceSynapseSpine::AddTempResourcesToSpine(double alphaStimmulusInput)
     potentiationAlphaTempAndCount.emplace_back(PairDI(std::abs(alphaStimmulusInput), 0));
 }
 
-void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double PotentiationDepressionRatio, DHashMap& STDPdecayMap)
+void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double PotentiationDepressionRatio, const DHashMap& STDPdecayMap)
 {
     // kStimmulus=std::accumulate(kStimmulusTempEffect.begin(), kStimmulusTempEffect.end(), kStimmulus, [PotentiationDepressionRatio](double accumulator, double kStemp){return accumulator + kStemp*PotentiationDepressionRatio;});
     // nStimmulus=std::accumulate(nStimmulusTempEffect.begin(), nStimmulusTempEffect.end(), nStimmulus, [PotentiationDepressionRatio](double accumulator, double nStemp){return accumulator + nStemp*PotentiationDepressionRatio;});
@@ -50,7 +50,7 @@ void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double PotentiationDep
     // nStimmulusTempEffect.clear();
     //stimmulusEffectCount.clear();
     //PotentiationDepressionRatio is to boost potentiation compared to depression, but also to input the current decay
-    alphaStimmulus=std::accumulate(potentiationAlphaTempAndCount.begin(), potentiationAlphaTempAndCount.end(), alphaStimmulus, [PotentiationDepressionRatio, STDPdecayMap](double accumulator, PairDI& alphaStemp){return accumulator + alphaStemp.first*PotentiationDepressionRatio*STDPdecayMap.at(alphaStemp.second);});
+    alphaStimmulus=std::accumulate(potentiationAlphaTempAndCount.begin(), potentiationAlphaTempAndCount.end(), alphaStimmulus, [PotentiationDepressionRatio, STDPdecayMap](double accumulator, const PairDI& alphaStemp){return accumulator + alphaStemp.first*PotentiationDepressionRatio*STDPdecayMap.at(alphaStemp.second);});
     // if (alphaStimmulus+alphaBasal<0.0){
     //     alphaStimmulus= (-alphaBasal);
     // }
@@ -65,10 +65,10 @@ void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(double PotentiationDep
 //     // }
 // }
 
-void ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(DHashMap &STDPdecayMap, int STDPcount)
+void ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount)
 {
     //This is because depression updates instantly
-    alphaStimmulus=std::accumulate(depressionAlphaTempAndCount.begin(), depressionAlphaTempAndCount.end(), alphaStimmulus, [STDPdecayMap, STDPcount](double accumulator, PairDI& alphaStemp){return accumulator - alphaStemp.first*STDPdecayMap.at(STDPcount);});
+    alphaStimmulus=std::accumulate(depressionAlphaTempAndCount.begin(), depressionAlphaTempAndCount.end(), alphaStimmulus, [STDPdecayMap, STDPcount](double accumulator, const PairDI& alphaStemp){return accumulator - alphaStemp.first*STDPdecayMap.at(STDPcount);});
     
     if (alphaStimmulus+alphaBasal<0.0){
         alphaStimmulus= (-alphaBasal);

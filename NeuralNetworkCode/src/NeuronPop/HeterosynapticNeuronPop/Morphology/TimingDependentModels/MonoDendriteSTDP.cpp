@@ -264,15 +264,13 @@ void MonoDendriteSTDP::Reset()
     this->spikedSynapsesId.clear();
 }
 
-BaseSpinePtr MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse) {
+BaseSpinePtr MonoDendriteSTDP::AllocateNewSynapse(const HeteroCurrentSynapse& synapse) {
 
     std::uniform_real_distribution<double> distribution(0.0,2.0);
 
-    std::shared_ptr<CoopSynapseSpine> newSynapse;
+    std::shared_ptr<CoopSynapseSpine> newSynapse = std::make_shared<CoopSynapseSpine>();
 
-    if (this->nextPos < this->dendriticLength) {
-        newSynapse = std::make_shared<CoopSynapseSpine>();
-
+    if (this->nextPos < this->dendriticLength) { //This is very badly thought. The synapse allocation should throw, and not allow the programme to keep going with an unresolved issue
 //        if (this->allocateDistal) {
 //            newSynapse->distToSoma = this->posHi;
 //            this->posHi -= this->synapticGap;
@@ -311,6 +309,8 @@ BaseSpinePtr MonoDendriteSTDP::AllocateNewSynapse(HeteroCurrentSynapse& synapse)
         this->spikedSynapses.push_back(false);
         this->integratePostSpike.push_back(false);
         this->integratePreSpike.push_back(false);
+    } else {
+        throw;
     }
 
     return static_cast<BaseSpinePtr>(newSynapse);

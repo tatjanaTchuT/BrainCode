@@ -9,9 +9,10 @@
 
 class BranchedMorphology;
 
-typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
 typedef std::shared_ptr<ResourceBranch> RBranchPtr;
+typedef std::shared_ptr<Branch> BranchPtr;
 typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
 typedef std::unordered_map<int, double> DHashMap;
 typedef std::unordered_map<int, DHashMap> NestedDHashMap;
 
@@ -77,12 +78,11 @@ public:
 
     const std::string GetType() override {return str_BranchedResourceHeteroSTDP;};
 
-    
     //Advect methods
     void advect() override;
     //Pairing functions
-    void DetectPossiblePairing(RBranchPtr branch);
-    bool CheckIfThereIsPairing(RBranchPtr branch, int synapseIDinBranch);
+    void DetectPossiblePairing(RBranchPtr& branch);
+    bool CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch);
     void SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho);
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
     //Plasticity events functions
@@ -96,15 +96,15 @@ public:
     void TickAllCounts();//Last method called in Reset()
     void ClearSynapseSets();
     //Recalc methods. These methods have to be done per branch
-    void RecalcAlphas(RBranchPtr branch);//Run in LP
-    void RecalcWeights(RBranchPtr branch);//Run in LP
-    void RecalcAlphaSums(RBranchPtr branch);//Called inside recalc weights
+    void RecalcAlphas(RBranchPtr& branch);//Run in LP
+    void RecalcWeights(RBranchPtr& branch);//Run in LP
+    void RecalcAlphaSums(RBranchPtr& branch);//Called inside recalc weights
     //Record methods
     void RecordPostSpike() override;
     void RecordExcitatoryPreSpike(int spikedSynapseId) override;//Here set the trigger count to 0
 
     //Allocation methods
-    BaseSpinePtr AllocateNewSynapse(HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters
+    BaseSpinePtr AllocateNewSynapse(const HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters
         //Remember to set all counts to maxCount    
     //Record functions
     std::valarray<double> GetOverallSynapticProfile() override;

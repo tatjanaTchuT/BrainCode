@@ -97,7 +97,7 @@ const std::string str_LIFNeuron{"LIFNeuron"};
 const std::string str_QIFNeuron{"QIFNeuron"};
 const std::string str_EIFNeuron{"EIFNeuron"};
 const std::string str_PoissonNeuron{"PoissonNeuron"};
-const std::string str_InputNeuron{"InputNeuron"};
+const std::string str_DictatNeuron{"DictatNeuron"};
 const std::string str_HeteroLIFNeuron{"HeteroLIFNeuron"};
 const std::string str_HeteroPoissonNeuron{"HeteroPoissonNeuron"};
 

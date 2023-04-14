@@ -94,7 +94,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
         } else if (type == str_HeteroPoissonNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
             neuronPops[p] = new HeteroPoissonNeuronPop(info, p);
-        }else if (type == str_InputNeuron) {
+        }else if (type == str_DictatNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation
             neuronPops[p] = new DictatNeuronPop(info, p);
         }else {

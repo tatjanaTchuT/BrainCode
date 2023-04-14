@@ -18,7 +18,7 @@ void BranchedMorphology::RecordExcitatoryPreSpike(int spikedSynapseId) {
 
 void BranchedMorphology::Reset()
 {
-    for (std::shared_ptr<Branch> branch : branches){
+    for (BranchPtr branch : branches){
         // std::fill(branch->spikedSyn.begin(), branch->spikedSyn.end(), false);
         branch->spikedSynapsesInTheBranch.clear();
     }
@@ -92,7 +92,7 @@ void BranchedMorphology::SetUpBranchedMorphology()
     }
 }
 
-void BranchedMorphology::SetUpSynapseSlots(std::shared_ptr<Branch> branch)
+void BranchedMorphology::SetUpSynapseSlots(BranchPtr branch)
 {
     if (this->orderedSynAllocationB){
         this->OrderedSynapseAllocation(branch);
@@ -143,10 +143,9 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
 }
 
 
-BaseSpinePtr BranchedMorphology::AllocateNewSynapse(HeteroCurrentSynapse &synapse)//This should not work
+BaseSpinePtr BranchedMorphology::AllocateNewSynapse(const HeteroCurrentSynapse& synapse)//This should not work
 {
-    std::shared_ptr<BranchedSynapseSpine> newSynapse;
-    newSynapse = std::make_shared<BranchedSynapseSpine>();
+    BranchedSpinePtr newSynapse = std::make_shared<BranchedSynapseSpine>();
 
     //REFORMAT, REWRITE WITH CONSTRUCTOR    
     //Step weights has been removed fron here
@@ -214,7 +213,7 @@ int BranchedMorphology::OrderedBranchAllocation()
     return branchId;
 }
 
-void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)
+void BranchedMorphology::RandomSynapseAllocation(BranchPtr& branch)
 {
     //std::default_random_engine& generator = this->generator;
     std::vector<int> possibleSlots(branch->branchSlots);
@@ -224,7 +223,7 @@ void BranchedMorphology::RandomSynapseAllocation(std::shared_ptr<Branch> branch)
     //Then I will have to pop_front() in AllocateNewSynapse
 }
 
-void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch)
+void BranchedMorphology::OrderedSynapseAllocation(BranchPtr& branch)
 {
     std::deque<int> possibleSlots(branch->branchSlots);
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
@@ -233,7 +232,7 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
     //Then I will have to pop_front() in AllocateNewSynapse
 }
 
-/*void BranchedMorphology::AlternatedSynapseAllocation(std::shared_ptr<Branch> branch)
+/*void BranchedMorphology::AlternatedSynapseAllocation(BranchPtr branch)
 {
         for (auto& branch:branches){
         std::deque<int> possibleSlots(branch->branchSlots);
@@ -245,7 +244,7 @@ void BranchedMorphology::OrderedSynapseAllocation(std::shared_ptr<Branch> branch
 void BranchedMorphology::CalcMorphoPlasticityEvents()
 {
     totalPlasticityEvents=std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
-                                       [] (unsigned long acc, const std::shared_ptr<Branch>& branch) { return acc + branch->LTPevents + branch->LTDevents; });
+                                       [] (unsigned long acc, const BranchPtr& branch) { return acc + branch->LTPevents + branch->LTDevents; });
 }
 
 void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
