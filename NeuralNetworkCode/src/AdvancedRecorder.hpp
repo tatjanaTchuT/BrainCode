@@ -100,7 +100,7 @@ protected:
 public:
 
     AdvancedRecorder(NeuronPopSample *ns,SynapseSample *syn,Stimulus *sti,std::string baseDir,std::vector<std::string> *input,std::string str_t,GlobalSimInfo * info);
-    ~AdvancedRecorder() {}
+    ~AdvancedRecorder()=default;
 
     void WriteDataHeader();
     void writeFinalDataFile(double comp_time);

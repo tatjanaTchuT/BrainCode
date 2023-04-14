@@ -35,7 +35,7 @@ protected:
     void SaveSynapseType(std::string name,std::string type,std::vector<std::string> *input);
 public:
     SynapseSample(NeuronPopSample * neurons,std::vector<std::string> *input,GlobalSimInfo *info);
-    ~SynapseSample();
+    ~SynapseSample();//Need to make default, doable after moving arrays and pointer resources to std types, smart pointers and references
 
     void   ConnectNeurons();
     void   WriteConnectivity(std::string filename,int noNeuronsConnectivity);

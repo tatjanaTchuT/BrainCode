@@ -13,8 +13,6 @@ NeuronPop::NeuronPop(GlobalSimInfo * info,int id){
     v_thresh               = 0;
 }
 
-NeuronPop::~NeuronPop(){}
-
 
 void NeuronPop::SetSeeds(int seed1,int seed2) {
     seed_InitialPrevSpike  = seed1;

@@ -48,7 +48,7 @@ protected:
 public:
     // constructor
     NeuronPop(GlobalSimInfo * info,int id);
-    virtual ~NeuronPop();
+    virtual ~NeuronPop()=default;
 
     //*******************
     //Get-Functions

@@ -23,7 +23,7 @@ protected:
 
 public:
     PoissonNeuronPop(GlobalSimInfo * info,int id);
-    virtual ~PoissonNeuronPop(){};
+    virtual ~PoissonNeuronPop()=default;
 
     void advect(std::vector<double> * synaptic_dV);
 

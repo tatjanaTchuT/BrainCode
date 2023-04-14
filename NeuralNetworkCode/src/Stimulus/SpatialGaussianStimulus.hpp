@@ -36,7 +36,7 @@ protected:
 public:
 
 	SpatialGaussianStimulus(NeuronPopSample * neur,std::vector<std::string> *input,GlobalSimInfo  * info);
-    virtual ~SpatialGaussianStimulus(){}
+    virtual ~SpatialGaussianStimulus();
 
     std::string GetType(){return str_spatialgaussianStimulus;}
     void        Update(std::vector<std::vector<double>> * synaptic_dV);
