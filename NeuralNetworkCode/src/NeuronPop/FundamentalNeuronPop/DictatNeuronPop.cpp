@@ -133,7 +133,7 @@ void DictatNeuronPop::ReadSpikersFromFile()
    char* entry = new char[2048];
     inputStreamFile.getline(entry, 256);
         if(entry[0] == '>'){
-            FileEntry s_entry {std::move(stringToFileEntry(std::move(static_cast<std::string>(entry))))};
+            FileEntry s_entry {stringToFileEntry(std::move(static_cast<std::string>(entry)))};
             long timeStep{std::lround(std::stod(s_entry.values.at(0))/info->dt)};
             if (timeStep != info->time_step){
                 std::cout<<"There was a reading alignment error";
