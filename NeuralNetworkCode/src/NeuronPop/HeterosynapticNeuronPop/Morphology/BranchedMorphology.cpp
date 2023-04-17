@@ -180,7 +180,7 @@ BaseSpinePtr BranchedMorphology::AllocateNewSynapse(const HeteroCurrentSynapse& 
 int BranchedMorphology::AllocateBranch(const HeteroCurrentSynapse &synapse)
 {
         const BranchTargeting& target= synapse.getBranchTarget();
-        if (target.setTargetBranch && !(target.targetBranch>this->branches.size())){
+        if (target.setTargetBranch && !(target.targetBranch>=this->branches.size())){//SHould this condition be equal or less than?
             return target.targetBranch;
         } else if (target.randomTargetBranch){
             return RandomBranchAllocation();
