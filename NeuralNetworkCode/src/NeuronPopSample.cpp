@@ -73,6 +73,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
             if(name.find("type") != std::string::npos){
                 //std::cout << values.at(0) << "\n";
                 type = values.at(0);
+                break;
             }
         }
 
@@ -86,7 +87,7 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 			neuronPops[p] = new EIFNeuronPop(info, p);
         } else if (type == str_PoissonNeuron) {
             neuronPops[p] = new PoissonNeuronPop(info, p);
-        } else if (type==str_QIFNeuron){
+        } else if (type == str_QIFNeuron){
             neuronPops[p] = new QIFNeuronPop(info, p);
         } else if (type == str_HeteroLIFNeuron) {
             // using more than 1 population wouSld mean there must be communcation between Connectivity objects that share the same target popluation

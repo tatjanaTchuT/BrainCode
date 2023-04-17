@@ -147,7 +147,7 @@ void HeteroCurrentSynapse::LoadParameters(std::vector<std::string> *input){
     for(std::vector<std::string>::iterator it = (*input).begin(); it != (*input).end(); ++it) {
         SplitString(&(*it),&name,&values);
         if(name.find("target_branch") != std::string::npos){
-            if (values.at(0).find("random")){
+            if (values.at(0).find("random") != std::string::npos){
                 this->synapseTargeting.randomTargetBranch=true;
             } else if (values.at(0).find("none") != std::string::npos){
                 //Here nothing is done to handle the case where we do not used branched
