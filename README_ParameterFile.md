@@ -33,7 +33,7 @@ As an example, here is what the example parameter file defines:
 Each line is a type of output file that can be generated from the simulation. More information is available in the Output Files Wiki. In the default case, all values are set to 0, so only the default Data file is created. The parameter binSize determines the size of the bins with which time is binned. Here, the value is 10 ms, so the Data file will report averages over 10ms of various states of the system.
 
 ## Synaptic Parameters
-Every pair of population has its own Synapse object. Here, we have the four: 0→0, 1→0, 0→1 and 1→1. Each of them is defined separately.
+Every pair of population has its own Synapse object. Here, we have the four: 0<-0, 1<-0, 0<-1 and 1<-1 (first number is postsynaptic population, second presynaptic). Each of them is defined separately.
 
 - type: the model used for the synapse. Here, all four are set to Current Synapse, which is the simplest case: current-based synapses, without plasticity and the PSP is applied at a single time point.
 - D_min and D_max: these parameters define the range of synaptic delays. Each synapse has its own synaptic delay D which is randomly generated at the start of the simulation. D is randomly distributed between D_min and D_max. Here, D_min and D_max are both set to 0 for all synapses, so the PSP is applied at the same time step as the presynaptic spike in all synapses. 
