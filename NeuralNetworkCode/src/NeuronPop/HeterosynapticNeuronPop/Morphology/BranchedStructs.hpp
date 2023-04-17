@@ -10,6 +10,7 @@
 
 typedef std::unordered_map<int, int> IHashMap;
 typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
+typedef std::shared_ptr<BranchedSynapseSpine> BranchedSpinePtr;
 
 struct DendriticSubRegion{
     const char regionID;
@@ -50,7 +51,7 @@ struct Branch{
     //Methods
     //Branch()=default;
     Branch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId);
-
+    virtual void postConnectSetUp(std::vector<BranchedSpinePtr> synapseData);
     //virtual void IncreasePlasticityCounter(){plasticityBranchEventsTotal++;}
     void IncreasePotentiationCount(){LTPevents++;}
     void IncreaseDepressionCount(){LTDevents++;}
@@ -82,8 +83,9 @@ struct ResourceBranch : public Branch {
         //Do we clear() after a trigger or not? Most of the function would be the same, or put some refractory period UNRESOLVED
         //Here we could create a false history of plasticity events
     //Methods
-    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId, std::vector<ResourceSpinePtr> branchSynapseData);
-    void SetUpSynapseData(std::vector<ResourceSpinePtr> branchSynapseData);
+    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId);
+    void postConnectSetUp(std::vector<BranchedSpinePtr> synapseData) override;
+    void SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData);
         //Count related functions
     void TickAllCounts();//Use ternary operator. Called in Reset()
     //void TickCounts(std::vector<int>& countVector);

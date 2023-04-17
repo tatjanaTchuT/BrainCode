@@ -95,7 +95,7 @@ void ResourceSynapseSpine::CullStimmulusVectors()
         //Here we iterate over the alpha temporary effects on reverse. That way the first time we find a time-obsolete effect, we delete everything before it.
         //This is because everything before the last (first in reverse) count that reached max is older, so they must have reached the max count too
         if (reverseIterator->second>=maxCount){
-            potentiationAlphaTempAndCount.erase(potentiationAlphaTempAndCount.begin(), std::next(reverseIterator).base());
+            potentiationAlphaTempAndCount.erase(potentiationAlphaTempAndCount.begin(), reverseIterator.base());
             break;
         }
     }

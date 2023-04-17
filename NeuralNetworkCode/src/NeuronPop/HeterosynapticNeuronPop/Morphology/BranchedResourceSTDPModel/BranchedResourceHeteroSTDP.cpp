@@ -37,7 +37,7 @@ void BranchedResourceHeteroSTDP::LoadParameters(std::vector<std::string> *input)
             this->ExpDecayConstantSTDP = std::stod(values.at(0));
         } else if (name.find("potentiation_depression_ratio") != std::string::npos){
             this->PotentiationDepressionRatio = std::stod(values.at(0));
-        } else if (name.find("pairing_time_window") != std::string::npos){
+        } else if (name.find("kernel_time_window") != std::string::npos){
             this->branchMaxCountTrigger = static_cast<int>(std::stod(values.at(0))/this->info->dt);
         } else if (name.find("STDP_time_window") != std::string::npos){
             this->MaxCountSTDP = static_cast<int>(std::stod(values.at(0))/this->info->dt);
@@ -53,7 +53,7 @@ void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::stri
     *stream << "\t"<<"#Alpha at rest, where alpha decays towards\n";
 
     *stream << neuronPreId<<"_morphology_alpha_decay_constant\t\t"<<std::to_string(this->alphaStimmulusExpTau);
-    *stream << "\t"<<"#Decay constant of Alpha_stimmulus\n";
+    *stream << "#seconds\t"<<"#Decay constant of Alpha_stimmulus\n";
 
     *stream << neuronPreId<<"_morphology_base_alpha_increase\t\t"<<std::to_string(this->baseAlphaStimmulusBump);
     *stream << "\t"<<"#Default alphaStimmulus increase before applying spatial and temporal decays\n";
@@ -65,28 +65,28 @@ void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::stri
     *stream << "\t"<<"#Multiplication factor of the definition of weight, representing the available 'total resources'.\n";
 
     *stream << neuronPreId<<"_morphology_kernel_spatial_length\t\t"<<std::to_string(this->kernelGapNumber*this->synapticGap);
-    *stream << "\t"<<"#Limit distance between two spines to be considered for synaptic spine pairing.\n";
+    *stream << "#μm\t"<<"#Limit distance between two spines to be considered for synaptic spine pairing.\n";
 
     *stream << neuronPreId<<"_morphology_kernel_temporal_length\t\t"<<std::to_string(this->timeKernelLength*this->info->dt);//CHANGE
-    *stream << "\t"<<"#Maximum time length between two spikes in contiguous spines to be considered for synaptic spine pairing\n";
+    *stream << "#seconds\t"<<"#Maximum time length between two spikes in contiguous spines to be considered for synaptic spine pairing\n";
 
     *stream << neuronPreId<<"_morphology_kernel_tau\t\t"<<std::to_string(this->timeKernelExpDecayConstant);//CHANGE
-    *stream << "\t"<<"#Time decay constant for the alpha stimmulus increase in the pairing kernel\n";
+    *stream << "#seconds\t"<<"#Time decay constant for the alpha stimmulus increase in the pairing kernel\n";
 
     *stream << neuronPreId<<"_morphology_kernel_lambda\t\t"<<std::to_string(this->spaceKernelExpDecayConstant);//CHANGE
-    *stream << "\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
+    *stream << "#μm\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
+
+    *stream << neuronPreId<<"_morphology_kernel_time_window\t\t"<<std::to_string(this->branchMaxCountTrigger*this->info->dt);//CHANGE
+    *stream << "#seconds\t"<<"#Max time where synaptic spine pairing can happen\n";
 
     *stream << neuronPreId<<"_morphology_STDP_tau\t\t"<<std::to_string(this->ExpDecayConstantSTDP);//CHANGE
-    *stream << "\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
+    *stream << "#seconds\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
+    
+    *stream << neuronPreId<<"_morphology_STDP_time_window\t\t"<<std::to_string(this->MaxCountSTDP*this->info->dt);//CHANGE
+    *stream << "#seconds\t"<<"#Max time where STDP potentiation/depression can happen\n";
 
     *stream << neuronPreId<<"_morphology_potentiation_depression_ratio\t"<<std::to_string(this->PotentiationDepressionRatio);//CHANGE
     *stream << "\t"<<"#Factor that multiplies potentiation\n";
-
-    *stream << neuronPreId<<"_morphology_pairing_time_window\t\t"<<std::to_string(this->branchMaxCountTrigger*this->info->dt);//CHANGE
-    *stream << "\t"<<"#Max time where synaptic spine pairing can happen\n";
-
-    *stream << neuronPreId<<"_morphology_STDP_time_window\t\t"<<std::to_string(this->MaxCountSTDP*this->info->dt);//CHANGE
-    *stream << "\t"<<"#Max time where STDP potentiation/depression can happen\n";
 
     *stream <<"##### The weight of this model is defined as wI=beta*alphaI/(omega+branch-sum(alpha)), where alphaI= alphaBasal + alphaStimmulus*exp(-dt/alphaStimTau) \n";
 }
@@ -98,7 +98,7 @@ void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, s
     //First call is done with an empty int vector
     for (int i = 0; i < 2;i++) {
         int branchId{this->GenerateBranchId()};
-        this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId, this->resourceSynapseData)));//This vector should be sorted by ID by default (tested).
+        this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId)));//This vector should be sorted by ID by default (tested).
         this->branches.push_back(static_cast<BranchPtr>(this->resourceBranches.back()));
         //Constructor here
         if(remainingBranchingEvents>0){
@@ -119,14 +119,16 @@ void BranchedResourceHeteroSTDP::SetUpHashTables()
     spaceTimeStepRelation = timeKernelLength/kernelGapNumber;
     kernelRadius=timeKernelLength+spaceTimeStepRelation;
     for (int spaceIndex=0; spaceIndex<=kernelGapNumber; spaceIndex++){//at least there is one gap
+        DHashMap tempHashMap{};
         for (int timeIndex=0; timeIndex<=timeKernelLength-(spaceTimeStepRelation*(spaceIndex-1)); timeIndex++){ 
-            kernelHashTable.at(timeIndex).at(spaceIndex)=std::exp(-(synapticGap*spaceIndex)/spaceKernelExpDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelExpDecayConstant);
+            tempHashMap[timeIndex]=std::exp(-(synapticGap*spaceIndex)/spaceKernelExpDecayConstant)*std::exp(-(info->dt*timeIndex)/timeKernelExpDecayConstant);
             //Always access time, space later (always will be more times than gaps)
         }
+        kernelHashTable[spaceIndex] = tempHashMap;
     }
 
-    for (int STDPindex=1; STDPindex<=MaxCountSTDP; STDPindex++){
-        DecayHashTableSTDP.at(STDPindex)=std::exp(-(STDPindex*info->dt)/ExpDecayConstantSTDP);
+    for (int STDPindex=0; STDPindex<=MaxCountSTDP; STDPindex++){
+        DecayHashTableSTDP[STDPindex]=std::exp(-(STDPindex*info->dt)/ExpDecayConstantSTDP);
     }
 }
 
@@ -209,10 +211,10 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
         alphaStimmulusEffect = baseAlphaStimmulusBump;
         if (synapsePositionIndexInBranch<0){//Condition to aboid illegal indexing (correct me if you dare)
             continue;
-        } else if (synapsePositionIndexInBranch>branchSlots){//Condition to aboid illegal indexing (correct me if you dare)
+        } else if (synapsePositionIndexInBranch>=branchSlots){//Condition to aboid illegal indexing (correct me if you dare)
             break;
         } else {
-            ResourceSpinePtr& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap.at(synapsePositionIndexInBranch));
+            ResourceSpinePtr& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap[synapsePositionIndexInBranch]);
             absDistance = std::abs(gapIndex);
             timeStepDifference=resourceBranches.at(branchID)->triggerCount.at(synapsePositionIndexInBranch);
             //timeStepDifference == triggerCount of first spine
@@ -254,7 +256,7 @@ double BranchedResourceHeteroSTDP::CallKernelHashTable(int distanceToCenterInGap
     //Here we tabulate for every distance from center a equivalency between counts and effects (reverse as counts go up to maxCount)
     //The pair consists of ns and ks. The function has to obtain the count from synapse and distance?
     //OR the hashtable contains the ns and ks multipliers (for now they are the same)
-    return kernelHashTable.at(timeDifference).at(distanceToCenterInGaps);
+    return kernelHashTable.at(distanceToCenterInGaps).at(timeDifference);
 }
 
 void BranchedResourceHeteroSTDP::Reset()
@@ -354,7 +356,7 @@ BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentS
     //And cast the proper pointers to the proper baseSynapseData vectors.
     ResourceSpinePtr newSynapse = std::make_shared<ResourceSynapseSpine>();
     //Step weights has been removed fron here
-    newSynapse->SetWeight(this->GenerateSynapticWeight());
+    //newSynapse->SetWeight(this->GenerateSynapticWeight());
 
     //this->weightsSum += newSynapse->GetWeight();
     newSynapse->SetIdInMorpho(this->synapseIdGenerator++);
@@ -373,7 +375,7 @@ BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentS
     newSynapse->SetAlphaExpDecay(alphaStimmulusExpDecay);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);
     //branches.at(branch)->morphoSynapseIDs.push_back(newSynapse->GetIdInMorpho());
-    branches.at(branch)->synapseSlotToMorphoIDMap.at(position)=newSynapse->GetIdInMorpho();
+    branches.at(branch)->synapseSlotToMorphoIDMap[position]=newSynapse->GetIdInMorpho();
     //Storage (other)
     this->baseSynapseData.push_back(static_cast<BaseSpinePtr>(newSynapse));
     this->branchedSynapseData.push_back(static_cast<std::shared_ptr<BranchedSynapseSpine>>(newSynapse));

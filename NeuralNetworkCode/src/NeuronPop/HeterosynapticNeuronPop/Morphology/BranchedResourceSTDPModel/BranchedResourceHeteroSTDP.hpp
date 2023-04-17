@@ -39,8 +39,8 @@ protected:
     double spaceKernelExpDecayConstant{1.0};//LP and SP
     double ExpDecayConstantSTDP{1.0};//LP and SP
 
-    NestedDHashMap kernelHashTable;//This is more efficient than the map, but we need a hash function. TEST whether this is faster than vector<vector> or map<>
-    DHashMap DecayHashTableSTDP;//??Should STDP not decay? unordered_map? looks like vector is more ideal
+    NestedDHashMap kernelHashTable{};//This is more efficient than the map, but we need a hash function. TEST whether this is faster than vector<vector> or map<>
+    DHashMap DecayHashTableSTDP{};//??Should STDP not decay? unordered_map? looks like vector is more ideal
 
     // double baseKStimmulusBump{1.0};//LP and SP
     // double baseNStimmulusBump{1.0};//LP and SP

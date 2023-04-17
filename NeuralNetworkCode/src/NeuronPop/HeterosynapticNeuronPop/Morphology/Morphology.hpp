@@ -92,7 +92,7 @@ public:
     //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class
     unsigned long GetSynapseCount() const;
     double GetWeight(unsigned long synapseId) const;
-
+    virtual void PostConnectSetUp(){};
     // STDP Analysis
     //void triggerStatOut(std::string dirPath);
 

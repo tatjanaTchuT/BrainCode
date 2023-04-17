@@ -1,26 +1,34 @@
 #include "./BranchedStructs.hpp"
 #include "BranchedStructs.hpp"
 
-Branch::Branch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId):branchSlots{static_cast<size_t>(std::round(branchLength/gap))}, synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,morphoSynapseIDs(static_cast<size_t>(branchSlots), -1),branchSynapseIDs(static_cast<size_t>(branchSlots), -1), , spikedSyn(branchSlots, false)
-{
-    //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchSlots));
-}
-
 DendriticSubRegion::DendriticSubRegion(char regionID, std::vector<int> branchesInRegion): regionID{regionID}, branchesInRegion{branchesInRegion}
 {
 
 }
 
-ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId, std::vector<ResourceSpinePtr> branchSynapseData): 
+Branch::Branch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId):branchSlots{static_cast<size_t>(std::round(branchLength/gap))}, synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,morphoSynapseIDs(static_cast<size_t>(branchSlots), -1),branchSynapseIDs(static_cast<size_t>(branchSlots), -1), , spikedSyn(branchSlots, false)
+{
+    //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchSlots));
+}
+
+void Branch::postConnectSetUp(std::vector<BranchedSpinePtr> SynapseData)
+{
+    //In case it is necessary in the future
+}
+
+ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId): 
 Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, 10)//, potentiationCountSTDP(branchSlots, 10)//, maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}//, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
 {
-    SetUpSynapseData(branchSynapseData);
 }
-void ResourceBranch::SetUpSynapseData(std::vector<ResourceSpinePtr> branchSynapseData)
+void ResourceBranch::postConnectSetUp(std::vector<BranchedSpinePtr> synapseData)
 {
-    for (ResourceSpinePtr synapse :branchSynapseData){
+    SetUpSynapseData(synapseData);
+}
+void ResourceBranch::SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData)
+{
+    for (BranchedSpinePtr synapse :synapseData){
         if (synapse->GetBranchId()==branchId){
-            branchSynapseData.push_back(synapse);
+            branchSynapseData.push_back(std::dynamic_pointer_cast<ResourceSynapseSpine>(synapse));
         }
     }
 }

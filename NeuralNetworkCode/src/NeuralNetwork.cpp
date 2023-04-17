@@ -414,7 +414,6 @@ int NeuralNetwork::Simulate()
 
     this->recorder->SetFilenameDate();
     SaveParameters();
-    this->recorder->WriteDataHeader();
 
     //*****************************************************
     // --------------- START OF THE SIMULATION ------------
@@ -428,6 +427,7 @@ int NeuralNetwork::Simulate()
     this->recorder->WriteConnectivity();
     this->recorder->WriteDistributionD();
     this->recorder->WriteDistributionJ();
+    this->recorder->WriteDataHeader();
 
 	std::cout << "\n Pandas start simulation : " << this->recorder->GetTitle() << "\n";
 	auto start = std::chrono::high_resolution_clock::now();

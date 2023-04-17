@@ -27,7 +27,7 @@ public:
     HeteroCurrentSynapse(NeuronPop* postNeurons, NeuronPop* preNeurons, GlobalSimInfo * info);
 
     const std::string GetTypeStr() override { return str_heteroSynapse; };
-    virtual unsigned long allocateSynapse(unsigned long preId, unsigned long postId) override;
+    unsigned long allocateSynapse(unsigned long preId, unsigned long postId) override;
 
     std::string GetDataHeader(int data_column) override;
 	std::string GetUnhashedDataHeader() override;
