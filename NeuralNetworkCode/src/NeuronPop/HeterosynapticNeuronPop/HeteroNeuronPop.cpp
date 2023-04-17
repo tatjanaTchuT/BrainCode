@@ -21,8 +21,6 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
     std::string name;
     std::vector<std::string> values;
 
-    // checks for correct initialization
-    bool morphologyFound = false;
 
     for (auto & it : *input) {
         SplitString(&it,&name,&values);
@@ -33,25 +31,23 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
                     this->morphology.push_back(std::make_unique<MonoDendriteSTDPTazerart>(this->info));
                     this->morphology.back()->LoadParameters(input);
                 }
-                morphologyFound = true;
             } else if (values.at(0) == str_MonoDendriteSTDPBiWindow) {
                 for (unsigned long i = 0; i < this->noNeurons; i++) {
                     this->morphology.push_back(std::make_unique<MonoDendriteSTDPBiWindow>(this->info));
                     this->morphology.back()->LoadParameters(input);
                 }
-                morphologyFound = true;
             } else if (values.at(0) == str_MonoDendriteSTDPTazerartRelative) {
                 for (unsigned long i = 0; i < this->noNeurons; i++) {
                     this->morphology.push_back(std::make_unique<MonoDendriteSTDPTazerartRelative>(this->info));
                     this->morphology.back()->LoadParameters(input);
                 }
-                morphologyFound = true;
             } else if (values.at(0) == str_BranchedResourceHeteroSTDP) {
                 for (unsigned long i = 0; i < this->noNeurons; i++) {
                     this->morphology.push_back(std::make_unique<BranchedResourceHeteroSTDP>(this->info)); //Remove, will not  be used
                     this->morphology.back()->LoadParameters(input);
                 }
-                morphologyFound = true;
+            } else {
+                throw;
             }
         }
     }
@@ -59,9 +55,12 @@ void HeteroNeuronPop::LoadParameters(std::vector<std::string> *input) {
     if (this->morphology.at(0)->IsBranchedBool()){
         this->SetBranchedTrue();
     }
+}
 
-    if (!morphologyFound){
-        throw;
+void HeteroNeuronPop::PostConnectSetUp()
+{
+    for (std::unique_ptr<Morphology>& singleMorphology : morphology){
+        singleMorphology->PostConnectSetUp();
     }
 }
 

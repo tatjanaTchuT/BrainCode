@@ -116,10 +116,10 @@ void DictatNeuronPop::GenerateSpikersFromInstructions()
             }
             instruction.completed=true;
         }
-            if (!instruction.off && ((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
-                if (instruction.completed){continue;}
-                if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
-            }
+        if (!instruction.off && ((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
+            if (instruction.completed){continue;}
+            if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
+        }
     }
 }
 

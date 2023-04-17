@@ -36,7 +36,7 @@ public:
     void SaveParameters(std::ofstream * stream) override;
     void LoadParameters(std::vector<std::string> *input) override;
 
-
+    void PostConnectSetUp() override;
     //Getters
     std::valarray<double> GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
     std::valarray<double> GetOverallSynapticProfile(unsigned long neuronId) override;

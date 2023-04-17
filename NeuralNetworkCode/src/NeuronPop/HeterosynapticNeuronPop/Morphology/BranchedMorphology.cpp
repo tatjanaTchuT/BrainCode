@@ -105,10 +105,10 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     Morphology::SaveParameters(stream, neuronPreId);
 
     *stream << neuronPreId<<"_morphology_branch_length\t\t"<<std::to_string(this->branchLength)<<" #μm";
-    *stream << "\t"<<"#Length of each branch.\n";
+    *stream << "#μm\t"<<"#Length of each branch.\n";
 
     *stream << neuronPreId<<"_morphology_synaptic_gap\t\t\t"<<std::to_string(this->synapticGap)<<" #μm";
-    *stream << "\t"<<"#Distance between synapse spines.\n";
+    *stream << "#μm\t"<<"#Distance between synapse spines.\n";
 
     // *stream << neuronPreId<<"_morphology_distribute_weights\t\t";
     // if (this->distributeWeights){
@@ -195,8 +195,11 @@ int BranchedMorphology::RandomBranchAllocation()
 {
         std::default_random_engine& generator = this->generator;
         //For now, the distribution will be uniform
-        std::uniform_int_distribution<int> branchdsitribution(0,static_cast<int>(branches.size())+1);
-        int branchID{branchdsitribution(generator)};
+        std::uniform_int_distribution<int> branchDistribution(0,static_cast<int>(branches.size()-1));
+        int branchID{branchDistribution(generator)};
+        if (this->branches.at(branchID)->openSynapsesSlots.size()==0){
+            branchID=RandomBranchAllocation();
+        }
         return branchID;
 }
 
@@ -261,5 +264,12 @@ void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vect
             anteriorBranchesCopy.push_back(branchId);
             this->SetUpBranchings(remainingBranchingEvents, anteriorBranchesCopy);
         }
+    }
+}
+
+void BranchedMorphology::PostConnectSetUp()
+{
+    for (BranchPtr branch: branches){
+        branch->postConnectSetUp(branchedSynapseData);
     }
 }

@@ -64,7 +64,7 @@ public:
     //setUp SYnapse slots is called for every branch in a loop and depending on the bool (universal for all branches for now) it calls random or ordered.
     //The overriding function calls functions of BMorpho. 
     virtual void SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches = std::vector<int>());// Here we set up the vector with the branches
-
+    void PostConnectSetUp() override;
     //Allocation shennanigans
     
     BaseSpinePtr AllocateNewSynapse(const HeteroCurrentSynapse& synapse) override; //Use the reference to call getBranchTarget

@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     }
 
     std::ifstream stream(inputFile);
-    std::cout << inputFile << std::endl;
+    //std::cout << inputFile << std::endl;
 
     std::string prefix;
     while (stream.getline(line,256)){
