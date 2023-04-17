@@ -37,7 +37,7 @@ void BranchedResourceHeteroSTDP::LoadParameters(std::vector<std::string> *input)
             this->ExpDecayConstantSTDP = std::stod(values.at(0));
         } else if (name.find("potentiation_depression_ratio") != std::string::npos){
             this->PotentiationDepressionRatio = std::stod(values.at(0));
-        } else if (name.find("pairing_time_window") != std::string::npos){
+        } else if (name.find("kernel_time_window") != std::string::npos){
             this->branchMaxCountTrigger = static_cast<int>(std::stod(values.at(0))/this->info->dt);
         } else if (name.find("STDP_time_window") != std::string::npos){
             this->MaxCountSTDP = static_cast<int>(std::stod(values.at(0))/this->info->dt);
@@ -76,17 +76,17 @@ void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::stri
     *stream << neuronPreId<<"_morphology_kernel_lambda\t\t"<<std::to_string(this->spaceKernelExpDecayConstant);//CHANGE
     *stream << "\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
 
+    *stream << neuronPreId<<"_morphology_kernel_time_window\t\t"<<std::to_string(this->branchMaxCountTrigger*this->info->dt);//CHANGE
+    *stream << "\t"<<"#Max time where synaptic spine pairing can happen\n";
+
     *stream << neuronPreId<<"_morphology_STDP_tau\t\t"<<std::to_string(this->ExpDecayConstantSTDP);//CHANGE
     *stream << "\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
+    
+    *stream << neuronPreId<<"_morphology_STDP_time_window\t\t"<<std::to_string(this->MaxCountSTDP*this->info->dt);//CHANGE
+    *stream << "\t"<<"#Max time where STDP potentiation/depression can happen\n";
 
     *stream << neuronPreId<<"_morphology_potentiation_depression_ratio\t"<<std::to_string(this->PotentiationDepressionRatio);//CHANGE
     *stream << "\t"<<"#Factor that multiplies potentiation\n";
-
-    *stream << neuronPreId<<"_morphology_pairing_time_window\t\t"<<std::to_string(this->branchMaxCountTrigger*this->info->dt);//CHANGE
-    *stream << "\t"<<"#Max time where synaptic spine pairing can happen\n";
-
-    *stream << neuronPreId<<"_morphology_STDP_time_window\t\t"<<std::to_string(this->MaxCountSTDP*this->info->dt);//CHANGE
-    *stream << "\t"<<"#Max time where STDP potentiation/depression can happen\n";
 
     *stream <<"##### The weight of this model is defined as wI=beta*alphaI/(omega+branch-sum(alpha)), where alphaI= alphaBasal + alphaStimmulus*exp(-dt/alphaStimTau) \n";
 }
