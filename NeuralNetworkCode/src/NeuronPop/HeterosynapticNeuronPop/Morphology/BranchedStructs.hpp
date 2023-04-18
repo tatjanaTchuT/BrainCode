@@ -7,6 +7,7 @@
 #include <set>
 #include <numeric>
 #include <memory>
+#include <algorithm>
 
 typedef std::unordered_map<int, int> IHashMap;
 typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;

@@ -2,6 +2,9 @@
 #define _SYNAPSE_SPINE_BRANCHED_CLASS_HEADER_
 
 #include "BaseSynapseSpine.hpp"
+class BranchedSynapseSpine;
+
+typedef std::shared_ptr<BranchedSynapseSpine> BranchedSpinePtr;
 
 class BranchedSynapseSpine : public BaseSynapseSpine {
 
@@ -28,6 +31,10 @@ class BranchedSynapseSpine : public BaseSynapseSpine {
     //Profile function
     std::valarray<double> GetIndividualSynapticProfile() const override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
+    //Friend functions
+    friend bool BranchIDCompare (const BranchedSpinePtr& spine1, const BranchedSpinePtr& spine2);
 };
+
+bool BranchIDCompare (const BranchedSpinePtr& spine1, const BranchedSpinePtr& spine2);
 
 #endif

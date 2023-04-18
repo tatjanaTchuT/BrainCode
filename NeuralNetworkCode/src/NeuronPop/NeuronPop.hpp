@@ -96,7 +96,7 @@ public:
     virtual BaseSpinePtr AllocateNewSynapse(unsigned long neuronId, HeteroCurrentSynapse& syn);
     virtual std::string GetIndividualSynapticProfileHeaderInfo() const {return "{Something went wrong}";};
     virtual std::string GetOverallSynapticProfileHeaderInfo() const {return "{Something went wrong}";};
-    virtual void PostConnectSetUp(){};//This function cannot be called without throwing first
+    virtual void PostConnectSetUp(){throw;};//This function cannot be called without throwing first
     //Task functions
     //bool const streamingOutput(){return streamingNOutputBool;}//functions
     bool const TaskOutput(){return TaskOutputBool;}

@@ -3,7 +3,10 @@
 
 #include <valarray>
 #include <string>
+#include <memory>
 
+class BaseSynapseSpine;
+typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
 
 class BaseSynapseSpine {
 
@@ -48,6 +51,11 @@ class BaseSynapseSpine {
 
     //Virtual bools
     virtual bool IgnoreCouplingStrength(){return false;}
+
+    //Friend functions
+    friend bool MorphoIDCompare (const BaseSpinePtr& spine1, const BaseSpinePtr& spine2);
 };
+    //Friend function declarations
+    bool MorphoIDCompare (const BaseSpinePtr& spine1, const BaseSpinePtr& spine2);
 
 #endif
