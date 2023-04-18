@@ -84,7 +84,7 @@ struct ResourceBranch : public Branch {
         //Do we clear() after a trigger or not? Most of the function would be the same, or put some refractory period UNRESOLVED
         //Here we could create a false history of plasticity events
     //Methods
-    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId);
+    ResourceBranch(double gap, double branchLength, std::vector<int>anteriorBranches, int branchId, int triggerMaxCount);
     void postConnectSetUp(std::vector<BranchedSpinePtr> synapseData) override;
     void SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData);
         //Count related functions

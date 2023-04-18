@@ -16,8 +16,8 @@ void Branch::postConnectSetUp(std::vector<BranchedSpinePtr> SynapseData)
     //In case it is necessary in the future
 }
 
-ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId): 
-Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, 10)//, potentiationCountSTDP(branchSlots, 10)//, maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}//, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
+ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId, int triggerMaxCount): 
+Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, triggerMaxCount)//, potentiationCountSTDP(branchSlots, 10)//, maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}//, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
 {
 }
 void ResourceBranch::postConnectSetUp(std::vector<BranchedSpinePtr> synapseData)
@@ -26,6 +26,7 @@ void ResourceBranch::postConnectSetUp(std::vector<BranchedSpinePtr> synapseData)
 }
 void ResourceBranch::SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData)
 {
+    //This function sets up the spine pointers in the branch, something not possible until ConnectNeurons() runs, thus its execution from PostConnectSetUp()
     for (BranchedSpinePtr synapse :synapseData){
         if (synapse->GetBranchId()==branchId){
             branchSynapseData.push_back(std::dynamic_pointer_cast<ResourceSynapseSpine>(synapse));
@@ -36,22 +37,13 @@ void ResourceBranch::SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData)
 
 void ResourceBranch::TickAllCounts()
 {
-    //TickCounts(this->potentiationCountSTDP);
-        for (int& count:this->triggerCount){
-        //if (count<maxCount){
-            count++;
-        //}
+    //This function is supposed to increase the counts of all synapses
+    for (int& count:this->triggerCount){
+    //if (count<maxCount){
+        count++;
+    //}
     }
 }
-
-// void ResourceBranch::TickCounts(std::vector<int> &countVector)
-// {
-//     for (int& count:countVector){
-//         //if (count<maxCount){
-//             count++;
-//         //}
-//     }
-// }
 
 // void ResourceBranch::CheckIncreaseInBetaResources()
 // {

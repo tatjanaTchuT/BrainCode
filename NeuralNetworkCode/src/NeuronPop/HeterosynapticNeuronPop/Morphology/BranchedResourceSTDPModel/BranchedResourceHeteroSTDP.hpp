@@ -51,7 +51,7 @@ protected:
 
     //Max counters
     int MaxCountSTDP{};//This one is the lasting count for th spines //LP and SP?//dependent on dt?, default 10 ms assuming dt=1e-4
-    int branchMaxCountTrigger{};//LP and SP?//dependent on dt?, default 10 ms assuming dt=1e-4
+    //int branchMaxCountTrigger{};//LP and SP?//dependent on dt?, default 10 ms assuming dt=1e-4 //This variable should be equivalent to timeKernelLength
 
     //Counting
     int STDPDepressionCount{};//In relation to maxCountSTDP

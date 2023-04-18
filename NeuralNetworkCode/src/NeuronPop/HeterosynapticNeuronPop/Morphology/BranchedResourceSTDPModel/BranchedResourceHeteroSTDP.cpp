@@ -37,8 +37,6 @@ void BranchedResourceHeteroSTDP::LoadParameters(std::vector<std::string> *input)
             this->ExpDecayConstantSTDP = std::stod(values.at(0));
         } else if (name.find("potentiation_depression_ratio") != std::string::npos){
             this->PotentiationDepressionRatio = std::stod(values.at(0));
-        } else if (name.find("kernel_time_window") != std::string::npos){
-            this->branchMaxCountTrigger = static_cast<int>(std::stod(values.at(0))/this->info->dt);
         } else if (name.find("STDP_time_window") != std::string::npos){
             this->MaxCountSTDP = static_cast<int>(std::stod(values.at(0))/this->info->dt);
         }
@@ -76,9 +74,6 @@ void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::stri
     *stream << neuronPreId<<"_morphology_kernel_lambda\t\t"<<std::to_string(this->spaceKernelExpDecayConstant);//CHANGE
     *stream << "#μm\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
 
-    *stream << neuronPreId<<"_morphology_kernel_time_window\t\t"<<std::to_string(this->branchMaxCountTrigger*this->info->dt);//CHANGE
-    *stream << "#seconds\t"<<"#Max time where synaptic spine pairing can happen\n";
-
     *stream << neuronPreId<<"_morphology_STDP_tau\t\t"<<std::to_string(this->ExpDecayConstantSTDP);//CHANGE
     *stream << "#seconds\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
     
@@ -98,7 +93,7 @@ void BranchedResourceHeteroSTDP::SetUpBranchings(int remainingBranchingEvents, s
     //First call is done with an empty int vector
     for (int i = 0; i < 2;i++) {
         int branchId{this->GenerateBranchId()};
-        this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId)));//This vector should be sorted by ID by default (tested).
+        this->resourceBranches.emplace_back(std::make_shared<ResourceBranch>(ResourceBranch(this->synapticGap, this->branchLength, anteriorBranches, branchId, timeKernelLength)));//This vector should be sorted by ID by default (tested).
         this->branches.push_back(static_cast<BranchPtr>(this->resourceBranches.back()));
         //Constructor here
         if(remainingBranchingEvents>0){
@@ -194,7 +189,7 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr& branch)//Thes
 
 bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch)
 {
-    return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->branchMaxCountTrigger;})>2;
+    return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->timeKernelLength;})>2;
 }
 
 void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho)
