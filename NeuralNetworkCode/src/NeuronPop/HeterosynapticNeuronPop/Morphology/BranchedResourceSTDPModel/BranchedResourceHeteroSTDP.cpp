@@ -154,7 +154,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
         //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
         //WITH DECAY (of alpha, STDP-like)
         for (ResourceSpinePtr& synapse : resourceSynapseData){
-        synapse->ApplyAllTempEffectsOnPostspike(PotentiationDepressionRatio, DecayHashTableSTDP);
+        synapse->ApplyAllTempEffectsOnPostspike(DecayHashTableSTDP);
         branches.at(synapse->GetBranchId())->IncreasePotentiationCount();
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
@@ -371,6 +371,7 @@ BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentS
     newSynapse->SetBranchPositionId(position);
     newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);//This has to be updated if we switch to double 
     newSynapse->SetMaxCount(MaxCountSTDP);
+    newSynapse->SetPotentiationRatio(PotentiationDepressionRatio);
     newSynapse->SetAlphaBasal(alphaBasal);
     newSynapse->SetAlphaExpDecay(alphaStimmulusExpDecay);
     branches.at(branch)->synapseSlotClosedIndex.push_back(position);

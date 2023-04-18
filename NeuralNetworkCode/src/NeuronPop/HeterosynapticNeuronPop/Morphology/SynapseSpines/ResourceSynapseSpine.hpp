@@ -34,12 +34,15 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     //Central vars
     double alphaResources{};
 
+    //Morpho-copies
+    double PotentiationDepressionRatio{1.0};
+
 // If I have to go back here, an unordered_map<index, pair<count<pair<double, double>>>>, and find how to delete or vector
     // std::vector<double> kStimmulusTempEffect{};//These need to be here for non-matrix management. 
     // std::vector<double> nStimmulusTempEffect{};
     // std::vector<int> stimmulusEffectCount{};
     std::list<PairDI> potentiationAlphaTempAndCount;
-    std::list<PairDI> depressionAlphaTempAndCount;
+    std::vector<double> depressionAlphaTempAndCount;
 
     int maxCount{100};
 
@@ -61,6 +64,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     // void SetKExponentialDecay(int kStimmulusExpDecayCalc){kStimmulusExpDecay=kStimmulusExpDecayCalc;}//Input is supposed to be exp(-dt/tau)
     // void SetNExponentialDecay(int nStimmulusExpDecayCalc){nStimmulusExpDecay=nStimmulusExpDecayCalc;}
     void SetMaxCount(int maxCountnew) {maxCount=maxCountnew;} //UNRESOLVED  Call in AllocateNewSynapse
+    void SetPotentiationRatio(int ratio) {PotentiationDepressionRatio=ratio;}
     // void SetDepressionFlag(bool booleanFlag) {depressionFlagSTDP=booleanFlag;}
     // void SetPotentiationFlag(bool booleanFlag) {potentiationFlagSTDP=booleanFlag;}
     //Alpha methods
@@ -69,7 +73,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void RecalcWeight(double weightResourceFactor);
     //Temp effets methods
     void AddTempResourcesToSpine(double alphaStimmulusInput);
-    void ApplyAllTempEffectsOnPostspike(double PotentiationDepressionRatio, const DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    void ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     //void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     void ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
 
