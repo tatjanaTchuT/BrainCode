@@ -111,8 +111,8 @@ void BranchedResourceHeteroSTDP::SetUpHashTables()
     if ((static_cast<double>(timeKernelLength)/kernelGapNumber)<1.0){
         throw; //The timeKernel lenght is always thought to be longer than the spatial one. 1 ms timing for 10 um is very one-sided, and that is equilibrium
     }
-    spaceTimeStepRelation = timeKernelLength/kernelGapNumber;
-    kernelRadius=timeKernelLength+spaceTimeStepRelation;
+    spaceTimeStepRelation = static_cast<double>(timeKernelLength)/kernelGapNumber;
+    kernelRadiusArea=static_cast<double>(timeKernelLength)+spaceTimeStepRelation;
     for (int spaceIndex=0; spaceIndex<=kernelGapNumber; spaceIndex++){//at least there is one gap
         DHashMap tempHashMap{};
         for (int timeIndex=0; timeIndex<=timeKernelLength-(spaceTimeStepRelation*(spaceIndex-1)); timeIndex++){ 
@@ -122,7 +122,7 @@ void BranchedResourceHeteroSTDP::SetUpHashTables()
         kernelHashTable[spaceIndex] = tempHashMap;
     }
 
-    for (int STDPindex=0; STDPindex<=MaxCountSTDP; STDPindex++){
+    for (int STDPindex=1; STDPindex<=MaxCountSTDP; STDPindex++){
         DecayHashTableSTDP[STDPindex]=std::exp(-(STDPindex*info->dt)/ExpDecayConstantSTDP);
     }
 }
@@ -149,13 +149,16 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
         //Use the count in the effects of synapses for the actual decay for STDP, but the branch vector for detecting the updatable ones
         //WITH DECAY (of alpha, STDP-like)
         for (ResourceSpinePtr& synapse : resourceSynapseData){
-        synapse->ApplyAllTempEffectsOnPostspike(DecayHashTableSTDP);
-        branches.at(synapse->GetBranchId())->IncreasePotentiationCount();
+            if(synapse->ApplyAllTempEffectsOnPostspike(DecayHashTableSTDP)){
+                branches.at(synapse->GetBranchId())->IncreasePotentiationCount();
+                totalPlasticityEvents++;
+                totalLTPEvents++;
+            }
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
         for (RBranchPtr& branch: resourceBranches){
             for (int synapseID : branch->updatedAlphaEffects){
-                ResourceSpinePtr& synapse = resourceSynapseData.at(branch->synapseSlotToMorphoIDMap.at(synapseID));
+                ResourceSpinePtr& synapse = branch->branchSynapseData.at(synapseID);
                 //if (synapse->GetDepressionFlagSTDP()){
                     //If count < countmax, apply stimms in negative mode. Basically input -1/STDPratio?? to the spine function. Has to be limited to zero alpha stimm or zero alpha, never negative
                     //And also pass the STDP map by reference to the function call
@@ -167,6 +170,8 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
                 //    synapse->ApplyAllTempEffectsOnConflictPotentiation(PotentiationDepressionRatio);
                 //}
                 branch->IncreaseDepressionCount();
+                totalPlasticityEvents++;
+                totalLTDEvents++;
             }
         }
     } else {
@@ -181,7 +186,7 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr& branch)//Thes
     //Here we call SetTempEffects if __it__ happens
     for (int synapseIDinBranch : branch->spikedSynapsesInTheBranch){
         if (CheckIfThereIsPairing(branch, synapseIDinBranch)){
-            SpaceTimeKernel(synapseIDinBranch, branch->branchId, branch->synapseSlotToMorphoIDMap.at(synapseIDinBranch));
+            SpaceTimeKernel(synapseIDinBranch, branch->branchId);
             branch->updatedAlphaEffects.insert(synapseIDinBranch);
         }
     }
@@ -189,17 +194,22 @@ void BranchedResourceHeteroSTDP::DetectPossiblePairing(RBranchPtr& branch)//Thes
 
 bool BranchedResourceHeteroSTDP::CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch)
 {
+    //This function raises an overflow flag in compilation due to operations before casting to ptrdiff_t (long long). There should never be overflow from a design standpoint
     return std::count_if(std::max(branch->triggerCount.begin(), std::next(branch->triggerCount.begin(),synapseIDinBranch-kernelGapNumber)),std::min(branch->triggerCount.end(), std::next(branch->triggerCount.begin(),synapseIDinBranch+kernelGapNumber+1)), [this](int pairingCounter){return pairingCounter<this->timeKernelLength;})>2;
 }
 
-void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho)
+void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branchID)
 {
+    //This function will evaluate all spines within kernel distance of the synapse spine and queue the alpha stimm effects for each pairing found (queue waiting for postspike)
+    //All reference declarations are to reduce indexing times in containers
     int synapsePositionIndexInBranch,absDistance,timeStepDifference;
     double alphaStimmulusEffect;
-    std::set<int>& kernelizedSynapses = resourceBranches.at(branchID)->updatedSynapseSpines;
-    std::set<int>& updatedAlphaEffects = resourceBranches.at(branchID)->updatedAlphaEffects;
-    size_t& branchSlots{branches.at(branchID)->branchSlots};
-    ResourceSpinePtr& centralSynapseSpine = resourceSynapseData.at(synapseSpineIDinMorpho);
+    RBranchPtr& currentBranch=resourceBranches.at(branchID);
+    //std::set<int>& kernelizedSynapses = currentBranch->updatedSynapseSpines;
+    std::unordered_set<int>& updatedAlphaEffects = currentBranch->updatedAlphaEffects;
+    size_t& branchSlots{currentBranch->branchSlots};
+    ResourceSpinePtr& centralSynapseSpine = currentBranch->branchSynapseData.at(branchSynapseID);
+
     //Only call this function if synapse itself has spiked this timestep
     for (int gapIndex = -kernelGapNumber; gapIndex<=kernelGapNumber;gapIndex++){ //And then use branchSynapseID+gapindex
         synapsePositionIndexInBranch = branchSynapseID+gapIndex;
@@ -209,39 +219,39 @@ void BranchedResourceHeteroSTDP::SpaceTimeKernel(int branchSynapseID, int branch
         } else if (synapsePositionIndexInBranch>=branchSlots){//Condition to aboid illegal indexing (correct me if you dare)
             break;
         } else {
-            ResourceSpinePtr& lateralSynapseSpine = resourceSynapseData.at(branches.at(branchID)->synapseSlotToMorphoIDMap[synapsePositionIndexInBranch]);
+            ResourceSpinePtr& candidateSynapseSpine = currentBranch->branchSynapseData.at(synapsePositionIndexInBranch);
             absDistance = std::abs(gapIndex);
-            timeStepDifference=resourceBranches.at(branchID)->triggerCount.at(synapsePositionIndexInBranch);
+            timeStepDifference=currentBranch->triggerCount.at(synapsePositionIndexInBranch);
             //timeStepDifference == triggerCount of first spine
             // if (timeStepDifference<=STDPDepressionCount){//Indicates depression region with no conflict. If the spike is far away, but too far for depression, nothing will happen. If a postspike happens, these flags are ignored.
             //     //The boolean is <= to classify the pairing where the postspike and first prespike are on the same timestep as depression.
             //     // centralSynapseSpine->SetDepressionFlag(true);
-            //     // lateralSynapseSpine->SetDepressionFlag(true);
+            //     // candidateSynapseSpine->SetDepressionFlag(true);
             //     //alphaStimmulusEffect *= -DecayHashTableSTDP.at(STDPDepressionCount-timeStepDifference);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike with depression (*-1) (calcium accumulation oriented)
             // } else { //Knowing depression region, indicates conflict that is skewed towards potentiation according to STDP kernel
             //     if (timeStepDifference<=2*STDPDepressionCount){//We set the boolean to equal too to solve the conflict in favor of potentiation, as depression has the other fringe case
             //         centralSynapseSpine->SetPotentiationFlag(true);
-            //         lateralSynapseSpine->SetPotentiationFlag(true);
+            //         candidateSynapseSpine->SetPotentiationFlag(true);
             //         alphaStimmulusEffect *= DecayHashTableSTDP.at(timeStepDifference-STDPDepressionCount);//This is to apply a decay equivalent to the STDP kernel to the first pre-spike  (calcium accumulation oriented)
             //     } else {
             //         centralSynapseSpine->SetDepressionFlag(true);
-            //         lateralSynapseSpine->SetDepressionFlag(true);
+            //         candidateSynapseSpine->SetDepressionFlag(true);
             //     }//These flags are only here to solve 
             //}
             // if (STDPDepressionCount<MaxCountSTDP){
             //     alphaStimmulusEffect=(-alphaStimmulusEffect);
             // }
-            if(timeStepDifference+synapticGap*absDistance<=kernelRadius && (kernelizedSynapses.find(synapsePositionIndexInBranch) != kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
+            if(timeStepDifference+spaceTimeStepRelation*absDistance<=kernelRadiusArea){ //&& (kernelizedSynapses.find(synapsePositionIndexInBranch) == kernelizedSynapses.end())){        //triggercount+distance gap*spaceTimeStepRelation<maxCountTime + 1*spaceTimeStepRelation (what should constrain the triangular matrix)
                 //The postspiked condition is because the STDP kernel is discretized, in the case the postspike happens at the same time as the pairing of a synapse, the pairing does not happen (as the potentiation and depression would counteract themselves)
                 alphaStimmulusEffect *= CallKernelHashTable(absDistance, timeStepDifference);
                 centralSynapseSpine->AddTempResourcesToSpine(alphaStimmulusEffect);
-                lateralSynapseSpine->AddTempResourcesToSpine(alphaStimmulusEffect);
+                candidateSynapseSpine->AddTempResourcesToSpine(alphaStimmulusEffect);
                 updatedAlphaEffects.insert(synapsePositionIndexInBranch);
             }
         }
         
     }
-    kernelizedSynapses.insert(branchSynapseID);//Used to avoid double potentiation in same timestep
+    //kernelizedSynapses.insert(branchSynapseID);//Used to avoid double potentiation in same timestep
     //Here for every synapse inside the synapse's kernel that has an active counter (count!=countMax) we get the time kernel and then apply the space kernel
     //Take unto account the synaptic GAP and DT!!! This should be done elsewhere
 }
@@ -316,32 +326,35 @@ void BranchedResourceHeteroSTDP::TickAllCounts()
     // if (STDPDepressionCount<MaxCountSTDP){
     //     STDPDepressionCount++;
     // }
-    return;
 }
 
 void BranchedResourceHeteroSTDP::ClearSynapseSets()
 {
+    //Clearing the sets used for depression in this function (single timestep sets)
     for (RBranchPtr& branch: resourceBranches){
         branch->updatedAlphaEffects.clear();
-        branch->updatedSynapseSpines.clear();
+        //branch->updatedSynapseSpines.clear();
     }
-    return;
 }
 
 void BranchedResourceHeteroSTDP::RecordPostSpike()
 {
-    BranchedMorphology::RecordPostSpike();
+    //BranchedMorpho does nothing here
+    Morphology::RecordPostSpike();
     STDPDepressionCount=0;
-    return;
 }
 
 void BranchedResourceHeteroSTDP::RecordExcitatoryPreSpike(int spikedSynapseId)
 {
     //This function is NOT DELAY COMPATIBLE (careful with the delays in synapse objects)
     //Here only record, afterwards we do the checks
-    BranchedMorphology::RecordExcitatoryPreSpike(spikedSynapseId);
-    this->resourceBranches.at(resourceSynapseData.at(spikedSynapseId)->GetBranchId())->triggerCount.at(resourceSynapseData.at(spikedSynapseId)->GetBranchPositionId())=0;
-    return;
+    //Not going down the virtual path because inefficient
+    ResourceSpinePtr& synapseSpine = resourceSynapseData.at(spikedSynapseId);
+    RBranchPtr& branch = resourceBranches.at(synapseSpine->GetBranchId());
+    int branchPosition {synapseSpine->GetBranchPositionId()};
+    branch->spikedSynapsesInTheBranch.push_back(branchPosition);
+    branch->triggerCount.at(branchPosition)=0;
+    this->totalPreSpikes++;
 }
 
 BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentSynapse& synapse)
@@ -393,7 +406,7 @@ std::valarray<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
     size_t sizeOfSynapseData {this->baseSynapseData.size()};
     double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
                                        [] (double acc, const BaseSpinePtr& syn) { return acc + syn->GetWeight(); });
-    CalcMorphoPlasticityEvents();
+    //CalcMorphoPlasticityEvents();
 
    dataArray[0] = weightSum / sizeOfSynapseData;
    dataArray[1] = this->totalLTDEvents;
@@ -407,11 +420,11 @@ std::string BranchedResourceHeteroSTDP::GetOverallSynapticProfileHeaderInfo() co
     return std::string("{<average weight>, <total post spikes>, <total pre spikes>, <average number of plasticity events>}");
 }
 
-void BranchedResourceHeteroSTDP::CalcMorphoPlasticityEvents()
-{
-    totalLTDEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (int acc, const BranchPtr& branch) { return acc + branch->LTDevents; });
-    totalLTPEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
-                                       [] (int acc, const BranchPtr& branch) { return acc + branch->LTPevents; });
-    totalPlasticityEvents = totalLTDEvents + totalLTPEvents;
-}
+// void BranchedResourceHeteroSTDP::CalcMorphoPlasticityEvents()
+// {
+//     totalLTDEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
+//                                        [] (int acc, const BranchPtr& branch) { return acc + branch->LTDevents; });
+//     totalLTPEvents = std::accumulate(this->branches.begin(), this->branches.end(), 0,
+//                                        [] (int acc, const BranchPtr& branch) { return acc + branch->LTPevents; });
+//     totalPlasticityEvents = totalLTDEvents + totalLTPEvents;
+// }

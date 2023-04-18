@@ -3,9 +3,10 @@
 
 DictatNeuronPop::DictatNeuronPop(GlobalSimInfo *info, int id) : NeuronPop (info, id)
 {
+    //Constructor
     inputFileAddress = info->pathTo_inputFile + "DictatNeuronPop_"+std::to_string(id)+"_spikers.txt";
     inputStreamFile.open(inputFileAddress, std::ifstream::in);
-    //Then just open and read, with bools for raw spikers or instruction-baseds
+    //Then just open and read, with bools for raw spikers or instruction-based
 }
 
 void DictatNeuronPop::LoadParameters(std::vector<std::string> *input)
@@ -28,7 +29,7 @@ void DictatNeuronPop::LoadParameters(std::vector<std::string> *input)
                 activeInstructions.resize(noNeurons);
                 ReadInstructionsFromFile();
             } else {
-                throw;
+                throw; //A non-existant type should throw
             }
         }   
     }
@@ -68,8 +69,9 @@ void DictatNeuronPop::ReadInstructionsFromFile()
 {
     /*Instruction files for a population should be written in the following format:
     > neuronid starttime1 endtime1 fire_every_n_steps
-    And ALWAYS time ordered with correct intervals
+    And ALWAYS time ordered with correct intervals (wrong starttimes will essentially change the first AP firing timestep or total phase)->(timeste-starttime)%frequency
     */
+   //Runs only once in LP
    char*    entry = new char[2048];
     while(inputStreamFile.getline(entry, 256)){
         if(entry[0] == '#'){
@@ -107,7 +109,7 @@ void DictatNeuronPop::GenerateSpikersFromInstructions()
     //         }
     //     }
     // }
-    //loop option 2 (efficient but probably worse overall)
+    //loop option 2 (efficient but probably worse in exception handling)
     for (int neuronId = 0; neuronId<static_cast<int>(activeInstructions.size()); neuronId++){
         Instruction& instruction = inputInstructions.at(neuronId).at(activeInstructions.at(neuronId));
         if (instruction.endTimeStep<=info->time_step){
@@ -127,8 +129,10 @@ void DictatNeuronPop::ReadSpikersFromFile()
 {
     /*Spikers files for a population should be written in the following format:
     > time neuron1, neuron2, neuron 4.... (neurons that spike in time_step)
-    NEVER PUT COMMENTS OR EXTRA_LINES IN THIS TYPE OF FILE!
-    And be careful with your dt, as this will alter behaviour
+    *NEVER PUT COMMENTS OR EXTRA_LINES IN THIS TYPE OF FILE!
+    *And be careful with your dt, as this will alter behaviour
+    *This file should be generated automatically and tested against Test11
+    *This function runs once per timestep
     */
    char* entry = new char[2048];
     inputStreamFile.getline(entry, 256);
@@ -151,11 +155,12 @@ void DictatNeuronPop::ReadSpikersFromFile()
 
 Instruction::Instruction(int neuronId, double startTime, double endTime, double frequency, double dt): neuronId{neuronId}, startTimeStep{std::lround(startTime/dt)}, endTimeStep{std::lround(endTime/dt)}, frequency{frequency}
 {
-    if (frequency < std::numeric_limits<double>::epsilon()){
+    //Constructor
+    if (frequency < std::numeric_limits<double>::epsilon()){ //Zero comparison to avoid division by zero
         this->off=true;
     } else {
-        fireEveryNSteps=std::lround((1/frequency)/dt);
-        if (fireEveryNSteps==0){
+        fireEveryNSteps=std::lround((1/frequency)/dt); //Conversion from frequency to timestep period.
+        if (fireEveryNSteps==0){ //If the frequency is close
             std::cout<<"\n"<<"FATAL ERROR: YOU CHOSE A FREQUENCY THAT IS TOO HIGH FOR NEURON "<<std::to_string(neuronId)<<"\n\n\n"<<"**********************************";
             throw;
         }

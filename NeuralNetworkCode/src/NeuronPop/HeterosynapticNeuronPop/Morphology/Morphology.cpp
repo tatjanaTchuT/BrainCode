@@ -66,7 +66,7 @@ std::valarray<double> Morphology::GetOverallSynapticProfile()
     size_t sizeOfSynapseData {this->baseSynapseData.size()};
     double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
                                        [] (double acc, const BaseSpinePtr& syn) { return acc + syn->GetWeight(); });
-    CalcMorphoPlasticityEvents();
+    //CalcMorphoPlasticityEvents();
 
    dataArray[0] = weightSum / sizeOfSynapseData;
    dataArray[1] = this->totalPostSpikes;

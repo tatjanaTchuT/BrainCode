@@ -42,7 +42,7 @@ void ResourceSynapseSpine::AddTempResourcesToSpine(double alphaStimmulusInput)
     potentiationAlphaTempAndCount.emplace_back(PairDI(std::abs(alphaStimmulusInput), 0));
 }
 
-void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap)
+bool ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap)
 {
     // kStimmulus=std::accumulate(kStimmulusTempEffect.begin(), kStimmulusTempEffect.end(), kStimmulus, [PotentiationDepressionRatio](double accumulator, double kStemp){return accumulator + kStemp*PotentiationDepressionRatio;});
     // nStimmulus=std::accumulate(nStimmulusTempEffect.begin(), nStimmulusTempEffect.end(), nStimmulus, [PotentiationDepressionRatio](double accumulator, double nStemp){return accumulator + nStemp*PotentiationDepressionRatio;});
@@ -54,6 +54,7 @@ void ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(const DHashMap& STDPde
     // if (alphaStimmulus+alphaBasal<0.0){
     //     alphaStimmulus= (-alphaBasal);
     // }
+    return (!potentiationAlphaTempAndCount.size()==0);
 }
 
 // void ResourceSynapseSpine::ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio)

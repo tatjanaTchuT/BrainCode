@@ -32,8 +32,9 @@ protected:
     //Space-time kernel
     int kernelGapNumber{};//Obtained by dividing LP param by synGap and rounded to int
     int timeKernelLength{};//Obtained by dividing LP param by dt and rounded to int
-    int spaceTimeStepRelation{};
-    int kernelRadius{};
+    //The following two variables can be either ints or doubles. Doubles avoid rounding down and thus more precise area management
+    double spaceTimeStepRelation{}; //Amount of timesteps per gap in kernel space. Allows iterating while keeping the kernel as a stair. 
+    double kernelRadiusArea{};//Amount of timesteps from center of kernel to the border of kernel. 
 
     double timeKernelExpDecayConstant{1.0};//Strong decay needs small constants//LP and SP
     double spaceKernelExpDecayConstant{1.0};//LP and SP
@@ -83,7 +84,7 @@ public:
     //Pairing functions
     void DetectPossiblePairing(RBranchPtr& branch);
     bool CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch);
-    void SpaceTimeKernel(int branchSynapseID, int branchID, int synapseSpineIDinMorpho);
+    void SpaceTimeKernel(int branchSynapseID, int branchID);
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
     //Plasticity events functions
     void ApplyEffects();//Here we increase the plasticity count of synapse and branch
@@ -109,7 +110,7 @@ public:
     //Record functions
     std::valarray<double> GetOverallSynapticProfile() override;
     std::string GetOverallSynapticProfileHeaderInfo() const override;
-    void CalcMorphoPlasticityEvents() override;
+    //void CalcMorphoPlasticityEvents() override;
     //For debugging purposes
     void WeightDecay() override {throw;};//This function should never be called 
     void NormalizeWeights() override {return;};

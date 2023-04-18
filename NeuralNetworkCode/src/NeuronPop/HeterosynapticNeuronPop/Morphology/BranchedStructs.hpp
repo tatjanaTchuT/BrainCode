@@ -4,7 +4,7 @@
 #include "./SynapseSpines/ResourceSynapseSpine.hpp"
 #include <vector>
 #include <deque>
-#include <set>
+#include <unordered_set>
 #include <numeric>
 #include <memory>
 #include <algorithm>
@@ -13,13 +13,13 @@ typedef std::unordered_map<int, int> IHashMap;
 typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
 typedef std::shared_ptr<BranchedSynapseSpine> BranchedSpinePtr;
 
-struct DendriticSubRegion{
+struct DendriticSubRegion{ //Still under work
     const char regionID;
     const std::vector<int> branchesInRegion; //I will have to read this from the morphology LP, every DendriticSubRegion is a line, first input is ID, rest is branchIDs. Then in Synapse you put the DendriticSubRegion where the synapse goes. 
     DendriticSubRegion(char regionID, std::vector<int> branchesInRegion);
 };
 
-struct BranchTargeting{
+struct BranchTargeting{ //This is esentially a wrapper for HCS different targeting strategies of postsynaptic branches
     int targetBranch{};
     bool setTargetBranch{false};
     bool randomTargetBranch{false};
@@ -63,8 +63,8 @@ struct ResourceBranch : public Branch {
     //Synapse access
     std::vector<ResourceSpinePtr> branchSynapseData;//CAREFUL! THIS VECTOR IS NOT SORTED AT ANY POINT by SynapseBranchID
 
-    std::set<int> updatedSynapseSpines{};//IDs are branch slots, to index the vector above to index proper. Cleared every timestep, used to avoid double effect when paired in same timestep
-    std::set<int> updatedAlphaEffects{};//IDs are branch slots, Used in depression, cleared every timestep
+    //std::set<int> updatedSynapseSpines{};//Removed due to the fact that pairing in the same timestep should have a greater effect than when paired with greater tiem difference
+    std::unordered_set<int> updatedAlphaEffects{};//IDs are branch slots, Used in depression, cleared every timestep
     // int plasticityEventsPerTimestepThreshold{};
     //int sumPlasticityEvents{};//Theoretically temporary
 

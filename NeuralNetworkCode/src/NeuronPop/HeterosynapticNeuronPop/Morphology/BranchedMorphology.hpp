@@ -53,7 +53,7 @@ public:
     void RecordPostSpike() override;
     void RecordExcitatoryPreSpike(int spikedSynapseId) override; 
     //virtual std::vector<double> GetOverallSynapticProfile() const;
-    void CalcMorphoPlasticityEvents() override;
+    //void CalcMorphoPlasticityEvents() override;
     
     virtual void advect()=0;
     void Reset() override;

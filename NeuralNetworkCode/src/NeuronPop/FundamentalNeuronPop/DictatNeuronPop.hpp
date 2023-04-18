@@ -4,6 +4,7 @@
 #include "../NeuronPop.hpp"
 
 struct Instruction{
+    //This struct allows the reading organization of instruction
     int neuronId;//The neuron specific to the instruction (-1 is equivalent to all?)
     long startTimeStep;//Will have to convert times to timesteps. Or make a short python programme to do it in a file by itself
     long endTimeStep;

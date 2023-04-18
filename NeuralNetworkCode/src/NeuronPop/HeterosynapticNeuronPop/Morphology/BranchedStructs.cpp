@@ -3,25 +3,31 @@
 
 DendriticSubRegion::DendriticSubRegion(char regionID, std::vector<int> branchesInRegion): regionID{regionID}, branchesInRegion{branchesInRegion}
 {
-
+    //This is still under work
 }
 
 Branch::Branch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId):branchSlots{static_cast<size_t>(std::round(branchLength/gap))}, synapticGap{gap}, branchLength{branchLength}, anteriorBranches{anteriorBranches}, branchId{branchId}//,morphoSynapseIDs(static_cast<size_t>(branchSlots), -1),branchSynapseIDs(static_cast<size_t>(branchSlots), -1), , spikedSyn(branchSlots, false)
 {
     //std::iota(uniqueSynapsePositionIDs.begin(),uniqueSynapsePositionIDs.end() , branchId*(branchSlots));
+    //Constructor
 }
 
 void Branch::postConnectSetUp(std::vector<BranchedSpinePtr> SynapseData)
 {
-    //In case it is necessary in the future
+    //Here we do all the function calls that could not be done in the constructor. 
+    //This is done to adapt to the fact that synapses do not exist until ConnectNeurons() is called in the NeuralNetwork::Simulate() function.
+    //For now, it is not necessary to do anything in this class
 }
 
 ResourceBranch::ResourceBranch(double gap, double branchLength, std::vector<int> anteriorBranches, int branchId, int triggerMaxCount): 
 Branch(gap, branchLength, anteriorBranches, branchId), triggerCount(branchSlots, triggerMaxCount)//, potentiationCountSTDP(branchSlots, 10)//, maxCountSTDPPotentiation{branchMaxCountSTDPPotentiation}//, maxCountTrigger{branchMaxCountTrigger}//, plasticityEventsPerTimestepWindow(betaEventsWindowSize)
 {
+    //Constructor
 }
 void ResourceBranch::postConnectSetUp(std::vector<BranchedSpinePtr> synapseData)
 {
+    //Here we do all the function calls that could not be done in the constructor. 
+    //This is done to adapt to the fact that synapses do not exist until ConnectNeurons() is called in the NeuralNetwork::Simulate() function.
     SetUpSynapseData(synapseData);
 }
 void ResourceBranch::SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData)

@@ -13,7 +13,8 @@ void BranchedMorphology::RecordExcitatoryPreSpike(int spikedSynapseId) {
     //This function is NOT DELAY COMPATIBLE (careful with the delays in synapse objects)
     Morphology::RecordExcitatoryPreSpike(spikedSynapseId);
     // this->branches.at(this->branchedSynapseData.at(spikedSynapseId)->GetBranchId())->spikedSyn.at(this->branchedSynapseData.at(spikedSynapseId)->GetBranchPositionId())=true;
-    this->branches.at(this->branchedSynapseData.at(spikedSynapseId)->GetBranchId())->spikedSynapsesInTheBranch.push_back(this->branchedSynapseData.at(spikedSynapseId)->GetBranchPositionId());
+    BranchedSpinePtr& synapseSpine = this->branchedSynapseData.at(spikedSynapseId);
+    this->branches.at(synapseSpine->GetBranchId())->spikedSynapsesInTheBranch.push_back(synapseSpine->GetBranchPositionId());
 }
 
 void BranchedMorphology::Reset()
@@ -244,11 +245,11 @@ void BranchedMorphology::OrderedSynapseAllocation(BranchPtr& branch)
         }
         //For now it is the same as ordered, the possibility of alternating synapses will probably be more useful with multiple synapses pre-post neuron.
 }*/
-void BranchedMorphology::CalcMorphoPlasticityEvents()
-{
-    totalPlasticityEvents=std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
-                                       [] (unsigned long acc, const BranchPtr& branch) { return acc + branch->LTPevents + branch->LTDevents; });
-}
+// void BranchedMorphology::CalcMorphoPlasticityEvents()
+// {
+//     totalPlasticityEvents=std::accumulate(this->branches.begin(), this->branches.end(), 0,//UNRESOLVED, does this give intended output?
+//                                        [] (unsigned long acc, const BranchPtr& branch) { return acc + branch->LTPevents + branch->LTDevents; });
+// }
 
 void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vector<int> anteriorBranches)
 {
@@ -265,10 +266,13 @@ void BranchedMorphology::SetUpBranchings(int remainingBranchingEvents, std::vect
             this->SetUpBranchings(remainingBranchingEvents, anteriorBranchesCopy);
         }
     }
+    //Here we can create the node pointers:
 }
 
 void BranchedMorphology::PostConnectSetUp()
 {
+    //Here we do all the function calls that could not be done in the constructor/LP. 
+    //This is done to adapt to the fact that synapses do not exist until ConnectNeurons() is called in the NeuralNetwork::Simulate() function.
     for (BranchPtr branch: branches){
         branch->postConnectSetUp(branchedSynapseData);
     }

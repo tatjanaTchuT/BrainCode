@@ -64,7 +64,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     // void SetKExponentialDecay(int kStimmulusExpDecayCalc){kStimmulusExpDecay=kStimmulusExpDecayCalc;}//Input is supposed to be exp(-dt/tau)
     // void SetNExponentialDecay(int nStimmulusExpDecayCalc){nStimmulusExpDecay=nStimmulusExpDecayCalc;}
     void SetMaxCount(int maxCountnew) {maxCount=maxCountnew;} //UNRESOLVED  Call in AllocateNewSynapse
-    void SetPotentiationRatio(int ratio) {PotentiationDepressionRatio=ratio;}
+    void SetPotentiationRatio(double ratio) {PotentiationDepressionRatio=ratio;}
     // void SetDepressionFlag(bool booleanFlag) {depressionFlagSTDP=booleanFlag;}
     // void SetPotentiationFlag(bool booleanFlag) {potentiationFlagSTDP=booleanFlag;}
     //Alpha methods
@@ -73,7 +73,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void RecalcWeight(double weightResourceFactor);
     //Temp effets methods
     void AddTempResourcesToSpine(double alphaStimmulusInput);
-    void ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    bool ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     //void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     void ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
 
