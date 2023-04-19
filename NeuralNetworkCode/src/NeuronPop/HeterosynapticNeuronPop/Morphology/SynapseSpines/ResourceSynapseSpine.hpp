@@ -48,12 +48,14 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
 
     // bool depressionFlagSTDP{false};
     // bool potentiationFlagSTDP{false};
+    bool updated{false};
     
     public:
     //Getters
     double GetAlphaResources(){return alphaResources;}
     // bool GetDepressionFlagSTDP(){return depressionFlagSTDP;}
     // bool GetPotentiationFlagSTDP(){return potentiationFlagSTDP;}
+    bool GetUpdatedFlag(){return updated;}
     //int GetMaxCount(){return maxCount;}//Not necessary for now
     //Setters
     void SetAlphaBasal(double alphaBasalInput){alphaBasal=alphaBasalInput;}
@@ -67,6 +69,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void SetPotentiationRatio(double ratio) {PotentiationDepressionRatio=ratio;}
     // void SetDepressionFlag(bool booleanFlag) {depressionFlagSTDP=booleanFlag;}
     // void SetPotentiationFlag(bool booleanFlag) {potentiationFlagSTDP=booleanFlag;}
+    void SetUpdatedFlag(bool flag){updated=flag;}
     //Alpha methods
     void RecalculateAlphaResources();//Should be recalced at least once in the Spine Setup
     void DecayAlphaResources();
@@ -75,7 +78,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void AddTempResourcesToSpine(double alphaStimmulusInput);
     bool ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     //void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
-    void ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    bool ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
 
     //Stimmulus vector methods
     void TickStimmulusCounts();//Called in Reset(), but both should be mutually exclusive with AATE above

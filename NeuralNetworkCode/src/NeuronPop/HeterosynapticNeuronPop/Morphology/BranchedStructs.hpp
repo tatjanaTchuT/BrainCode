@@ -61,10 +61,10 @@ struct Branch{
 struct ResourceBranch : public Branch {
 
     //Synapse access
-    std::vector<ResourceSpinePtr> branchSynapseData;//CAREFUL! THIS VECTOR IS NOT SORTED AT ANY POINT by SynapseBranchID
+    std::vector<ResourceSpinePtr> resouceBranchSynapseData;//CAREFUL! THIS VECTOR IS NOT SORTED AT ANY POINT by SynapseBranchID
 
     //std::set<int> updatedSynapseSpines{};//Removed due to the fact that pairing in the same timestep should have a greater effect than when paired with greater tiem difference
-    std::unordered_set<int> updatedAlphaEffects{};//IDs are branch slots, Used in depression, cleared every timestep
+    std::vector<int> updatedAlphaEffects{};//IDs are branch slots, Used in depression, cleared every timestep
     // int plasticityEventsPerTimestepThreshold{};
     //int sumPlasticityEvents{};//Theoretically temporary
 

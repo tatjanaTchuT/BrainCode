@@ -428,7 +428,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount != 0 && this->neurons->IsPopHeteroSynaptic(p)){
+        if (synTrackCount != 0 && this->neurons->GetPop(p)->HasHeterosynapticPlasticity()){
             this->FileStreams.heteroSynapsesFileStream << "Pop. "<< p << " profile -> "<<this->neurons->GetPop(p)->GetIndividualSynapticProfileHeaderInfo() <<" \n";
         }
     }
@@ -439,7 +439,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if ( synTrackCount == 0 || !this->neurons->IsPopHeteroSynaptic(p)) {
+        if ( synTrackCount == 0 || !this->neurons->GetPop(p)->HasHeterosynapticPlasticity()) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {
@@ -456,7 +456,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0)
         return;
 
-    std::cout << "The file has been properly created!!!!\n";
+    //std::cout << "The file has been properly created!!!!\n";
     unsigned long P = neurons->GetTotalPopulations();
     unsigned long synTrackCount;
     this->FileStreams.hSOverallFileStream.open(GetOverallHeteroSynapseStateFilename(), std::ofstream::out | std::ofstream::trunc);
@@ -464,7 +464,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     WriteHeader(&this->FileStreams.hSOverallFileStream);
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (synTrackCount != 0 && this->neurons->IsPopHeteroSynaptic(p)){
+        if (synTrackCount != 0 && this->neurons->GetPop(p)->HasHeterosynapticPlasticity()){
             this->FileStreams.heteroSynapsesFileStream << "Pop. "<< p << " Overall Profile -> "<<this->neurons->GetPop(p)->GetOverallSynapticProfileHeaderInfo() <<" \n";
         }
     }
@@ -477,7 +477,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
-        if (!this->neurons->IsPopHeteroSynaptic(p) || synTrackCount == 0) {
+        if (!this->neurons->GetPop(p)->HasHeterosynapticPlasticity() || synTrackCount == 0) {
             continue;
         }
         for(unsigned long i = 0;i<notrackNeuronPotentials[p];i++) {

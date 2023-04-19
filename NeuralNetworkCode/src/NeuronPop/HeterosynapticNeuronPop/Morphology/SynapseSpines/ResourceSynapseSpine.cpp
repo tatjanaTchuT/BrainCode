@@ -66,7 +66,7 @@ bool ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(const DHashMap& STDPde
 //     // }
 // }
 
-void ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount)
+bool ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount)
 {
     //This is because depression updates instantly
     alphaStimmulus=std::accumulate(depressionAlphaTempAndCount.begin(), depressionAlphaTempAndCount.end(), alphaStimmulus, [STDPdecayMap, STDPcount](double accumulator, double alphaStemp){return accumulator - alphaStemp*STDPdecayMap.at(STDPcount);});
@@ -74,11 +74,12 @@ void ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(const DHashMap& STDPd
     if (alphaStimmulus+alphaBasal<0.0){
         alphaStimmulus= (-alphaBasal);
     }
+    return (depressionAlphaTempAndCount.size()!=0);
 }
 
 void ResourceSynapseSpine::TickStimmulusCounts()
 {
-    std::for_each(potentiationAlphaTempAndCount.begin(), potentiationAlphaTempAndCount.end(), [](PairDI& element) {element.second+=1;});
+    std::for_each(potentiationAlphaTempAndCount.begin(), potentiationAlphaTempAndCount.end(), [](PairDI& element) {element.second++;});
 }
 
 void ResourceSynapseSpine::CullStimmulusVectors()

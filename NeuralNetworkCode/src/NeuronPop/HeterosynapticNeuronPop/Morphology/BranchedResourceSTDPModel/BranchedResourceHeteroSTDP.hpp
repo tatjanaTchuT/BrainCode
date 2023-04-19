@@ -6,12 +6,14 @@
 #include <numeric>
 #include <unordered_map>
 #include <map>
+#include <unordered_set>
 
 class BranchedMorphology;
 
 typedef std::shared_ptr<ResourceBranch> RBranchPtr;
 typedef std::shared_ptr<Branch> BranchPtr;
 typedef std::shared_ptr<ResourceSynapseSpine> ResourceSpinePtr;
+typedef std::shared_ptr<BranchedSynapseSpine> BranchedSpinePtr;
 typedef std::shared_ptr<BaseSynapseSpine> BaseSpinePtr;
 typedef std::unordered_map<int, double> DHashMap;
 typedef std::unordered_map<int, DHashMap> NestedDHashMap;
@@ -83,7 +85,7 @@ public:
     void advect() override;
     //Pairing functions
     void DetectPossiblePairing(RBranchPtr& branch);
-    bool CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch);
+    //bool CheckIfThereIsPairing(RBranchPtr& branch, int synapseIDinBranch);
     void SpaceTimeKernel(int branchSynapseID, int branchID);
     double CallKernelHashTable(int distanceToCenterInGaps, int timeDifference);
     //Plasticity events functions

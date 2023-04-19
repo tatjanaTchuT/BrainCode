@@ -35,10 +35,10 @@ void ResourceBranch::SetUpSynapseData(std::vector<BranchedSpinePtr> synapseData)
     //This function sets up the spine pointers in the branch, something not possible until ConnectNeurons() runs, thus its execution from PostConnectSetUp()
     for (BranchedSpinePtr synapse :synapseData){
         if (synapse->GetBranchId()==branchId){
-            branchSynapseData.push_back(std::dynamic_pointer_cast<ResourceSynapseSpine>(synapse));
+            resouceBranchSynapseData.push_back(std::dynamic_pointer_cast<ResourceSynapseSpine>(synapse));
         }
     }
-    std::sort(branchSynapseData.begin(), branchSynapseData.end(), BranchIDCompare); //This allows to do indexing of the synapse data using the branch ID
+    std::sort(resouceBranchSynapseData.begin(), resouceBranchSynapseData.end(), BranchIDCompare); //This allows to do indexing of the synapse data using the branch ID
 }
 
 void ResourceBranch::TickAllCounts()
