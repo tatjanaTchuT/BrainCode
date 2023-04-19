@@ -16,7 +16,7 @@
 #include <random>
 #include <typeinfo>
 #include <cstring>
-#include <valarray>
+#include <vector>
 #include <fstream>
 #include "GlobalFunctions.hpp"
 #include "NeuronPop/NeuronPop.hpp"

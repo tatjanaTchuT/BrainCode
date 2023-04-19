@@ -110,7 +110,7 @@ public:
     BaseSpinePtr AllocateNewSynapse(const HeteroCurrentSynapse& synapse) override; //Call the Branched one inside before setting all counters
         //Remember to set all counts to maxCount    
     //Record functions
-    std::valarray<double> GetOverallSynapticProfile() override;
+    std::vector<double> GetOverallSynapticProfile() override;
     std::string GetOverallSynapticProfileHeaderInfo() const override;
     //void CalcMorphoPlasticityEvents() override;
     //For debugging purposes

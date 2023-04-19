@@ -24,9 +24,9 @@ std::string CurrentSynapse::GetUnhashedDataHeader()
 	return "J_" + GetIdStr() + "\t";
 }
 
-std::valarray<double> CurrentSynapse::GetSynapticState(int pre_neuron)
+std::vector<double> CurrentSynapse::GetSynapticState(int pre_neuron)
 {
-    std::valarray<double> val(1);
+    std::vector<double> val(1);
     double Jsum = 0;
     // get average coupling strength
     for(unsigned int target=0; target < this->GetNumberOfPostsynapticTargets(pre_neuron); target++){

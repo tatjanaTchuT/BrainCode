@@ -29,9 +29,9 @@ private:
 	double tau_syn;
 	double attenuation;
 
-	std::valarray<double>   Ext_Xpos;   // position on the x axis
-	std::valarray<double>   Ext_Ypos;   // position on the x axis
-	std::valarray<std::valarray<std::vector<double>>> Ext_Connectivity;  // Postsynaptic neurons [to external presynaptic neuron i][in population Pi][list of its postsynaptic neurons in this population]
+	std::vector<double>   Ext_Xpos;   // position on the x axis
+	std::vector<double>   Ext_Ypos;   // position on the x axis
+	std::vector<std::vector<std::vector<double>>> Ext_Connectivity;  // Postsynaptic neurons [to external presynaptic neuron i][in population Pi][list of its postsynaptic neurons in this population]
     std::vector<double> next_stimulus_time_step;
     std::vector<double>        next_stimulus_step;
 

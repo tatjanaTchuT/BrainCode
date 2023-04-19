@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
-#include <valarray>
+#include <vector>
 #include <algorithm>
 #include <memory>
 
@@ -16,24 +16,24 @@
 #define min_(a,b) (((a)<(b)) ? (a):(b))
 
 struct bin_data {
-    std::valarray<double>  potential;       // used to compute average potential of neurons [per population]
-    std::valarray<double>  spiker_ratio;      // number of spiked neurons [per population]
+    std::vector<double>  potential;       // used to compute average potential of neurons [per population]
+    std::vector<double>  spiker_ratio;      // number of spiked neurons [per population]
 
-    std::valarray<double>  externalCurrent; // average external input current [to population P]
-	std::valarray<std::valarray<double>>  synapticCurrents; //average current [to population P1][from population P2]
-    //std::valarray<double>  totalCurrent_mean;             // mean of the total input current     [to population P]
+    std::vector<double>  externalCurrent; // average external input current [to population P]
+	std::vector<std::vector<double>>  synapticCurrents; //average current [to population P1][from population P2]
+    //std::vector<double>  totalCurrent_mean;             // mean of the total input current     [to population P]
 
     std::vector<std::vector<double>> totalCurrent_mean_N;          // mean of the total input current     [to neuron N]
-    std::valarray<double>            totalCurrentSquared_mean;     // mean of the squared total input current to each neuron [averaged over population Ps]
-    std::valarray<int>               spiker_pop;
+    std::vector<double>            totalCurrentSquared_mean;     // mean of the squared total input current to each neuron [averaged over population Ps]
+    std::vector<int>               spiker_pop;
 
 
     /** synaptic statistics per time step for every postsynaptic and every
      * presynaptic population and every synapse specific data column.
      */
-    std::valarray<std::valarray<std::valarray<double>>>	synapticState;  // synaptic data of synapses [to population P1][from population P2][data entry j]
-	std::valarray<std::valarray<double>>				Heatmap;      // firing rate [of population i][in each pixel]
-    std::valarray<std::valarray<long long>>             no_recordedSynapses;
+    std::vector<std::vector<std::vector<double>>>	synapticState;  // synaptic data of synapses [to population P1][from population P2][data entry j]
+	std::vector<std::vector<double>>				Heatmap;      // firing rate [of population i][in each pixel]
+    std::vector<std::vector<long long>>             no_recordedSynapses;
 } ;
 
 class DatafileParser;
@@ -49,14 +49,14 @@ protected:
 	int Heatmap;
 	int current_t_0 = 0;
 	int raster_t_0 = 0;
-    std::valarray<unsigned long>			notrackNeuronPotentials;
-    std::valarray<unsigned long>		    noRasterPlotNeurons;
-	std::valarray<long>						CurrentContributions;
-	std::valarray<std::valarray<double>>	Densimap;      // Number of neurons [of population i][in each pixel]
-	std::valarray<double>					CurrentContrBin;
+    std::vector<unsigned long>			notrackNeuronPotentials;
+    std::vector<unsigned long>		    noRasterPlotNeurons;
+	std::vector<int>						CurrentContributions;
+	std::vector<std::vector<double>>	Densimap;      // Number of neurons [of population i][in each pixel]
+	std::vector<double>					CurrentContrBin;
     // statistics per time step
     bin_data currentBin;
-    std::valarray<unsigned long> noTrackHeteroSynapsePerTrackedNeuron;
+    std::vector<unsigned long> noTrackHeteroSynapsePerTrackedNeuron;
 
     RecorderOpenStreams FileStreams;
 

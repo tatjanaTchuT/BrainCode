@@ -48,12 +48,12 @@ void Morphology::RecordExcitatoryPreSpike(int spikedSynapseId) {
     //this->preSpikes.emplace_back(spikedSynapseId, this->baseSynapseData.at(spikedSynapseId)->lastSpike);
 }
 
-std::valarray<double> Morphology::GetIndividualSynapticProfile(unsigned long synapseId) const
+std::vector<double> Morphology::GetIndividualSynapticProfile(unsigned long synapseId) const
 {
     return baseSynapseData.at(synapseId)->GetIndividualSynapticProfile();
 }
 
-std::valarray<double> Morphology::GetOverallSynapticProfile()
+std::vector<double> Morphology::GetOverallSynapticProfile()
 {
     /*
      * returned array organised as follows:
@@ -62,7 +62,7 @@ std::valarray<double> Morphology::GetOverallSynapticProfile()
      * item 3: total pre spikes
      * item 4: average plasticity events
      * */
-    std::valarray<double> dataArray(4);
+    std::vector<double> dataArray(4);
     size_t sizeOfSynapseData {this->baseSynapseData.size()};
     double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
                                        [] (double acc, const BaseSpinePtr& syn) { return acc + syn->GetWeight(); });

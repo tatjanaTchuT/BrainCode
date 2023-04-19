@@ -55,7 +55,7 @@ public:
      * Returns the sum of the synaptic state variables of neuron pre_neuron
      * targeting neurons in post_population.
      */
-    std::valarray<double>	GetSynapticState(int post_population,int pre_population,int pre_neuron);
+    std::vector<double>	GetSynapticState(int post_population,int pre_population,int pre_neuron);
 	double					GetRecurrentInput(int post_population, int pre_population, int post_neuron);
     double					GetCumulatedDV(int post_population, int pre_population);
     int						GetNumberOfPostsynapticTargets(int post_population,int pre_population,int pre_neuron);

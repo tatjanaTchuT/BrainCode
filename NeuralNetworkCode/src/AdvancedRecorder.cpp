@@ -33,7 +33,7 @@ AdvancedRecorder::AdvancedRecorder(NeuronPopSample *ns, SynapseSample *syn, Stim
 	}
 
 	LoadParameters(input);
-	CurrentContrBin.resize((static_cast<size_t>(P) + 1)* static_cast<size_t>(CurrentContributions.sum()));
+	CurrentContrBin.resize((static_cast<size_t>(P) + 1)* static_cast<size_t>(std::accumulate(CurrentContributions.begin(), CurrentContributions.end(), 0)));
 	if (Heatmap != 0) {
 		Densimap.resize(P);
 		currentBin.Heatmap.resize(P);
@@ -302,7 +302,7 @@ void AdvancedRecorder::WriteDataHeader_Averages(){
 
 void AdvancedRecorder::WriteDataHeader_Rasterplot(){
 
-    if(noRasterPlotNeurons.sum() == 0)
+    if(SumOfVector(noRasterPlotNeurons) == 0)
         return;
 
     this->FileStreams.rasterplotFileStream.open (GetRasterplotFilename(), std::ofstream::out | std::ofstream::trunc);
@@ -315,14 +315,14 @@ void AdvancedRecorder::WriteDataHeader_Rasterplot(){
 
 void AdvancedRecorder::WriteDataHeader_Potential(){
 
-    if(notrackNeuronPotentials.sum() == 0)
+    if(SumOfVector(notrackNeuronPotentials) == 0)
         return;
 
     unsigned long             P = neurons->GetTotalPopulations();
     this->FileStreams.potentialFileStream.open(GetPotentialFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.potentialFileStream);
-    this->FileStreams.potentialFileStream << "#1 t (secs.)\t 2-"<<1+notrackNeuronPotentials.sum()<<" V_pop_id (mV) \n";
+    this->FileStreams.potentialFileStream << "#1 t (secs.)\t 2-"<<1+SumOfVector(notrackNeuronPotentials)<<" V_pop_id (mV) \n";
 
 	this->FileStreams.potentialFileStream << "t\t";
     for(unsigned long p = 0;p<P;p++){
@@ -335,14 +335,14 @@ void AdvancedRecorder::WriteDataHeader_Potential(){
 
 void AdvancedRecorder::WriteDataHeader_Currents(){
 
-    if(notrackNeuronPotentials.sum() == 0)
+    if(SumOfVector(notrackNeuronPotentials) == 0)
         return;
 
     unsigned long             P = neurons->GetTotalPopulations();
     this->FileStreams.currentsFileStream.open(GetCurrentsFilename(), std::ofstream::out | std::ofstream::trunc);
 
     WriteHeader(&this->FileStreams.currentsFileStream);
-    this->FileStreams.currentsFileStream << "#1 t (sec)\t 2-"<<1+ notrackNeuronPotentials.sum()<<" mu_pop_id / tau_m(dmV / sec)\n";
+    this->FileStreams.currentsFileStream << "#1 t (sec)\t 2-"<<1+ SumOfVector(notrackNeuronPotentials)<<" mu_pop_id / tau_m(dmV / sec)\n";
 
 	this->FileStreams.currentsFileStream << "t\t";
 	for(unsigned long p = 0;p<P;p++){
@@ -354,7 +354,7 @@ void AdvancedRecorder::WriteDataHeader_Currents(){
 }
 
 void AdvancedRecorder::WriteDataHeader_CurrentsContribution() {
-	if (CurrentContributions.sum() == 0)
+	if (SumOfVector(CurrentContributions) == 0)
 		return;
 	unsigned long P = neurons->GetTotalPopulations();
 	long index;
@@ -417,7 +417,7 @@ void AdvancedRecorder::WriteDataHeader_SynapseStates() {
 
 void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
-    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0)
+    if(SumOfVector(noTrackHeteroSynapsePerTrackedNeuron) == 0)
         return;
 
     unsigned long P = neurons->GetTotalPopulations();
@@ -434,7 +434,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
     }
 
     this->FileStreams.heteroSynapsesFileStream << "\n#************************************\n";
-    this->FileStreams.heteroSynapsesFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id_synapse_id \n";
+    this->FileStreams.heteroSynapsesFileStream << "#1 t (secs.)\t 2-"<<1+SumOfVector(noTrackHeteroSynapsePerTrackedNeuron)<<" Profile_pop_id_neuron_id_synapse_id \n";
     this->FileStreams.heteroSynapsesFileStream << "t\t";
 
     for(unsigned long p = 0;p<P;p++){
@@ -453,7 +453,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
 
 void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
 
-    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0)
+    if(SumOfVector(noTrackHeteroSynapsePerTrackedNeuron) == 0)
         return;
 
     //std::cout << "The file has been properly created!!!!\n";
@@ -471,7 +471,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     this->FileStreams.hSOverallFileStream << "Overall Profile ->  \n";
     this->FileStreams.hSOverallFileStream << "\n#************************************\n";
 
-    this->FileStreams.hSOverallFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id \n";
+    this->FileStreams.hSOverallFileStream << "#1 t (secs.)\t 2-"<<1+SumOfVector(noTrackHeteroSynapsePerTrackedNeuron)<<" Profile_pop_id_neuron_id \n";
 
     this->FileStreams.hSOverallFileStream << "t\t";
 
@@ -506,10 +506,10 @@ void AdvancedRecorder::reset_statistics()
 {
     int P = this->neurons->GetTotalPopulations();
 
-    currentBin.potential         = 0.0;
-    currentBin.spiker_ratio      = 0.0;
-    currentBin.externalCurrent   = 0.0;
-    currentBin.totalCurrentSquared_mean  = 0.0;
+    resetVector(currentBin.potential);
+    resetVector(currentBin.spiker_ratio);
+    resetVector(currentBin.externalCurrent);
+    resetVector(currentBin.totalCurrentSquared_mean);
 
     for(int i = 0; i < P; i++)
     {
@@ -518,7 +518,7 @@ void AdvancedRecorder::reset_statistics()
         {
             currentBin.synapticCurrents[i][j]    = 0.0;
             currentBin.no_recordedSynapses[i][j] = 0;
-            currentBin.synapticState[i][j]       = 0.0;
+            resetVector(currentBin.synapticState[i][j]);
         }
 		if (Heatmap != 0) {
 			for (int pixel = 0;pixel < pow(Heatmap, info->Dimensions);pixel++)
@@ -529,7 +529,7 @@ void AdvancedRecorder::reset_statistics()
 
 void AdvancedRecorder::Record_Rasterplot(){
 
-	if (noRasterPlotNeurons.sum() == 0 || info->time_step < raster_t_0)
+	if (SumOfVector(noRasterPlotNeurons) == 0 || info->time_step < raster_t_0)
         return;
     double           dt = info->dt;
     std::vector<long> *spiker;
@@ -553,7 +553,7 @@ void AdvancedRecorder::Record_Rasterplot(){
 
 void AdvancedRecorder::Record_Currents(std::vector<std::vector<double>> * synaptic_dV){
 
-    if(notrackNeuronPotentials.sum() == 0)
+    if(SumOfVector(notrackNeuronPotentials) == 0)
         return;
     double           dt = info->dt;
     double           t = double(info->time_step)*dt;
@@ -570,7 +570,7 @@ void AdvancedRecorder::Record_Currents(std::vector<std::vector<double>> * synapt
 
 void AdvancedRecorder::Record_Potential(){
 
-    if(notrackNeuronPotentials.sum() == 0)
+    if(SumOfVector(notrackNeuronPotentials) == 0)
         return;
 
     double           dt = info->dt;
@@ -587,7 +587,7 @@ void AdvancedRecorder::Record_Potential(){
 
 void AdvancedRecorder::Record_CurrentContributions(std::vector<std::vector<double>> * synaptic_dV) {
 
-	if (CurrentContributions.sum() == 0 || info->time_step < current_t_0)
+	if (SumOfVector(CurrentContributions) == 0 || info->time_step < current_t_0)
 		return;
 
 	double dt = info->dt;
@@ -671,10 +671,10 @@ void AdvancedRecorder::Record_Averages(){
     double n_aver      {static_cast<double>(averaging_steps)};
     double n;
 
-    std::valarray<double> means(pops);
-    std::valarray<double> popAver_SquaredMeanTime(pops);
+    std::vector<double> means(pops,0.0);
+    std::vector<double> popAver_SquaredMeanTime(pops,0.0);
 
-    means        = 0.0; popAver_SquaredMeanTime = 0.0;
+    //means        = 0.0; popAver_SquaredMeanTime = 0.0;
 
     for(unsigned int pop = 0; pop < pops; pop++){
         n = neurons->GetNeuronsPop(pop);
@@ -778,7 +778,7 @@ void AdvancedRecorder::Record_Heatmap() {
 
 void AdvancedRecorder::Record_HeteroSynapses() {
 
-    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0) {
+    if(SumOfVector(noTrackHeteroSynapsePerTrackedNeuron) == 0) {
         return;
     }
 
@@ -806,7 +806,7 @@ void AdvancedRecorder::Record_HeteroSynapses() {
 }
 
 void AdvancedRecorder::Record_HeteroSynapsesOverall() {
-    if(noTrackHeteroSynapsePerTrackedNeuron.sum() == 0) {
+    if(SumOfVector(noTrackHeteroSynapsePerTrackedNeuron) == 0) {
         return;
     }
 
@@ -879,8 +879,8 @@ void AdvancedRecorder::Record(std::vector<std::vector<double>> * synaptic_dV)
 		{
 			for (unsigned int post_population = 0; post_population < P; post_population++) {
                 //std::cout << "Synapse " << std::to_string(prePop) << " to " << std::to_string(post_population) << " at time " << std::to_string(this->info->time_step) << "\n";
-				currentBin.synapticState[post_population][prePop] += this->synapses->GetSynapticState(post_population, prePop, (*spikers)[i]);  //arrays are added
-				currentBin.no_recordedSynapses[post_population][prePop] += this->synapses->GetNumberOfPostsynapticTargets(post_population, prePop, (*spikers)[i]);
+				currentBin.synapticState[post_population][prePop] = this->synapses->GetSynapticState(post_population, prePop, (*spikers)[i]);  //arrays are added
+				currentBin.no_recordedSynapses[post_population][prePop] = this->synapses->GetNumberOfPostsynapticTargets(post_population, prePop, (*spikers)[i]);
                 for(unsigned int i_data = 0; i_data<currentBin.synapticState[post_population][prePop].size(); i_data++){
                 //std::cout << std::to_string(currentBin.synapticState[post_population][prePop][i_data]) << " ";
                 //std::cout << std::to_string(currentBin.synapticState[post_population][prePop][i_data]/currentBin.no_recordedSynapses[post_population][prePop]) << "\n";
@@ -910,16 +910,16 @@ void AdvancedRecorder::CloseStreams()
     FileStreams.averagesFileStream.close();
     if (Heatmap!=0){
         FileStreams.heatmapFileStream.close();
-    } if (noRasterPlotNeurons.sum()!=0){
+    } if (SumOfVector(noRasterPlotNeurons)!=0){
         FileStreams.rasterplotFileStream.close();
-    } if (notrackNeuronPotentials.sum()!=0){
+    } if (SumOfVector(notrackNeuronPotentials)!=0){
         FileStreams.potentialFileStream.close();
         FileStreams.currentsFileStream.close();
-    } if (CurrentContributions.sum()!=0){
+    } if (SumOfVector(CurrentContributions)!=0){
         FileStreams.cCurrentsFileStream.close();
     } if (trackSynapses){
         FileStreams.synStatesFileStream.close();
-    } if (noTrackHeteroSynapsePerTrackedNeuron.sum()!=0){
+    } if (SumOfVector(noTrackHeteroSynapsePerTrackedNeuron)!=0){
         FileStreams.heteroSynapsesFileStream.close();
         FileStreams.hSOverallFileStream.close();
     // } if (streamingNOutputBool){

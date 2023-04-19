@@ -8,7 +8,7 @@
 #include <vector>
 #include <cmath>
 #include <limits>
-#include <valarray>
+#include <vector>
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -84,9 +84,9 @@ public:
     virtual void RecordPostSpike();
     virtual void RecordExcitatoryPreSpike(int spikedSynapseId);
     //Getters
-    std::valarray<double> GetIndividualSynapticProfile(unsigned long synapseId) const;
+    std::vector<double> GetIndividualSynapticProfile(unsigned long synapseId) const;
     std::string GetIndividualSynapticProfileHeaderInfo() const;
-    virtual std::valarray<double> GetOverallSynapticProfile();
+    virtual std::vector<double> GetOverallSynapticProfile();
     virtual std::string GetOverallSynapticProfileHeaderInfo() const;
     //virtual void CalcMorphoPlasticityEvents() {return;};
     //friend std::vector<unsigned long> getSpikedSynapsesFromMorphology(const Morphology&); // This function is not necessary as the spikedSynapses is not used outside of the class

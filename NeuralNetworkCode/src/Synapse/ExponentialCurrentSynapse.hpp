@@ -5,7 +5,7 @@
 #include <vector>
 #include <random>
 #include <typeinfo>
-#include <valarray>
+#include <vector>
 #include "Synapse.hpp"
 #include "../NeuronPop/NeuronPop.hpp"
 #include "../GlobalFunctions.hpp"
@@ -36,7 +36,7 @@ public:
     int GetNumberOfDataColumns() override { return 1;}
     std::string GetDataHeader(int data_column) override;
 	std::string GetUnhashedDataHeader() override;
-    std::valarray<double> GetSynapticState(int pre_neuron) override;
+    std::vector<double> GetSynapticState(int pre_neuron) override;
     const std::string GetTypeStr() override { return str_exponentialCurrentSynapse; };
 
     void SaveParameters(std::ofstream * stream,std::string id_str) override;

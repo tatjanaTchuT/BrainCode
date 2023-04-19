@@ -65,9 +65,9 @@ std::string PRGSynapseContinuous::GetUnhashedDataHeader()
 	return "J_" + GetIdStr() + "\t<x>_" + GetIdStr() + "\t<y>_" + GetIdStr() + "\t<l>_" + GetIdStr() + "\t<pR>_" + GetIdStr() + "\t";
 }
 
-std::valarray<double> PRGSynapseContinuous::GetSynapticState(int pre_neuron)
+std::vector<double> PRGSynapseContinuous::GetSynapticState(int pre_neuron)
 {
-	std::valarray<double> val;
+	std::vector<double> val;
 	val.resize(GetNumberOfDataColumns());
 
     double X{ 0 }, Y{ 0 }, L{ 0 }, SpikeSubmitted{ 0 }; // XY{0},

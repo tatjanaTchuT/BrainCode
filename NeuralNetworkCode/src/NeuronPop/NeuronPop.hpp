@@ -6,7 +6,7 @@
 #include <vector>
 #include <cmath>
 #include <random>
-#include <valarray>
+#include <vector>
 #include <fstream>
 #include <string>
 #include <memory>
@@ -37,12 +37,12 @@ protected:
     //bool streamingNOutputBool{false};
     bool TaskOutputBool{false};
 
-    std::valarray<double>   potential;         // membrane potential
+    std::vector<double>   potential;         // membrane potential
     std::vector<long>       spiker;            // indices of all neurons that have emitted a spike in the previous time step
-    std::valarray<long>     previous_spike_step;   // last spike time for every neuron
-	std::valarray<double>   x_pos;   // position on the x axis
-	std::valarray<double>   y_pos;   // position on the x axis
-    //std::valarray<long>     global_id;  // global neuron id (unique across populations)
+    std::vector<long>     previous_spike_step;   // last spike time for every neuron
+	std::vector<double>   x_pos;   // position on the x axis
+	std::vector<double>   y_pos;   // position on the x axis
+    //std::vector<long>     global_id;  // global neuron id (unique across populations)
     void ClearSpiker();
 
 public:
@@ -70,8 +70,8 @@ public:
 
     virtual std::string GetType() = 0;
     int  const  GetId(){return this->identifier;}  
-    virtual std::valarray<double> GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
-    virtual std::valarray<double> GetOverallSynapticProfile(unsigned long neuronId);
+    virtual std::vector<double> GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId);
+    virtual std::vector<double> GetOverallSynapticProfile(unsigned long neuronId);
 
 	//*******************
     //Set-Functions

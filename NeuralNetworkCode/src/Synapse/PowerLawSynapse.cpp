@@ -21,7 +21,7 @@ void PowerLawSynapse::advectSpikers(std::vector<double>& currents, long spiker)
 	spike_count[spiker] = spike_count[spiker]+1;
 	ISI_table[spiker][(spike_count[spiker] - 1) % Naveraging] = neuronsPre->GetTimeSinceLastSpike(spiker);
 	N = std::min(spike_count[spiker], Naveraging);
-	ISI = ISI_table[spiker].sum()/N;//Average ISI over the last Naveraging spikes
+	ISI = SumOfVector(ISI_table[spiker]) / N;//Average ISI over the last Naveraging spikes
 	nu_H = 1 / ISI;
 	if (N > 1)
 		nu_H = static_cast<double>(N - 1) / N * nu_H;//the expected value of 1/ISI is nu*N/(N-1) for a Poisson process
@@ -76,8 +76,8 @@ std::string PowerLawSynapse::GetUnhashedDataHeader() {
 	return "J_" + GetIdStr() + "\t";
 }
 
-std::valarray<double> PowerLawSynapse::GetSynapticState(int pre_neuron){
-	std::valarray<double> val(1);
+std::vector<double> PowerLawSynapse::GetSynapticState(int pre_neuron){
+	std::vector<double> val(1);
 	double Jsum = 0;
 	// get average coupling strength
 	for (unsigned int target = 0; target < this->GetNumberOfPostsynapticTargets(pre_neuron); target++) {

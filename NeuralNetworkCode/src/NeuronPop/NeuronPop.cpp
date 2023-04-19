@@ -199,14 +199,14 @@ void NeuronPop::RecordExcitatorySynapticSpike(unsigned long neuronId, unsigned l
     throw;
 }
 
-std::valarray<double> NeuronPop::GetOverallSynapticProfile(unsigned long neuronId){
+std::vector<double> NeuronPop::GetOverallSynapticProfile(unsigned long neuronId){
     throw;
-    std::valarray<double> empty{};
+    std::vector<double> empty{};
     return empty;
 }
 
-std::valarray<double> NeuronPop::GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId){
+std::vector<double> NeuronPop::GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId){
     throw;
-    std::valarray<double> empty{};
+    std::vector<double> empty{};
     return empty;
 }

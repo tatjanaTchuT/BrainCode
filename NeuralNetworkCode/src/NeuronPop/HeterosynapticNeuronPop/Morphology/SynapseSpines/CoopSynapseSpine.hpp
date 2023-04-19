@@ -25,7 +25,7 @@ class CoopSynapseSpine : public BaseSynapseSpine {
     void AddToTheta(double hEffect) {theta+=hEffect;}
 
     //Profile function
-    std::valarray<double> GetIndividualSynapticProfile() const override;
+    std::vector<double> GetIndividualSynapticProfile() const override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
 };
 

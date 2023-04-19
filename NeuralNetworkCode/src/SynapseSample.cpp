@@ -311,7 +311,7 @@ std::string SynapseSample::GetUnhashedDataHeader()
 	return unhashedheader;
 }
 
-std::valarray<double> SynapseSample::GetSynapticState(int post_population,int pre_population, int pre_neuron)
+std::vector<double> SynapseSample::GetSynapticState(int post_population,int pre_population, int pre_neuron)
 {
     return synapses[post_population][pre_population]->GetSynapticState(pre_neuron);
 }

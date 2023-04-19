@@ -127,9 +127,9 @@ std::string MongilloSynapse::GetUnhashedDataHeader()
 	return "J_" + GetIdStr() + "\t<x>_" + GetIdStr() + "\t<y>_" + GetIdStr() + "\t<pR>_" + GetIdStr() + "\t";
 }
 
-std::valarray<double> MongilloSynapse::GetSynapticState(int pre_neuron)
+std::vector<double> MongilloSynapse::GetSynapticState(int pre_neuron)
 {
-    std::valarray<double> val;
+    std::vector<double> val;
     val.resize(GetNumberOfDataColumns());
 
     int X=0;

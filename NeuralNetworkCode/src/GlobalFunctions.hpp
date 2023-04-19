@@ -12,7 +12,7 @@
 #include <random>
 #include <fstream>
 #include <assert.h>
-#include <valarray>
+#include <vector>
 #include <numeric>
 #include <deque>
 
@@ -139,7 +139,7 @@ void SplitString(std::string* full_str, std::vector<std::string>* values);
 std::string getPathToInputFile(std::string* inputFile, bool Windows);
 
 void SaveDoubleFile(std::ofstream *file,double val,int precision);
-void SaveTupleOfDoublesFile(std::ofstream *file, std::valarray<double>, int precision);
+void SaveTupleOfDoublesFile(std::ofstream *file, std::vector<double>, int precision);
 void SaveTupleOfDoublesFile(std::ofstream *file, std::vector<double>, int precision);
 
 bool is_double(const std::string& s);
@@ -156,6 +156,11 @@ struct noAllocatableSynapseException : std::exception {
 };
 
 void RemoveCommentInString(std::vector<std::string>* string, char commentCharacter='#');
+
+int SumOfVector(std::vector<int> vector);
+double SumOfVector(std::vector<double> vector);
+unsigned long SumOfVector(std::vector<unsigned long> vector);
+void resetVector(std::vector<double> vector);
 //int INTMAX = 2;
 //double PI = 3.14159265359;
 
