@@ -1,7 +1,7 @@
 #ifndef _BASE_SYNAPSE_SPINE_CLASS_HEADER_
 #define _BASE_SYNAPSE_SPINE_CLASS_HEADER_
 
-#include <vector>
+#include <valarray>
 #include <string>
 #include <memory>
 
@@ -46,7 +46,7 @@ class BaseSynapseSpine {
     void AddToWeight(double change){weight+=change;}
 
     //Recorder functions
-    virtual std::vector<double> GetIndividualSynapticProfile() const = 0;
+    virtual std::valarray<double> GetIndividualSynapticProfile() const = 0;
     virtual std::string GetIndividualSynapticProfileHeaderInfo() const = 0;
 
     //Virtual bools

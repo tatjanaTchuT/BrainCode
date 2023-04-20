@@ -24,12 +24,12 @@ class SpatialGaussianStimulus : public Stimulus
 protected:
     unsigned seed;
 	int Ngauss;
-    std::vector<std::vector<signal_step>> maxCurrent;
-	std::vector<std::vector<signal_step>> sigmaCurrent_t;
-	std::vector<std::vector<signal_step>> sigmaCurrent_x;
+    std::valarray<std::vector<signal_step>> maxCurrent;
+	std::valarray<std::vector<signal_step>> sigmaCurrent_t;
+	std::valarray<std::vector<signal_step>> sigmaCurrent_x;
 	std::vector<signal_step> backgroundNoise;
-	std::vector<double> GPos_X;
-	std::vector<double> GPos_Y;
+	std::valarray<double> GPos_X;
+	std::valarray<double> GPos_Y;
     std::default_random_engine generator;
     
     void SetSignalArray();

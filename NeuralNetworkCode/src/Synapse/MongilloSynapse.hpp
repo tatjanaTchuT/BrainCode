@@ -6,7 +6,7 @@
 #include <vector>
 #include <random>
 #include <typeinfo>
-#include <vector>
+#include <valarray>
 #include "Synapse.hpp"
 #include "../NeuronPop/NeuronPop.hpp"
 #include "../GlobalFunctions.hpp"
@@ -26,8 +26,8 @@ protected:
     double tau_f;  // in units of time steps
     double tau_d;  // in units of time steps
 
-    //std::vector<std::vector<SynapseData_STP>> synapseData;
-    std::vector<std::vector<bool>> x,y,spike_submitted;
+    //std::valarray<std::valarray<SynapseData_STP>> synapseData;
+    std::valarray<std::valarray<bool>> x,y,spike_submitted;
 
     int seed;
     std::default_random_engine generator;
@@ -52,7 +52,7 @@ public:
     int                     GetNumberOfDataColumns() override { return 4; } // J, <y>, <x>, <submitted_spikes>
     std::string             GetDataHeader(int data_column) override;
 	std::string				GetUnhashedDataHeader() override;
-    std::vector<double>   GetSynapticState(int pre_neuron) override;
+    std::valarray<double>   GetSynapticState(int pre_neuron) override;
     const std::string             GetTypeStr() override { return str_mongilloSynapse; };
 
     void SaveParameters(std::ofstream * stream,std::string id_str) override;

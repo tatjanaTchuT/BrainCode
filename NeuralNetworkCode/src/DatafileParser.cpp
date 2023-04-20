@@ -12,7 +12,7 @@ DatafileParser::DatafileParser(AdvancedRecorder& recorder) //revised
             neuronPopRasterIds.push_back(i);
         }
     }
-    if(SumOfVector(recorder.noRasterPlotNeurons) != 0){
+    if(recorder.noRasterPlotNeurons.sum() != 0){
         for (int neuronPop : neuronPopRasterIds){
             rasterPlotMetadata.emplace_back(recNeuronPopData(recorder.noRasterPlotNeurons[neuronPop],recorder.info->dt,static_cast<int>(recorder.info->time_step), neuronPop, recorder.info->simulationTime));
         }

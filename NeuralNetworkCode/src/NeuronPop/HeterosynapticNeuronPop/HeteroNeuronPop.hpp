@@ -38,8 +38,8 @@ public:
 
     void PostConnectSetUp() override;
     //Getters
-    std::vector<double> GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
-    std::vector<double> GetOverallSynapticProfile(unsigned long neuronId) override;
+    std::valarray<double> GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId)  override;
+    std::valarray<double> GetOverallSynapticProfile(unsigned long neuronId) override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
     std::string GetOverallSynapticProfileHeaderInfo() const override;
     unsigned long GetSynapseCount(unsigned long neuronId);

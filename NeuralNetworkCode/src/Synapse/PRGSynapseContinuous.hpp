@@ -5,7 +5,7 @@
 #include <vector>
 #include <random>
 #include <typeinfo>
-#include <vector>
+#include <valarray>
 #include "Synapse.hpp"
 #include "MongilloSynapseContinuous.hpp"
 #include "../GlobalFunctions.hpp"
@@ -16,7 +16,7 @@ class PRGSynapseContinuous : public MongilloSynapseContinuous
 {
 protected:
 
-    std::vector<std::vector<double>> l;
+    std::valarray<std::valarray<double>> l;
 
     double tau_l;       // Decay time constant
     double M;           // LPA2 filling probability per transmitted spike
@@ -34,7 +34,7 @@ public:
     int GetNumberOfDataColumns() override {return 5;} // J, <y>, <x>, <l>, <submitted_spikes>
 	std::string GetDataHeader(int data_column) override;
 	std::string GetUnhashedDataHeader() override;
-	std::vector<double> GetSynapticState(int pre_neuron) override;
+	std::valarray<double> GetSynapticState(int pre_neuron) override;
     const std::string GetTypeStr() override { return str_prgSynapseContinuous; }
 
     void SaveParameters(std::ofstream * stream,std::string id_str) override;

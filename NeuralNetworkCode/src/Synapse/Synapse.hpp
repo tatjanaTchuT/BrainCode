@@ -9,7 +9,7 @@
 #include <random>
 #include <typeinfo>
 #include <cstring>
-#include <vector>
+#include <valarray>
 #include "../GlobalFunctions.hpp"
 #include "../NeuronPop/NeuronPop.hpp"
 #include "../Connectivity/Connectivity.hpp"
@@ -77,9 +77,9 @@ public:
      */
     virtual std::string				GetDataHeader(int data_column) = 0;
 	virtual std::string				GetUnhashedDataHeader() = 0;
-    virtual std::vector<double>	GetSynapticState(int pre_neuron) = 0;
+    virtual std::valarray<double>	GetSynapticState(int pre_neuron) = 0;
 
-	//std::vector<double>			GetCurrentcontribution(int pre_neuron);
+	//std::valarray<double>			GetCurrentcontribution(int pre_neuron);
     unsigned long					GetNumberOfPostsynapticTargets(int pre_neuron);
 	double							GetrecurrentInput(int post_neuron);
 

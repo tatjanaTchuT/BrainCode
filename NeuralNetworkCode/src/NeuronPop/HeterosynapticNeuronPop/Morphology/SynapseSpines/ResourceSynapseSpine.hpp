@@ -84,7 +84,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void TickStimmulusCounts();//Called in Reset(), but both should be mutually exclusive with AATE above
     void CullStimmulusVectors();//Called in Reset()
     //Profile methods
-    std::vector<double> GetIndividualSynapticProfile() const override;
+    std::valarray<double> GetIndividualSynapticProfile() const override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
     //Virtual bools
     bool IgnoreCouplingStrength() override {return true;}

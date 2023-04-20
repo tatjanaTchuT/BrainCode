@@ -1,8 +1,8 @@
 #include "ResourceSynapseSpine.hpp"
 
-std::vector<double> ResourceSynapseSpine::GetIndividualSynapticProfile() const
+std::valarray<double> ResourceSynapseSpine::GetIndividualSynapticProfile() const
 {
-    std::vector<double> dataArray(3);
+    std::valarray<double> dataArray(3);
     dataArray[0] = this->branchId;
     dataArray[1] = this->weight;
     dataArray[2] = this->alphaResources;

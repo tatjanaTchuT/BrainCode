@@ -6,7 +6,7 @@
 #include <random>
 #include <typeinfo>
 #include <cstring>
-#include <vector>
+#include <valarray>
 #include <fstream>
 #include "../GlobalFunctions.hpp"
 

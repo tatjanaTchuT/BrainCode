@@ -29,7 +29,7 @@ class BranchedSynapseSpine : public BaseSynapseSpine {
     void SetDistanceFromNode(double distance){distanceFromNode=distance;};
 
     //Profile function
-    std::vector<double> GetIndividualSynapticProfile() const override;
+    std::valarray<double> GetIndividualSynapticProfile() const override;
     std::string GetIndividualSynapticProfileHeaderInfo() const override;
     //Friend functions
     friend bool BranchIDCompare (const BranchedSpinePtr& spine1, const BranchedSpinePtr& spine2);

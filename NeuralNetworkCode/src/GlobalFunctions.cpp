@@ -164,7 +164,7 @@ void SaveDoubleFile(std::ofstream *file,double val,int precision){
     *file  << stream.str() << "\t";
 }
 
-void SaveTupleOfDoublesFile(std::ofstream *file, std::vector<double> tuple, int precision) {
+void SaveTupleOfDoublesFile(std::ofstream *file, std::valarray<double> tuple, int precision) {
     std::stringstream stream;
     unsigned long i;
     stream << "{";
@@ -174,17 +174,17 @@ void SaveTupleOfDoublesFile(std::ofstream *file, std::vector<double> tuple, int 
     stream << std::fixed << std::setprecision(precision) << tuple[i] << "}";
     *file  << stream.str() << "\t";
 }
-// void SaveTupleOfDoublesFile(std::ofstream * file, std::vector<double> tuple, int precision)
-// {
-//     std::stringstream stream;
-//     unsigned long i;
-//     stream << "{";
-//     for (i = 0; i < tuple.size()-1; ++i) {
-//         stream << std::fixed << std::setprecision(precision) << tuple[i] << ",";
-//     }
-//     stream << std::fixed << std::setprecision(precision) << tuple[i] << "}";
-//     *file  << stream.str() << "\t";
-// }
+void SaveTupleOfDoublesFile(std::ofstream * file, std::vector<double> tuple, int precision)
+{
+    std::stringstream stream;
+    unsigned long i;
+    stream << "{";
+    for (i = 0; i < tuple.size()-1; ++i) {
+        stream << std::fixed << std::setprecision(precision) << tuple[i] << ",";
+    }
+    stream << std::fixed << std::setprecision(precision) << tuple[i] << "}";
+    *file  << stream.str() << "\t";
+}
 
 bool is_double(const std::string& s)
 {
@@ -244,22 +244,4 @@ void RemoveCommentInString(std::vector<std::string> *string, char commentCharact
     }
     *string = new_string;
     return;
-}
-
-int SumOfVector(std::vector<int> vector)
-{
-    return std::accumulate(vector.begin(), vector.end(), 0);
-}
-double SumOfVector(std::vector<double> vector)
-{
-    return std::accumulate(vector.begin(), vector.end(), 0.0);
-}
-unsigned long SumOfVector(std::vector<unsigned long> vector)
-{
-    return std::accumulate(vector.begin(), vector.end(), 0);
-}
-
-void resetVector(std::vector<double> vector)
-{
-    std::fill(vector.begin(), vector.end(), 0.0);
 }

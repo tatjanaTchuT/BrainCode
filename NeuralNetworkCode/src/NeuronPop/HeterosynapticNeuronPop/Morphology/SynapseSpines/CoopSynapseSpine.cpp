@@ -3,9 +3,9 @@
 // CoopSynapseSpine::CoopSynapseSpine(double distToSoma, double lastSpike, double weight):distToSoma{distToSoma}, BaseSynapseSpine(weight,lastSpike){
 // }
 
-std::vector<double> CoopSynapseSpine::GetIndividualSynapticProfile() const
+std::valarray<double> CoopSynapseSpine::GetIndividualSynapticProfile() const
 {
-    std::vector<double> dataArray(4);
+    std::valarray<double> dataArray(4);
     dataArray[0] = this->distToSoma;
     dataArray[1] = this->theta;
     dataArray[2] = this->weight;

@@ -87,11 +87,11 @@ double HeteroNeuronPop::GetWeight(unsigned long neuronId, unsigned long synapseI
     return this->morphology.at(neuronId)->GetWeight(synapseId);
 }
 
-std::vector<double> HeteroNeuronPop::GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId) {
+std::valarray<double> HeteroNeuronPop::GetIndividualSynapticProfile(unsigned long neuronId, unsigned long synapseId) {
     return this->morphology.at(neuronId)->GetIndividualSynapticProfile(synapseId);
 }
 
-std::vector<double> HeteroNeuronPop::GetOverallSynapticProfile(unsigned long neuronId) {
+std::valarray<double> HeteroNeuronPop::GetOverallSynapticProfile(unsigned long neuronId) {
     return this->morphology.at(neuronId)->GetOverallSynapticProfile();
 }
 std::string HeteroNeuronPop::GetIndividualSynapticProfileHeaderInfo() const

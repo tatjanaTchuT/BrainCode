@@ -4,9 +4,9 @@
 // {
 // }
 
-std::vector<double> BranchedSynapseSpine::GetIndividualSynapticProfile() const
+std::valarray<double> BranchedSynapseSpine::GetIndividualSynapticProfile() const
 {
-    std::vector<double> dataArray(3);
+    std::valarray<double> dataArray(3);
     dataArray[0] = this->distanceFromNode;
     dataArray[1] = this->branchId;
     dataArray[2] = this->weight;

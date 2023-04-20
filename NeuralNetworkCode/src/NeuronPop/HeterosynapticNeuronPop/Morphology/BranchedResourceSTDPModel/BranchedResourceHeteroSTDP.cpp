@@ -400,7 +400,7 @@ BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentS
     return static_cast<BaseSpinePtr>(newSynapse);
 }
 
-std::vector<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
+std::valarray<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
 {
     /*
      * returned array organised as follows:
@@ -409,7 +409,7 @@ std::vector<double> BranchedResourceHeteroSTDP::GetOverallSynapticProfile()
      * item 3: totalLTP Events
      * item 4: average plasticity events
      * */
-    std::vector<double> dataArray(4);
+    std::valarray<double> dataArray(4);
     //size_t sizeOfSynapseData {this->baseSynapseData.size()};
     double weightSum = std::accumulate(this->baseSynapseData.begin(), this->baseSynapseData.end(), 0.0,
                                        [] (double acc, const BaseSpinePtr& syn) { return acc + syn->GetWeight(); });
