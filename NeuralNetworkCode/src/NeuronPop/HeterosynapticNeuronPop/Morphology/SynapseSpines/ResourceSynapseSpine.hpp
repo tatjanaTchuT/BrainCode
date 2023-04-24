@@ -28,7 +28,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
 
     //Resource model alpha
     double alphaBasal{1.0};
-    double alphaStimmulus{1.0}; //This is delta alpha
+    double alphaStimmulus{0.0}; //This is delta alpha
     double alphaStimmulusExpDecay{1.0};
 
     //Central vars
