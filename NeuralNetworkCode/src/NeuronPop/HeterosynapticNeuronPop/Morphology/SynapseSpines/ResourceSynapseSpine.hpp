@@ -78,7 +78,7 @@ class ResourceSynapseSpine : public BranchedSynapseSpine {
     void AddTempResourcesToSpine(double alphaStimmulusInput);
     bool ApplyAllTempEffectsOnPostspike(const DHashMap& STDPdecayMap);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
     //void ApplyAllTempEffectsOnConflictPotentiation(double PotentiationDepressionRatio);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
-    bool ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
+    bool ApplyAllTempEffectsOnDepression(double expDecayFactor);//input must be -1 if depression or STDPratio if potentiation, or the inverse swapping everything
 
     //Stimmulus vector methods
     void TickStimmulusCounts();//Called in Reset(), but both should be mutually exclusive with AATE above

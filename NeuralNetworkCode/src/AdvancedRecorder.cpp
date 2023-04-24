@@ -63,40 +63,41 @@ void AdvancedRecorder::SaveParameters(std::ofstream * stream){
     Recorder::SaveParameters(stream);
 
     double  dt = info->dt;
-    *stream << "recorder_binSize                   " << std::to_string(GetAveragingSteps()*dt)  << " seconds \t#Bin size over which data saved in main recording data file is average over\n";
-    *stream << "recorder_noRasterPlotNeurons       ";
+    *stream << "recorder_binSize\t\t\t\t\t" << std::to_string(GetAveragingSteps()*dt)  << " seconds \t#Bin size over which data saved in main recording data file is average over\n";
+    *stream << "recorder_noRasterPlotNeurons\t\t\t";
     for(unsigned i = 0; i < noRasterPlotNeurons.size();i++) {
 		*stream << std::to_string(noRasterPlotNeurons[i]) << " \t";
 	}
 	*stream << std::to_string((static_cast<double>(raster_t_0))*info->dt) << "\t";
     *stream << "#Record spike times of x neurons for (i-th column is x for the i-th population). The i+1-th column sets the initial recording time. If negative, records all neurons of pop\n";
 
-    *stream << "recorder_notrackNeuronProfiles     ";
+    *stream << "recorder_notrackNeuronProfiles\t\t";
     for(unsigned i = 0; i < notrackNeuronPotentials.size();i++)
         *stream << std::to_string(notrackNeuronPotentials[i]) << " \t";
     *stream << "\t\t\t#Record currents and potentials at all time steps of the first x_p neurons, p = population index. [column 1: track #neurons in pop1, column 2: track #neurons in pop2, .. ]\n";
 
-	*stream << "recorder_CurrentContributions      ";
+	*stream << "recorder_CurrentContributions\t\t\t";
+
 	for (unsigned i = 0; i < CurrentContributions.size();i++)
 		*stream << std::to_string(CurrentContributions[i])<<"\t";
 	*stream << std::to_string((static_cast<double>(current_t_0))*info->dt) << "\t";
 	*stream << "#Record the sources of input current to x neurons. (i-th column is x for the i-th population). The i+1-th column sets the initial recording time\n";
 
-    *stream <<  "recorder_trackSynapses             " << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
-	*stream <<  "recorder_Heatmap                   " << std::to_string(Heatmap) << "\t\t\t\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
-    
-    *stream <<  "recorder_notrackHeteroSynapseProfiles  ";
+    *stream <<  "recorder_trackSynapses\t\t\t\t" << std::to_string(trackSynapses)  << "\t\t\t\t\t#Set = 1 to track averaged data from synapes, Set = 0 to ignore.\n";
+	*stream <<  "recorder_Heatmap\t\t\t\t\t" << std::to_string(Heatmap) << "\t\t\t\t\t#Number of bins used to represent each dimension of the spatial domain in the firing rates Heatmap\n";
+ 
+    *stream <<  "recorder_notrackHeteroSynapseProfiles\t";
     for (unsigned i = 0; i < noTrackHeteroSynapsePerTrackedNeuron.size();i++)
         *stream << std::to_string(noTrackHeteroSynapsePerTrackedNeuron[i])<< "\t";
     *stream <<std::to_string(heteroRecordingPerSteps)<< "\t\t#Number of synapses per neuron in recorder_notrackNeuronProfiles to record (per pop) and last number is the timesteps for each record call\n";
 
-    *stream <<  "recorder_parsing                   ";
+    *stream <<  "recorder_parsing\t\t\t\t\t";
     if (parserEnabled){
         *stream << "ON";
     } else {
         *stream << "OFF";
     }
-    *stream <<std::to_string(heteroRecordingPerSteps)<< "\t\t#Enabling parsing of rasterplot data into spiketimes. ON vs OFF.\n";
+    *stream << "\t\t#Enabling parsing of rasterplot data into spiketimes. ON vs OFF.\n";
 }
 
 void AdvancedRecorder::LoadParameters(std::vector<std::string> *input){
@@ -429,7 +430,7 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapses(){
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (synTrackCount != 0 && this->neurons->GetPop(p)->HasHeterosynapticPlasticity()){
-            this->FileStreams.heteroSynapsesFileStream << "Pop. "<< p << " profile -> "<<this->neurons->GetPop(p)->GetIndividualSynapticProfileHeaderInfo() <<" \n";
+            this->FileStreams.heteroSynapsesFileStream << "#Pop. "<< p << " profile -> "<<this->neurons->GetPop(p)->GetIndividualSynapticProfileHeaderInfo() <<" \n";
         }
     }
 
@@ -465,10 +466,9 @@ void AdvancedRecorder::WriteDataHeader_HeteroSynapsesOverall(){
     for(unsigned long p = 0;p<P;p++){
         synTrackCount =  noTrackHeteroSynapsePerTrackedNeuron[p];
         if (synTrackCount != 0 && this->neurons->GetPop(p)->HasHeterosynapticPlasticity()){
-            this->FileStreams.heteroSynapsesFileStream << "Pop. "<< p << " Overall Profile -> "<<this->neurons->GetPop(p)->GetOverallSynapticProfileHeaderInfo() <<" \n";
+            this->FileStreams.heteroSynapsesFileStream << "#Pop. "<< p << " Overall Profile -> "<<this->neurons->GetPop(p)->GetOverallSynapticProfileHeaderInfo() <<" \n";
         }
     }
-    this->FileStreams.hSOverallFileStream << "Overall Profile ->  \n";
     this->FileStreams.hSOverallFileStream << "\n#************************************\n";
 
     this->FileStreams.hSOverallFileStream << "#1 t (secs.)\t 2-"<<1+noTrackHeteroSynapsePerTrackedNeuron.sum()<<" Profile_pop_id_neuron_id \n";

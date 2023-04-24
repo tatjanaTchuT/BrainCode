@@ -177,8 +177,8 @@ void NeuronPop::SaveParameters(std::ofstream * stream){
     *stream <<  id + "_refractoryTime              " << std::to_string(this->refractorySteps*info->dt)  << " #seconds\n";
     //*stream <<  id + "_r_target                    " << std::to_string(this->r_target)  << " Hz\n";
     if(info->globalSeed == -1){
-        *stream <<  id + "_seedInitialPotentials       " << this->seed_InitialPotentials << "\n";
-        *stream <<  id + "_seedInitialPrevSpike        " << this->seed_InitialPrevSpike << "\n";
+        *stream <<  id + "_seedInitialPotentials   " << this->seed_InitialPotentials << "\n";
+        *stream <<  id + "_seedInitialPrevSpike    " << this->seed_InitialPrevSpike << "\n";
     }
     *stream <<  "#\t\tNote: Resting potential is 0 by definition.\n";
 

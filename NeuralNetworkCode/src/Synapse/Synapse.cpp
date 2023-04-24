@@ -137,12 +137,12 @@ void Synapse::LoadParameters(std::vector<std::string> *input){
 void Synapse::SaveParameters(std::ofstream * stream,std::string id_str){
     *stream << id_str << "type\t\t\t\t\t\t\t" << GetTypeStr() << "\n";
     *stream << id_str << "connected\t\t\t\t\t\t" << std::boolalpha << this->isConnectedBool <<std::noboolalpha<< "\n";
-    *stream << id_str << "D_min\t\t\t\t\t\t\t" << std::to_string(this->D_min*info->dt) << " seconds\n";
-    *stream << id_str << "D_max\t\t\t\t\t\t\t" << std::to_string(this->D_max*info->dt) << " seconds\n";
-    *stream << id_str << "J\t\t\t\t\t\t\t\t" << std::to_string(this->J) << " dmV/Spike\n";
+    *stream << id_str << "D_min\t\t\t\t\t\t" << std::to_string(this->D_min*info->dt) << " seconds\n";
+    *stream << id_str << "D_max\t\t\t\t\t\t" << std::to_string(this->D_max*info->dt) << " seconds\n";
+    *stream << id_str << "J\t\t\t\t\t\t\t" << std::to_string(this->J) << " dmV/Spike\n";
     *stream << id_str << "Sigma_j\t\t\t\t\t\t" << std::to_string(this->SigmaJ) << " dmV/Spike\n";
-    *stream << id_str << "J_pot\t\t\t\t\t\t\t" << std::to_string(this->J_pot) << " dmV/Spike\n";
-    *stream << id_str << "P_pot\t\t\t\t\t\t\t" << std::to_string(this->P_pot) << "\n";
+    *stream << id_str << "J_pot\t\t\t\t\t\t" << std::to_string(this->J_pot) << " dmV/Spike\n";
+    *stream << id_str << "P_pot\t\t\t\t\t\t" << std::to_string(this->P_pot) << "\n";
 
     geometry->SaveParameters(stream,id_str);
 }

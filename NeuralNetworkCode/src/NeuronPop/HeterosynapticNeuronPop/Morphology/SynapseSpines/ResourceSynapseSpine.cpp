@@ -66,10 +66,10 @@ bool ResourceSynapseSpine::ApplyAllTempEffectsOnPostspike(const DHashMap& STDPde
 //     // }
 // }
 
-bool ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(const DHashMap& STDPdecayMap, int STDPcount)
+bool ResourceSynapseSpine::ApplyAllTempEffectsOnDepression(double expDecayFactor)
 {
     //This is because depression updates instantly
-    alphaStimmulus=std::accumulate(depressionAlphaTempAndCount.begin(), depressionAlphaTempAndCount.end(), alphaStimmulus, [STDPdecayMap, STDPcount](double accumulator, double alphaStemp){return accumulator - alphaStemp*STDPdecayMap.at(STDPcount);});
+    alphaStimmulus=std::accumulate(depressionAlphaTempAndCount.begin(), depressionAlphaTempAndCount.end(), alphaStimmulus, [expDecayFactor](double accumulator, double alphaStemp){return accumulator - alphaStemp*expDecayFactor;});
     
     if (alphaStimmulus+alphaBasal<0.0){
         alphaStimmulus= (-alphaBasal);

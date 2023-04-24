@@ -39,6 +39,7 @@ void BranchedResourceHeteroSTDP::LoadParameters(std::vector<std::string> *input)
             this->PotentiationDepressionRatio = std::stod(values.at(0));
         } else if (name.find("STDP_time_window") != std::string::npos){
             this->MaxCountSTDP = static_cast<int>(std::stod(values.at(0))/this->info->dt);
+            this->STDPDepressionCount=MaxCountSTDP;
         }
     }
     SetUpHashTables();
@@ -159,6 +160,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
             }
         }
     } else if (this->STDPDepressionCount<this->MaxCountSTDP){ //Count is supposed to stop
+        double expDecayFactorSTDP{DecayHashTableSTDP.at(STDPDepressionCount)};
         for (RBranchPtr& branch: resourceBranches){
             for (int synapseID : branch->updatedAlphaEffects){
                 ResourceSpinePtr& synapse = branch->resouceBranchSynapseData.at(synapseID);
@@ -170,7 +172,7 @@ void BranchedResourceHeteroSTDP::ApplyEffects() //Called after pairings
                     //Decay STDP but expressed as a negative number
                 if (synapse->GetUpdatedFlag()){
                     continue;
-                } else if (synapse->ApplyAllTempEffectsOnDepression(DecayHashTableSTDP, STDPDepressionCount)){
+                } else if (synapse->ApplyAllTempEffectsOnDepression(expDecayFactorSTDP)){
                     branch->IncreaseDepressionCount();
                     totalPlasticityEvents++;
                     totalLTDEvents++;
