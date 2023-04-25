@@ -386,6 +386,7 @@ BaseSpinePtr BranchedResourceHeteroSTDP::AllocateNewSynapse(const HeteroCurrentS
     int position{branches.at(branch)->openSynapsesSlots.front()};
     branches.at(branch)->openSynapsesSlots.pop_front();
     newSynapse->SetBranchPositionId(position);
+    newSynapse->SetBranchId(branch);
     newSynapse->SetDistanceFromNode(position*branches.at(branch)->synapticGap);//This has to be updated if we switch to double 
     newSynapse->SetMaxCount(MaxCountSTDP);
     newSynapse->SetPotentiationRatio(PotentiationDepressionRatio);
