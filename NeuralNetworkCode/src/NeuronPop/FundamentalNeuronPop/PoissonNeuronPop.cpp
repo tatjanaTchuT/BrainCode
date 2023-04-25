@@ -23,7 +23,9 @@ void PoissonNeuronPop::advect(std::vector<double> * synaptic_dV)
             }
         }
     } else {
-        std::sample(neuronIds.begin(), neuronIds.end(), spiker.begin(),binomialDistribution(generator),generator);
+        int totalFiringNeurons{ binomialDistribution(generator) };
+        spiker.resize(totalFiringNeurons);
+        std::sample(neuronIds.begin(), neuronIds.end(), spiker.begin(),totalFiringNeurons,generator);
     }
 }
 
