@@ -394,7 +394,7 @@ int NeuralNetwork::Simulate()
     double   r;
     double   t_comp = 0;
     unsigned int      P = neurons->GetTotalPopulations();
-    std::uniform_real_distribution<double> uni_distribution (0.0,1.0);
+    std::uniform_real_distribution<double> uniformDistribution (0.0,1.0);
     long      simSteps      = static_cast<long>(info.simulationTime/info.dt);  // number of simulation time steps
     // int      global_D_max = this->synapses->GetMaxD();          // get maximum delay across all synapses: size of waiting matrix DEPRECATED
 

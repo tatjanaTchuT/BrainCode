@@ -11,7 +11,7 @@ MongilloSynapseContinuous::MongilloSynapseContinuous(NeuronPop * postNeurons,Neu
     y.resize(GetNoNeuronsPre());
     spike_submitted.resize(GetNoNeuronsPre());
 
-    uni_distribution = std::uniform_real_distribution<double>(0.0,1.0);
+    uniformDistribution = std::uniform_real_distribution<double>(0.0,1.0);
 }
 
 

@@ -23,7 +23,7 @@ protected:
 
     int seed;
     std::default_random_engine generator;
-    std::uniform_real_distribution<double> uni_distribution;
+    std::uniform_real_distribution<double> uniformDistribution;
 
     void advectSpikers(std::vector<double>& currents, long spiker) override;
     //void advect_finalize (std::vector<double> * synaptic_dV, std::vector<std::vector<std::vector<double>>> * waiting_matrix){}

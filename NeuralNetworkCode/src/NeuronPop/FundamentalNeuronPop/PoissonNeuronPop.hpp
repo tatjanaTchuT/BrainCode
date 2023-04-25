@@ -15,11 +15,15 @@ class PoissonNeuronPop : public NeuronPop
 {
 protected:
     double r_target{}; // target firing rate
-    double lambda{};
+    double lambda{}; //probability of firing in one timestep
     bool inputDependant{true};
     int seed{};
+
+    std::vector<int> neuronIds{}; //Used in the random sampling with fixed firing rate
+
     std::default_random_engine generator;
-    std::uniform_real_distribution<double> uni_distribution;
+    std::uniform_real_distribution<double> uniformDistribution;
+    std::binomial_distribution<> binomialDistribution;
 
 public:
     PoissonNeuronPop(GlobalSimInfo * info,int id);

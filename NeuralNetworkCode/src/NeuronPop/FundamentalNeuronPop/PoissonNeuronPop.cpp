@@ -1,34 +1,34 @@
 #include "PoissonNeuronPop.hpp"
 
-PoissonNeuronPop::PoissonNeuronPop(GlobalSimInfo * info,int id):NeuronPop(info,id){
+PoissonNeuronPop::PoissonNeuronPop(GlobalSimInfo * info,int id):NeuronPop(info,id)
+{
         //r_target = 0; seed = 2;
         generator = std::default_random_engine(seed);
-        uni_distribution = std::uniform_real_distribution<double>(0.0,1.0);}
+        uniformDistribution = std::uniform_real_distribution<double>(0.0,1.0);
+}
 
 void PoissonNeuronPop::advect(std::vector<double> * synaptic_dV)
 {
     // double dt           = info->dt;
 
     ClearSpiker();
-
+    if (inputDependant){
     //#pragma omp parallel for
-    for(unsigned long i = 0 ; i < noNeurons; i++)
-    {
-        // set target rate
-        if (inputDependant){
+        for(unsigned long i = 0 ; i < noNeurons; i++){
+            // set target rate
             r_target = synaptic_dV->at(i);
-            lambda = r_target;
+            //Check if neuron fires
+            if (uniformDistribution(generator) < r_target){
+                spiker.push_back(i);
+            }
         }
-
-        //check spiking
-        if (uni_distribution(generator) < lambda)
-        spiker.push_back(i);
+    } else {
+        std::sample(neuronIds.begin(), neuronIds.end(), spiker.begin(),binomialDistribution(generator),generator);
     }
-
 }
 
-void PoissonNeuronPop::LoadParameters(std::vector<std::string> *input){
-
+void PoissonNeuronPop::LoadParameters(std::vector<std::string> *input)
+{
     NeuronPop::LoadParameters(input);
 
     std::string              name,token;
@@ -50,11 +50,14 @@ void PoissonNeuronPop::LoadParameters(std::vector<std::string> *input){
         seed = distribution(info->globalGenerator);
         generator = std::default_random_engine(seed);
     }
-
+    neuronIds.resize(noNeurons);
+    std::iota(neuronIds.begin(), neuronIds.end(), 0);
+    binomialDistribution=std::binomial_distribution<>(noNeurons, lambda);
 }
 
 
-void PoissonNeuronPop::SaveParameters(std::ofstream * stream){
+void PoissonNeuronPop::SaveParameters(std::ofstream * stream)
+{
 
     std::string id = "neurons_" + std::to_string(GetId());
 

@@ -132,7 +132,7 @@ int * Connectivity::GetDistributionD(long preNeuronId, long postNeuronId){
 }
 
 void Connectivity::SetDistributionD(){
-    std::uniform_int_distribution<int> uni_distribution(this->synapse->GetMinD(),this->synapse->GetMaxD());
+    std::uniform_int_distribution<int> uniformDistribution(this->synapse->GetMinD(),this->synapse->GetMaxD());
 	unsigned long noTarget;
 
 	if (synapse->GetMaxD()== synapse->GetMinD()) {
@@ -145,7 +145,7 @@ void Connectivity::SetDistributionD(){
             noTarget = static_cast<unsigned long>((target_id[source_neuron]).size());
 			D_distribution[source_neuron].resize(noTarget);
 			for (unsigned long target_neuron = 0; target_neuron < noTarget; target_neuron++) {
-                int d = uni_distribution(generator);
+                int d = uniformDistribution(generator);
                 D_distribution[source_neuron][target_neuron]=d;
                 //std::cout << std::to_string(d) << " ";
             }

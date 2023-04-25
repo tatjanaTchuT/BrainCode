@@ -15,8 +15,14 @@ NeuronPop::NeuronPop(GlobalSimInfo * info,int id){
 
 
 void NeuronPop::SetSeeds(int seed1,int seed2) {
-    seed_InitialPrevSpike  = seed1;
-    seed_InitialPotentials = seed2;
+    if(info->globalSeed != -1){
+        std::uniform_int_distribution<int> distribution(0,INT32_MAX);
+        seed_InitialPrevSpike = distribution(info->globalGenerator);
+        seed_InitialPotentials = distribution(info->globalGenerator);
+    } else {
+        seed_InitialPrevSpike  = seed1;
+        seed_InitialPotentials = seed2;
+    }
 }
 
 
@@ -30,14 +36,14 @@ void NeuronPop::SetNeurons(unsigned long noNeur) {
 
     //std::cout << "v_thresh = " << std::to_string(this->v_thresh) << "\n";
     //std::cout << "v_reset = " << std::to_string(this->v_reset) << "\n";
-
+    
     std::default_random_engine generator(seed_InitialPotentials);
-    //std::uniform_real_distribution<double> uni_distribution (0.0,1.0); //v_thresh instead of 1.0
-    std::uniform_real_distribution<double> uni_distribution (v_reset,v_thresh);
+    //std::uniform_real_distribution<double> uniformDistribution (0.0,1.0); //v_thresh instead of 1.0
+    std::uniform_real_distribution<double> uniformDistribution (v_reset,v_thresh);
 
     for(unsigned long i = 0; i < noNeurons; i++){
         previous_spike_step[i] = - rand() % static_cast<int>(3.0/info->dt);
-        potential[i]           = uni_distribution(generator);
+        potential[i]           = uniformDistribution(generator);
     }
 }
 
@@ -47,7 +53,7 @@ void NeuronPop::SetPosition(long noNeur)
 		return;
 	noNeurons = noNeur;
 	std::default_random_engine generator(seed_InitialPotentials);
-	std::uniform_real_distribution<double> uni_distribution(0.0, 1.0);
+	std::uniform_real_distribution<double> uniformDistribution(0.0, 1.0);
 	x_pos.resize(noNeurons);
 	y_pos.resize(noNeurons);
 	double Ly = info->Ly;
@@ -57,8 +63,8 @@ void NeuronPop::SetPosition(long noNeur)
 	int mod;
 
 	//for (int i = 0; i < noNeurons; i++) {
-	//	x_pos[i] = uni_distribution(generator) * info->Lx;
-	//	y_pos[i] = uni_distribution(generator) * info->Ly;
+	//	x_pos[i] = uniformDistribution(generator) * info->Lx;
+	//	y_pos[i] = uniformDistribution(generator) * info->Ly;
 	//}
 
 	if (info->Dimensions == 2) {
@@ -160,7 +166,6 @@ void NeuronPop::LoadParameters(std::vector<std::string> *input){
     //         //    neuronsInPopulation[i] = std::stoi(values.at(i));
     //     }
     // }
-
 }
 
 void NeuronPop::SaveParameters(std::ofstream * stream){
