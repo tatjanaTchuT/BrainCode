@@ -2,6 +2,7 @@
 #define _RESOURCE_SYNAPSE_SPINE_CLASS_HEADER_
 
 #include "BranchedSynapseSpine.hpp"
+#include <vector>
 #include <list>
 #include <algorithm>
 #include <iterator>
