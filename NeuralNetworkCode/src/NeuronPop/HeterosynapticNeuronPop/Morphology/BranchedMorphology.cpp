@@ -106,10 +106,10 @@ void BranchedMorphology::SaveParameters(std::ofstream *stream, std::string neuro
     Morphology::SaveParameters(stream, neuronPreId);
 
     *stream << neuronPreId<<"_morphology_branch_length\t\t"<<std::to_string(this->branchLength)<<" #μm";
-    *stream << "#μm\t"<<"#Length of each branch.\n";
+    *stream << "\t"<<"#Length of each branch.\n";
 
     *stream << neuronPreId<<"_morphology_synaptic_gap\t\t\t"<<std::to_string(this->synapticGap)<<" #μm";
-    *stream << "#μm\t"<<"#Distance between synapse spines.\n";
+    *stream << "\t"<<"#Distance between synapse spines.\n";
 
     // *stream << neuronPreId<<"_morphology_distribute_weights\t\t";
     // if (this->distributeWeights){

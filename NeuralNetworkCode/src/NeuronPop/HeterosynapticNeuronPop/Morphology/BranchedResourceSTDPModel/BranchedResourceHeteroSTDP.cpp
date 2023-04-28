@@ -52,7 +52,7 @@ void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::stri
     *stream << "\t"<<"#Alpha at rest, where alpha decays towards\n";
 
     *stream << neuronPreId<<"_morphology_alpha_decay_constant\t\t"<<std::to_string(this->alphaStimmulusExpTau);
-    *stream << "#seconds\t"<<"#Decay constant of Alpha_stimmulus\n";
+    *stream << " #seconds\t"<<"#Decay constant of Alpha_stimmulus\n";
 
     *stream << neuronPreId<<"_morphology_base_alpha_increase\t\t"<<std::to_string(this->baseAlphaStimmulusBump);
     *stream << "\t"<<"#Default alphaStimmulus increase before applying spatial and temporal decays\n";
@@ -64,22 +64,22 @@ void BranchedResourceHeteroSTDP::SaveParameters(std::ofstream *stream, std::stri
     *stream << "\t"<<"#Multiplication factor of the definition of weight, representing the available 'total resources'.\n";
 
     *stream << neuronPreId<<"_morphology_kernel_spatial_length\t\t"<<std::to_string(this->kernelGapNumber*this->synapticGap);
-    *stream << "#μm\t"<<"#Limit distance between two spines to be considered for synaptic spine pairing.\n";
+    *stream << " #μm\t"<<"#Limit distance between two spines to be considered for synaptic spine pairing.\n";
 
     *stream << neuronPreId<<"_morphology_kernel_temporal_length\t\t"<<std::to_string(this->timeKernelLength*this->info->dt);//CHANGE
-    *stream << "#seconds\t"<<"#Maximum time length between two spikes in contiguous spines to be considered for synaptic spine pairing\n";
+    *stream << " #seconds\t"<<"#Maximum time length between two spikes in contiguous spines to be considered for synaptic spine pairing\n";
 
     *stream << neuronPreId<<"_morphology_kernel_tau\t\t"<<std::to_string(this->timeKernelExpDecayConstant);//CHANGE
-    *stream << "#seconds\t"<<"#Time decay constant for the alpha stimmulus increase in the pairing kernel\n";
+    *stream << " #seconds\t"<<"#Time decay constant for the alpha stimmulus increase in the pairing kernel\n";
 
     *stream << neuronPreId<<"_morphology_kernel_lambda\t\t"<<std::to_string(this->spaceKernelExpDecayConstant);//CHANGE
-    *stream << "#μm\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
+    *stream << " #μm\t"<<"#Space decay constant for the alpha stimmulus increase in the pairing kernel (analogous to tau)\n";
 
     *stream << neuronPreId<<"_morphology_STDP_tau\t\t"<<std::to_string(this->ExpDecayConstantSTDP);//CHANGE
-    *stream << "#seconds\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
+    *stream << " #seconds\t"<<"#Exponential decay constant for the STDP kernel. The starting point is the decayed alpha stimmulus\n";
     
     *stream << neuronPreId<<"_morphology_STDP_time_window\t\t"<<std::to_string(this->MaxCountSTDP*this->info->dt);//CHANGE
-    *stream << "#seconds\t"<<"#Max time where STDP potentiation/depression can happen\n";
+    *stream << " #seconds\t"<<"#Max time where STDP potentiation/depression can happen\n";
 
     *stream << neuronPreId<<"_morphology_potentiation_depression_ratio\t"<<std::to_string(this->PotentiationDepressionRatio);//CHANGE
     *stream << "\t"<<"#Factor that multiplies potentiation\n";
