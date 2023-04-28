@@ -29,7 +29,7 @@ OPTIMIZE    =  -funroll-loops -ffast-math -O3 -finline-functions -fexpensive-opt
 #The interaction between the two previous groups of flags is unclear, as per StackOverflow consultation: https://stackoverflow.com/questions/943755/gcc-optimization-flags-for-xeon/25095818
 #All other flags could be redundant when -O3 is present
 
-COMPILE_FLAGS = -std=c++17 -Wall -j8 $(OPTIMIZE)
+COMPILE_FLAGS = -std=c++17 -Wall $(OPTIMIZE)
 
 .PHONY: default_target
 default_target: release
