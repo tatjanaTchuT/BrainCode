@@ -161,9 +161,9 @@ int main(int argc, char* argv[])
 
                 if((parEntry.name.compare("Title") == 0)){
                     if(iterate1_entries[0].name.compare("placeholder") != 0)
-                        parEntry.values[0].append("_i1_"+std::to_string(i1+1)+"_"+iterate1_entries[0].name+"_"+iterate1_entries[0].values[i1]);
+                        parEntry.values[0].append("_i1_"+std::to_string(i1+1));//Removal responds to inability to write to disk when using iterate with long-named parameters
                     if(iterate2_entries[0].name.compare("placeholder") != 0)
-                        parEntry.values[0].append("_i2_"+std::to_string(i2+1)+"_"+iterate2_entries[0].name+"_"+iterate2_entries[0].values[i2]);
+                        parEntry.values[0].append("_i2_"+std::to_string(i2+1));
                 }
             }
             std::cout << "******************************************" << std::endl;
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
             neuralNetwork.Simulate();
             neuralNetwork.makeInputCopy(inputFile);
             DatafileParser parser(neuralNetwork.GetRecorder());
-            //neuralNetwork.~NeuralNetwork(); This line effectively renders iterate_1 and _2 non-funtional
+            neuralNetwork.~NeuralNetwork(); //This line is doing shennanigans I think
             parser.parse();
         }
     }
