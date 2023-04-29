@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
             neuralNetwork.Simulate();
             neuralNetwork.makeInputCopy(inputFile);
             DatafileParser parser(neuralNetwork.GetRecorder());
-            neuralNetwork.~NeuralNetwork();
+            //neuralNetwork.~NeuralNetwork(); This line effectively renders iterate_1 and _2 non-funtional
             parser.parse();
         }
     }
