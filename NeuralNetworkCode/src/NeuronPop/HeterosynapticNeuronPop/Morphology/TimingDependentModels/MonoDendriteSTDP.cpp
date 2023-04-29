@@ -270,7 +270,7 @@ BaseSpinePtr MonoDendriteSTDP::AllocateNewSynapse(const HeteroCurrentSynapse& sy
 
     std::shared_ptr<CoopSynapseSpine> newSynapse = std::make_shared<CoopSynapseSpine>();
 
-    if (this->nextPos < this->dendriticLength) { //This is very badly thought. The synapse allocation should throw, and not allow the programme to keep going with an unresolved issue
+    if (this->nextPos <= this->dendriticLength) { //This is very badly thought. The synapse allocation should throw, and not allow the programme to keep going with an unresolved issue
 //        if (this->allocateDistal) {
 //            newSynapse->distToSoma = this->posHi;
 //            this->posHi -= this->synapticGap;
