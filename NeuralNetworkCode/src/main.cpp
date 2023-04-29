@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
             neuralNetwork.Simulate();
             neuralNetwork.makeInputCopy(inputFile);
             DatafileParser parser(neuralNetwork.GetRecorder());
-            neuralNetwork.~NeuralNetwork(); //This line is doing shennanigans I think
+            //neuralNetwork.~NeuralNetwork(); //This line is doing shennanigans I think
             parser.parse();
         }
     }
