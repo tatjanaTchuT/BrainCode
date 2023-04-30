@@ -161,9 +161,9 @@ int main(int argc, char* argv[])
 
                 if((parEntry.name.compare("Title") == 0)){
                     if(iterate1_entries[0].name.compare("placeholder") != 0)
-                        parEntry.values[0].append("_i1_"+std::to_string(i1+1)+"_"+iterate1_entries[0].name+"_"+iterate1_entries[0].values[i1]);
+                        parEntry.values[0].append("_i1_"+std::to_string(i1+1)+"_"+iterate1_entries[0].name.substr(iterate1_entries[0].name.length()-6,6)+"_"+iterate1_entries[0].values[i1]);
                     if(iterate2_entries[0].name.compare("placeholder") != 0)
-                        parEntry.values[0].append("_i2_"+std::to_string(i2+1)+"_"+iterate2_entries[0].name+"_"+iterate2_entries[0].values[i2]);
+                        parEntry.values[0].append("_i2_"+std::to_string(i2+1)+"_"+iterate2_entries[0].name.substr(iterate2_entries[0].name.length()-6,6)+"_"+iterate2_entries[0].values[i2]);
                 }
             }
             std::cout << "******************************************" << std::endl;
