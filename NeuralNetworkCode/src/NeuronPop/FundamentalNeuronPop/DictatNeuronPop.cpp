@@ -31,7 +31,18 @@ void DictatNeuronPop::LoadParameters(std::vector<std::string> *input)
             } else {
                 throw; //A non-existant type should throw
             }
-        }   
+        }else if(name.find("poissonLike") != std::string::npos){
+            if(values.at(0).find("true") != std::string::npos){
+                poissonLikeFiring=true;
+                std::uniform_int_distribution<int> distribution(0,INT32_MAX);
+                int seed = distribution(info->globalGenerator);
+                randomGenerator = std::default_random_engine(seed);
+            } else if (values.at(0).find("false") != std::string::npos){
+                poissonLikeFiring=false;
+            } else {
+                throw; //A non-existant type should throw
+            }
+        }  
     }
 }
 
@@ -42,7 +53,7 @@ void DictatNeuronPop::SaveParameters(std::ofstream *stream)
 
     NeuronPop::SaveParameters(stream);
 
-    *stream <<  id + "_inputFile                   ";
+    *stream <<  id + "_inputFile\t\t\t\t\t";
     if (spikerListFiringBasedBool){
         *stream<<"spiker";
     } else if (instructionBasedBool){
@@ -50,7 +61,15 @@ void DictatNeuronPop::SaveParameters(std::ofstream *stream)
     } else {
         *stream<<"None";
     }
-    *stream <<  "#Write 'instruction' for instruction-based, and 'spiker' for spiker-based \n";
+    *stream <<  "\t#Write 'instruction' for instruction-based, and 'spiker' for spiker-based \n";
+
+    *stream <<  id + "_poissonLike\t\t\t\t\t";
+    if (poissonLikeFiring){
+        *stream<<"true";
+    } else {
+        *stream<<"false";
+    }
+    *stream <<  "\t#Write true vs false to indicate if the firing reproduced from instructions is poisson-like or periodic. \n";
 }
 
 void DictatNeuronPop::advect(std::vector<double> *synaptic_dV)
@@ -59,7 +78,11 @@ void DictatNeuronPop::advect(std::vector<double> *synaptic_dV)
     if (spikerListFiringBasedBool){
         ReadSpikersFromFile();
     } else if(instructionBasedBool){
-        GenerateSpikersFromInstructions();
+        if (poissonLikeFiring){
+            GeneratePoissonSpikersFromInstructions();
+        } else {
+            GenerateRegularSpikersFromInstructions();
+        }
     } else {
         throw;
     }
@@ -93,7 +116,7 @@ void DictatNeuronPop::ReadInstructionsFromFile()
     }
 }
 
-void DictatNeuronPop::GenerateSpikersFromInstructions()
+void DictatNeuronPop::GenerateRegularSpikersFromInstructions()
 {
     // //loop option 1 (inefficient but less exception prone)
     // for (int neuronId = 0; neuronId<static_cast<int>(inputInstructions.size()); neuronId++){
@@ -119,6 +142,24 @@ void DictatNeuronPop::GenerateSpikersFromInstructions()
             instruction.completed=true;
         }
         if (!instruction.off && ((info->time_step-instruction.startTimeStep)%instruction.fireEveryNSteps)==0){
+            //Instruction.off condition is there to avoid doing a modulus with zero
+            if (instruction.completed){continue;}
+            if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
+        }
+    }
+}
+
+void DictatNeuronPop::GeneratePoissonSpikersFromInstructions()
+{
+        for (int neuronId = 0; neuronId<static_cast<int>(activeInstructions.size()); neuronId++){
+        Instruction& instruction = inputInstructions.at(neuronId).at(activeInstructions.at(neuronId));
+        if (instruction.endTimeStep<=info->time_step){
+            if (!(instruction.last)){
+                activeInstructions.at(neuronId)++;
+            }
+            instruction.completed=true;
+        }
+        if (uniformDistribution(randomGenerator)<instruction.lambdaPoisson){ //Here because there is no modulus, there is no need for checking the instruction.off condition
             if (instruction.completed){continue;}
             if (instruction.startTimeStep<info->time_step) {spiker.push_back(neuronId);}
         }
@@ -153,7 +194,7 @@ void DictatNeuronPop::ReadSpikersFromFile()
             }
 }
 
-Instruction::Instruction(int neuronId, double startTime, double endTime, double frequency, double dt): neuronId{neuronId}, startTimeStep{std::lround(startTime/dt)}, endTimeStep{std::lround(endTime/dt)}, frequency{frequency}
+Instruction::Instruction(int neuronId, double startTime, double endTime, double frequency, double dt): neuronId{neuronId}, startTimeStep{std::lround(startTime/dt)}, endTimeStep{std::lround(endTime/dt)}, frequency{frequency}, lambdaPoisson{frequency*dt}
 {
     //Constructor
     if (frequency < std::numeric_limits<double>::epsilon()){ //Zero comparison to avoid division by zero
