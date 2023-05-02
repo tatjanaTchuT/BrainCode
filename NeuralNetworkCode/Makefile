@@ -21,7 +21,7 @@ OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
 # Set the dependency files that will be used to add header dependencies
 DEPS = $(OBJECTS:.o=.d)
 
-OPTIMIZE    =  -funroll-loops -ffast-math -O3 -finline-functions -fexpensive-optimizations -msse4.2 -mavx -mavx2 -march=skylake-avx512
+OPTIMIZE    =  -funroll-loops -ffast-math -O3 -finline-functions -fexpensive-optimizations -msse4.2 -mavx -mavx2 -march=skylake
 # flags 
 # Do not use -mavx512f, gives an illegal instruction error, and if possible, we should find the proper AVX-512 flag for the servers CPU (Intel Xeon Gold)
 #-msse4.2 -mavx -mavx2 are specific of the servers CPU advanced vectorial instructions
