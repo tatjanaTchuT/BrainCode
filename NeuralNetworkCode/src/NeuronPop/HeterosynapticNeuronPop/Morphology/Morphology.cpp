@@ -15,13 +15,13 @@ void Morphology::LoadParameters(std::vector<std::string>* input) {
 
         if (name.find("seed") != std::string::npos) {
             this->seed = std::stoi(values.at(0));
-            this->generator=std::default_random_engine(this->seed);
+            this->generator=std::mt19937(this->seed);
         }
         //include here max and min weights
         if(info->globalSeed != -1){
         std::uniform_int_distribution<int> distribution(0,INT32_MAX);
         this->seed = distribution(info->globalGenerator);
-        this->generator = std::default_random_engine(seed);
+        this->generator = std::mt19937(seed);
     }
     }
 }
@@ -133,7 +133,7 @@ double Morphology::GenerateSynapticWeight(){
     double weight{};
     std::uniform_real_distribution<double> distribution(this->minWeight,this->maxWeight);
             if (this->distributeWeights) {
-                std::default_random_engine& generatorRef = this->generator;
+                std::mt19937& generatorRef = this->generator;
                 weight = distribution(generatorRef);
             } else {
                 weight = this->initialWeights; // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1

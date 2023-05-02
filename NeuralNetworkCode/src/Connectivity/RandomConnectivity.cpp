@@ -87,7 +87,7 @@ void RandomConnectivity::ConnectNeurons()
             source = distribution(generator);
 
             //Check if source and target neurons are equal
-            if( (synapse->IsRecurrent()) && (source == target))
+            if((synapse->IsRecurrent()) && (source == target))
                 continue;
 
             //Check if target was assigned to the same source already

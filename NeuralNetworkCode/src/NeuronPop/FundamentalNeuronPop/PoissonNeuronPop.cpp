@@ -3,7 +3,7 @@
 PoissonNeuronPop::PoissonNeuronPop(GlobalSimInfo * info,int id):NeuronPop(info,id)
 {
         //r_target = 0; seed = 2;
-        generator = std::default_random_engine(seed);
+        generator = std::mt19937(seed);
         uniformDistribution = std::uniform_real_distribution<double>(0.0,1.0);
 }
 
@@ -16,9 +16,9 @@ void PoissonNeuronPop::advect(std::vector<double> * synaptic_dV)
     //#pragma omp parallel for
         for(unsigned long i = 0 ; i < noNeurons; i++){
             // set target rate
-            r_target = synaptic_dV->at(i);
+            lambda = synaptic_dV->at(i);
             //Check if neuron fires
-            if (uniformDistribution(generator) < r_target){
+            if (uniformDistribution(generator) < lambda){
                 spiker.push_back(i);
             }
         }
@@ -50,7 +50,7 @@ void PoissonNeuronPop::LoadParameters(std::vector<std::string> *input)
     if(info->globalSeed != -1){
         std::uniform_int_distribution<int> distribution(0,INT32_MAX);
         seed = distribution(info->globalGenerator);
-        generator = std::default_random_engine(seed);
+        generator = std::mt19937(seed);
     }
     neuronIds.resize(noNeurons);
     std::iota(neuronIds.begin(), neuronIds.end(), 0);

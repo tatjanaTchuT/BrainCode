@@ -278,7 +278,7 @@ int NeuralNetwork::LoadParameters(std::string baseDir,std::vector<FileEntry> *pa
         }
         else if(name.find("globalSeed") != std::string::npos){
             info.globalSeed = static_cast<int> (std::stod(values.at(0)));
-            info.globalGenerator  = std::default_random_engine(info.globalSeed);
+            info.globalGenerator  = std::mt19937(info.globalSeed);
         }
 		else if (name.find("density") != std::string::npos) {
             info.density = static_cast<int>(std::stod(values.at(0)));

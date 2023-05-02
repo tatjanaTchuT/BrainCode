@@ -47,7 +47,7 @@ void Connectivity::Test(){
     std::cout << synapse->GetIdStr() << " - Test OK \n";
 }
 
-void  Connectivity::SetSeed(std::default_random_engine *seedGenerator)  {
+void  Connectivity::SetSeed(std::mt19937 *seedGenerator)  {
     if(!fixSeed){
         std::uniform_int_distribution<int> distribution(0,INT32_MAX);
         SetSeed(distribution(*seedGenerator));
@@ -57,7 +57,7 @@ void  Connectivity::SetSeed(std::default_random_engine *seedGenerator)  {
 void  Connectivity::SetSeed(int s){
     if(!fixSeed){
         seed       = s;
-        generator  = std::default_random_engine(seed);
+        generator  = std::mt19937(seed);
     }
 }
 

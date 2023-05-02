@@ -20,7 +20,7 @@
 
 struct GlobalSimInfo {
 
-    std::default_random_engine globalGenerator{};
+    std::mt19937 globalGenerator{};
     std::string pathTo_inputFile{};
     int		globalSeed{};
     long    time_step{};//long is long int

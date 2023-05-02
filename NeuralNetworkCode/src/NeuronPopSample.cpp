@@ -111,9 +111,9 @@ void NeuronPopSample::LoadParameters(std::vector<std::string> *input){
 
     //Set seeds
     if(generalNeuronSeed >= 0){
-        std::default_random_engine generator;
+        std::mt19937 generator;
         std::uniform_int_distribution<int> distribution(0,INT32_MAX);
-        generator = std::default_random_engine(generalNeuronSeed);
+        generator = std::mt19937(generalNeuronSeed);
 
         for(unsigned int p = 0; p < noPopulations; p++)
             neuronPops[p]->SetSeeds(distribution(generator),distribution(generator));

@@ -47,7 +47,7 @@ protected:
 
     bool distributeWeights{false};
     int seed{0};
-    std::default_random_engine generator{ std::default_random_engine(seed) };
+    std::mt19937 generator{ std::mt19937(seed) };
 
     double lastPostSpikeTime;
     std::vector<bool> spikedSynapses;

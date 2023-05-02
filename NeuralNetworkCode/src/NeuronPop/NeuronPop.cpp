@@ -37,7 +37,7 @@ void NeuronPop::SetNeurons(unsigned long noNeur) {
     //std::cout << "v_thresh = " << std::to_string(this->v_thresh) << "\n";
     //std::cout << "v_reset = " << std::to_string(this->v_reset) << "\n";
     
-    std::default_random_engine generator(seed_InitialPotentials);
+    std::mt19937 generator(seed_InitialPotentials);
     //std::uniform_real_distribution<double> uniformDistribution (0.0,1.0); //v_thresh instead of 1.0
     std::uniform_real_distribution<double> uniformDistribution (v_reset,v_thresh);
 
@@ -52,7 +52,7 @@ void NeuronPop::SetPosition(long noNeur)
 	if (info->Dimensions == 0)
 		return;
 	noNeurons = noNeur;
-	std::default_random_engine generator(seed_InitialPotentials);
+	std::mt19937 generator(seed_InitialPotentials);
 	std::uniform_real_distribution<double> uniformDistribution(0.0, 1.0);
 	x_pos.resize(noNeurons);
 	y_pos.resize(noNeurons);

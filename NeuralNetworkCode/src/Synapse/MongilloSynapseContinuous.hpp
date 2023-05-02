@@ -22,7 +22,7 @@ protected:
     std::valarray<std::valarray<double>> x, y, spike_submitted;
 
     int seed;
-    std::default_random_engine generator;
+    std::mt19937 generator;
     std::uniform_real_distribution<double> uniformDistribution;
 
     void advectSpikers(std::vector<double>& currents, long spiker) override;
@@ -39,7 +39,7 @@ public:
 
     void ConnectNeurons() override;
 
-    void SetSeed(std::default_random_engine *generator) override;
+    void SetSeed(std::mt19937 *generator) override;
     //*****************************
     //******* Get Functions *******
     //*****************************

@@ -116,7 +116,7 @@ public:
     virtual void LoadParameters(std::vector<std::string> *input);
     virtual void SaveParameters(std::ofstream * stream,std::string id_str);
 
-	virtual void SetSeed(std::default_random_engine *generator);
+	virtual void SetSeed(std::mt19937 *generator);
 
     bool IsRecurrent(){ return (neuronsPre == neuronsPost);}
     bool IsConnected(){return isConnectedBool;}

@@ -36,7 +36,7 @@ void DictatNeuronPop::LoadParameters(std::vector<std::string> *input)
                 poissonLikeFiring=true;
                 std::uniform_int_distribution<int> distribution(0,INT32_MAX);
                 int seed = distribution(info->globalGenerator);
-                randomGenerator = std::default_random_engine(seed);
+                randomGenerator = std::mt19937(seed);
             } else if (values.at(0).find("false") != std::string::npos){
                 poissonLikeFiring=false;
             } else {

@@ -21,7 +21,7 @@ protected:
 
     std::vector<int> neuronIds{}; //Used in the random sampling with fixed firing rate
 
-    std::default_random_engine generator;
+    std::mt19937 generator;
     std::uniform_real_distribution<double> uniformDistribution;
     std::binomial_distribution<> binomialDistribution;
 

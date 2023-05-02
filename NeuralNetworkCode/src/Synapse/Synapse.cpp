@@ -209,7 +209,7 @@ void Synapse::ReadWaitingMatrixEntry(std::vector<double>& synaptic_dV) {
 		synaptic_dV[i] = synaptic_dV[i]+ waiting_matrix[i][index];
 }
 
-void Synapse::SetSeed(std::default_random_engine *generator){
+void Synapse::SetSeed(std::mt19937 *generator){
 
     geometry->SetSeed(generator);
     //std::uniform_int_distribution<int> distribution(0,INT32_MAX);

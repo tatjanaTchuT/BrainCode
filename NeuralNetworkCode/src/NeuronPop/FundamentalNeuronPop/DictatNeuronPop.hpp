@@ -28,7 +28,7 @@ class DictatNeuronPop: public NeuronPop {
     bool instructionBasedBool{false};
     bool poissonLikeFiring{false};
 
-    std::default_random_engine randomGenerator;
+    std::mt19937 randomGenerator;
     std::uniform_real_distribution<double> uniformDistribution = std::uniform_real_distribution<double>(0.0,1.0);
 
     std::string inputFileAddress;

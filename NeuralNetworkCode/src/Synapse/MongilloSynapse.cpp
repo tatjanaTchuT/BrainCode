@@ -162,11 +162,11 @@ std::valarray<double> MongilloSynapse::GetSynapticState(int pre_neuron)
 
 void MongilloSynapse::SetSeed(int s){
     seed      = s;
-    generator = std::default_random_engine(seed);
+    generator = std::mt19937(seed);
 }
 
 
-void MongilloSynapse::SetSeed(std::default_random_engine *generator){
+void MongilloSynapse::SetSeed(std::mt19937 *generator){
     std::uniform_int_distribution<int> distribution(0,INT32_MAX);
     SetSeed(distribution(*generator));
     Synapse::SetSeed(generator);

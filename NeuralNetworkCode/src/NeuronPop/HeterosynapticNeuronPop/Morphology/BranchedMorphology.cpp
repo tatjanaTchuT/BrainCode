@@ -194,7 +194,7 @@ int BranchedMorphology::AllocateBranch(const HeteroCurrentSynapse &synapse)
 
 int BranchedMorphology::RandomBranchAllocation()
 {
-        std::default_random_engine& generator = this->generator;
+        std::mt19937& generator = this->generator;
         //For now, the distribution will be uniform
         std::uniform_int_distribution<int> branchDistribution(0,static_cast<int>(branches.size()-1));
         int branchID{branchDistribution(generator)};
@@ -219,7 +219,7 @@ int BranchedMorphology::OrderedBranchAllocation()
 
 void BranchedMorphology::RandomSynapseAllocation(BranchPtr& branch)
 {
-    //std::default_random_engine& generator = this->generator;
+    //std::mt19937& generator = this->generator;
     std::vector<int> possibleSlots(branch->branchSlots);
     std::iota(possibleSlots.begin(), possibleSlots.end(), 0);
    //Now we have our vector from 0 to maxSlots to pull random numbers from

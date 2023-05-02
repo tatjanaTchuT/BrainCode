@@ -292,7 +292,7 @@ BaseSpinePtr MonoDendriteSTDP::AllocateNewSynapse(const HeteroCurrentSynapse& sy
         } else {
             if (distributeWeights) {
                 std::random_device rd;
-                std::default_random_engine generator(rd()); // rd() provides a random seed
+                std::mt19937 generator(rd()); // rd() provides a random seed
                 newSynapse->SetWeight(distribution(generator));
             } else {
                 newSynapse->SetWeight(this->initialWeights); // assuming a range of weight between 0 and 2, weight is initialized to midpoint: 1

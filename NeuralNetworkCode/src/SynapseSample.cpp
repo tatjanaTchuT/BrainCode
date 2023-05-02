@@ -46,9 +46,9 @@ void SynapseSample::LoadParameters(std::vector<std::string> *input){
 
     if(generalSynapseSeed >= 0){
         //Find P^2 different seed values
-        std::default_random_engine generator;
+        std::mt19937 generator;
         std::uniform_int_distribution<int> distribution(0,INT32_MAX);
-        generator = std::default_random_engine(generalSynapseSeed);
+        generator = std::mt19937(generalSynapseSeed);
 
         for(int i = 0; i < P; i++){
             for(int j = 0; j < P; j++){
