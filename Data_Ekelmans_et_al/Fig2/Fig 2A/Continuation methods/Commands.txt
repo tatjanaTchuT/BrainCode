@@ -1,0 +1,5 @@
+a=[1.47e-2 5.04e-4];b=[0.34 17.85];n=[1.925 2.635];
+a=[1.079e-04,2.210e-06];b=[-11.14,4.77];n=[3.081,3.815];
+load('F.mat')
+Supersaturation_SSN=Continuation_SSN([2 -12 6 -1],[0 0],1,0,a,b,n,5e-2,1e5);
+Supersaturation_Phi=Continuation_FiniteSize([2 -12 6 -1],[0 0],1,0,[0.02 0.01],1e-2,1e4)
